@@ -1,0 +1,15 @@
+<a {{action "toggleProfileMenu"}} style="cursor:pointer; background: url('{{user.bannerImage.url}}');">
+  <div class="profile-pic">
+    <img src="{{user.profilePicture.url}}" alt="{{user.profilePicture.alt}}">
+  </div>
+
+  <div class="profile-info">
+    {{user.name}}
+
+      <i class="zmdi zmdi-chevron-up"></i>
+  </div>
+</a>
+
+{{#mist-main-menu class=profileMenuClasses}}
+  {{yield}}
+{{/mist-main-menu}}
