@@ -5,6 +5,7 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 export default Ember.Component.extend({
   classNames: ['table-responsive'],
   store: Ember.inject.service(),
+  entityRouter: Ember.inject.service(),
   page: 1,
   limit: 20,
   dir: 'asc',
@@ -54,7 +55,6 @@ export default Ember.Component.extend({
       this.incrementProperty('page');
       this.fetchRecords();
     },
-
     onColumnClick(column) {
       if (column.sorted) {
         this.setProperties({
@@ -65,6 +65,9 @@ export default Ember.Component.extend({
         this.table.setRows([]);
         this.fetchRecords();
       }
+    },
+    onRowClick(row){
+      this.get('entityRouter').transitionToView(row.get('content'));
     }
   }
 });
