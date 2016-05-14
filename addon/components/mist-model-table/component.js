@@ -14,6 +14,10 @@ export default Ember.Component.extend({
   isLoading: false,
   models: [],
   modelType: null,
+  field: null,
+  parent: null,
+  filter: null,
+  parentField: 'parent',
 
   columns: Ember.computed('modelType', function(){
     let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
@@ -25,6 +29,7 @@ export default Ember.Component.extend({
       let column = {};
       column['label'] = label;
       column['valuePath'] = modelColumn;
+      column['cellComponent'] = 'mist-model-table-cell';
       columns.push(column);
     });
 
@@ -33,12 +38,33 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    this.set('table', new Table(this.get('columns'), this.get('models')));
+
+    let field = this.get('field');
+    let models = [];
+
+    if(Ember.isBlank(field))
+    {
+      models = this.get('models');
+    }
+    else
+    {
+      let parent = this.get('parent');
+      let modelType = ModelUtils.getChildModelTypeName(parent, field);
+      let filter = { fields: {}};
+      let parentField = ModelUtils.getRelationshipInverse(parent, field);
+
+      filter.fields[parentField] = parent.get('id');
+      this.set('filter', filter);
+      this.set('modelType', modelType);
+      this.fetchRecords();
+    }
+
+    this.set('table', new Table(this.get('columns'), models));
   },
 
   fetchRecords() {
     this.set('isLoading', true);
-    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir']);
+    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter']);
     if(queryParams.dir === 'desc'){
       queryParams.sort = '-' + queryParams.sort;
     }
