@@ -1,3 +1,9 @@
-{{#link-to link}}
-  <i class="{{icon}}"></i> {{title}}
-{{/link-to}}
+{{#if hasAction}}
+  <a>
+    <i class="{{icon}}"></i> {{title}}
+  </a>
+{{else}}
+  {{#link-to link}}
+    <i class="{{icon}}"></i> {{title}}
+  {{/link-to}}
+{{/if}}

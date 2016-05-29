@@ -39,6 +39,7 @@
     "ember-export-application-global": "^1.0.4",
     "ember-light-table": "0.1.9",
     "ember-resolver": "^2.0.3",
+    "ember-simple-auth": "1.1.0",
     "ember-try": "~0.0.8"
   },
   "keywords": [
@@ -46,8 +47,8 @@
     "ember-mist-components"
   ],
   "dependencies": {
-    "ember-cli-htmlbars": "^1.0.1",
-    "ember-cli-babel": "^5.1.5"
+    "ember-cli-babel": "^5.1.5",
+    "ember-cli-htmlbars": "^1.0.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
