@@ -15,8 +15,15 @@ export default Ember.Component.extend({
     }
     return styleClass;
   }),
+  profileMenuBackgroundStyle: Ember.computed('user.bannerImage', function(){
+    const bannerImage = this.get('user.bannerImage');
+
+    if(!Ember.isBlank(bannerImage)) {
+      return Ember.String.htmlSafe('cursor:pointer; background: url("'+ bannerImage.url + '"); background-size: cover;');
+    }
+  }),
   actions: {
-    toggleProfileMenu: function(){
+    toggleProfileMenu (){
       this.set('showProfileMenu', !this.get('showProfileMenu'));
     }
   }
