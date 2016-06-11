@@ -1,7 +1,7 @@
 {{#light-table table class="table table-hover" scrollContainer='.table-container' onScrolledToBottom=(action 'onScrolledToBottom') as |t|}}
   {{t.head onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
 
-  {{#t.body onRowClick=(action 'onRowClick') as |body|}}
+  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
     {{#if isLoading}}
       {{#body.loader}}
         {{mist-spinner size="30px" class="text-center"}}

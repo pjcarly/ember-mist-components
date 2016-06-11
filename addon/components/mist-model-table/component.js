@@ -94,6 +94,12 @@ export default Ember.Component.extend({
     },
     onRowClick(row){
       this.get('entityRouter').transitionToView(row.get('content'));
+    },
+    onRowMouseEnter(row) {
+      this.sendAction('onRowMouseEnter', row);
+    },
+    onRowMouseLeave(row) {
+      this.sendAction('onRowMouseLeave', row);
     }
   }
 });
