@@ -1,9 +1,13 @@
 {{#if hasAction}}
-  <a>
-    <i class="{{icon}}"></i> {{title}}
-  </a>
+  {{#if button}}
+    {{#mist-button class=className}}{{yield}}{{/mist-button}}
+  {{else}}
+    <a class="waves-effect">
+      {{yield}}
+    </a>
+  {{/if}}
 {{else}}
-  {{#link-to link}}
-    <i class="{{icon}}"></i> {{title}}
-  {{/link-to}}
+  <a href="{{href-to link}}" class="waves-effect">
+    {{yield}}
+  </a>
 {{/if}}

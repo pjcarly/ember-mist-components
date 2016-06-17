@@ -42,7 +42,7 @@ export default GMaps.extend({
             });
 
             marker.addListener('click', function() {
-              let content = `<h4>${model.get('title')}</h4><div class="btn-demo"><button class="btn btn-default btn-icon-text waves-effect"><i class="zmdi zmdi-arrow-forward"></i> go to details</button></div>`;
+              let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><button class="btn btn-default waves-effect"><i class="zmdi zmdi-arrow-forward"></i> View record</button></div>`;
               infowindow.setContent(content);
               infowindow.open(map, marker);
             });
