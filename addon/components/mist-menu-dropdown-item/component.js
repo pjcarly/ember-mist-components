@@ -3,11 +3,8 @@ import MenuItem from '../mist-menu-item/component';
 
 export default MenuItem.extend({
   classNames: ['dropdown'],
-  classNameBindings: ['open'],
-  open: false,
-  actions: {
-    toggle() {
-      this.set('open', !this.get('open'));
-    }
-  }
+  ariaId: Ember.computed(function(){
+    const componentGuid = Ember.guidFor(this);
+    return `${componentGuid}-trigger`;
+  })
 });

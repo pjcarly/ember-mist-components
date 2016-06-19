@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   click() {
     if(this.get('hasAction')){
       return this.sendAction();
+      //return this.get('action')();
     }
   }
 });
