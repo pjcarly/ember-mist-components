@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-xs-12">
+    {{input-text value=address.street valueChanged=(action 'streetChanged')}}
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-6">
+    {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged')}}
+  </div>
+  <div class="col-xs-6">
+    {{input-text value=address.city valueChanged=(action 'cityChanged')}}
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    {{input-text value=address.state valueChanged=(action 'stateChanged')}}
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    {{input-text value=address.country valueChanged=(action 'countryChanged')}}
+  </div>
+</div>
