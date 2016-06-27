@@ -28,29 +28,31 @@ export default GMaps.extend({
       models.forEach((model) => {
         let modelGuid = Ember.guidFor(model);
         let modelLocation = model.get(field);
-        let latLng = modelLocation.get('googleMapsLatLng');
-        let marker = null;
+        if(!Ember.isBlank(modelLocation)){
+          let latLng = modelLocation.get('googleMapsLatLng');
+          let marker = null;
 
-        if(!Ember.isBlank(latLng)){
-          if(!Ember.isBlank(oldMistMarkers) && oldMistMarkersoldMistMarkers.hasOwnProperty(modelGuid)){
-            marker = oldMistMarkers[modelGuid];
-            delete oldMistMarkers[modelGuid];
-          } else {
-            marker = new google.maps.Marker({
-              map: map,
-              icon: 'assets/images/map-marker-purple.png'
-            });
+          if(!Ember.isBlank(latLng)){
+            if(!Ember.isBlank(oldMistMarkers) && oldMistMarkersoldMistMarkers.hasOwnProperty(modelGuid)){
+              marker = oldMistMarkers[modelGuid];
+              delete oldMistMarkers[modelGuid];
+            } else {
+              marker = new google.maps.Marker({
+                map: map,
+                icon: 'assets/images/map-marker-purple.png'
+              });
 
-            marker.addListener('click', function() {
-              let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><button class="btn btn-default waves-effect"><i class="zmdi zmdi-arrow-forward"></i> View record</button></div>`;
-              infowindow.setContent(content);
-              infowindow.open(map, marker);
-            });
+              marker.addListener('click', function() {
+                let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><button class="btn btn-default waves-effect"><i class="zmdi zmdi-arrow-forward"></i> View record</button></div>`;
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+              });
+            }
+
+            modelLocation.addMarker(mapName, marker);
+            marker.setPosition(latLng);
+            mistMarkers[modelGuid] = marker;
           }
-
-          modelLocation.addMarker(mapName, marker);
-          marker.setPosition(latLng);
-          mistMarkers[modelGuid] = marker;
         }
       });
     }
@@ -75,7 +77,10 @@ export default GMaps.extend({
 
     if(!Ember.isBlank(models) && !Ember.isBlank(field) && !Ember.isBlank(mapName)) {
       models.forEach((model) => {
-        model.get(field).removeMarker(mapName);
+        let location = model.get(field);
+        if(!Ember.isBlank(location)){
+          location.removeMarker(mapName);
+        }
       });
     }
   },

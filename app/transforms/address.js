@@ -16,16 +16,19 @@ export default DS.Transform.extend({
     return address;
   },
   serialize: function(deserialized) {
-    let serializedAddress = {
-      country_code: deserialized.get('country'),
-      administrative_area: null,
-      locality: deserialized.get('city'),
-      dependent_locality: null,
-      postal_code: deserialized.get('postalCode'),
-      sorting_code: null,
-      address_line1: deserialized.get('street'),
-      address_line2: null
-    };
+    let serializedAddress = {}
+
+    if(!Ember.isBlank(deserialized)) {
+      serializedAddress['country_code'] = deserialized.get('country');
+      serializedAddress['administrative_area'] = null;
+      serializedAddress['locality'] = deserialized.get('city');
+      serializedAddress['dependent_locality'] = null;
+      serializedAddress['postal_code'] = deserialized.get('postalCode');
+      serializedAddress['sorting_code'] = null;
+      serializedAddress['address_line1'] = deserialized.get('street');
+      serializedAddress['address_line2'] = null;
+    }
+
     return serializedAddress;
   }
 });
