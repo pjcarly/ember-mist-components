@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { task, taskGroup, timeout } from 'ember-concurrency';
+import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 
 export default Ember.Mixin.create({
@@ -16,7 +16,7 @@ export default Ember.Mixin.create({
   delete: task(function * (model) {
     swal({
       title: "Are you sure?",
-      text: "You will not be able to recover this imaginary file!",
+      text: "You will not be able to recover this record!",
       type: "warning",
       showCancelButton: true,
       confirmButtonColor: "#DD6B55",
