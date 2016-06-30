@@ -72,7 +72,9 @@ export default Ember.Component.extend({
 
     this.get('store').query(this.get('modelType'), queryParams).then(records => {
       this.table.addRows(records);
-      this.set('isLoading', false);
+      if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
+        this.set('isLoading', false);
+      }
     });
   },
 

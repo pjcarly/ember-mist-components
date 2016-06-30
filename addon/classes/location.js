@@ -9,6 +9,10 @@ export default Ember.Object.extend({
     let lat = this.get('lat');
     let lng = this.get('lng');
 
+    if(Ember.isBlank(lat) || Ember.isBlank(lng)){
+      return '';
+    }
+
     return `${lat}, ${lng}`;
   }),
   googleMapsLatLng: Ember.computed('lat', 'lng', function(){
