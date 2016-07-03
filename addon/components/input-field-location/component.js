@@ -5,6 +5,7 @@ import ComponentDynamicObserverMixin from 'ember-field-components/mixins/compone
 export default Ember.Component.extend(ComponentDynamicObserverMixin, {
   tagName: '',
   internalUpdate: false,
+  draggable: true,
 
   init(...args){
     this._super(...args);
@@ -15,6 +16,8 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
       this.setLatLng(location.get('lat'), location.get('lng'));
       this.set('zoom', 16);
     }
+
+    this.setMarkers();
   },
 
   valueObserver: function(){
@@ -46,7 +49,9 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
       lng = 0;
       this.set('zoom', 1);
     } else {
-      this.set('zoom', 16);
+      if(this.get('zoom') === 1){
+        this.set('zoom', 16);
+      }
     }
 
     markers = [{
@@ -57,7 +62,7 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
         this.markerChangedPosition(event, marker);
       }.bind(this),
       cursor: 'pointer',
-      draggable: true
+      draggable: this.get('draggable')
     }];
 
     this.set('markers', markers);

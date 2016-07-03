@@ -1,9 +1,6 @@
 import Ember from 'ember';
+import InputFieldLocation from 'ember-mist-components/components/input-field-location/component';
 
-export default Ember.Component.extend({
-  tagName: '',
-
-  value: Ember.computed('model', 'field', function(){
-    return this.get('model').get(this.get('field'));
-  })
+export default InputFieldLocation.extend({
+  draggable: false
 });

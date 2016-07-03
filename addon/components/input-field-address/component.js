@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Address from 'ember-mist-components/classes/address';
+import { getCountrySelectOptions } from 'ember-mist-components/classes/address';
 
 export default Ember.Component.extend({
   tagName: '',
@@ -7,6 +8,9 @@ export default Ember.Component.extend({
   address: Ember.computed('model', 'field', function(){
     let address = this.get('model').getAddress(this.get('field'));
     return address;
+  }),
+  countrySelectOptions: Ember.computed(function(){
+    return getCountrySelectOptions();
   }),
   actions: {
     streetChanged(value) {
