@@ -1,23 +1,18 @@
 <div class="row">
   <div class="col-xs-12">
-    {{input-text value=address.street valueChanged=(action 'streetChanged')}}
+    {{input-text value=address.street valueChanged=(action 'streetChanged') placeholder="Street"}}
   </div>
 </div>
 <div class="row">
   <div class="col-xs-6 p-r-5">
-    {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged')}}
+    {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged') placeholder="Postal Code"}}
   </div>
   <div class="col-xs-6 p-l-5">
-    {{input-text value=address.city valueChanged=(action 'cityChanged')}}
+    {{input-text value=address.city valueChanged=(action 'cityChanged') placeholder="City"}}
   </div>
 </div>
 <div class="row">
   <div class="col-xs-12">
-    {{input-text value=address.state valueChanged=(action 'stateChanged')}}
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12">
-    {{input-text value=address.country valueChanged=(action 'countryChanged')}}
+    {{input-text value=address.country valueChanged=(action 'countryChanged') placeholder="Country"}}
   </div>
 </div>

@@ -1,8 +1,10 @@
 import Ember from 'ember';
 import GMaps from 'ember-cli-g-maps/components/g-maps'
+import { getModelName } from 'ember-field-components/classes/model-utils';
 
 export default GMaps.extend({
   setBounds: false,
+  router: Ember.inject.service('-routing'),
 
   setStyles() {
     let styles = this.get('styles');
@@ -27,12 +29,13 @@ export default GMaps.extend({
 
       models.forEach((model) => {
         let modelGuid = Ember.guidFor(model);
-        let modelLocation = model.get(field);
+        let modelLocation = model.getLocation(field);
         if(!Ember.isBlank(modelLocation)){
-          let latLng = modelLocation.get('googleMapsLatLng');
+          let {lat, lng} = modelLocation.getProperties('lat', 'lng');
           let marker = null;
 
-          if(!Ember.isBlank(latLng)){
+          if(!Ember.isBlank(lat) && !Ember.isBlank(lng)){
+            let latLng = new google.maps.LatLng(lat, lng);
             if(!Ember.isBlank(oldMistMarkers) && oldMistMarkersoldMistMarkers.hasOwnProperty(modelGuid)){
               marker = oldMistMarkers[modelGuid];
               delete oldMistMarkers[modelGuid];
@@ -42,8 +45,10 @@ export default GMaps.extend({
                 icon: 'assets/images/map-marker-purple.png'
               });
 
+              let route = `#/${getModelName(model)}/${model.get('id')}/view`;
+
               marker.addListener('click', function() {
-                let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><button class="btn btn-default waves-effect"><i class="zmdi zmdi-arrow-forward"></i> View record</button></div>`;
+                let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><a class="btn btn-default waves-effect" href="${route}"><i class="zmdi zmdi-arrow-forward"></i> View record</a></div>`;
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
               });
@@ -77,7 +82,7 @@ export default GMaps.extend({
 
     if(!Ember.isBlank(models) && !Ember.isBlank(field) && !Ember.isBlank(mapName)) {
       models.forEach((model) => {
-        let location = model.get(field);
+        let location = model.getLocation(field);
         if(!Ember.isBlank(location)){
           location.removeMarker(mapName);
         }

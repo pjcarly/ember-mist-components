@@ -3,7 +3,7 @@ import Location from 'ember-mist-components/classes/location';
 
 export default DS.Transform.extend({
   deserialize: function(serialized) {
-    let location = Location.create();
+    let location = {};
 
     if(!Ember.isBlank(serialized)) {
       location.lat = serialized.lat;
@@ -16,8 +16,8 @@ export default DS.Transform.extend({
     let serializedLocation = {};
 
     if(!Ember.isBlank(deserialized)) {
-      serializedLocation['lat'] = deserialized.get('lat');
-      serializedLocation['lng'] = deserialized.get('lng');
+      serializedLocation['lat'] = deserialized.lat;
+      serializedLocation['lng'] = deserialized.lng;
     }
 
     return serializedLocation;

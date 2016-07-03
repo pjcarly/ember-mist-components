@@ -1,26 +1,28 @@
 import Ember from 'ember';
+import Address from 'ember-mist-components/classes/address';
 
 export default Ember.Component.extend({
   tagName: '',
 
   address: Ember.computed('model', 'field', function(){
-    return this.get('model').get(this.get('field'));
+    let address = this.get('model').getAddress(this.get('field'));
+    return address;
   }),
   actions: {
     streetChanged(value) {
-      this.set('address.street', value);
+      this.get('address').set('street', value);
     },
     postalCodeChanged(value) {
-      this.set('address.postalCode', value);
+      this.get('address').set('postalCode', value);
     },
     cityChanged(value) {
-      this.set('address.city', value);
+      this.get('address').set('city', value);
     },
     stateChanged(value) {
-      this.set('address.state', value);
+      this.get('address').set('state', value);
     },
     countryChanged(value) {
-      this.set('address.country', value);
+      this.get('address').set('country', value);
     }
   }
 });
