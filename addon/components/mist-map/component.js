@@ -48,7 +48,7 @@ export default GMaps.extend({
               let route = `#/${getModelName(model)}/${model.get('id')}/view`;
 
               marker.addListener('click', function() {
-                let content = `<h4>${model.get('title')}</h4><div class="infowindow-buttons"><a class="btn btn-default waves-effect" href="${route}"><i class="zmdi zmdi-arrow-forward"></i> View record</a></div>`;
+                let content = `<h4>${model.get('name')}</h4><div class="infowindow-buttons"><a class="btn btn-default waves-effect" href="${route}"><i class="zmdi zmdi-arrow-forward"></i> View record</a></div>`;
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
               });
