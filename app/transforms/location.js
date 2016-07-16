@@ -1,5 +1,4 @@
 import DS from 'ember-data';
-import Location from 'ember-mist-components/classes/location';
 
 export default DS.Transform.extend({
   deserialize: function(serialized) {

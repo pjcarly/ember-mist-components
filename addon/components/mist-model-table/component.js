@@ -95,7 +95,12 @@ export default Ember.Component.extend({
       }
     },
     onRowClick(row){
-      this.get('entityRouter').transitionToView(row.get('content'));
+      if(Ember.isBlank(this.get('onRowClick'))) {
+        this.get('entityRouter').transitionToView(row.get('content'));
+      }
+      else {
+        this.sendAction('onRowClick', row);
+      }
     },
     onRowMouseEnter(row) {
       this.sendAction('onRowMouseEnter', row);
