@@ -10,11 +10,7 @@ export default Ember.Component.extend(FieldInputComponent, {
     let value = this.get('value');
 
     if(!Ember.isBlank(value.id)){
-      yield this.get('ajax').del(`/api/file/files/${value.id}`).then(() => {
-        this.set('value', null);
-      });
-
-      this.notifyPropertyChange('field');
+      this.set('value', null);
     }
   }).drop(),
   uploadFile: task(function * (files){
@@ -37,7 +33,7 @@ export default Ember.Component.extend(FieldInputComponent, {
         fileObject.url = data.data.attributes.url;
         fileObject.filemime = data.data.attributes.filemime;
         fileObject.filesize = data.data.attributes.filesize;
-        
+
         this.set('value', fileObject);
       });
     }
