@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Table from 'ember-light-table';
 import ModelUtils from 'ember-field-components/classes/model-utils';
+import StringUtils from 'ember-field-components/classes/string-utils';
 
 export default Ember.Component.extend({
   classNames: ['table-responsive'],
@@ -18,6 +19,8 @@ export default Ember.Component.extend({
   parent: null,
   filter: null,
   parentField: 'parent',
+  displayHead: true,
+  searchString: null,
 
   columns: Ember.computed('modelType', function(){
     let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
@@ -64,7 +67,10 @@ export default Ember.Component.extend({
 
   fetchRecords() {
     this.set('isLoading', true);
+    this._buildSearchStringQuery();
+
     let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter']);
+
     if(queryParams.dir === 'desc'){
       queryParams.sort = '-' + queryParams.sort;
     }
@@ -78,6 +84,31 @@ export default Ember.Component.extend({
     });
   },
 
+  _buildSearchStringQuery(){
+    // Here we check for a search string present, and build it if found
+    let searchString = this.get('searchString');
+    let nameColumn = Ember.String.dasherize(ModelUtils.getNameColumn(this.get('modelType')));
+    let filters = this.get('filter');
+
+    if(Ember.isBlank(filters)){
+      filters = { fields: {}};
+    }
+
+    if(!Ember.isBlank(searchString)) {
+      filters.fields[nameColumn] = {};
+      filters.fields[nameColumn]['operator'] = 'LIKE';
+      filters.fields[nameColumn]['value'] = StringUtils.replaceAll(searchString, '*', '%');
+    } else {
+      delete filters.fields[nameColumn];
+    }
+
+    if(Object.keys(filters).length == 0){
+      filters = null;
+    }
+
+    this.set('filter', filters);
+  },
+
   actions: {
     onScrolledToBottom() {
       this.incrementProperty('page');
@@ -87,7 +118,7 @@ export default Ember.Component.extend({
       if (column.sorted) {
         this.setProperties({
           dir: column.ascending ? 'asc' : 'desc',
-          sort: column.get('valuePath'),
+          sort: Ember.String.dasherize(column.get('valuePath')),
           page: 1
         });
         this.table.setRows([]);

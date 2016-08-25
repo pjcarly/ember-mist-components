@@ -1,0 +1,9 @@
+{{#if parentModel.isPending}}
+  ...
+{{else}}
+  {{#if link}}
+    {{#link-to linkToType parentModel}}{{get-name parentModel parentModelType}}{{/link-to}}
+  {{else}}
+    {{get-name parentModel parentModelType}}
+  {{/if}}
+{{/if}}

@@ -1,0 +1,41 @@
+<!-- Modal -->
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{object-list objects=selectOptions columns=columns objectSelected='objectSelected' noresults=noresults}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if hasPrefix}}
+  <span class="input-group-addon">{{prefix}}</span>
+{{/if}}
+<button {{action 'showModal'}} class="btn btn-default lookup-toggle" type="button">
+  {{#if hasValue}}
+    {{computedValue}}
+  {{else}}
+    <span class="placeholder">
+      {{placeholder}}
+    </span>
+  {{/if}}
+</button>
+{{#if hasSuffix}}
+  <span class="input-group-addon">{{suffix}}</span>
+{{/if}}
+
+<span class="input-group-btn">
+  {{#if hasValue}}
+    <button type="button" class="btn btn-default" {{action 'clearLookup'}}>
+      <span class="glyphicon glyphicon-remove"></span>
+    </button>
+  {{/if}}
+
+  <button type="button" class="btn btn-default" {{action 'showModal'}}>
+    <span class="glyphicon glyphicon-search"></span>
+  </button>
+</span>
