@@ -1,3 +1,9 @@
-<h2>{{title}} {{#if subtitle}}<small>{{subtitle}}</small>{{/if}}</h2>
+<h2>
+  {{title}}
+  {{#if subtitle}}<small>{{subtitle}}</small>{{/if}}
+  {{#if showSpinner}}
+    {{mist-spinner size="10px" tagName="span"}}
+  {{/if}}
+</h2>
 
 {{yield}}

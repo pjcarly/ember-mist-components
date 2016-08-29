@@ -1,21 +1,28 @@
-{{input-text}}
+{{#mist-card-header title=title class="ch-alt" showSpinner=fetchRecords.isRunning}}
+  {{#mist-menu class="actions"}}
+    {{#mist-menu-dropdown-item}}
+      {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
+    {{/mist-menu-dropdown-item}}
+  {{/mist-menu}}
+  {{#mist-button class="bgm-pink btn-float"}}<i class="zmdi zmdi-plus"></i>{{/mist-button}}
+{{/mist-card-header}}
 
-{{#light-table table class="table table-hover" scrollContainer='.table-container' onScrolledToBottom=(action 'onScrolledToBottom') as |t|}}
-  {{#if displayHead}}
-    {{t.head onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
-  {{/if}}
-
-  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
-    {{#if isLoading}}
-      {{#body.loader}}
-        {{mist-spinner size="30px" class="text-center"}}
-      {{/body.loader}}
+<div class="table-responsive">
+  {{#light-table table height=tableHeight tableClassNames="table table-hover" as |t|}}
+    {{#if displayHead}}
+      {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
     {{/if}}
 
-    {{#if table.isEmpty}}
-      {{#body.no-data}}
-        No data found
-      {{/body.no-data}}
-    {{/if}}
-  {{/t.body}}
-{{/light-table}}
+    {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
+      {{#if table.isEmpty}}
+        {{#body.no-data}}
+          No data found
+        {{/body.no-data}}
+      {{/if}}
+    {{/t.body}}
+  {{/light-table}}
+</div>
+
+<div class="table-footer">
+  {{mist-model-table-controls currentPage=page lastPage=lastPage rows=limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
+</div>

@@ -2,27 +2,32 @@ import Ember from 'ember';
 import Table from 'ember-light-table';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import StringUtils from 'ember-field-components/classes/string-utils';
+import { task, timeout } from 'ember-concurrency';
 
 export default Ember.Component.extend({
-  classNames: ['table-responsive'],
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
+
   page: 1,
-  limit: 20,
+  limit: 10,
   dir: 'asc',
   sort: null,
   table: null,
-  isLoading: false,
-  models: [],
-  modelType: null,
-  field: null,
-  parent: null,
-  filter: null,
-  parentField: 'parent',
   displayHead: true,
-  searchString: null,
+
+  lastPage: 0,
+  resultRowFirst: 0,
+  resultRowLast: 0,
+  resultTotalCount: 0,
+
+  init() {
+    this._super(...arguments);
+    this.set('table', new Table(this.get('columns')));
+    this.get('fetchRecords').perform();
+  },
 
   columns: Ember.computed('modelType', function(){
+    // This function gets the columns defined on the model, and sets them as the columns of the table
     let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
     let modelColumns = ModelUtils.getDefaultListViewColumns(type);
     let columns = [];
@@ -32,43 +37,14 @@ export default Ember.Component.extend({
       let column = {};
       column['label'] = label;
       column['valuePath'] = modelColumn;
+      column['resizable'] = true;
       column['cellComponent'] = 'mist-model-table-cell';
       columns.push(column);
     });
 
     return columns;
   }),
-
-  init() {
-    this._super(...arguments);
-
-    let field = this.get('field');
-    let models = [];
-
-    if(Ember.isBlank(field))
-    {
-      models = this.get('models');
-    }
-    else
-    {
-      let parent = this.get('parent');
-      let modelType = ModelUtils.getChildModelTypeName(parent, field);
-      let filter = { fields: {}};
-      let parentField = ModelUtils.getRelationshipInverse(parent, field);
-
-      filter.fields[parentField] = parent.get('id');
-      this.set('filter', filter);
-      this.set('modelType', modelType);
-      this.fetchRecords();
-    }
-
-    this.set('table', new Table(this.get('columns'), models));
-  },
-
-  fetchRecords() {
-    this.set('isLoading', true);
-    this._buildSearchStringQuery();
-
+  queryParams: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', function(){
     let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter']);
 
     if(queryParams.dir === 'desc'){
@@ -76,44 +52,29 @@ export default Ember.Component.extend({
     }
     delete queryParams.dir;
 
-    this.get('store').query(this.get('modelType'), queryParams).then(records => {
-      this.table.addRows(records);
-      if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
-        this.set('isLoading', false);
-      }
+    return queryParams;
+  }),
+
+  fetchRecords: task(function * (){
+    let queryParams = this.get('queryParams');
+    let modelType = this.get('modelType');
+    yield this.get('store').query(modelType, queryParams).then(records => {
+      this.table.setRows(records);
+      let meta = records.get('meta');
+      this.set('page', meta['page-current']);
+      this.set('lastPage', meta['page-count']);
+      this.set('resultRowFirst', meta['result-row-first']);
+      this.set('resultRowLast', meta['result-row-last']);
+      this.set('resultTotalCount', meta['total-count']);
     });
-  },
+  }).drop(),
 
-  _buildSearchStringQuery(){
-    // Here we check for a search string present, and build it if found
-    let searchString = this.get('searchString');
-    let nameColumn = Ember.String.dasherize(ModelUtils.getNameColumn(this.get('modelType')));
-    let filters = this.get('filter');
-
-    if(Ember.isBlank(filters)){
-      filters = { fields: {}};
-    }
-
-    if(!Ember.isBlank(searchString)) {
-      filters.fields[nameColumn] = {};
-      filters.fields[nameColumn]['operator'] = 'LIKE';
-      filters.fields[nameColumn]['value'] = StringUtils.replaceAll(searchString, '*', '%');
-    } else {
-      delete filters.fields[nameColumn];
-    }
-
-    if(Object.keys(filters).length == 0){
-      filters = null;
-    }
-
-    this.set('filter', filters);
-  },
+  fixed: Ember.computed('height', function(){
+    // when a height of the table is passed, we set the column headers fixed
+    return Ember.isBlank('height');
+  }),
 
   actions: {
-    onScrolledToBottom() {
-      this.incrementProperty('page');
-      this.fetchRecords();
-    },
     onColumnClick(column) {
       if (column.sorted) {
         this.setProperties({
@@ -121,8 +82,7 @@ export default Ember.Component.extend({
           sort: Ember.String.dasherize(column.get('valuePath')),
           page: 1
         });
-        this.table.setRows([]);
-        this.fetchRecords();
+        this.get('fetchRecords').perform();
       }
     },
     onRowClick(row){
@@ -138,6 +98,35 @@ export default Ember.Component.extend({
     },
     onRowMouseLeave(row) {
       this.sendAction('onRowMouseLeave', row);
+    },
+    refresh(){
+      this.get('fetchRecords').perform();
+    },
+    nextPage(){
+      const lastPage = this.get('lastPage');
+      const page = this.get('page');
+
+      if(page < lastPage){
+        this.incrementProperty('page');
+        this.get('fetchRecords').perform();
+      }
+    },
+    prevPage(){
+      const page = this.get('page');
+
+      if(page > 1){
+        this.decrementProperty('page');
+        this.get('fetchRecords').perform();
+      }
+    },
+    pageSelected(page){
+      this.set('page', page);
+      this.get('fetchRecords').perform();
+    },
+    limitChanged(limit){
+      this.set('page', 1);
+      this.set('limit', limit);
+      this.get('fetchRecords').perform();
     }
   }
 });
