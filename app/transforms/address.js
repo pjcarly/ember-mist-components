@@ -5,11 +5,11 @@ export default DS.Transform.extend({
     let address = {};
 
     if(!Ember.isBlank(serialized)) {
-      address.street = serialized.address_line1;
-      address.postalCode = serialized.postal_code;
-      address.city = serialized.locality;
+      address.street = serialized.street;
+      address.postalCode = serialized['postal-code'];
+      address.city = serialized.city;
       address.state = null;
-      address.country = serialized.country_code;
+      address.country = serialized.country;
     } else {
       address.street = null;
       address.postalCode = null;
@@ -24,14 +24,10 @@ export default DS.Transform.extend({
     let serializedAddress = {}
 
     if(!Ember.isBlank(deserialized)) {
-      serializedAddress['country_code'] = deserialized.country;
-      serializedAddress['administrative_area'] = null;
-      serializedAddress['locality'] = deserialized.city;
-      serializedAddress['dependent_locality'] = null;
-      serializedAddress['postal_code'] = deserialized.postalCode;
-      serializedAddress['sorting_code'] = null;
-      serializedAddress['address_line1'] = deserialized.street;
-      serializedAddress['address_line2'] = null;
+      serializedAddress['country'] = deserialized.country;
+      serializedAddress['city'] = deserialized.city;
+      serializedAddress['postal-code'] = deserialized.postalCode;
+      serializedAddress['street'] = deserialized.street;
     }
 
     return serializedAddress;

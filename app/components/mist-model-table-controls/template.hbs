@@ -4,7 +4,11 @@
 <div class="col-sm-6 text-right controls">
   <ul>
     <li class="infos">
+      {{#if isBusy}}
+        {{mist-spinner size="10px" tagName="span"}}
+      {{else}}
         {{firstRow}} - {{lastRow}} of {{totalCount}}
+      {{/if}}
     </li>
     <li>
       Rows: {{input-select class="plain-select" selectOptions=rowSelectOptions value=rowsValue valueChanged=(action 'rowsSelected')}}

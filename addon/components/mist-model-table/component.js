@@ -20,11 +20,17 @@ export default Ember.Component.extend({
   resultRowLast: 0,
   resultTotalCount: 0,
 
+  models: null,
+
   init() {
     this._super(...arguments);
     this.set('table', new Table(this.get('columns')));
     this.get('fetchRecords').perform();
   },
+
+  guid: Ember.computed(function(){
+    return Ember.guidFor(this);
+  }),
 
   columns: Ember.computed('modelType', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
@@ -35,10 +41,13 @@ export default Ember.Component.extend({
     modelColumns.forEach(function(modelColumn){
       let label = ModelUtils.getLabel(type, modelColumn);
       let column = {};
+
       column['label'] = label;
       column['valuePath'] = modelColumn;
-      column['resizable'] = true;
+      column['width'] = (modelColumn === 'id') ? '60px' : undefined;
+      column['resizable'] = (modelColumn !== 'id');
       column['cellComponent'] = 'mist-model-table-cell';
+
       columns.push(column);
     });
 
@@ -60,6 +69,7 @@ export default Ember.Component.extend({
     let modelType = this.get('modelType');
     yield this.get('store').query(modelType, queryParams).then(records => {
       this.table.setRows(records);
+      this.set('models', records);
       let meta = records.get('meta');
       this.set('page', meta['page-current']);
       this.set('lastPage', meta['page-count']);
@@ -69,9 +79,9 @@ export default Ember.Component.extend({
     });
   }).drop(),
 
-  fixed: Ember.computed('height', function(){
+  fixed: Ember.computed('tableHeight', function(){
     // when a height of the table is passed, we set the column headers fixed
-    return Ember.isBlank('height');
+    return !Ember.isBlank(this.get('tableHeight'));
   }),
 
   actions: {
