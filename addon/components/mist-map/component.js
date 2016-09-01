@@ -15,10 +15,15 @@ export default GMaps.extend({
     }
   },
 
+  modelsChangedObserver: Ember.observer('models', function(){
+    this.setModels();
+  }),
+
   setModels() {
     let mapName = this.get('name');
     let models = this.get('models');
     let field = this.get('field');
+
     let oldMistMarkers = this.get('mistMarkers');
     let mistMarkers = {};
 
@@ -36,7 +41,7 @@ export default GMaps.extend({
 
           if(!Ember.isBlank(lat) && !Ember.isBlank(lng)){
             let latLng = new google.maps.LatLng(lat, lng);
-            if(!Ember.isBlank(oldMistMarkers) && oldMistMarkersoldMistMarkers.hasOwnProperty(modelGuid)){
+            if(!Ember.isBlank(oldMistMarkers) && oldMistMarkers.hasOwnProperty(modelGuid)){
               marker = oldMistMarkers[modelGuid];
               delete oldMistMarkers[modelGuid];
             } else {
@@ -65,7 +70,7 @@ export default GMaps.extend({
     for(let property in oldMistMarkers) {
       if(oldMistMarkers.hasOwnProperty(property)) {
         let marker = oldMistMarkers[property];
-        modelLocation.removeMarker(mapName);
+        //modelLocation.removeMarker(mapName);
         marker.setMap(null);
       }
     }
