@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Table from 'ember-light-table';
+import QueryParams from '../../classes/query-params';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import StringUtils from 'ember-field-components/classes/string-utils';
 import { task, timeout } from 'ember-concurrency';
@@ -8,10 +9,6 @@ export default Ember.Component.extend({
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
 
-  page: 1,
-  limit: 10,
-  dir: 'asc',
-  sort: null,
   table: null,
   displayHead: true,
 
@@ -27,6 +24,24 @@ export default Ember.Component.extend({
     this.set('table', new Table(this.get('columns')));
     this.get('fetchRecords').perform();
   },
+
+  filters: Ember.computed({
+    get(key){
+      return this.get('queryParams.filter');
+    },
+    set(key, value){
+      this.set('queryParams.filter', value);
+      return this.get('queryParams.filter');
+    }
+  }),
+
+  queryParams: Ember.computed(function(){
+    let queryParams = this.get('_queryParams');
+    if(Ember.isBlank(queryParams)){
+      this.set('_queryParams', QueryParams.create());
+    }
+    return this.get('_queryParams');
+  }),
 
   guid: Ember.computed(function(){
     return Ember.guidFor(this);
@@ -53,29 +68,18 @@ export default Ember.Component.extend({
 
     return columns;
   }),
-  queryParams: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', function(){
-    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter']);
-
-    if(queryParams.dir === 'desc'){
-      queryParams.sort = '-' + queryParams.sort;
-    }
-    delete queryParams.dir;
-
-    return queryParams;
-  }),
 
   fetchRecords: task(function * (){
-    let queryParams = this.get('queryParams');
     let modelType = this.get('modelType');
-    yield this.get('store').query(modelType, queryParams).then(records => {
+    yield this.get('store').query(modelType, this.get('queryParams.params')).then(records => {
       this.table.setRows(records);
       this.set('models', records);
       let meta = records.get('meta');
-      this.set('page', meta['page-current']);
-      this.set('lastPage', meta['page-count']);
-      this.set('resultRowFirst', meta['result-row-first']);
-      this.set('resultRowLast', meta['result-row-last']);
-      this.set('resultTotalCount', meta['total-count']);
+      this.set('queryParams.page', Ember.isBlank(meta['page-current']) ? 1 : meta['page-current']);
+      this.set('lastPage', Ember.isBlank(meta['page-count']) ? 1 : meta['page-count']);
+      this.set('resultRowFirst', Ember.isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
+      this.set('resultRowLast', Ember.isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
+      this.set('resultTotalCount', Ember.isBlank(meta['total-count']) ? 0 : meta['total-count']);
     });
   }).drop(),
 
@@ -87,11 +91,9 @@ export default Ember.Component.extend({
   actions: {
     onColumnClick(column) {
       if (column.sorted) {
-        this.setProperties({
-          dir: column.ascending ? 'asc' : 'desc',
-          sort: Ember.String.dasherize(column.get('valuePath')),
-          page: 1
-        });
+        this.set('queryParams.dir', column.ascending ? 'asc' : 'desc');
+        this.set('queryParams.sort', Ember.String.dasherize(column.get('valuePath')));
+        this.set('queryParams.page', 1);
         this.get('fetchRecords').perform();
       }
     },
@@ -104,38 +106,54 @@ export default Ember.Component.extend({
       }
     },
     onRowMouseEnter(row) {
-      this.sendAction('onRowMouseEnter', row);
+      if(this.get('updateMarkersOnRowHover')) {
+        let location = row.get('content').getLocation('location');
+        if(!Ember.isBlank(location)){
+          let marker = location.getMarker('company-map');
+          if(!Ember.isBlank(marker)){
+            marker.setIcon('assets/images/map-marker-red.png');
+          }
+        }
+      }
     },
     onRowMouseLeave(row) {
-      this.sendAction('onRowMouseLeave', row);
+      if(this.get('updateMarkersOnRowHover')){
+        let location = row.get('content').getLocation('location');
+        if(!Ember.isBlank(location)){
+          let marker = location.getMarker('company-map');
+          if(!Ember.isBlank(marker)){
+            marker.setIcon('assets/images/map-marker-purple.png');
+          }
+        }
+      }
     },
     refresh(){
       this.get('fetchRecords').perform();
     },
     nextPage(){
+      const queryParams = this.get('queryParams');
       const lastPage = this.get('lastPage');
-      const page = this.get('page');
 
-      if(page < lastPage){
-        this.incrementProperty('page');
+      if(queryParams.get('page') < lastPage){
+        queryParams.nextPage();
         this.get('fetchRecords').perform();
       }
     },
     prevPage(){
-      const page = this.get('page');
+      const queryParams = this.get('queryParams');
 
-      if(page > 1){
-        this.decrementProperty('page');
+      if(queryParams.get('page') > 1){
+        queryParams.prevPage();
         this.get('fetchRecords').perform();
       }
     },
     pageSelected(page){
-      this.set('page', page);
+      this.set('queryParams.page', page);
       this.get('fetchRecords').perform();
     },
     limitChanged(limit){
-      this.set('page', 1);
-      this.set('limit', limit);
+      this.set('queryParams.page', 1);
+      this.set('queryParams.limit', limit);
       this.get('fetchRecords').perform();
     }
   }

@@ -17,6 +17,7 @@ export default GMaps.extend({
 
   modelsChangedObserver: Ember.observer('models', function(){
     this.setModels();
+    this.setMapBounds();
   }),
 
   setModels() {
