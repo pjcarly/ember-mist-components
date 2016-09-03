@@ -88,6 +88,17 @@ export default Ember.Component.extend({
     return !Ember.isBlank(this.get('tableHeight'));
   }),
 
+  toggleSearch(){
+    this.toggleProperty('searchToggled');
+    if(this.get('searchToggled')){
+      this.$('input[type="search"]').focus();
+    } else if(!Ember.isBlank(this.get('queryParams.search'))) {
+      // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
+      this.set('queryParams.search', '');
+      this.get('fetchRecords').perform();
+    }
+  },
+
   actions: {
     onColumnClick(column) {
       if (column.sorted) {
@@ -155,6 +166,19 @@ export default Ember.Component.extend({
       this.set('queryParams.page', 1);
       this.set('queryParams.limit', limit);
       this.get('fetchRecords').perform();
+    },
+    toggleSearch(){
+      this.toggleSearch();
+    },
+    searchValueChanged(value){
+      this.set('queryParams.search', value);
+    },
+    search(){
+      if(this.get('searchToggled')){
+        this.get('fetchRecords').perform();
+      } else {
+        this.toggleSearch();
+      }
     }
   }
 });

@@ -2,7 +2,7 @@
   {{#if button}}
     {{#mist-button class=className}}{{yield}}{{/mist-button}}
   {{else}}
-    <a class="waves-effect">
+    <a class={{if className (concat className ' waves-effect') 'waves-effect'}}>
       {{yield}}
     </a>
   {{/if}}
@@ -10,7 +10,7 @@
   {{#if linkTo}}
     {{#link-to link}}{{yield}}{{/link-to}}
   {{else}}
-    <a href="{{href-to link}}" class="waves-effect">
+    <a href="{{href-to link}}" class={{if className (concat className ' waves-effect') 'waves-effect'}}>
       {{yield}}
     </a>
   {{/if}}

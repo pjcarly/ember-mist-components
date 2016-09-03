@@ -1,9 +1,20 @@
-{{#mist-card-header title=title class="ch-alt" showSpinner=fetchRecords.isRunning}}
+{{#mist-card-header title=title class=(if searchToggled 'search-toggled ch-alt' 'ch-alt') showSpinner=fetchRecords.isRunning}}
   {{#mist-menu class="actions"}}
+    {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
     {{#mist-menu-dropdown-item}}
       {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
     {{/mist-menu-dropdown-item}}
   {{/mist-menu}}
+
+  <div class="h-search-wrap">
+    <div class="hsw-inner">
+      <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
+      <form {{action "search" on="submit"}}>
+        {{input-search value=queryParams.search placeholder="Search..." valueChanged=(action 'searchValueChanged')}}
+      </form>
+    </div>
+  </div>
+
   <div id={{concat guid '-new'}}></div>
 {{/mist-card-header}}
 

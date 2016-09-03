@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import StringUtils from 'ember-field-components/classes/string-utils';
 
 export default Ember.Object.extend({
   page: 1,
@@ -6,13 +7,20 @@ export default Ember.Object.extend({
   dir: 'asc',
   sort: null,
   filter: null,
-  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', function(){
-    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter']);
+  search: '',
+  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', function(){
+    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter', 'search']);
 
     if(queryParams.dir === 'desc'){
       queryParams.sort = '-' + queryParams.sort;
     }
-
+    if(!Ember.isBlank(queryParams.search)){
+      let column = Ember.isBlank(queryParams.sort) ? 'name' : queryParams.sort;
+      queryParams.filter = Ember.isBlank(queryParams.filter) ? {} : queryParams.filter;
+      queryParams.filter[column] = {};
+      queryParams.filter[column]['operator'] = 'like';
+      queryParams.filter[column]['value'] = StringUtils.replaceAll(queryParams.search, '*', '%');
+    }
     if(Ember.isBlank(queryParams.page)){
       delete queryParams.page;
     }
@@ -26,6 +34,7 @@ export default Ember.Object.extend({
       delete queryParams.filter;
     }
     delete queryParams.dir;
+    delete queryParams.search;
 
     return queryParams;
   }),
