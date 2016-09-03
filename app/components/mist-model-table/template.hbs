@@ -26,7 +26,7 @@
     {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
   {{/if}}
 
-  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
+  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') multiSelect=multiSelect as |body|}}
     {{#if table.isEmpty}}
       {{#body.no-data}}
         No data found
@@ -36,5 +36,5 @@
 {{/light-table}}
 
 <div class="table-footer">
-  {{mist-model-table-controls isBusy=fetchRecords.isRunning currentPage=queryParams.page lastPage=lastPage rows=queryParams.limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
+  {{mist-model-table-controls amountSelected=amountSelected isBusy=fetchRecords.isRunning currentPage=queryParams.page lastPage=lastPage rows=queryParams.limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
 </div>

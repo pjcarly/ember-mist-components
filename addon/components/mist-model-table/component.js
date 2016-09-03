@@ -4,8 +4,9 @@ import QueryParams from '../../classes/query-params';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import StringUtils from 'ember-field-components/classes/string-utils';
 import { task, timeout } from 'ember-concurrency';
+import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
 
@@ -18,6 +19,7 @@ export default Ember.Component.extend({
   resultTotalCount: 0,
 
   models: null,
+  selectedModels: [],
 
   init() {
     this._super(...arguments);
@@ -30,8 +32,54 @@ export default Ember.Component.extend({
       return this.get('queryParams.filter');
     },
     set(key, value){
-      this.set('queryParams.filter', value);
-      return this.get('queryParams.filter');
+      this.set('queryParams.standardFilter', value);
+      return this.get('queryParams.standardFilter');
+    }
+  }),
+  amountSelected: Ember.computed('selectedModels.[]', function(){
+    return this.get('selectedModels.length');
+  }),
+
+  keyboardFind: Ember.on(keyUp('KeyF'), function(){
+    if(!this.get('searchToggled')){
+      this.toggleSearch();
+      this.$('input[type="search"]').focus();
+    }
+  }),
+  keyboardRefresh: Ember.on(keyUp('KeyR'), function(){
+    this.get('fetchRecords').perform();
+  }),
+  keyboardNext: Ember.on(keyUp('ArrowRight'), function(){
+    this.nextPage();
+  }),
+  keyboardPrev: Ember.on(keyUp('ArrowLeft'), function(){
+    this.prevPage();
+  }),
+  keyboardDown: Ember.on(keyDown('ArrowDown'), function(event){
+    event.preventDefault();
+    this.nextRow();
+  }),
+  keyboardUp: Ember.on(keyDown('ArrowUp'), function(event){
+    event.preventDefault();
+    this.prevRow();
+  }),
+  keyboardEnter: Ember.on(keyDown('Enter'), function(){
+    // this only has meaning when the table isn't multiSelect
+    if(!this.get('multiSelect')){
+      const activeRows = this.get('table.rows').filterBy('activated');
+      if(activeRows.length > 0){
+        this.rowSelected(activeRows[0]);
+      }
+    }
+  }),
+  keyboardSpace: Ember.on(keyDown('Space'), function(){
+    // this only has meaning when the table is multiSelect
+    if(this.get('multiSelect')){
+      const activeRows = this.get('table.rows').filterBy('activated');
+      if(activeRows.length > 0){
+        activeRows[0].toggleProperty('selected');
+        this.rowSelected(activeRows[0]);
+      }
     }
   }),
 
@@ -53,6 +101,19 @@ export default Ember.Component.extend({
     let modelColumns = ModelUtils.getDefaultListViewColumns(type);
     let columns = [];
 
+    if(this.get('multiSelect')){
+      let column = {};
+      column['label'] = '';
+      column['width'] = '60px';
+      column['resizable'] = false;
+      column['cellComponent'] = 'mist-model-table-selector';
+      column['cellClassNames'] = 'selector';
+      column['component'] = 'mist-model-table-all-selector';
+      column['classNames'] = 'selector';
+      column['selectAll'] = true;
+      columns.push(column);
+    }
+
     modelColumns.forEach(function(modelColumn){
       let label = ModelUtils.getLabel(type, modelColumn);
       let column = {};
@@ -71,7 +132,8 @@ export default Ember.Component.extend({
 
   fetchRecords: task(function * (){
     let modelType = this.get('modelType');
-    yield this.get('store').query(modelType, this.get('queryParams.params')).then(records => {
+    let queryParams = this.get('queryParams.params');
+    yield this.get('store').query(modelType, queryParams).then(records => {
       this.table.setRows(records);
       this.set('models', records);
       let meta = records.get('meta');
@@ -80,6 +142,7 @@ export default Ember.Component.extend({
       this.set('resultRowFirst', Ember.isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
       this.set('resultRowLast', Ember.isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
       this.set('resultTotalCount', Ember.isBlank(meta['total-count']) ? 0 : meta['total-count']);
+      this.reSetSelected();
     });
   }).drop(),
 
@@ -92,16 +155,102 @@ export default Ember.Component.extend({
     this.toggleProperty('searchToggled');
     if(this.get('searchToggled')){
       this.$('input[type="search"]').focus();
-    } else if(!Ember.isBlank(this.get('queryParams.search'))) {
+    } else {
       // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
       this.set('queryParams.search', '');
       this.get('fetchRecords').perform();
     }
   },
+  nextPage(){
+    const queryParams = this.get('queryParams');
+    const lastPage = this.get('lastPage');
+
+    if(queryParams.get('page') < lastPage){
+      queryParams.nextPage();
+      this.get('fetchRecords').perform();
+    }
+  },
+  prevPage(){
+    const queryParams = this.get('queryParams');
+
+    if(queryParams.get('page') > 1){
+      queryParams.prevPage();
+      this.get('fetchRecords').perform();
+    }
+  },
+  nextRow(){
+    let rows = this.get('table.rows');
+    let activatedIndex;
+    rows.forEach((row, index) => {
+      if(row.get('activated')){
+        activatedIndex = index;
+      }
+    });
+
+    if(Ember.isBlank(activatedIndex)){
+      rows[0].set('activated', true);
+    } else if(activatedIndex+1 < rows.length){
+      rows.setEach('activated', false);
+      rows[activatedIndex+1].set('activated', true);
+    }
+  },
+  prevRow(){
+    let rows = this.get('table.rows');
+    let activatedIndex;
+    rows.forEach((row, index) => {
+      if(row.get('activated')){
+        activatedIndex = index;
+      }
+    });
+
+    if(Ember.isBlank(activatedIndex)){
+      rows[0].set('activated', true);
+    } else if(activatedIndex > 0){
+      rows.setEach('activated', false);
+      rows[activatedIndex-1].set('activated', true);
+    }
+  },
+  reSetSelected(){
+    if(this.get('multiSelect')){
+      // this function makes sure, that when we change limits, pages, refresh, ...
+      // we set the selected attribute to the correct rows
+      let selectedModels = this.get('selectedModels');
+      this.get('table.rows').forEach((row) => {
+        const model = row.get('content');
+        row.set('selected', selectedModels.includes(model));
+      });
+    }
+  },
+  rowSelected(row){
+    if(this.get('multiSelect')){
+      let selectedModels = this.get('selectedModels');
+      this.get('table.rows').forEach((row) => {
+        const model = row.get('content');
+        if(row.get('selected')){
+          if(!selectedModels.includes(model)){
+            // model not yet in the array, so we add it
+            selectedModels.pushObject(model);
+          }
+        } else {
+          if(selectedModels.includes(model)){
+            // model in the array, while it shouldn't be, remove it
+            selectedModels.removeObject(model);
+          }
+        }
+      });
+    } else {
+      this.get('entityRouter').transitionToView(row.get('content'));
+    }
+  },
 
   actions: {
     onColumnClick(column) {
-      if (column.sorted) {
+      if(this.get('multiSelect') && column.get('selectAll')){
+        column.set('sorted', false);
+        column.toggleProperty('valuePath');
+        this.get('table.rows').setEach('selected', column.get('valuePath'));
+        this.rowSelected();
+      } else if (column.sorted) {
         this.set('queryParams.dir', column.ascending ? 'asc' : 'desc');
         this.set('queryParams.sort', Ember.String.dasherize(column.get('valuePath')));
         this.set('queryParams.page', 1);
@@ -110,7 +259,7 @@ export default Ember.Component.extend({
     },
     onRowClick(row){
       if(Ember.isBlank(this.get('onRowClick'))) {
-        this.get('entityRouter').transitionToView(row.get('content'));
+        this.rowSelected(row);
       }
       else {
         this.sendAction('onRowClick', row);
@@ -142,21 +291,10 @@ export default Ember.Component.extend({
       this.get('fetchRecords').perform();
     },
     nextPage(){
-      const queryParams = this.get('queryParams');
-      const lastPage = this.get('lastPage');
-
-      if(queryParams.get('page') < lastPage){
-        queryParams.nextPage();
-        this.get('fetchRecords').perform();
-      }
+      this.nextPage();
     },
     prevPage(){
-      const queryParams = this.get('queryParams');
-
-      if(queryParams.get('page') > 1){
-        queryParams.prevPage();
-        this.get('fetchRecords').perform();
-      }
+      this.prevPage();
     },
     pageSelected(page){
       this.set('queryParams.page', page);
@@ -171,6 +309,7 @@ export default Ember.Component.extend({
       this.toggleSearch();
     },
     searchValueChanged(value){
+      this.set('queryParams.page', 1);
       this.set('queryParams.search', value);
     },
     search(){

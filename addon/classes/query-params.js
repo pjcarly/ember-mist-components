@@ -5,18 +5,20 @@ export default Ember.Object.extend({
   page: 1,
   limit: 10,
   dir: 'asc',
-  sort: null,
-  filter: null,
-  search: '',
-  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', function(){
-    let queryParams = this.getProperties(['page', 'limit', 'sort', 'dir', 'filter', 'search']);
+  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'standardFilter', function(){
+    let standardFilter = this.get('standardFilter');
+    let queryParams = this.getProperties('page', 'limit', 'sort', 'dir', 'search');
+    queryParams['filter'] = {};
+
+    if(!Ember.isBlank(standardFilter)){
+      queryParams['filter'] = Ember.copy(standardFilter);
+    }
 
     if(queryParams.dir === 'desc'){
       queryParams.sort = '-' + queryParams.sort;
     }
     if(!Ember.isBlank(queryParams.search)){
       let column = Ember.isBlank(queryParams.sort) ? 'name' : queryParams.sort;
-      queryParams.filter = Ember.isBlank(queryParams.filter) ? {} : queryParams.filter;
       queryParams.filter[column] = {};
       queryParams.filter[column]['operator'] = 'like';
       queryParams.filter[column]['value'] = StringUtils.replaceAll(queryParams.search, '*', '%');

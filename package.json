@@ -37,6 +37,7 @@
     "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
+    "ember-keyboard": "2.1.3",
     "ember-light-table": "0.1.9",
     "ember-resolver": "^2.0.3",
     "ember-simple-auth": "1.1.0",
