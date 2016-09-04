@@ -26,7 +26,7 @@
     {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
   {{/if}}
 
-  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') multiSelect=multiSelect as |body|}}
+  {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
     {{#if table.isEmpty}}
       {{#body.no-data}}
         No data found

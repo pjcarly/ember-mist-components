@@ -4,7 +4,6 @@ import Address from 'ember-mist-components/classes/address';
 
 export default Ember.Mixin.create({
   setDefaultValuesForAttributes: Ember.on('ready', function(){
-    //console.log('ready...');
     this.eachAttribute((name, attribute) => {
       if(attribute.type === 'location'){
         let locations = this.get('locations');

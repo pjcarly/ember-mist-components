@@ -10,7 +10,8 @@ export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
   classNames: ['mist-model-table'],
-
+  classNameBindings: ['displaySelected'],
+  
   table: null,
   displayHead: true,
 
@@ -26,19 +27,6 @@ export default Ember.Component.extend(EKMixin, {
     this.set('table', new Table(this.get('columns')));
     this.get('fetchRecords').perform();
   },
-
-  filters: Ember.computed({
-    get(key){
-      return this.get('queryParams.filter');
-    },
-    set(key, value){
-      this.set('queryParams.standardFilter', value);
-      return this.get('queryParams.standardFilter');
-    }
-  }),
-  amountSelected: Ember.computed('selectedModels.[]', function(){
-    return this.get('selectedModels.length');
-  }),
 
   keyboardFind: Ember.on(keyUp('KeyF'), function(){
     if(!this.get('searchToggled')){
@@ -77,12 +65,23 @@ export default Ember.Component.extend(EKMixin, {
     if(this.get('multiSelect')){
       const activeRows = this.get('table.rows').filterBy('activated');
       if(activeRows.length > 0){
-        activeRows[0].toggleProperty('selected');
         this.rowSelected(activeRows[0]);
       }
     }
   }),
 
+  filters: Ember.computed({
+    get(key){
+      return this.get('queryParams.filter');
+    },
+    set(key, value){
+      this.set('queryParams.standardFilter', value);
+      return this.get('queryParams.standardFilter');
+    }
+  }),
+  amountSelected: Ember.computed('selectedModels.[]', function(){
+    return this.get('selectedModels.length');
+  }),
   queryParams: Ember.computed(function(){
     let queryParams = this.get('_queryParams');
     if(Ember.isBlank(queryParams)){
@@ -90,11 +89,9 @@ export default Ember.Component.extend(EKMixin, {
     }
     return this.get('_queryParams');
   }),
-
   guid: Ember.computed(function(){
     return Ember.guidFor(this);
   }),
-
   columns: Ember.computed('modelType', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
     let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
@@ -129,9 +126,12 @@ export default Ember.Component.extend(EKMixin, {
 
     return columns;
   }),
-
   isArrayTable: Ember.computed('models', function(){
     return !Ember.isBlank(this.get('models'));
+  }),
+  fixed: Ember.computed('tableHeight', function(){
+    // when a height of the table is passed, we set the column headers fixed
+    return !Ember.isBlank(this.get('tableHeight'));
   }),
 
   fetchRecords: task(function * (){
@@ -168,7 +168,7 @@ export default Ember.Component.extend(EKMixin, {
       });
 
       // finally we set helper variables
-      this.set('lastPage', Math.round(models.get('length')/queryParams.limit));
+      this.set('lastPage', Math.ceil(models.get('length')/queryParams.limit));
       this.set('resultRowFirst', parseInt(((queryParams.page-1) * queryParams.limit) +1));
       this.set('resultRowLast', parseInt(models.get('length') < queryParams.limit ? (((queryParams.page-1) * queryParams.limit) + models.get('length')) : (queryParams.page * queryParams.limit)));
       this.set('resultTotalCount', models.get('length'));
@@ -192,11 +192,6 @@ export default Ember.Component.extend(EKMixin, {
       });
     }
   }).drop(),
-
-  fixed: Ember.computed('tableHeight', function(){
-    // when a height of the table is passed, we set the column headers fixed
-    return !Ember.isBlank(this.get('tableHeight'));
-  }),
 
   toggleSearch(){
     this.toggleProperty('searchToggled');
@@ -264,7 +259,7 @@ export default Ember.Component.extend(EKMixin, {
       let selectedModels = this.get('selectedModels');
       this.get('table.rows').forEach((row) => {
         const model = row.get('content');
-        row.set('selected', selectedModels.includes(model));
+        row.set('rowSelected', selectedModels.includes(model));
       });
 
       this.setSelectAllColumn();
@@ -272,7 +267,8 @@ export default Ember.Component.extend(EKMixin, {
   },
   setSelectAllColumn(){
     let selectAllColumn = this.table.columns.get('firstObject');
-    selectAllColumn.set('valuePath', this.get('table.rows.length') === this.get('selectedModels.length'));
+    selectAllColumn.set('valuePath', this.get('table.rows').isEvery('rowSelected', true));
+
     if(this.get('selectedModels.length') === 0 && this.get('displaySelected')){
       this.toggleProperty('displaySelected');
       this.get('fetchRecords').perform();
@@ -280,21 +276,22 @@ export default Ember.Component.extend(EKMixin, {
   },
   rowSelected(selectedRow){
     if(this.get('multiSelect')){
+      selectedRow.toggleProperty('rowSelected');
+
       let selectedModels = this.get('selectedModels');
-      this.get('table.rows').forEach((row) => {
-        const model = row.get('content');
-        if(row.get('selected')){
-          if(!selectedModels.includes(model)){
-            // model not yet in the array, so we add it
-            selectedModels.pushObject(model);
-          }
-        } else {
-          if(selectedModels.includes(model)){
-            // model in the array, while it shouldn't be, remove it
-            selectedModels.removeObject(model);
-          }
+      const model = selectedRow.get('content');
+      if(selectedRow.get('rowSelected')){
+        if(!selectedModels.includes(model)){
+          // model not yet in the array, so we add it
+          selectedModels.pushObject(model);
         }
-      });
+      } else {
+        if(selectedModels.includes(model)){
+          // model in the array, while it shouldn't be, remove it
+          selectedModels.removeObject(model);
+        }
+      }
+
       if(this.get('displaySelected')){
         this.get('fetchRecords').perform();
       } else {
@@ -310,8 +307,24 @@ export default Ember.Component.extend(EKMixin, {
       if(this.get('multiSelect') && column.get('selectAll')){
         column.set('sorted', false);
         column.toggleProperty('valuePath');
-        this.get('table.rows').setEach('selected', column.get('valuePath'));
-        this.rowSelected();
+
+        let selectedModels = this.get('selectedModels');
+        this.get('table.rows').forEach((row) => {
+          row.set('rowSelected', column.get('valuePath'));
+          const model = row.get('content');
+          if(row.get('rowSelected')){
+            if(!selectedModels.includes(model)){
+              // model not yet in the array, so we add it
+              selectedModels.pushObject(model);
+            }
+          } else {
+            if(selectedModels.includes(model)){
+              // model in the array, while it shouldn't be, remove it
+              selectedModels.removeObject(model);
+            }
+          }
+        });
+
       } else if (column.sorted) {
         this.set('queryParams.dir', column.ascending ? 'asc' : 'desc');
         this.set('queryParams.sort', Ember.String.dasherize(column.get('valuePath')));

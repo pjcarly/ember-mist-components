@@ -3,7 +3,7 @@ import StringUtils from 'ember-field-components/classes/string-utils';
 
 export default Ember.Object.extend({
   page: 1,
-  limit: 3,
+  limit: 10,
   dir: 'asc',
   params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'standardFilter', function(){
     let standardFilter = this.get('standardFilter');
