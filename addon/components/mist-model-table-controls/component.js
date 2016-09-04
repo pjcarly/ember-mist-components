@@ -51,6 +51,9 @@ export default Ember.Component.extend({
     },
     rowsSelected(rows){
       this.get('rowsSelected')(parseInt(rows));
+    },
+    toggleDisplaySelected(){
+      this.get('toggleDisplaySelected')();
     }
   }
 });

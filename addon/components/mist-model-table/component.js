@@ -9,6 +9,7 @@ import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
+  classNames: ['mist-model-table'],
 
   table: null,
   displayHead: true,
@@ -18,7 +19,6 @@ export default Ember.Component.extend(EKMixin, {
   resultRowLast: 0,
   resultTotalCount: 0,
 
-  models: null,
   selectedModels: [],
 
   init() {
@@ -130,20 +130,67 @@ export default Ember.Component.extend(EKMixin, {
     return columns;
   }),
 
+  isArrayTable: Ember.computed('models', function(){
+    return !Ember.isBlank(this.get('models'));
+  }),
+
   fetchRecords: task(function * (){
     let modelType = this.get('modelType');
-    let queryParams = this.get('queryParams.params');
-    yield this.get('store').query(modelType, queryParams).then(records => {
+    if(this.get('isArrayTable') || this.get('displaySelected')){
+      // this table is an array table, we don't query the store for records
+      let models = this.get('displaySelected') ? this.get('selectedModels') : this.get('models');
+      let records = [];
+
+      let queryParams = this.get('queryParams');
+
+      // First we filter by Search keyword
+      if(!Ember.isBlank(queryParams.search)){
+        models = models.filter((model, index) => {
+          const modelValueToCompare = model.get(Ember.String.camelize(queryParams.get('searchField')));
+          return !Ember.isBlank(modelValueToCompare) && StringUtils.wildcardMatch(modelValueToCompare.toUpperCase(), queryParams.search.toUpperCase());
+        });
+      }
+
+      // Next we sort
+      if(!Ember.isBlank(queryParams.sort)){
+        const sortBy = Ember.String.camelize(queryParams.sort)
+        models = models.sortBy(sortBy);
+        if(queryParams.dir === 'desc'){
+          models = models.reverse();
+        }
+      }
+
+      // then we page and limit
+      models.forEach((model, index) => {
+        if((index+1 <= queryParams.limit * queryParams.page) && (index+1 > queryParams.limit * (queryParams.page-1))) {
+          records.push(model);
+        }
+      });
+
+      // finally we set helper variables
+      this.set('lastPage', Math.round(models.get('length')/queryParams.limit));
+      this.set('resultRowFirst', parseInt(((queryParams.page-1) * queryParams.limit) +1));
+      this.set('resultRowLast', parseInt(models.get('length') < queryParams.limit ? (((queryParams.page-1) * queryParams.limit) + models.get('length')) : (queryParams.page * queryParams.limit)));
+      this.set('resultTotalCount', models.get('length'));
+
       this.table.setRows(records);
-      this.set('models', records);
-      let meta = records.get('meta');
-      this.set('queryParams.page', Ember.isBlank(meta['page-current']) ? 1 : meta['page-current']);
-      this.set('lastPage', Ember.isBlank(meta['page-count']) ? 1 : meta['page-count']);
-      this.set('resultRowFirst', Ember.isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
-      this.set('resultRowLast', Ember.isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
-      this.set('resultTotalCount', Ember.isBlank(meta['total-count']) ? 0 : meta['total-count']);
+      this.set('mapModels', records);
       this.reSetSelected();
-    });
+    } else {
+      // we query the records from the store instead
+      let queryParams = this.get('queryParams.params');
+      yield this.get('store').query(modelType, queryParams).then(records => {
+        this.table.setRows(records);
+        this.set('mapModels', records);
+        let meta = records.get('meta');
+        this.set('queryParams.page', Ember.isBlank(meta['page-current']) ? 1 : meta['page-current']);
+        this.set('lastPage', Ember.isBlank(meta['page-count']) ? 1 : meta['page-count']);
+        this.set('resultRowFirst', Ember.isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
+        this.set('resultRowLast', Ember.isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
+        this.set('resultTotalCount', Ember.isBlank(meta['total-count']) ? 0 : meta['total-count']);
+        this.reSetSelected();
+      });
+    }
   }).drop(),
 
   fixed: Ember.computed('tableHeight', function(){
@@ -219,9 +266,19 @@ export default Ember.Component.extend(EKMixin, {
         const model = row.get('content');
         row.set('selected', selectedModels.includes(model));
       });
+
+      this.setSelectAllColumn();
     }
   },
-  rowSelected(row){
+  setSelectAllColumn(){
+    let selectAllColumn = this.table.columns.get('firstObject');
+    selectAllColumn.set('valuePath', this.get('table.rows.length') === this.get('selectedModels.length'));
+    if(this.get('selectedModels.length') === 0 && this.get('displaySelected')){
+      this.toggleProperty('displaySelected');
+      this.get('fetchRecords').perform();
+    }
+  },
+  rowSelected(selectedRow){
     if(this.get('multiSelect')){
       let selectedModels = this.get('selectedModels');
       this.get('table.rows').forEach((row) => {
@@ -238,8 +295,13 @@ export default Ember.Component.extend(EKMixin, {
           }
         }
       });
+      if(this.get('displaySelected')){
+        this.get('fetchRecords').perform();
+      } else {
+        this.setSelectAllColumn();
+      }
     } else {
-      this.get('entityRouter').transitionToView(row.get('content'));
+      this.get('entityRouter').transitionToView(selectedRow.get('content'));
     }
   },
 
@@ -318,6 +380,11 @@ export default Ember.Component.extend(EKMixin, {
       } else {
         this.toggleSearch();
       }
+    },
+    toggleDisplaySelected(){
+      this.set('queryParams.page', 1);
+      this.toggleProperty('displaySelected');
+      this.get('fetchRecords').perform();
     }
   }
 });

@@ -1,7 +1,11 @@
-<div class="col-sm-6">
-  {{#if amountSelected}}
-    Selected: {{amountSelected}}
-  {{/if}}
+<div class="col-sm-6 controls">
+  <ul>
+    <li class={{if amountSelected 'infos'}}>
+      {{#if amountSelected}}
+        <a {{action "toggleDisplaySelected"}}>Selected: {{amountSelected}}</a>
+      {{/if}}
+    </li>
+  </ul>
 </div>
 <div class="col-sm-6 text-right controls">
   <ul>

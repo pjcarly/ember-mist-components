@@ -3,7 +3,7 @@ import StringUtils from 'ember-field-components/classes/string-utils';
 
 export default Ember.Object.extend({
   page: 1,
-  limit: 10,
+  limit: 3,
   dir: 'asc',
   params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'standardFilter', function(){
     let standardFilter = this.get('standardFilter');
@@ -18,7 +18,7 @@ export default Ember.Object.extend({
       queryParams.sort = '-' + queryParams.sort;
     }
     if(!Ember.isBlank(queryParams.search)){
-      let column = Ember.isBlank(queryParams.sort) ? 'name' : queryParams.sort;
+      let column = this.get('searchField');
       queryParams.filter[column] = {};
       queryParams.filter[column]['operator'] = 'like';
       queryParams.filter[column]['value'] = StringUtils.replaceAll(queryParams.search, '*', '%');
@@ -39,6 +39,9 @@ export default Ember.Object.extend({
     delete queryParams.search;
 
     return queryParams;
+  }),
+  searchField: Ember.computed('sort', function(){
+    return Ember.isBlank(this.get('sort')) ? 'name' : this.get('sort');
   }),
   nextPage(){
     this.incrementProperty('page');
