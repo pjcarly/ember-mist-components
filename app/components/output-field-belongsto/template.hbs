@@ -1,9 +1,9 @@
-{{#if parentModel.isPending}}
-  ...
-{{else}}
-  {{#if link}}
-    {{#link-to linkToType parentModel}}{{get-name parentModel parentModelType}}{{/link-to}}
-  {{else}}
-    {{get-name parentModel parentModelType}}
+{{#if setInitialValue.isIdle}}
+  {{#if lookupValue}}
+    {{#if inline}}
+      {{lookupValue.name}}
+    {{else}}
+      <a href={{href-to route lookupValue}}>{{lookupValue.name}}</a>
+    {{/if}}
   {{/if}}
 {{/if}}

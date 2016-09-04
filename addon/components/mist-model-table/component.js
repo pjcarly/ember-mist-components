@@ -3,17 +3,18 @@ import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import StringUtils from 'ember-field-components/classes/string-utils';
-import { task, timeout } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
 export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
   classNames: ['mist-model-table'],
-  classNameBindings: ['displaySelected'],
-  
+  classNameBindings: ['displaySelected', 'fixedSearch'],
+
   table: null,
   displayHead: true,
+  fixedSearch: false,
 
   lastPage: 0,
   resultRowFirst: 0,
@@ -26,11 +27,22 @@ export default Ember.Component.extend(EKMixin, {
     this._super(...arguments);
     this.set('table', new Table(this.get('columns')));
     this.get('fetchRecords').perform();
+    if(this.get('fixedSearch')){
+      this.set('searchToggled', true);
+    }
+  },
+  didInsertElement(){
+    this._super(...arguments);
+    if(this.get('fixedSearch')){
+      this.$('input[type="search"]').focus();
+    }
   },
 
   keyboardFind: Ember.on(keyUp('KeyF'), function(){
     if(!this.get('searchToggled')){
       this.toggleSearch();
+      this.$('input[type="search"]').focus();
+    } else if(this.get('fixedSearch')) {
       this.$('input[type="search"]').focus();
     }
   }),
@@ -194,13 +206,15 @@ export default Ember.Component.extend(EKMixin, {
   }).drop(),
 
   toggleSearch(){
-    this.toggleProperty('searchToggled');
-    if(this.get('searchToggled')){
-      this.$('input[type="search"]').focus();
-    } else {
-      // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
-      this.set('queryParams.search', '');
-      this.get('fetchRecords').perform();
+    if(!this.get('fixedSearch')){
+      this.toggleProperty('searchToggled');
+      if(this.get('searchToggled')){
+        this.$('input[type="search"]').focus();
+      } else {
+        // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
+        this.set('queryParams.search', '');
+        this.get('fetchRecords').perform();
+      }
     }
   },
   nextPage(){
@@ -231,9 +245,11 @@ export default Ember.Component.extend(EKMixin, {
 
     if(Ember.isBlank(activatedIndex)){
       rows[0].set('activated', true);
+      this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex+1 < rows.length){
       rows.setEach('activated', false);
       rows[activatedIndex+1].set('activated', true);
+      this.rowActivateMapMarker(rows[activatedIndex+1]);
     }
   },
   prevRow(){
@@ -247,9 +263,11 @@ export default Ember.Component.extend(EKMixin, {
 
     if(Ember.isBlank(activatedIndex)){
       rows[0].set('activated', true);
+      this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex > 0){
       rows.setEach('activated', false);
       rows[activatedIndex-1].set('activated', true);
+      this.rowActivateMapMarker(rows[activatedIndex-1]);
     }
   },
   reSetSelected(){
@@ -275,31 +293,69 @@ export default Ember.Component.extend(EKMixin, {
     }
   },
   rowSelected(selectedRow){
-    if(this.get('multiSelect')){
-      selectedRow.toggleProperty('rowSelected');
+    if(Ember.isBlank(this.get('onRowSelected'))){
+      if(this.get('multiSelect')){
+        selectedRow.toggleProperty('rowSelected');
 
-      let selectedModels = this.get('selectedModels');
-      const model = selectedRow.get('content');
-      if(selectedRow.get('rowSelected')){
-        if(!selectedModels.includes(model)){
-          // model not yet in the array, so we add it
-          selectedModels.pushObject(model);
+        let selectedModels = this.get('selectedModels');
+        const model = selectedRow.get('content');
+        if(selectedRow.get('rowSelected')){
+          if(!selectedModels.includes(model)){
+            // model not yet in the array, so we add it
+            selectedModels.pushObject(model);
+          }
+        } else {
+          if(selectedModels.includes(model)){
+            // model in the array, while it shouldn't be, remove it
+            selectedModels.removeObject(model);
+          }
+        }
+
+        if(this.get('displaySelected')){
+          this.get('fetchRecords').perform();
+        } else {
+          this.setSelectAllColumn();
         }
       } else {
-        if(selectedModels.includes(model)){
-          // model in the array, while it shouldn't be, remove it
-          selectedModels.removeObject(model);
-        }
-      }
-
-      if(this.get('displaySelected')){
-        this.get('fetchRecords').perform();
-      } else {
-        this.setSelectAllColumn();
+        this.get('entityRouter').transitionToView(selectedRow.get('content'));
       }
     } else {
-      this.get('entityRouter').transitionToView(selectedRow.get('content'));
+      this.sendAction('onRowSelected', selectedRow);
     }
+  },
+  rowActivateMapMarker(rowToActivate){
+    if(this.get('updateMarkersOnRowHover')) {
+      this.get('table.rows').forEach((row) => {
+        if(row !== rowToActivate){
+          this.rowDeactivateMapMarker(row);
+        }
+      });
+
+      let location = rowToActivate.get('content').getLocation('location');
+
+      if(!Ember.isBlank(location)){
+        let marker = location.getMarker('company-map');
+        if(!Ember.isBlank(marker)){
+          marker.setIcon('assets/images/map-marker-red.png');
+        }
+      }
+
+
+    }
+  },
+  rowDeactivateMapMarker(row){
+    if(this.get('updateMarkersOnRowHover')){
+      let location = row.get('content').getLocation('location');
+      if(!Ember.isBlank(location)){
+        let marker = location.getMarker('company-map');
+        if(!Ember.isBlank(marker)){
+          marker.setIcon('assets/images/map-marker-purple.png');
+        }
+      }
+    }
+  },
+  deactivateRows(){
+    this.get('table.rows').setEach('activated', false);
   },
 
   actions: {
@@ -333,34 +389,15 @@ export default Ember.Component.extend(EKMixin, {
       }
     },
     onRowClick(row){
-      if(Ember.isBlank(this.get('onRowClick'))) {
-        this.rowSelected(row);
-      }
-      else {
-        this.sendAction('onRowClick', row);
-      }
+      this.rowSelected(row);
     },
     onRowMouseEnter(row) {
-      if(this.get('updateMarkersOnRowHover')) {
-        let location = row.get('content').getLocation('location');
-        if(!Ember.isBlank(location)){
-          let marker = location.getMarker('company-map');
-          if(!Ember.isBlank(marker)){
-            marker.setIcon('assets/images/map-marker-red.png');
-          }
-        }
-      }
+      this.rowActivateMapMarker(row);
+      this.deactivateRows();
     },
     onRowMouseLeave(row) {
-      if(this.get('updateMarkersOnRowHover')){
-        let location = row.get('content').getLocation('location');
-        if(!Ember.isBlank(location)){
-          let marker = location.getMarker('company-map');
-          if(!Ember.isBlank(marker)){
-            marker.setIcon('assets/images/map-marker-purple.png');
-          }
-        }
-      }
+      this.rowDeactivateMapMarker(row);
+      this.deactivateRows();
     },
     refresh(){
       this.get('fetchRecords').perform();

@@ -3,39 +3,39 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-body">
-        {{object-list objects=selectOptions columns=columns objectSelected='objectSelected' noresults=noresults}}
+        {{#if modalVisible}}
+          {{#mist-model-table title=title modelType=modelType tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
+            {{#table.actions}}
+              {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
+            {{/table.actions}}
+          {{/mist-model-table}}
+        {{/if}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-default" {{action 'closeModal'}}>Cancel</button>
       </div>
     </div>
   </div>
 </div>
 
-{{#if hasPrefix}}
-  <span class="input-group-addon">{{prefix}}</span>
-{{/if}}
-<button {{action 'showModal'}} class="btn btn-default lookup-toggle" type="button">
-  {{#if hasValue}}
-    {{computedValue}}
-  {{else}}
-    <span class="placeholder">
-      {{placeholder}}
-    </span>
-  {{/if}}
-</button>
-{{#if hasSuffix}}
-  <span class="input-group-addon">{{suffix}}</span>
-{{/if}}
+<div class="field-wrapper">
+  <button {{action 'showModal'}} class="btn btn-default lookup-toggle" type="button">
+    {{#if computedValue}}
+      {{computedValue}}
+    {{else}}
+      <span class="placeholder">
+        {{placeholder}}
+      </span>
+    {{/if}}
+  </button>
 
-<span class="input-group-btn">
-  {{#if hasValue}}
-    <button type="button" class="btn btn-default" {{action 'clearLookup'}}>
+  {{#if computedValue}}
+    <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>
       <span class="glyphicon glyphicon-remove"></span>
     </button>
   {{/if}}
 
-  <button type="button" class="btn btn-default" {{action 'showModal'}}>
+  <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'showModal'}}>
     <span class="glyphicon glyphicon-search"></span>
   </button>
-</span>
+</div>

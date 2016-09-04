@@ -34,7 +34,12 @@ export default Ember.Mixin.create({
   }).group('modelTasks'),
   cancel: task(function * (target) {
     if(target instanceof DS.Model) {
-      this.get('entityRouter').transitionToView(target);
+      if(!target.get('isNew')){
+        this.get('entityRouter').transitionToView(target);
+      } else {
+        let modelName = getModelName(target);
+        this.get('entityRouter').transitionToList(modelName);
+      }
     } else {
       this.get('entityRouter').transitionToList(target);
     }

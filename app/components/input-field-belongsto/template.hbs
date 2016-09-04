@@ -1,1 +1,3 @@
-{{input-lookup selectOptions=selectOptions columns=columns nameColumn=nameColumn value=parentModel valueChanged='valueChanged' noresults=noresults placeholder=placeholder styleClass=styleClass}}
+{{#if setInitialValue.isIdle}}
+  {{input-lookup value=lookupValue title='Models' modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass}}
+{{/if}}

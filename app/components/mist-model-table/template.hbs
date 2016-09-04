@@ -1,5 +1,5 @@
 {{#mist-card-header title=title class=(if searchToggled 'search-toggled ch-alt' 'ch-alt') showSpinner=fetchRecords.isRunning}}
-  {{#mist-menu class="actions"}}
+  {{#mist-menu id=(concat guid '-actions') class="actions"}}
     {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
     {{#mist-menu-dropdown-item}}
       {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
@@ -8,7 +8,9 @@
 
   <div class="h-search-wrap">
     <div class="hsw-inner">
-      <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
+      {{#if (not fixedSearch)}}
+        <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
+      {{/if}}
       <form {{action "search" on="submit"}}>
         {{input-search value=queryParams.search placeholder="Search..." valueChanged=(action 'searchValueChanged')}}
       </form>
@@ -19,7 +21,7 @@
 {{/mist-card-header}}
 
 <div id={{concat guid '-map'}}></div>
-{{yield (hash map=(component 'ember-wormhole' to=(concat guid '-map')) new=(component 'ember-wormhole' to=(concat guid '-new')) models=mapModels)}}
+{{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) map=(component 'ember-wormhole' to=(concat guid '-map')) new=(component 'ember-wormhole' to=(concat guid '-new')) models=mapModels)}}
 
 {{#light-table table height=tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if fetchRecords.isRunning ' is-busy')) as |t|}}
   {{#if displayHead}}
