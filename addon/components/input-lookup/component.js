@@ -11,6 +11,9 @@ export default Ember.Component.extend(InputComponent, {
       return this.get('value.name');
     }
   }),
+  typeaheadParams: Ember.computed(function(){
+    return { filter: { name: { operator: 'STARTS_WITH' } } };
+  }),
   actions: {
     showModal() {
       this.$('.modal').modal('show');
@@ -27,6 +30,9 @@ export default Ember.Component.extend(InputComponent, {
     rowSelected(row){
       this.send('closeModal');
       this.sendAction('valueChanged', row.get('content'));
+    },
+    typeaheadSelected(model){
+      this.sendAction('valueChanged', model);
     }
   }
 });

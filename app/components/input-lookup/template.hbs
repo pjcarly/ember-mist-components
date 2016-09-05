@@ -19,15 +19,7 @@
 </div>
 
 <div class="field-wrapper">
-  <button {{action 'showModal'}} class="btn btn-default lookup-toggle" type="button">
-    {{#if computedValue}}
-      {{computedValue}}
-    {{else}}
-      <span class="placeholder">
-        {{placeholder}}
-      </span>
-    {{/if}}
-  </button>
+  {{aupac-ember-data-typeahead selection=value displayKey="name" placeholder=placeholder queryKey="filter[name][value]" params=typeaheadParams class='form-control' modelClass=modelType action=(action 'typeaheadSelected')}}
 
   {{#if computedValue}}
     <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>
