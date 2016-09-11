@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
+import Push from 'pushjs';
 
 export default Ember.Mixin.create({
   entityRouter: Ember.inject.service(),
@@ -29,8 +30,16 @@ export default Ember.Mixin.create({
   deleteWithoutConfirm: task(function * (model) {
     let modelName = getModelName(model);
     model.deleteRecord();
-    yield model.save();
-    this.get('entityRouter').transitionToList(modelName);
+    yield model.save()
+    .then(() => {
+      this.get('entityRouter').transitionToList(modelName);
+    })
+    .catch((reason) => {
+      Push.create(`There was an error deleting your information`, {
+        timeout: 4000,
+        body: `${reason.message}`
+      });
+    });
   }).group('modelTasks'),
   cancel: task(function * (target) {
     if(target instanceof DS.Model) {
@@ -45,8 +54,16 @@ export default Ember.Mixin.create({
     }
   }).group('modelTasks'),
   save: task(function * (model) {
-    yield model.save();
-    this.get('entityRouter').transitionToView(model);
+    yield model.save()
+    .then(() => {
+      this.get('entityRouter').transitionToView(model);
+    })
+    .catch((reason) => {
+      Push.create(`There was an error saving your information`, {
+        timeout: 4000,
+        body: `${reason.message}`
+      });
+    });;
   }).group('modelTasks'),
   new: task(function * (modelType) {
     this.get('entityRouter').transitionToCreate(modelType);
