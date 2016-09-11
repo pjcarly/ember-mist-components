@@ -24,7 +24,7 @@
 {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) map=(component 'ember-wormhole' to=(concat guid '-map')) new=(component 'ember-wormhole' to=(concat guid '-new')) models=mapModels)}}
 
 {{#light-table table height=tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if fetchRecords.isRunning ' is-busy')) as |t|}}
-  {{#if displayHead}}
+  {{#if (not hideColumnHeadings)}}
     {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
   {{/if}}
 

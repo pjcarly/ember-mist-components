@@ -13,7 +13,6 @@ export default Ember.Component.extend(EKMixin, {
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
   table: null,
-  displayHead: true,
   fixedSearch: false,
 
   lastPage: 0,
@@ -139,7 +138,7 @@ export default Ember.Component.extend(EKMixin, {
     return columns;
   }),
   isArrayTable: Ember.computed('models', function(){
-    return !Ember.isBlank(this.get('models'));
+    return this.get('arrayTable');
   }),
   fixed: Ember.computed('tableHeight', function(){
     // when a height of the table is passed, we set the column headers fixed
