@@ -39,6 +39,7 @@ export default Ember.Mixin.create({
         timeout: 4000,
         body: `${reason.message}`
       });
+      console.log(reason.message);
     });
   }).group('modelTasks'),
   cancel: task(function * (target) {
@@ -63,6 +64,7 @@ export default Ember.Mixin.create({
         timeout: 4000,
         body: `${reason.message}`
       });
+      console.log(reason.message);
     });;
   }).group('modelTasks'),
   new: task(function * (modelType) {
