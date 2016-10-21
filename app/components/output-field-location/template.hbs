@@ -1,1 +1,5 @@
-{{g-maps showZoomControl=false lat=lat lng=lng zoom=zoom markers=markers}}
+{{#if (and lat lng)}}
+  <a href="http://maps.google.com/maps?q=loc:{{lat}},{{lng}}" target="_blank">
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=15&size=300x100&markers={{lat}},{{lng}}&key={{key}}" />
+  </a>
+{{/if}}
