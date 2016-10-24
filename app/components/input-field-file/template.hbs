@@ -1,5 +1,5 @@
 {{#if value.id}}
-  <a href={{value.url}}><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+  <a href={{value.url}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
 
   {{#if deleteFile.isIdle}}
     {{#mist-button class="btn-xs btn-default m-l-5" click=(perform deleteFile)}}Remove{{/mist-button}}
@@ -9,8 +9,11 @@
     {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
   {{/if}}
 {{else}}
-  {{input-file valueChanged='valueChanged' inputId=inputId}}
   {{#if uploadFile.isRunning}}
-    {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+    <button class="btn btn-default waves-effect" disabled="disabled">
+      Uploading {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+    </button>
+  {{else}}
+    {{input-file valueChanged='valueChanged' inputId=inputId}}
   {{/if}}
 {{/if}}

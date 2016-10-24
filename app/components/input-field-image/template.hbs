@@ -1,0 +1,45 @@
+<!-- Modal -->
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Choose an image</h4>
+      </div>
+      <div class="modal-body text-center">
+        {{#if modalVisible}}
+          {{#if value.id}}
+            <a href={{value.url}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+
+            {{#if deleteFile.isIdle}}
+              {{#mist-button class="btn-xs btn-default m-l-5" click=(perform deleteFile)}}Remove{{/mist-button}}
+            {{/if}}
+
+            {{#if deleteFile.isRunning}}
+              {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+            {{/if}}
+
+            <img src={{value.url}} class="image-preview"/>
+          {{else}}
+            {{#if uploadFile.isRunning}}
+              <button class="btn btn-default waves-effect" disabled="disabled">
+                Uploading {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+              </button>
+            {{else}}
+              {{input-file valueChanged='valueChanged' inputId=inputId}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link waves-effect" {{action 'closeModal'}}>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{#if hasBlock}}
+  {{yield (action 'showModal')}}
+{{else}}
+  {{#mist-button click=(action 'showModal')}}Upload Image{{/mist-button}}
+{{/if}}

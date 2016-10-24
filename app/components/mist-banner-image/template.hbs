@@ -1,3 +1,15 @@
-{{#if value}}
-  <img src={{value.url}} alt={{value.alt}} title={{value.title}} />
+{{#if editmode}}
+  {{#if value}}
+    <div class="banner-image">
+      <img src={{value.url}} alt={{value.alt}} title={{value.title}} />
+    </div>
+  {{else}}
+    {{#input-field-image model=model field=field as |showModal|}}
+      <div class="banner-image">
+        <div class="field-wrapper" {{action showModal}}>
+          <span class="zmdi zmdi-hc-2x zmdi-camera"></span>
+        </div>
+      </div>
+    {{/input-field-image}}
+  {{/if}}
 {{/if}}

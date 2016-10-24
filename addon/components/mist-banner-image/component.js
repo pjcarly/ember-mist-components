@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames: ['banner-image'],
+  tagName: null,
   value: Ember.computed('model', 'field', function(){
     let model = this.get('model');
     let field = this.get('field');
