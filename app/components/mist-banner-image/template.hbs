@@ -1,15 +1,13 @@
 {{#if editmode}}
-  {{#if value}}
+  {{#input-field-image model=model field=field as |showModal|}}
     <div class="banner-image">
-      <img src={{value.url}} alt={{value.alt}} title={{value.title}} />
-    </div>
-  {{else}}
-    {{#input-field-image model=model field=field as |showModal|}}
-      <div class="banner-image">
+      {{#if value.url}}
+        <img src={{value.url}} alt={{value.alt}} title={{value.title}} {{action showModal}} />
+      {{else}}
         <div class="field-wrapper" {{action showModal}}>
           <span class="zmdi zmdi-hc-2x zmdi-camera"></span>
         </div>
-      </div>
-    {{/input-field-image}}
-  {{/if}}
+      {{/if}}
+    </div>
+  {{/input-field-image}}
 {{/if}}
