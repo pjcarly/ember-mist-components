@@ -1,4 +1,7 @@
+/* jshint noyield:true */
+/* global swal */
 import Ember from 'ember';
+import DS from 'ember-data';
 import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 import Push from 'pushjs';
@@ -65,7 +68,7 @@ export default Ember.Mixin.create({
         body: `${reason.message}`
       });
       console.log(reason.message); // TODO: change to Ember.debug after beta
-    });;
+    });
   }).group('modelTasks'),
   new: task(function * (modelType) {
     this.get('entityRouter').transitionToCreate(modelType);

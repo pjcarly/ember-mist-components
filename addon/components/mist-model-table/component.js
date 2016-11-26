@@ -82,7 +82,7 @@ export default Ember.Component.extend(EKMixin, {
   }),
 
   filters: Ember.computed({
-    get(key){
+    get(){
       return this.get('queryParams.filter');
     },
     set(key, value){
@@ -156,7 +156,7 @@ export default Ember.Component.extend(EKMixin, {
 
       // First we filter by Search keyword
       if(!Ember.isBlank(queryParams.search)){
-        models = models.filter((model, index) => {
+        models = models.filter((model) => {
           const modelValueToCompare = model.get(Ember.String.camelize(queryParams.get('searchField')));
           return !Ember.isBlank(modelValueToCompare) && StringUtils.wildcardMatch(modelValueToCompare.toUpperCase(), queryParams.search.toUpperCase());
         });
@@ -164,7 +164,7 @@ export default Ember.Component.extend(EKMixin, {
 
       // Next we sort
       if(!Ember.isBlank(queryParams.sort)){
-        const sortBy = Ember.String.camelize(queryParams.sort)
+        const sortBy = Ember.String.camelize(queryParams.sort);
         models = models.sortBy(sortBy);
         if(queryParams.dir === 'desc'){
           models = models.reverse();

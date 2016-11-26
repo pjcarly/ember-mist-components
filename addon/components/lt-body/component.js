@@ -3,10 +3,10 @@ import callAction from 'ember-light-table/utils/call-action';
 
 export default Body.extend({
   actions: {
-    onRowMouseEnter(row) {
+    onRowMouseEnter(/*row*/) {
       callAction(this, 'onRowMouseEnter', ...arguments);
     },
-    onRowMouseLeave(row) {
+    onRowMouseLeave(/*row*/) {
       callAction(this, 'onRowMouseLeave', ...arguments);
     }
   }

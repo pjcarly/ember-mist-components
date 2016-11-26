@@ -1,3 +1,4 @@
+/* jshint noyield:true */
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';

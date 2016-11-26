@@ -1,5 +1,6 @@
+/* global google */
 import Ember from 'ember';
-import GMaps from 'ember-cli-g-maps/components/g-maps'
+import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 
 export default GMaps.extend({

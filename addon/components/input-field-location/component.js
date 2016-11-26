@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Location from 'ember-mist-components/classes/location';
 import ComponentDynamicObserverMixin from 'ember-field-components/mixins/component-dynamic-observer';
 
 export default Ember.Component.extend(ComponentDynamicObserverMixin, {

@@ -30,7 +30,7 @@ export default Ember.Component.extend({
         selectOptions.push({
           'value': (i.toString()),
           'label': (i.toString())
-        })
+        });
       }
     }
 

@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Address from 'ember-mist-components/classes/address';
 import { getCountrySelectOptions } from 'ember-mist-components/classes/address';
 
 export default Ember.Component.extend({

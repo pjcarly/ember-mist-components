@@ -5,7 +5,7 @@ export default Ember.Object.extend({
   field: null,
   model: null,
   lat: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let location = this.getLocationObject();
       return location.lat;
     },
@@ -15,7 +15,7 @@ export default Ember.Object.extend({
     }
   }),
   lng: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let location = this.getLocationObject();
       return location.lng;
     },

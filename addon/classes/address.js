@@ -755,7 +755,7 @@ export default Ember.Object.extend({
   model: null,
   field: null,
   street: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let address = this.getAddressObject();
       return address.street;
     },
@@ -765,7 +765,7 @@ export default Ember.Object.extend({
     }
   }),
   city: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let address = this.getAddressObject();
       return address.city;
     },
@@ -775,7 +775,7 @@ export default Ember.Object.extend({
     }
   }),
   postalCode: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let address = this.getAddressObject();
       return address.postalCode;
     },
@@ -785,7 +785,7 @@ export default Ember.Object.extend({
     }
   }),
   state: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let address = this.getAddressObject();
       return address.state;
     },
@@ -795,7 +795,7 @@ export default Ember.Object.extend({
     }
   }),
   country: Ember.computed('model', 'field', {
-    get(key){
+    get(){
       let address = this.getAddressObject();
       return address.country;
     },

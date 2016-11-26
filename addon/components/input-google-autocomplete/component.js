@@ -1,6 +1,4 @@
 import Ember from 'ember';
-import Location from 'ember-mist-components/classes/location';
-import Address from 'ember-mist-components/classes/address';
 
 export default Ember.Component.extend({
   tagName: '',

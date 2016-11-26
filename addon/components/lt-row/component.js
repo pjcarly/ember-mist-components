@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import Row from 'ember-light-table/components/lt-row';
 
 export default Row.extend({
