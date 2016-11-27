@@ -13,7 +13,6 @@ export default DS.Transform.extend({
       file.filesize = serialized.filesize;
     }
 
-    console.log(file);
     return file;
   },
   serialize: function(deserialized) {

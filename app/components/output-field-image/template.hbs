@@ -1,0 +1,7 @@
+{{#if imageUrl}}
+  {{#if hasBlock}}
+    {{yield imageUrl}}
+  {{else}}
+    <img src={{imageUrl}} alt={{value.alt}} title={{title}} class={{styleClass}} {{action 'clickImage'}}/>
+  {{/if}}
+{{/if}}

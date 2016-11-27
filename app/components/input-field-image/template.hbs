@@ -8,7 +8,9 @@
       <div class="modal-body text-center">
         {{#if modalVisible}}
           {{#if value.id}}
-            <a href={{value.url}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+            {{#output-field-image model=model field=field as |imageUrl|}}
+              <a href={{imageUrl}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+            {{/output-field-image}}
 
             {{#if deleteFile.isIdle}}
               {{#mist-button class="btn-xs btn-default m-l-5" click=(perform deleteFile)}}Remove{{/mist-button}}
@@ -18,7 +20,7 @@
               {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
             {{/if}}
 
-            <img src={{value.url}} class="image-preview"/>
+            {{output-field-image model=model field=field styleClass="image-preview"}}
           {{else}}
             {{#if uploadFile.isRunning}}
               <button class="btn btn-default waves-effect" disabled="disabled">
