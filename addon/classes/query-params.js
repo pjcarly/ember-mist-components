@@ -5,9 +5,9 @@ export default Ember.Object.extend({
   page: 1,
   limit: 10,
   dir: 'asc',
-  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'standardFilter', function(){
+  params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'standardFilter', function(){
     let standardFilter = this.get('standardFilter');
-    let queryParams = this.getProperties('page', 'limit', 'sort', 'dir', 'search');
+    let queryParams = this.getProperties('page', 'limit', 'sort', 'dir', 'search', 'include');
     queryParams['filter'] = {};
 
     if(!Ember.isBlank(standardFilter)){
@@ -28,6 +28,9 @@ export default Ember.Object.extend({
     }
     if(Ember.isBlank(queryParams.limit)){
       delete queryParams.limit;
+    }
+    if(Ember.isBlank(queryParams.include)){
+      delete queryParams.include;
     }
     if(Ember.isBlank(queryParams.sort)){
       delete queryParams.sort;

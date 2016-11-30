@@ -189,6 +189,7 @@ export default Ember.Component.extend(EKMixin, {
       this.reSetSelected();
     } else {
       // we query the records from the store instead
+      this.setDefaultIncludes();
       let queryParams = this.get('queryParams.params');
       yield this.get('store').query(modelType, queryParams).then(records => {
         this.table.setRows(records);
@@ -203,6 +204,13 @@ export default Ember.Component.extend(EKMixin, {
       });
     }
   }).drop(),
+
+  setDefaultIncludes(queryParams){
+    // This method adds the default includes defined on the modeltype, to the queryParams object
+    let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
+    let defaultIncludes = ModelUtils.getDefaultIncludes(type);
+    this.set('queryParams.include', defaultIncludes.join(','));
+  },
 
   toggleSearch(){
     if(!this.get('fixedSearch')){
