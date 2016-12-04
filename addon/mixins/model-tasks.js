@@ -7,8 +7,8 @@ import { getModelName } from 'ember-field-components/classes/model-utils';
 import Push from 'pushjs';
 
 export default Ember.Mixin.create({
+  entityCache: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
-
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {
@@ -46,6 +46,11 @@ export default Ember.Mixin.create({
     });
   }).group('modelTasks'),
   cancel: task(function * (target) {
+    const returnToModel = this.get('entityCache').getReturnToModelAndClear();
+    if(!Ember.isBlank(returnToModel)){
+      target = returnToModel;
+    }
+
     if(target instanceof DS.Model) {
       if(!target.get('isNew')){
         this.get('entityRouter').transitionToView(target);

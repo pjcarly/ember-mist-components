@@ -1,1 +1,11 @@
-{{mist-model-table title=title modelType=modelType filters=filters onRowSelected=onRowSelected}}
+{{#mist-model-table title=title modelType=modelType filters=filters onRowSelected=onRowSelected as |table|}}
+  {{#if hasBlock}}
+    {{yield table}}
+  {{else}}
+    {{#if (not hideNew)}}
+      {{#table.new}}
+        {{#mist-button class="bgm-red btn-float" click=(perform newFromRelated)}}<i class="zmdi zmdi-plus"></i>{{/mist-button}}
+      {{/table.new}}
+    {{/if}}
+  {{/if}}
+{{/mist-model-table}}

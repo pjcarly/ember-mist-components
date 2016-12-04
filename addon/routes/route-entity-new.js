@@ -4,10 +4,18 @@ import ResetControllerMixin from 'ember-mist-components/mixins/route-reset-contr
 import SingleEntityRouteMixin from 'ember-mist-components/mixins/route-single-entity';
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, ResetControllerMixin, {
-  templateName: Ember.computed('entityName', function(){
-    return `${this.get('entityName')}/edit`;
-  }),
+  store: Ember.inject.service(),
+  entityCache: Ember.inject.service(),
+
   model() {
-    return this.store.createRecord(this.get('entityName'));
+    let cache = this.get('entityCache');
+    let cachedModel = cache.get('cachedModel');
+
+    if(Ember.isBlank(cachedModel)){
+      return this.get('store').createRecord(this.get('entityName'));
+    } else {
+      cache.clearCachedModel();
+      return cachedModel;
+    }
   }
 });

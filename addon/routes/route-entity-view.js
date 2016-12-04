@@ -3,5 +3,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import SingleEntityRouteMixin from 'ember-mist-components/mixins/route-single-entity';
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, SingleEntityRouteMixin, {
-  entityName: 'contact'
+  entityCache: Ember.inject.service(),
+  afterModel(){
+    this.get('entityCache').clearReturnToModel();
+  }
 });
