@@ -16,7 +16,7 @@ export default Ember.Component.extend(ModelTasksMixin, {
   }),
   filters: Ember.computed('model', 'parentField', function(){
     let filters = {};
-    let parentField = this.get('parentField');
+    let parentField = Ember.String.dasherize(this.get('parentField'));
 
     filters[parentField] = this.get('model.id');
     return filters;
