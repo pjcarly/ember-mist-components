@@ -2,6 +2,7 @@
 /* global swal */
 import Ember from 'ember';
 import DS from 'ember-data';
+import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 import Push from 'pushjs';
@@ -9,6 +10,7 @@ import Push from 'pushjs';
 export default Ember.Mixin.create({
   entityCache: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
+  store: Ember.inject.service(),
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {
@@ -80,6 +82,17 @@ export default Ember.Mixin.create({
   }).group('modelTasks'),
   refresh: task(function * (model) {
     model.rollbackAttributes(); // To clear any potential dirty state (else the reload won't work)
-    yield model.reload();
+    let modelName = getModelName(model);
+    let store = this.get('store');
+
+    const type = ModelUtils.getModelType(modelName, store);
+    let defaultIncludes = ModelUtils.getDefaultIncludes(type);
+    let options = {};
+
+    if(defaultIncludes.length > 0) {
+      options['include'] = defaultIncludes.join(',');
+    }
+
+    yield store.findRecord(modelName, model.get('id'), options);
   }).group('modelTasks')
 });

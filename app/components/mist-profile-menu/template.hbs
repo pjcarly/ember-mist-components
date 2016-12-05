@@ -1,6 +1,6 @@
 <a {{action "toggleProfileMenu"}} style={{profileMenuBackgroundStyle}}>
   <div class="profile-pic">
-    <img src="{{user.profilePicture.url}}" alt="{{user.profilePicture.alt}}">
+    {{output-field-image model=user field="profilePicture"}}
   </div>
 
   <div class="profile-info">

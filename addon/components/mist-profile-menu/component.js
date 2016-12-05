@@ -1,8 +1,10 @@
 import Ember from 'ember';
+import ImageUtilities from 'ember-mist-components/classes/image';
 
 export default Ember.Component.extend({
   tagName: 'div',
   loggedInUser: Ember.inject.service(),
+  session: Ember.inject.service(),
   classNameBindings: ['showProfileMenu::toggled'],
   showProfileMenu: false,
   user: Ember.computed('loggedInUser.user', function(){
@@ -16,10 +18,10 @@ export default Ember.Component.extend({
     return styleClass;
   }),
   profileMenuBackgroundStyle: Ember.computed('user.bannerImage', function(){
-    const bannerImage = this.get('user.bannerImage');
+    const bannerImage = ImageUtilities.getSecureUrl(this.get('user'), 'bannerImage', this.get('session'));
 
     if(!Ember.isBlank(bannerImage)) {
-      return Ember.String.htmlSafe('cursor:pointer; background: url("'+ bannerImage.url + '"); background-size: cover;');
+      return Ember.String.htmlSafe('cursor:pointer; background: url("'+ bannerImage + '"); background-size: cover;');
     }
   }),
   actions: {
