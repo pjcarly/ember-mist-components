@@ -6,6 +6,8 @@ import StringUtils from 'ember-field-components/classes/string-utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
+const { dasherize } = Ember.String;
+
 export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
@@ -203,6 +205,8 @@ export default Ember.Component.extend(EKMixin, {
         this.reSetSelected();
       });
     }
+
+    this.set('ranOnceAtLeast', true);
   }).drop(),
 
   setDefaultIncludes(queryParams){
@@ -390,7 +394,7 @@ export default Ember.Component.extend(EKMixin, {
 
       } else if (column.sorted) {
         this.set('queryParams.dir', column.ascending ? 'asc' : 'desc');
-        this.set('queryParams.sort', Ember.String.dasherize(column.get('valuePath')));
+        this.set('queryParams.sort', dasherize(column.get('valuePath')));
         this.set('queryParams.page', 1);
         this.get('fetchRecords').perform();
       }

@@ -3,6 +3,8 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import { task, taskGroup } from 'ember-concurrency';
 
+const { dasherize } = Ember.String;
+
 export default Ember.Component.extend(ModelTasksMixin, {
   tagName: '',
   entityCache: Ember.inject.service(),
@@ -16,7 +18,7 @@ export default Ember.Component.extend(ModelTasksMixin, {
   }),
   filters: Ember.computed('model', 'parentField', function(){
     let filters = {};
-    let parentField = Ember.String.dasherize(this.get('parentField'));
+    let parentField = dasherize(this.get('parentField'));
 
     filters[parentField] = this.get('model.id');
     return filters;

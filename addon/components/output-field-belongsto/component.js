@@ -10,10 +10,9 @@ export default Ember.Component.extend(FieldOutputComponent, {
     this.get('setInitialValue').perform();
   },
   setInitialValue: task(function * (){
-    let field = this.get('field');
-    let model = this.get('model');
-
-    let id = model.belongsTo(field).id(); // todo returns blank after clearing field and rolling back attributes (when it should be the initial value)
+    const field = this.get('field');
+    const model = this.get('model');
+    const id = model.belongsTo(field).id(); // todo returns blank after clearing field and rolling back attributes (when it should be the initial value)
 
     if(!Ember.isBlank(id)){
       const relationshipType = ModelUtils.getParentModelTypeName(model, field);
@@ -25,6 +24,8 @@ export default Ember.Component.extend(FieldOutputComponent, {
         });
       }
     }
+
+    this.set('ranOnceAtLeast', true);
   }),
   route: Ember.computed('lookupValue', function(){
     const lookupValue = this.get('lookupValue');

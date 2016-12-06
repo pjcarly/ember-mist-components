@@ -28,6 +28,8 @@ export default Ember.Component.extend({
         });
       }
     }
+
+    this.set('ranOnceAtLeast', true);
   }),
   actions: {
     valueChanged: function(value){
