@@ -1,5 +1,5 @@
 {{#if editmode}}
-  {{#input-field-image model=model field=field as |showModal|}}
+  {{#input-field-image class="input-field-image" model=model field=field as |showModal|}}
     <div class="banner-image">
       {{#if value.url}}
         {{output-field-image model=model field=field style=style clickImage=(action showModal)}}
