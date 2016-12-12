@@ -1,3 +1,3 @@
-{{#if (and setInitialValue.isIdle ranOnceAtLeast)}}
+{{#if setInitialValue.last}}
   {{input-lookup value=lookupValue title="Models" modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass}}
 {{/if}}

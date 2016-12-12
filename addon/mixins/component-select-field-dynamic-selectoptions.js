@@ -50,7 +50,5 @@ export default Ember.Mixin.create({
         }
       }
     }
-
-    this.set('ranOnceAtLeast', true);
   })
 });

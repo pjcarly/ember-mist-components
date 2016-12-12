@@ -24,8 +24,6 @@ export default Ember.Component.extend(FieldOutputComponent, {
         });
       }
     }
-
-    this.set('ranOnceAtLeast', true);
   }),
   route: Ember.computed('lookupValue', function(){
     const lookupValue = this.get('lookupValue');

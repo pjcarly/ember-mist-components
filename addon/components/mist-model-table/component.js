@@ -205,8 +205,6 @@ export default Ember.Component.extend(EKMixin, {
         this.reSetSelected();
       });
     }
-
-    this.set('ranOnceAtLeast', true);
   }).drop(),
 
   setDefaultIncludes(queryParams){

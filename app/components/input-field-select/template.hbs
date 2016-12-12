@@ -1,4 +1,4 @@
-{{#if (and setSelectOptions.isIdle ranOnceAtLeast)}}
+{{#if setSelectOptions.last}}
   {{#if isButtonGroup}}
     {{input-button-group selectOptions=cachedSelectOptions value=value valueChanged='valueChanged' styleClass=styleClass inputId=inputId}}
   {{else if isSelectSearch}}
