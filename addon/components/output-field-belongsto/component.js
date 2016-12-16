@@ -12,7 +12,7 @@ export default Ember.Component.extend(FieldOutputComponent, {
   setInitialValue: task(function * (){
     const field = this.get('field');
     const model = this.get('model');
-    const id = model.belongsTo(field).id(); // todo returns blank after clearing field and rolling back attributes (when it should be the initial value)
+    const id = model.belongsTo(field).id();
 
     if(!Ember.isBlank(id)){
       const relationshipType = ModelUtils.getParentModelTypeName(model, field);

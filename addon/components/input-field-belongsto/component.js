@@ -43,7 +43,6 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, {
     return this.get('relationshipAttributeOptions').validation.required
   }),
   fieldId: Ember.computed('model', 'field', function(){
-    // todo returns blank after clearing field and rolling back attributes (when it should be the initial value)
     return this.get('model').belongsTo(this.get('field')).id();
   }),
   isSelect: Ember.computed(function(){
