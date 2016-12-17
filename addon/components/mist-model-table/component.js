@@ -207,7 +207,7 @@ export default Ember.Component.extend(EKMixin, {
     }
   }).drop(),
 
-  setDefaultIncludes(queryParams){
+  setDefaultIncludes(){
     // This method adds the default includes defined on the modeltype, to the queryParams object
     let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
     let defaultIncludes = ModelUtils.getDefaultIncludes(type);

@@ -1,3 +1,5 @@
+import Ember from 'ember';
+
 export function transformFieldSelectOptionsToSelectOptions(fieldModel){
   const selectOptions = fieldModel.get('selectOptions');
   const transformedSelectOptions = [];

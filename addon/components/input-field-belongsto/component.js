@@ -1,3 +1,4 @@
+/* jshint noyield:true */
 import Ember from 'ember';
 import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
@@ -40,7 +41,7 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
     }
   }),
   isRequired: Ember.computed('relationshipAttributeOptions', function(){
-    return this.get('relationshipAttributeOptions').validation.required
+    return this.get('relationshipAttributeOptions').validation.required;
   }),
   fieldId: Ember.computed('model', 'field', function(){
     return this.get('model').belongsTo(this.get('field')).id();

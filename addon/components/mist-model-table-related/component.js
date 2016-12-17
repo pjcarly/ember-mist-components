@@ -1,7 +1,8 @@
+/* jshint noyield:true */
 import Ember from 'ember';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
-import { task, taskGroup } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 
 const { dasherize } = Ember.String;
 

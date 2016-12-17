@@ -25,7 +25,7 @@ export default Ember.Mixin.create({
             let payload = {data: []};
             const inflector = new Ember.Inflector(Ember.Inflector.defaultRules);
             records.forEach((record) => {
-              let serializedRecord = record.serialize({includeId: true}).data
+              let serializedRecord = record.serialize({includeId: true}).data;
               serializedRecord.type = inflector.singularize(serializedRecord.type);
               payload.data.push(serializedRecord);
             });
@@ -40,4 +40,4 @@ export default Ember.Mixin.create({
       ModelUtils.modelTypeHasBeenLoadedFromCache(modelType);
     }
   })
-})
+});
