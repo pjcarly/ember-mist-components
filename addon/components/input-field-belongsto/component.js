@@ -3,10 +3,11 @@ import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
 
 import ModelUtils from 'ember-field-components/classes/model-utils';
-import { task } from 'ember-concurrency';
-const { camelize } = Ember.String;
+import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 
-export default Ember.Component.extend(ComponentFieldTypeMixin, {
+import { task } from 'ember-concurrency';
+
+export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, {
   tagName: '',
   store: Ember.inject.service(),
   init(){
@@ -17,17 +18,16 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, {
     return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
   }),
   setInitialValue: task(function * (){
-    let field = this.get('field');
-    let model = this.get('model');
+    const { field, model, store, storage, fieldId } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId');
+    const relationshipTypeName = ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
 
-    yield this.get('checkOfflineCache').perform();
+    yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
 
-    let id = this.get('fieldId');
-    if(!Ember.isBlank(id)){
+    if(!Ember.isBlank(fieldId)){
       const relationshipTypeName = ModelUtils.getParentModelTypeName(model, field);
 
-      if(this.get('store').hasRecordForId(relationshipTypeName, id)){
-        this.set('lookupValue', this.get('store').peekRecord(relationshipTypeName, id));
+      if(store.hasRecordForId(relationshipTypeName, fieldId)){
+        this.set('lookupValue', store.peekRecord(relationshipTypeName, fieldId));
       } else {
         yield model.get(field).then((value) => {
           this.set('lookupValue', value);
@@ -75,47 +75,9 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, {
     const selectOptions = this.get('selectOptions');
     return (selectOptions.get('length') === 1) && selectOptions[0].value === this.get('fieldId');
   }),
-  checkOfflineCache: task(function * (){
-    const store = this.get('store');
-    const relationshipType = ModelUtils.getParentModelType(this.get('model'), this.get('field'), store);
-    const relationshipTypeName = ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
-    // first we check if the modelType is cacheable, and if so, lets check the cache, and push them in the store if not yet done so
-    if(ModelUtils.modelTypeIsCacheable(relationshipType) && !ModelUtils.modelTypeHasBeenLoadedFromCache(relationshipType)){
-      // So the modelType is Cache, and hasn't already been loaded
-      const localKey = camelize(`${relationshipTypeName}_store_cache`);
-      const localCache = this.get('storage').get(localKey);
-      if(!Ember.isBlank(localCache)) {
-        // we found something locally
-        store.push(localCache);
-      } else {
-        // nothing found locally, let's ask the server for initial data
-        yield store.findAll(relationshipTypeName, {reload: true}).then((records) => {
-          if(!Ember.isBlank(records) && records.get('length') > 0){
-            // we found data, let's build a valid jsonapi document
-            let payload = {data: []};
-            var inflector = new Ember.Inflector(Ember.Inflector.defaultRules);
-            records.forEach((record) => {
-
-              let serializedRecord = record.serialize({includeId: true}).data
-              serializedRecord.type = inflector.singularize(serializedRecord.type);
-
-              payload.data.push(serializedRecord);
-            });
-
-            // and store it locally for later use
-            this.get('storage').set(localKey, payload);
-          }
-        });
-      }
-
-      // and finally we set the cached flag
-      ModelUtils.modelTypeHasBeenLoadedFromCache(relationshipType);
-    }
-  }),
   actions: {
     valueChanged: function(value){
-      const field = this.get('field');
-      const model = this.get('model');
+      const { field, model } = this.getProperties('field', 'model');
 
       if(!Ember.isBlank(value)) {
         if(!(value instanceof DS.Model)) {

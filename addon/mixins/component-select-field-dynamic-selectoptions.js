@@ -50,5 +50,11 @@ export default Ember.Mixin.create({
         }
       }
     }
+
+    // We must use a custom property and check for it in the template
+    // instead of checking setSelectOptions.last, because a mixin is used
+    // If multiple select fields are on the same page, and the task runs for the first field
+    // then the variable .last on the task will be shared with every instance where the mixin is included
+    this.set('setSelectOptionsRanOnce', true);
   })
 });
