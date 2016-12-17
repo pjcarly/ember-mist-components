@@ -14,7 +14,7 @@ export default Ember.Mixin.create({
       const localCache = offlineCache.get(localKey);
       if(!Ember.isBlank(localCache)) {
         // we found something locally
-        store.push(localCache);
+        store.pushPayload(localCache);
       } else {
         // nothing found locally, let's ask the server for initial data
         // findAll on store, will push the found records in the store by default,

@@ -100,6 +100,9 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
 
       model.set(field, value);
       this.set('lookupValue', value);
+      if(this.get('valueChanged')){
+        this.get('valueChanged')();
+      }
     }
   }
 });
