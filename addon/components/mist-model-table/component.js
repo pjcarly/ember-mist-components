@@ -6,7 +6,7 @@ import StringUtils from 'ember-field-components/classes/string-utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
-const { dasherize } = Ember.String;
+const { dasherize, capitalize } = Ember.String;
 
 export default Ember.Component.extend(EKMixin, {
   store: Ember.inject.service(),
@@ -26,6 +26,7 @@ export default Ember.Component.extend(EKMixin, {
 
   init() {
     this._super(...arguments);
+    this.setActiveModelType();
     this.set('table', new Table(this.get('columns')));
     this.get('fetchRecords').perform();
     if(this.get('fixedSearch')){
@@ -38,7 +39,32 @@ export default Ember.Component.extend(EKMixin, {
       this.$('input[type="search"]').focus();
     }
   },
+  setActiveModelType(){
+    // This function is needed for Polymorphic cases, where a choice of model type is passed
+    if(Ember.isBlank(this.get('activeModelType'))){
+      if(this.get('isMultipleModelTypes')){
+        this.set('activeModelType', this.get('modelType')[0]);
+      } else {
+        this.set('activeModelType', this.get('modelType'));
+      }
+    }
+  },
+  isMultipleModelTypes: Ember.computed('modelType', function(){
+    return Array.isArray(this.get('modelType'));
+  }),
+  multipleModelTypeSelectOptions: Ember.computed('modelType', function(){
+    const modelTypes = this.get('modelType');
+    let selectOptions = [];
 
+    modelTypes.forEach((modelType) => {
+      let selectOption = {};
+      selectOption.value = modelType;
+      selectOption.label = capitalize(modelType);
+      selectOptions.push(selectOption);
+    });
+
+    return selectOptions;
+  }),
   keyboardFind: Ember.on(keyUp('KeyF'), function(){
     if(!this.get('searchToggled')){
       this.toggleSearch();
@@ -105,9 +131,9 @@ export default Ember.Component.extend(EKMixin, {
   guid: Ember.computed(function(){
     return Ember.guidFor(this);
   }),
-  columns: Ember.computed('modelType', function(){
+  columns: Ember.computed('activeModelType', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
-    let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
+    let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     let modelColumns = ModelUtils.getDefaultListViewColumns(type);
     let columns = [];
 
@@ -148,7 +174,7 @@ export default Ember.Component.extend(EKMixin, {
   }),
 
   fetchRecords: task(function * (){
-    let modelType = this.get('modelType');
+    let modelType = this.get('activeModelType');
     if(this.get('isArrayTable') || this.get('displaySelected')){
       // this table is an array table, we don't query the store for records
       let models = this.get('displaySelected') ? this.get('selectedModels') : this.get('models');
@@ -207,9 +233,15 @@ export default Ember.Component.extend(EKMixin, {
     }
   }).drop(),
 
+  fetchRecordsWithNewModelType: task(function * (){
+    yield this.get('fetchRecords').perform();
+    // Needed for polymorphic tables
+    this.get('table').setColumns(this.get('columns'));
+  }).drop(),
+
   setDefaultIncludes(){
     // This method adds the default includes defined on the modeltype, to the queryParams object
-    let type = ModelUtils.getModelType(this.get('modelType'), this.get('store'));
+    let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     let defaultIncludes = ModelUtils.getDefaultIncludes(type);
     this.set('queryParams.include', defaultIncludes.join(','));
   },
@@ -444,6 +476,10 @@ export default Ember.Component.extend(EKMixin, {
       this.set('queryParams.page', 1);
       this.toggleProperty('displaySelected');
       this.get('fetchRecords').perform();
+    },
+    activeModelTypeChanged(activeModelType){
+      this.set('activeModelType', activeModelType);
+      this.get('fetchRecordsWithNewModelType').perform();
     }
   }
 });

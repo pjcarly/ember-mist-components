@@ -4,6 +4,19 @@ import InputComponent from 'ember-field-components/mixins/component-input';
 export default Ember.Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
+  activeModelType: Ember.computed('value', 'modelType', function(){
+    // needed for polymorphic relationships
+    if(Array.isArray(this.get('modelType'))){
+      const value = this.get('value');
+      if(!Ember.isBlank(value)){
+        return value.constructor.modelName;
+      } else {
+        return this.get('modelType')[0];
+      }
+    } else {
+      return this.get('modelType');
+    }
+  }),
   computedValue: Ember.computed('value', function(){
     if(Ember.isNone(this.get('value'))){
       return null;

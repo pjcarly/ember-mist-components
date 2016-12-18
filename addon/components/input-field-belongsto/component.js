@@ -16,16 +16,31 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
     this.get('setInitialValue').perform();
   },
   relationshipModelType: Ember.computed('model', 'field', function(){
-    return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+    if(this.get('isPolymorphic')){
+      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+    } else {
+      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+    }
   }),
   setInitialValue: task(function * (){
-    const { field, model, store, storage, fieldId } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId');
-    const relationshipTypeName = ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+    const { field, model, store, storage, fieldId, isPolymorphic } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId', 'isPolymorphic');
+    let relationshipTypeName = this.get('relationshipModelType');
 
-    yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
+    // This can potentially be an array of modeltypenames in case of a polymorphic relationship
+    if(isPolymorphic){
+      for(const singleRelationshipTypeName of relationshipTypeName){
+        yield this.get('checkOfflineCache').perform(store, storage, singleRelationshipTypeName);
+      }
+    } else {
+      yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
+    }
 
     if(!Ember.isBlank(fieldId)){
-      const relationshipTypeName = ModelUtils.getParentModelTypeName(model, field);
+      // TODO, fix met polymorphic
+      if(isPolymorphic){
+        // AAARGGHH private ED api, watch out!
+        relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseRecord.modelName;
+      }
 
       if(store.hasRecordForId(relationshipTypeName, fieldId)){
         this.set('lookupValue', store.peekRecord(relationshipTypeName, fieldId));
@@ -43,6 +58,10 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
   isRequired: Ember.computed('relationshipAttributeOptions', function(){
     return this.get('relationshipAttributeOptions').validation.required;
   }),
+  isPolymorphic: Ember.computed('relationshipAttributeOptions', function(){
+    const options = this.get('relationshipAttributeOptions');
+    return options.hasOwnProperty('polymorphic') && options.polymorphic;
+  }),
   fieldId: Ember.computed('model', 'field', function(){
     return this.get('model').belongsTo(this.get('field')).id();
   }),
@@ -52,15 +71,12 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
   setSelectOptions: task(function * (){
     const store = this.get('store');
     const relationshipType = ModelUtils.getParentModelType(this.get('model'), this.get('field'), store);
-    const relationshipTypeName = ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+    const relationshipTypeName = this.get('relationshipModelType');
 
-    let models;
-    if(ModelUtils.modelTypeIsCacheable(relationshipType)){
-      // should have been previously loaded, we can just use peekAll
-      models = store.peekAll(relationshipTypeName);
-    } else {
-      Ember.assert('Select widget is only supported for Offline cacheable models');
-    }
+    Ember.assert('Select widget is only supported for Offline cacheable models', ModelUtils.modelTypeIsCacheable(relationshipType));
+    Ember.assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
+
+    const models = store.peekAll(relationshipTypeName);
 
     let selectOptions = [];
     models.forEach((model) => {
@@ -82,24 +98,27 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
 
       if(!Ember.isBlank(value)) {
         if(!(value instanceof DS.Model)) {
+          // Not with polymorphic relationships
+          Ember.assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
+
           // we might have an Id instead of a model, happens when using Select widget
           const relationshipType = ModelUtils.getParentModelType(model, field, this.get('store'));
-          if(ModelUtils.modelTypeIsCacheable(relationshipType)) {
-            // only usable with cached data
-            // and it should already be available in the store
-            const relationshipTypeName = ModelUtils.getParentModelTypeName(model, field);
-            let foundModel = this.get('store').peekRecord(relationshipTypeName, value);
-            Ember.assert(`Model with id: ${value} and type: ${relationshipTypeName} not found in store`, !Ember.isBlank(foundModel));
 
-            value = foundModel;
-          } else {
-            Ember.assert('Value assign based on ID is only usable with cached models');
-          }
+          // only usable with cached data
+          Ember.assert('Value assign based on ID is only usable with cached models', ModelUtils.modelTypeIsCacheable(relationshipType));
+
+          // and it should already be available in the store
+          const relationshipTypeName = this.get('relationshipModelType');
+          let foundModel = this.get('store').peekRecord(relationshipTypeName, value);
+          Ember.assert(`Model with id: ${value} and type: ${relationshipTypeName} not found in store`, !Ember.isBlank(foundModel));
+
+          value = foundModel;
         }
       }
 
       model.set(field, value);
       this.set('lookupValue', value);
+
       if(this.get('valueChanged')){
         this.get('valueChanged')();
       }

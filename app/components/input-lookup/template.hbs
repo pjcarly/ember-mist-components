@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-body">
         {{#if modalVisible}}
-          {{#mist-model-table title=title modelType=modelType tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
+          {{#mist-model-table title=title modelType=modelType activeModelType=activeModelType tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
             {{#table.actions}}
               {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
             {{/table.actions}}
@@ -19,7 +19,7 @@
 </div>
 
 <div class="field-wrapper">
-  {{aupac-ember-data-typeahead selection=value displayKey="name" placeholder=placeholder queryKey="filter[name][value]" params=typeaheadParams class='form-control' modelClass=modelType action=(action 'typeaheadSelected')}}
+  {{aupac-ember-data-typeahead selection=value displayKey="name" placeholder=placeholder queryKey="filter[name][value]" params=typeaheadParams class='form-control' modelClass=activeModelType action=(action 'typeaheadSelected')}}
 
   {{#if computedValue}}
     <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>
