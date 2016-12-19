@@ -15,13 +15,6 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
     this._super(...arguments);
     this.get('setInitialValue').perform();
   },
-  relationshipModelType: Ember.computed('model', 'field', function(){
-    if(this.get('isPolymorphic')){
-      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
-    } else {
-      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
-    }
-  }),
   setInitialValue: task(function * (){
     const { field, model, store, storage, fieldId, isPolymorphic } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId', 'isPolymorphic');
     let relationshipTypeName = this.get('relationshipModelType');
@@ -36,7 +29,6 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
     }
 
     if(!Ember.isBlank(fieldId)){
-      // TODO, fix met polymorphic
       if(isPolymorphic){
         // AAARGGHH private ED api, watch out!
         relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseRecord.modelName;
@@ -53,6 +45,13 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
 
     if(this.get('isSelect')){
       yield this.get('setSelectOptions').perform();
+    }
+  }),
+  relationshipModelType: Ember.computed('model', 'field', function(){
+    if(this.get('isPolymorphic')){
+      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+    } else {
+      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
     }
   }),
   isRequired: Ember.computed('relationshipAttributeOptions', function(){
@@ -120,7 +119,7 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
       this.set('lookupValue', value);
 
       if(this.get('valueChanged')){
-        this.get('valueChanged')();
+        this.get('valueChanged')(...arguments);
       }
     }
   }

@@ -12,21 +12,46 @@ export default Ember.Component.extend(FieldOutputComponent, OfflineModelCacheMix
     this.get('setInitialValue').perform();
   },
   setInitialValue: task(function * (){
-    const { field, model, store, storage } = this.getProperties('field', 'model', 'store', 'storage');
-    const relationshipTypeName = ModelUtils.getParentModelTypeName(model, field);
-    const id = model.belongsTo(field).id();
+    const { field, model, store, storage, fieldId, isPolymorphic } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId', 'isPolymorphic');
+    let relationshipTypeName = this.get('relationshipModelType');
 
-    yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
+    // This can potentially be an array of modeltypenames in case of a polymorphic relationship
+    if(isPolymorphic){
+      for(const singleRelationshipTypeName of relationshipTypeName){
+        yield this.get('checkOfflineCache').perform(store, storage, singleRelationshipTypeName);
+      }
+    } else {
+      yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
+    }
 
-    if(!Ember.isBlank(id)){
-      if(this.get('store').hasRecordForId(relationshipTypeName, id)){
-        this.set('lookupValue', this.get('store').peekRecord(relationshipTypeName, id));
+    if(!Ember.isBlank(fieldId)){
+      if(isPolymorphic){
+        // AAARGGHH private ED api, watch out!
+        relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseRecord.modelName;
+      }
+
+      if(store.hasRecordForId(relationshipTypeName, fieldId)){
+        this.set('lookupValue', store.peekRecord(relationshipTypeName, fieldId));
       } else {
         yield model.get(field).then((value) => {
           this.set('lookupValue', value);
         });
       }
     }
+  }),
+  relationshipModelType: Ember.computed('model', 'field', function(){
+    if(this.get('isPolymorphic')){
+      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+    } else {
+      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+    }
+  }),
+  isPolymorphic: Ember.computed('relationshipAttributeOptions', function(){
+    const options = this.get('relationshipAttributeOptions');
+    return options.hasOwnProperty('polymorphic') && options.polymorphic;
+  }),
+  fieldId: Ember.computed('model', 'field', function(){
+    return this.get('model').belongsTo(this.get('field')).id();
   }),
   route: Ember.computed('lookupValue', function(){
     const lookupValue = this.get('lookupValue');
