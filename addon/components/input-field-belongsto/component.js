@@ -55,7 +55,8 @@ export default Ember.Component.extend(ComponentFieldTypeMixin, OfflineModelCache
     }
   }),
   isRequired: Ember.computed('relationshipAttributeOptions', function(){
-    return this.get('relationshipAttributeOptions').validation.required;
+    const options = this.get('relationshipAttributeOptions');
+    return options.hasOwnProperty('validation') && options.validation.hasOwnProperty('required') && options.validation.required;
   }),
   isPolymorphic: Ember.computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
