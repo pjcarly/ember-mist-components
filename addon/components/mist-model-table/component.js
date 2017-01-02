@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
 import ModelUtils from 'ember-field-components/classes/model-utils';
-import StringUtils from 'ember-field-components/classes/string-utils';
+import StringUtils from 'ember-field-components/classes/utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 

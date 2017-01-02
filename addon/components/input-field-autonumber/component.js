@@ -1,7 +1,7 @@
 /* global moment */
 import Ember from 'ember';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
-import { padStart, replaceAll } from 'ember-field-components/classes/string-utils';
+import { padStart, replaceAll } from 'ember-field-components/classes/utils';
 
 export default Ember.Component.extend(FieldInputComponent, {
   computedValue: Ember.computed('value', function(){

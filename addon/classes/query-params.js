@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import StringUtils from 'ember-field-components/classes/string-utils';
+import StringUtils from 'ember-field-components/classes/utils';
 
 export default Ember.Object.extend({
   page: 1,
