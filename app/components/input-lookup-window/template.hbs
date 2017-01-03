@@ -1,0 +1,27 @@
+<!-- Modal -->
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{#if modalVisible}}
+          {{#mist-model-table title=title modelType=modelType activeModelType=activeModelType tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
+            {{#table.actions}}
+              {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
+            {{/table.actions}}
+          {{/mist-model-table}}
+        {{/if}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link waves-effect" {{action 'closeModal'}}>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if hasBlock}}
+  {{yield (action 'showModal')}}
+{{else}}
+  <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'showModal'}}>
+    <span class="glyphicon glyphicon-search"></span>
+  </button>
+{{/if}}

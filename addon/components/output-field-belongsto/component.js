@@ -46,6 +46,10 @@ export default Ember.Component.extend(FieldOutputComponent, OfflineModelCacheMix
       return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
     }
   }),
+  hasRoute: Ember.computed('relationshipModelType', function(){
+    const modelType = ModelUtils.getModelType(this.get('relationshipModelType'), this.get('store'));
+    return ModelUtils.hasRoute(modelType);
+  }),
   isPolymorphic: Ember.computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
     return options.hasOwnProperty('polymorphic') && options.polymorphic;

@@ -1,6 +1,6 @@
 {{#if setInitialValue.isIdle}}
   {{#if lookupValue}}
-    {{#if inline}}
+    {{#if (or inline (not hasRoute))}}
       {{lookupValue.name}}
     {{else}}
       <a href={{href-to route lookupValue}}>{{lookupValue.name}}</a>
