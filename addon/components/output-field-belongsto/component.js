@@ -1,11 +1,15 @@
+/* jshint noyield:true */
 import Ember from 'ember';
+import DS from 'ember-data';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
-import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 
+import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 import ModelUtils from 'ember-field-components/classes/model-utils';
+
 import { task } from 'ember-concurrency';
 
 export default Ember.Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
+
   store: Ember.inject.service(),
   init(){
     this._super(...arguments);
@@ -46,9 +50,12 @@ export default Ember.Component.extend(FieldOutputComponent, OfflineModelCacheMix
       return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
     }
   }),
-  hasRoute: Ember.computed('relationshipModelType', function(){
-    const modelType = ModelUtils.getModelType(this.get('relationshipModelType'), this.get('store'));
-    return ModelUtils.hasRoute(modelType);
+  hasRoute: Ember.computed('lookupValue', function(){
+    const lookupValue = this.get('lookupValue');
+    if(!Ember.isBlank(lookupValue)){
+      return ModelUtils.hasRoute(lookupValue.constructor);
+    }
+    return false;
   }),
   isPolymorphic: Ember.computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
