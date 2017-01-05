@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import StringUtils from 'ember-field-components/classes/utils';
+import { replaceAll } from 'ember-field-components/classes/utils';
 
 export default Ember.Object.extend({
   page: 1,
@@ -21,7 +21,7 @@ export default Ember.Object.extend({
       let column = this.get('searchField');
       queryParams.filter[column] = {};
       queryParams.filter[column]['operator'] = 'like';
-      queryParams.filter[column]['value'] = StringUtils.replaceAll(queryParams.search, '*', '%');
+      queryParams.filter[column]['value'] = replaceAll(queryParams.search, '*', '%');
     }
     if(Ember.isBlank(queryParams.page)){
       delete queryParams.page;
