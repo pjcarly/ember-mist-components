@@ -1,5 +1,6 @@
 {{#if (or model.isNew (not value))}}
-  Automatically generated
+  {{styleClass}}
+  {{output-text value="Automatically generated" placeholder=placeholder prefix=prefix suffix=suffix styleClass=styleClass class="input autonumber" inputId=inputId}}
 {{else}}
   {{output-text value=computedValue placeholder=placeholder prefix=prefix suffix=suffix styleClass=styleClass inputId=inputId}}
 {{/if}}
