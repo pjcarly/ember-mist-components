@@ -81,7 +81,7 @@ export default Ember.Mixin.create({
     this.get('entityRouter').transitionToCreate(modelType);
   }).group('modelTasks'),
   refresh: task(function * (model) {
-    model.rollbackAttributes(); // To clear any potential dirty state (else the reload won't work)
+    model.doRollback(); // To clear any potential dirty state (else the reload won't work)
     let modelName = getModelName(model);
     let store = this.get('store');
 

@@ -1,6 +1,5 @@
 /* jshint noyield:true */
 import Ember from 'ember';
-import DS from 'ember-data';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
 
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';

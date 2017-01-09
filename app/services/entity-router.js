@@ -1,9 +1,10 @@
 import Ember from 'ember';
-import { getModelName, getParentRoute } from 'ember-field-components/classes/model-utils';
+import { getModelName, getParentRoute, getModelType } from 'ember-field-components/classes/model-utils';
 
 export default Ember.Service.extend({
   // beware, -routing is a private API, migrate once Routing as a Service is released:
   //https://github.com/emberjs/ember.js/issues/12719
+  store: Ember.inject.service(),
   router: Ember.inject.service('-routing'),
   transitionToView: function(model){
     const modelName = getModelName(model);
@@ -32,10 +33,15 @@ export default Ember.Service.extend({
     }
     this.get('router').transitionTo(`${routePrefix}${modelName}.delete`, [model.get('id')]);
   },
-  transitionToCreate: function(modelType){
-    this.get('router').transitionTo(`${modelType}.new`);
+  transitionToCreate: function(modelTypeName){
+    const modelType = getModelType(modelTypeName, this.get('store'));
+    if(!Ember.isBlank(modelType.parentRoute)){
+      this.get('router').transitionTo(`${modelType.parentRoute}.${modelTypeName}.new`);
+    } else {
+      this.get('router').transitionTo(`${modelTypeName}.new`);
+    }
   },
-  transitionToList: function(modelType){
-    this.get('router').transitionTo(`${modelType}`);
+  transitionToList: function(modelTypeName){
+    this.get('router').transitionTo(`${modelTypeName}`);
   }
 });
