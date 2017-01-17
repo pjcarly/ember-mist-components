@@ -40,11 +40,7 @@ export default Ember.Mixin.create({
       this.get('entityRouter').transitionToList(modelName);
     })
     .catch((reason) => {
-      Push.create(`There was an error deleting your information`, {
-        timeout: 4000,
-        body: `${reason.message}`
-      });
-      console.log(reason.message); // TODO: change to Ember.debug after beta
+      this.logMessage(`There was an error saving your information`, reason.message);
     });
   }).group('modelTasks'),
   cancel: task(function * (target) {
@@ -70,11 +66,7 @@ export default Ember.Mixin.create({
       this.get('entityRouter').transitionToView(model);
     })
     .catch((reason) => {
-      Push.create(`There was an error saving your information`, {
-        timeout: 4000,
-        body: `${reason.message}`
-      });
-      console.log(reason.message); // TODO: change to Ember.debug after beta
+      this.logMessage(`There was an error saving your information`, reason.message);
     });
   }).group('modelTasks'),
   new: task(function * (modelType) {
@@ -94,5 +86,12 @@ export default Ember.Mixin.create({
     }
 
     yield store.findRecord(modelName, model.get('id'), options);
-  }).group('modelTasks')
+  }).group('modelTasks'),
+  logMessage(subject, message){
+    Push.create(subject, {
+      timeout: 4000,
+      body: message
+    });
+    console.log(message); // TODO: change to Ember.debug after beta
+  }
 });
