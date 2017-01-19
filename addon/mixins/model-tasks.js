@@ -33,7 +33,7 @@ export default Ember.Mixin.create({
     }.bind(this));
   }).group('modelTasks'),
   deleteWithoutConfirm: task(function * (model) {
-    let modelName = getModelName(model);
+    const modelName = getModelName(model);
     model.deleteRecord();
     yield model.save()
     .then(() => {
@@ -53,7 +53,7 @@ export default Ember.Mixin.create({
       if(!target.get('isNew')){
         this.get('entityRouter').transitionToView(target);
       } else {
-        let modelName = getModelName(target);
+        const modelName = getModelName(target);
         this.get('entityRouter').transitionToList(modelName);
       }
     } else {
@@ -74,10 +74,10 @@ export default Ember.Mixin.create({
   }).group('modelTasks'),
   refresh: task(function * (model) {
     model.doRollback(); // To clear any potential dirty state (else the reload won't work)
-    let modelName = getModelName(model);
-    let store = this.get('store');
-
+    const modelName = getModelName(model);
+    const store = this.get('store');
     const type = ModelUtils.getModelType(modelName, store);
+
     let defaultIncludes = ModelUtils.getDefaultIncludes(type);
     let options = {};
 
@@ -92,6 +92,6 @@ export default Ember.Mixin.create({
       timeout: 4000,
       body: message
     });
-    console.log(message); // TODO: change to Ember.debug after beta
+    Ember.debug(message); // TODO: change to Ember.debug after beta
   }
 });
