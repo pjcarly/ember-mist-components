@@ -6,8 +6,8 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
   internalUpdate: false,
   draggable: true,
 
-  init(...args){
-    this._super(...args);
+  init(){
+    this._super(...arguments);
 
     this.set('zoom', 1);
     let location = this.get('location');

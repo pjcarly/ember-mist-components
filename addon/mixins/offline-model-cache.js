@@ -37,7 +37,7 @@ export default Ember.Mixin.create({
       }
 
       // and finally we set the cached flag
-      ModelUtils.modelTypeHasBeenLoadedFromCache(modelType);
+      ModelUtils.modelTypeWasLoaded(modelType);
     }
   })
 });
