@@ -81,6 +81,7 @@ export default Ember.Mixin.create({
     let defaultIncludes = ModelUtils.getDefaultIncludes(type);
     let options = {};
 
+    // Lets also include the default includes
     if(defaultIncludes.length > 0) {
       options['include'] = defaultIncludes.join(',');
     }
@@ -93,5 +94,10 @@ export default Ember.Mixin.create({
       body: message
     });
     Ember.debug(message); // TODO: change to Ember.debug after beta
+  },
+  actions: {
+    print() {
+      window.print();
+    }
   }
 });
