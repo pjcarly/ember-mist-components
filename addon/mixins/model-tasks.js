@@ -96,8 +96,11 @@ export default Ember.Mixin.create({
     Ember.debug(message); // TODO: change to Ember.debug after beta
   },
   actions: {
-    print() {
+    print(model) {
+      const title = document.title;
+      document.title = model.get('name');
       window.print();
+      document.title = title;
     }
   }
 });
