@@ -51,17 +51,19 @@ export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
-          localChildren.toArray().forEach((localChild) => {
-            const childId = localChild.get('id');
-            // When the local child's id is blank, we also unload the model
-            // this means that the record is newly created locally, and was created in the back-end (as the response is succesful)
-            // but there is no way of mapping the local children with the ids of included records.
-            // we just unload them, and the newly created, included models will just be added to the store later on
-            if(Ember.isBlank(childId) || Ember.isBlank(returnedIds) || !returnedIds.includes(childId)) {
-              Ember.debug(`(serializer) Unloading ${localChild.get('name')} because ${Ember.isBlank(childId) ? 'id was blank': 'id wasn\'t returned in included hash'}`);
-              store.unloadRecord(localChild);
-            }
-          });
+          if(!Ember.isBlank(localChildren)) {
+            localChildren.toArray().forEach((localChild) => {
+              const childId = localChild.get('id');
+              // When the local child's id is blank, we also unload the model
+              // this means that the record is newly created locally, and was created in the back-end (as the response is succesful)
+              // but there is no way of mapping the local children with the ids of included records.
+              // we just unload them, and the newly created, included models will just be added to the store later on
+              if(Ember.isBlank(childId) || Ember.isBlank(returnedIds) || !returnedIds.includes(childId)) {
+                Ember.debug(`(serializer) Unloading ${localChild.get('name')} because ${Ember.isBlank(childId) ? 'id was blank': 'id wasn\'t returned in included hash'}`);
+                store.unloadRecord(localChild);
+              }
+            });
+          }
         }
       }
     }
@@ -100,12 +102,14 @@ export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
-          localChildren.toArray().forEach((localChild) => {
-            // the parent, and the children will be deleted by the back-end
-            // but the children won't be automatically deleted locally, that is what we do here
-            Ember.debug(`(serializer) Unloading ${localChild.get('name')} because parent record was deleted`);
-            store.unloadRecord(localChild);
-          });
+          if(!Ember.isBlank(localChildren)) {
+            localChildren.toArray().forEach((localChild) => {
+              // the parent, and the children will be deleted by the back-end
+              // but the children won't be automatically deleted locally, that is what we do here
+              Ember.debug(`(serializer) Unloading ${localChild.get('name')} because parent record was deleted`);
+              store.unloadRecord(localChild);
+            });
+          }
         }
       }
     }
