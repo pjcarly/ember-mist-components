@@ -9,9 +9,11 @@
 {{else}}
   {{#if linkTo}}
     {{#link-to link}}{{yield}}{{/link-to}}
-  {{else}}
+  {{else if link}}
     <a href={{href-to link}} class={{if className (concat className ' waves-effect') 'waves-effect'}}>
       {{yield}}
     </a>
+  {{else}}
+    {{yield}}
   {{/if}}
 {{/if}}

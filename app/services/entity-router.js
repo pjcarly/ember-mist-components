@@ -7,31 +7,13 @@ export default Ember.Service.extend({
   store: Ember.inject.service(),
   router: Ember.inject.service('-routing'),
   transitionToView: function(model){
-    const modelName = getModelName(model);
-    const parentRoute = getParentRoute(model);
-    let routePrefix = '';
-    if(!Ember.isBlank(parentRoute)){
-      routePrefix = `${parentRoute}.`;
-    }
-    this.get('router').transitionTo(`${routePrefix}${modelName}.view`, [model.get('id')]);
+    this.transitionToModelRoute(model, 'view');
   },
   transitionToEdit: function(model){
-    const modelName = getModelName(model);
-    const parentRoute = getParentRoute(model);
-    let routePrefix = '';
-    if(!Ember.isBlank(parentRoute)){
-      routePrefix = `${parentRoute}.`;
-    }
-    this.get('router').transitionTo(`${routePrefix}${modelName}.edit`, [model.get('id')]);
+    this.transitionToModelRoute(model, 'edit');
   },
   transitionToDelete: function(model){
-    const modelName = getModelName(model);
-    const parentRoute = getParentRoute(model);
-    let routePrefix = '';
-    if(!Ember.isBlank(parentRoute)){
-      routePrefix = `${parentRoute}.`;
-    }
-    this.get('router').transitionTo(`${routePrefix}${modelName}.delete`, [model.get('id')]);
+    this.transitionToModelRoute(model, 'delete');
   },
   transitionToCreate: function(modelTypeName){
     const modelType = getModelType(modelTypeName, this.get('store'));
@@ -43,5 +25,14 @@ export default Ember.Service.extend({
   },
   transitionToList: function(modelTypeName){
     this.get('router').transitionTo(`${modelTypeName}`);
+  },
+  transitionToModelRoute: function(model, route) {
+    const modelName = getModelName(model);
+    const parentRoute = getParentRoute(model);
+    let routePrefix = '';
+    if(!Ember.isBlank(parentRoute)){
+      routePrefix = `${parentRoute}.`;
+    }
+    this.get('router').transitionTo(`${routePrefix}${modelName}.${route}`, [model.get('id')]);
   }
 });
