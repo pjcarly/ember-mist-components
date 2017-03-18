@@ -5,11 +5,28 @@ export default Ember.Mixin.create({
   model(params) {
     const entityName = this.get('entityName');
     const type = ModelUtils.getModelType(entityName, this.get('store'));
-    let defaultIncludes = ModelUtils.getDefaultIncludes(type);
-    let options = {};
+    const modelDefaultIncludes = ModelUtils.getDefaultIncludes(type);
+    const routeDefaultIncludes = this.get('defaultIncludes');
 
-    if(defaultIncludes.length > 0) {
-      options['include'] = defaultIncludes.join(',');
+    // Lets merge the different includes
+    let includes = [];
+    if(!Ember.isBlank(modelDefaultIncludes) && modelDefaultIncludes.length > 0) {
+      includes = includes.concat(modelDefaultIncludes);
+    }
+
+    if(!Ember.isBlank(routeDefaultIncludes) && routeDefaultIncludes.length > 0) {
+      includes = includes.concat(routeDefaultIncludes);
+    }
+
+    // and filter the doubles
+    let uniqueIncludes = includes.filter((elem, index, self) => {
+      return index == self.indexOf(elem);
+    })
+
+    // And now construct the options hash
+    let options = {};
+    if(uniqueIncludes.length > 0) {
+      options['include'] = uniqueIncludes.join(',');
     }
 
     return this.store.findRecord(entityName, params[`${entityName}_id`], options);
