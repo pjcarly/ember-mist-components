@@ -8,33 +8,34 @@ import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
 const { dasherize, capitalize } = Ember.String;
 
-export default Ember.Component.extend(EKMixin, {
+export default Ember.Component.extend({
   store: Ember.inject.service(),
   entityRouter: Ember.inject.service(),
   classNames: ['mist-model-table'],
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
-  table: null,
-  fixedSearch: false,
-
-  lastPage: 0,
-  resultRowFirst: 0,
-  resultRowLast: 0,
-  resultTotalCount: 0,
-
-  selectedModels: [],
-
   init() {
     this._super(...arguments);
+
+    this.set('table', null);
+    this.set('fixedSearch', false);
+    this.set('lastPage', 0);
+    this.set('resultRowFirst', 0);
+    this.set('resultRowLast', 0);
+    this.set('resultTotalCount', 0);
+    this.set('selectedModels', []);
+
     this.setActiveModelType();
     this.set('table', new Table(this.get('columns')));
+  },
+  didInsertElement(){
+    this._super(...arguments);
+
     this.get('fetchRecords').perform();
     if(this.get('fixedSearch')){
       this.set('searchToggled', true);
     }
-  },
-  didInsertElement(){
-    this._super(...arguments);
+
     if(this.get('fixedSearch')){
       this.$('input[type="search"]').focus();
     }
