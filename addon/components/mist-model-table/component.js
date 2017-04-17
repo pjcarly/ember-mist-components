@@ -54,10 +54,15 @@ export default Ember.Component.extend({
   setListView(){
     const listView = this.get('listView');
     const listViewLimit = Ember.get(listView, 'limit');
+    const listViewSort = Ember.get(listView, 'sort');
     let queryParams = this.get('queryParams');
 
     if(!Ember.isBlank(listViewLimit)){
       queryParams.set('limit', listViewLimit);
+    }
+    if(!Ember.isBlank(listViewSort)){
+      queryParams.set('sort', dasherize(listViewSort.field));
+      queryParams.set('dir', listViewSort.dir);
     }
   },
   isMultipleModelTypes: Ember.computed('modelType', function(){
@@ -150,6 +155,7 @@ export default Ember.Component.extend({
     // This function gets the columns defined on the model, and sets them as the columns of the table
     const type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     const listView = this.get('listView');
+    const queryParams = this.get('queryParams');
     let columns = [];
 
     if(this.get('multiSelect')){
@@ -174,6 +180,7 @@ export default Ember.Component.extend({
       column['width'] = (modelColumn === 'id') ? '60px' : undefined;
       column['resizable'] = (modelColumn !== 'id');
       column['cellComponent'] = 'mist-model-table-cell';
+      column['sorted'] = queryParams.get('sort') === dasherize(modelColumn);
 
       columns.push(column);
     });
