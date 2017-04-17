@@ -26,6 +26,7 @@ export default Ember.Component.extend({
     this.set('selectedModels', []);
 
     this.setActiveModelType();
+    this.setListView();
     this.set('table', new Table(this.get('columns')));
   },
   didInsertElement(){
@@ -48,6 +49,15 @@ export default Ember.Component.extend({
       } else {
         this.set('activeModelType', this.get('modelType'));
       }
+    }
+  },
+  setListView(){
+    const listView = this.get('listView');
+    const listViewLimit = Ember.get(listView, 'limit');
+    let queryParams = this.get('queryParams');
+
+    if(!Ember.isBlank(listViewLimit)){
+      queryParams.set('limit', listViewLimit);
     }
   },
   isMultipleModelTypes: Ember.computed('modelType', function(){
@@ -132,10 +142,14 @@ export default Ember.Component.extend({
   guid: Ember.computed(function(){
     return Ember.guidFor(this);
   }),
-  columns: Ember.computed('activeModelType', function(){
-    // This function gets the columns defined on the model, and sets them as the columns of the table
+  listView: Ember.computed('activeModelType', function(){
     let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
-    let modelColumns = ModelUtils.getDefaultListViewColumns(type);
+    return ModelUtils.getDefaultListView(type);
+  }),
+  columns: Ember.computed('activeModelType', 'listView', function(){
+    // This function gets the columns defined on the model, and sets them as the columns of the table
+    const type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
+    const listView = this.get('listView');
     let columns = [];
 
     if(this.get('multiSelect')){
@@ -151,7 +165,7 @@ export default Ember.Component.extend({
       columns.push(column);
     }
 
-    modelColumns.forEach(function(modelColumn){
+    Ember.get(listView, 'columns').forEach((modelColumn) => {
       let label = ModelUtils.getLabel(type, modelColumn);
       let column = {};
 

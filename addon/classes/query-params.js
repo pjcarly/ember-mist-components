@@ -2,9 +2,11 @@ import Ember from 'ember';
 import { replaceAll } from 'ember-field-components/classes/utils';
 
 export default Ember.Object.extend({
-  page: 1,
-  limit: 10,
-  dir: 'asc',
+  init(){
+    this.set('page', 1);
+    this.set('limit', 10);
+    this.set('dir', 'asc');
+  },
   params: Ember.computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'standardFilter', function(){
     let standardFilter = this.get('standardFilter');
     let queryParams = this.getProperties('page', 'limit', 'sort', 'dir', 'search', 'include');

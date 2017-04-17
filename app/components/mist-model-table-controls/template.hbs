@@ -20,9 +20,9 @@
       Rows: {{input-select class="plain-select" selectOptions=rowSelectOptions value=rowsValue valueChanged=(action 'rowsSelected') isRequired=true}}
     </li>
     <li>
-      <button class="btn btn-default btn-icon waves-effect waves-circle" {{action "prevPage"}}><i class="zmdi zmdi-chevron-left"></i></button>
+      <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "prevPage"}}><i class="zmdi zmdi-chevron-left"></i></button>
       {{input-select class="plain-select" selectOptions=pageSelectOptions value=currentPage valueChanged=(action 'pageSelected') isRequired=true}}
-      <button class="btn btn-default btn-icon waves-effect waves-circle" {{action "nextPage"}}><i class="zmdi zmdi-chevron-right"></i></button>
+      <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "nextPage"}}><i class="zmdi zmdi-chevron-right"></i></button>
     </li>
   </ul>
 </div>
