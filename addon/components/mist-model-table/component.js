@@ -53,7 +53,7 @@ export default Ember.Component.extend({
   },
   setListView(){
     const listView = this.get('listView');
-    const listViewLimit = Ember.get(listView, 'limit');
+    const listViewLimit = Ember.get(listView, 'rows');
     const listViewSort = Ember.get(listView, 'sort');
     let queryParams = this.get('queryParams');
 
