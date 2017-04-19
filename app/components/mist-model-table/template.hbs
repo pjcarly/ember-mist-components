@@ -1,5 +1,13 @@
 {{#if fetchRecords.last}}
-  {{#mist-card-header title=title class=(if searchToggled 'search-toggled ch-alt' 'ch-alt')}}
+  <div class={{concat 'card-header ch-alt mist-model-table-header' (if searchToggled ' search-toggled')}}>
+    <h2>{{title}}</h2>
+    {{#if fetchRecords.isRunning}}
+      {{mist-spinner size="10px" tagName="span"}}
+    {{else}}
+      <span style="width: 10px;height:10px;display:inline-block;"></span>
+    {{/if}}
+    {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
+
     {{#mist-menu id=(concat guid '-actions') class="actions"}}
       {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
       {{#mist-menu-dropdown-item}}
@@ -19,7 +27,7 @@
     </div>
 
     <div id={{concat guid '-new'}}></div>
-  {{/mist-card-header}}
+  </div>
 
   <div id={{concat guid '-map'}}></div>
   {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) map=(component 'ember-wormhole' to=(concat guid '-map')) new=(component 'ember-wormhole' to=(concat guid '-new')) models=mapModels)}}

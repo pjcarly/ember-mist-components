@@ -6,7 +6,7 @@ import StringUtils from 'ember-field-components/classes/utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
-const { dasherize, capitalize } = Ember.String;
+const { dasherize, capitalize, camelize } = Ember.String;
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),
@@ -26,8 +26,7 @@ export default Ember.Component.extend({
     this.set('selectedModels', []);
 
     this.setActiveModelType();
-    this.setListView();
-    this.set('table', new Table(this.get('columns')));
+    this.set('table', new Table([]));
   },
   didInsertElement(){
     this._super(...arguments);
@@ -51,19 +50,49 @@ export default Ember.Component.extend({
       }
     }
   },
-  setListView(){
-    const listView = this.get('listView');
-    const listViewLimit = Ember.get(listView, 'rows');
-    const listViewSort = Ember.get(listView, 'sort');
+  setListViews: task(function * (){
+    let activeListView = this.get('activeListView');
+
+    if(Ember.isBlank(this.get('availableListViews'))){
+      let availableListViews = [];
+      if(!Ember.isBlank(this.get('defaultModelListView'))){
+        let availableListView = {};
+        availableListView.value = 'All';
+        availableListView.label = 'All'
+        availableListViews.push(availableListView);
+      }
+
+      const modelType = this.get('activeModelType');
+      yield this.get('store').query('list-view', {filter: {model: modelType}}).then((listViews) => {
+        listViews.forEach((listView) => {
+          let availableListView = {}
+          availableListView.value = listView.get('id');
+          availableListView.label = listView.get('name');
+          availableListViews.push(availableListView);
+        });
+      });
+
+      this.set('availableListViews', availableListViews);
+      if(!Ember.isBlank(this.get('activeListViewKey'))){
+        this.set('activeListViewKey', '');
+      }
+    }
+
+    if(Ember.isBlank(activeListView)){
+      this.set('activeListViewKey', 'All');
+      this.set('activeListView', this.get('defaultModelListView'));
+      this.setQueryParamsBasedOnActiveListView();
+    }
+  }),
+  setQueryParamsBasedOnActiveListView(){
+    const activeListView = this.get('activeListView');
+    const listViewLimit = Ember.get(activeListView, 'rows');
+    const listViewSort = Ember.get(activeListView, 'sort');
     let queryParams = this.get('queryParams');
 
-    if(!Ember.isBlank(listViewLimit)){
-      queryParams.set('limit', listViewLimit);
-    }
-    if(!Ember.isBlank(listViewSort)){
-      queryParams.set('sort', dasherize(listViewSort.field));
-      queryParams.set('dir', listViewSort.dir);
-    }
+    queryParams.set('limit', Ember.isBlank(listViewLimit) ? 10 : listViewLimit);
+    queryParams.set('sort', Ember.isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
+    queryParams.set('dir', Ember.isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
   },
   isMultipleModelTypes: Ember.computed('modelType', function(){
     return Array.isArray(this.get('modelType'));
@@ -147,14 +176,14 @@ export default Ember.Component.extend({
   guid: Ember.computed(function(){
     return Ember.guidFor(this);
   }),
-  listView: Ember.computed('activeModelType', function(){
+  defaultModelListView: Ember.computed('activeModelType', function(){
     let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     return ModelUtils.getDefaultListView(type);
   }),
-  columns: Ember.computed('activeModelType', 'listView', function(){
+  columns: Ember.computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
     const type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
-    const listView = this.get('listView');
+    const activeListView = this.get('activeListView');
     const queryParams = this.get('queryParams');
     let columns = [];
 
@@ -171,16 +200,18 @@ export default Ember.Component.extend({
       columns.push(column);
     }
 
-    Ember.get(listView, 'columns').forEach((modelColumn) => {
-      let label = ModelUtils.getLabel(type, modelColumn);
+    Ember.get(activeListView, 'columns').forEach((modelColumn) => {
+      const camelizedColumn = camelize(modelColumn);
+      let label = ModelUtils.getLabel(type, camelizedColumn);
       let column = {};
 
       column['label'] = label;
-      column['valuePath'] = modelColumn;
+      column['valuePath'] = camelizedColumn;
       column['width'] = (modelColumn === 'id') ? '60px' : undefined;
       column['resizable'] = (modelColumn !== 'id');
       column['cellComponent'] = 'mist-model-table-cell';
       column['sorted'] = queryParams.get('sort') === dasherize(modelColumn);
+      column['ascending'] = queryParams.get('dir') === 'asc';
 
       columns.push(column);
     });
@@ -196,7 +227,8 @@ export default Ember.Component.extend({
   }),
 
   fetchRecords: task(function * (){
-    let modelType = this.get('activeModelType');
+    yield this.get('setListViews').perform();
+    const modelType = this.get('activeModelType');
     if(this.get('isArrayTable') || this.get('displaySelected')){
       // this table is an array table, we don't query the store for records
       let models = this.get('displaySelected') ? this.get('selectedModels') : this.get('models');
@@ -241,6 +273,16 @@ export default Ember.Component.extend({
       // we query the records from the store instead
       this.setDefaultIncludes();
       let queryParams = this.get('queryParams.params');
+
+      // Lets also check if a listview is selected. And pass if to the query if needed
+      const activeListView = this.get('activeListView');
+      if(this.get('activeListViewKey') !== 'All' && !Ember.isBlank(activeListView)){
+        queryParams.filter['_listview'] = activeListView.get('id');
+      } else {
+        delete queryParams.filter['_listview'];
+      }
+
+      // Now we can query the store
       yield this.get('store').query(modelType, queryParams).then(records => {
         this.table.setRows(records);
         this.set('mapModels', records);
@@ -253,13 +295,20 @@ export default Ember.Component.extend({
         this.reSetSelected();
       });
     }
+    if(Ember.isBlank(this.get('table.columns'))){
+      this.setColumns();
+    }
   }).drop(),
 
-  fetchRecordsWithNewModelType: task(function * (){
+  fetchRecordsAndRefreshColumns: task(function * (){
     yield this.get('fetchRecords').perform();
     // Needed for polymorphic tables
-    this.get('table').setColumns(this.get('columns'));
+    this.setColumns();
   }).drop(),
+
+  setColumns(){
+    this.get('table').setColumns(this.get('columns'));
+  },
 
   setDefaultIncludes(){
     // This method adds the default includes defined on the modeltype, to the queryParams object
@@ -501,7 +550,18 @@ export default Ember.Component.extend({
     },
     activeModelTypeChanged(activeModelType){
       this.set('activeModelType', activeModelType);
-      this.get('fetchRecordsWithNewModelType').perform();
+      this.get('fetchRecordsAndRefreshColumns').perform();
+    },
+    listViewChanged(newListView){
+      this.set('activeListViewKey', newListView);
+      if(newListView === 'All'){
+        // Default List view
+        this.set('activeListView', this.get('defaultModelListView'));
+      } else {
+        this.set('activeListView', this.get('store').peekRecord('list-view', newListView))
+      }
+      this.setQueryParamsBasedOnActiveListView();
+      this.get('fetchRecordsAndRefreshColumns').perform();
     }
   }
 });
