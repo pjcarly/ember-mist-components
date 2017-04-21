@@ -1,14 +1,15 @@
 import Ember from 'ember';
 import InputComponent from 'ember-field-components/mixins/component-input';
+const { Component, computed, isBlank } = Ember;
 
-export default Ember.Component.extend(InputComponent, {
+export default Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
-  activeModelType: Ember.computed('value', 'modelType', function(){
+  activeModelType: computed('value', 'modelType', function(){
     // needed for polymorphic relationships
     if(Array.isArray(this.get('modelType'))){
       const value = this.get('value');
-      if(!Ember.isBlank(value)){
+      if(!isBlank(value)){
         return value.constructor.modelName;
       } else {
         return this.get('modelType')[0];
@@ -17,14 +18,14 @@ export default Ember.Component.extend(InputComponent, {
       return this.get('modelType');
     }
   }),
-  computedValue: Ember.computed('value', function(){
-    if(Ember.isNone(this.get('value'))){
+  computedValue: computed('value', function(){
+    if(isBlank(this.get('value'))){
       return null;
     } else {
       return this.get('value.name');
     }
   }),
-  typeaheadParams: Ember.computed(function(){
+  typeaheadParams: computed(function(){
     return { filter: { name: { operator: 'STARTS_WITH' } } };
   }),
   actions: {

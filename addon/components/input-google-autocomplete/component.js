@@ -1,23 +1,24 @@
 import Ember from 'ember';
+const { Component, computed, isBlank } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: '',
 
-  location: Ember.computed('model', 'locationField', function(){
+  location: computed('model', 'locationField', function(){
     let locationField = this.get('locationField');
     let location = null;
 
-    if(!Ember.isBlank(locationField)){
+    if(!isBlank(locationField)){
       location = this.get('model').getLocation(locationField);
     }
 
     return location;
   }),
-  address: Ember.computed('model', 'addressField', function(){
+  address: computed('model', 'addressField', function(){
     let addressField = this.get('addressField');
     let address = null;
 
-    if(!Ember.isBlank(addressField)){
+    if(!isBlank(addressField)){
       address = this.get('model').getAddress(addressField);
     }
 
@@ -26,28 +27,28 @@ export default Ember.Component.extend({
   actions: {
     didUpdatePlace(value) {
       let nameField = this.get('nameField');
-      if(!Ember.isBlank(nameField)){
+      if(!isBlank(nameField)){
         this.get('model').set(nameField, value.place.name);
       }
 
       let websiteField = this.get('websiteField');
-      if(!Ember.isBlank(websiteField)){
+      if(!isBlank(websiteField)){
         this.get('model').set(websiteField, value.place.website);
       }
 
       let phoneField = this.get('phoneField');
-      if(!Ember.isBlank(phoneField)){
+      if(!isBlank(phoneField)){
         this.get('model').set(phoneField, value.place.international_phone_number);
       }
 
       let location = this.get('location');
-      if(!Ember.isBlank(location)){
+      if(!isBlank(location)){
         location.set('lat', value.lat);
         location.set('lng', value.lng);
       }
 
       let address = this.get('address');
-      if(!Ember.isBlank(address)){
+      if(!isBlank(address)){
         let street = '';
         let number = '';
         let state = '';
@@ -66,13 +67,13 @@ export default Ember.Component.extend({
           } else if(addressComponent.types[0] === 'administrative_area_level_2'){
             state = addressComponent.long_name;
           } else if(addressComponent.types[0] === 'administrative_area_level_1'){
-            if(Ember.isBlank(state)){
+            if(isBlank(state)){
               state = addressComponent.long_name;
             }
           }
         });
 
-        if(!Ember.isBlank(number)) {
+        if(!isBlank(number)) {
           street += ' ' + number;
         }
 

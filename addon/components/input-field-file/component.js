@@ -3,21 +3,22 @@ import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
 import { task } from 'ember-concurrency';
+const { Component, inject, isBlank, isEmpty, getOwner } = Ember;
 
-export default Ember.Component.extend(FieldInputComponent, {
-  session: Ember.inject.service(),
-  ajax: Ember.inject.service(),
+export default Component.extend(FieldInputComponent, {
+  session: inject.service(),
+  ajax: inject.service(),
 
   deleteFile: task(function * (){
     let value = this.get('value');
 
-    if(!Ember.isBlank(value.id)){
+    if(!isBlank(value.id)){
       this.set('value', null);
     }
   }).drop(),
   uploadFile: task(function * (files){
-    if (!Ember.isEmpty(files)) {
-      let config = Ember.getOwner(this).resolveRegistration('config:environment');
+    if (!isEmpty(files)) {
+      let config = getOwner(this).resolveRegistration('config:environment');
 
       var uploader = EmberUploader.Uploader.extend({
         url: `${config.apiEndpoint}file/files`,

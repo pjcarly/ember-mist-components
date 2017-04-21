@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import ComponentDynamicObserverMixin from 'ember-field-components/mixins/component-dynamic-observer';
+const { Component, computed, isBlank, run } = Ember;
 
-export default Ember.Component.extend(ComponentDynamicObserverMixin, {
+export default Component.extend(ComponentDynamicObserverMixin, {
   tagName: '',
   internalUpdate: false,
   draggable: true,
@@ -11,7 +12,7 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
 
     this.set('zoom', 1);
     let location = this.get('location');
-    if(!Ember.isBlank(location.get('lat')) && !Ember.isBlank(location.get('lng'))){
+    if(!isBlank(location.get('lat')) && !isBlank(location.get('lng'))){
       this.setLatLng(location.get('lat'), location.get('lng'));
       this.set('zoom', 16);
     }
@@ -20,7 +21,7 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
   },
 
   valueObserver: function(){
-    Ember.run.once(() => {
+    run.once(() => {
       const internalUpdate = this.get('internalUpdate');
 
       if(!internalUpdate){
@@ -43,7 +44,7 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
     let {lat, lng} = this.getProperties('lat', 'lng');
     let markers = [];
 
-    if(Ember.isBlank(lat) || Ember.isBlank(lng)){
+    if(isBlank(lat) || isBlank(lng)){
       lat = 0;
       lng = 0;
       this.set('zoom', 1);
@@ -73,7 +74,7 @@ export default Ember.Component.extend(ComponentDynamicObserverMixin, {
     this.set('internalUpdate', false);
     this.setLatLng(marker.position.lat(), marker.position.lng());
   },
-  location: Ember.computed('model', 'field', function(){
+  location: computed('model', 'field', function(){
     let location = this.get('model').getLocation(this.get('field'));
     return location;
   })

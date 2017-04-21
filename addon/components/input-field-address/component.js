@@ -1,14 +1,15 @@
 import Ember from 'ember';
 import { getCountrySelectOptions } from 'ember-mist-components/classes/address';
+const { Component, computed } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: '',
 
-  address: Ember.computed('model', 'field', function(){
+  address: computed('model', 'field', function(){
     let address = this.get('model').getAddress(this.get('field'));
     return address;
   }),
-  countrySelectOptions: Ember.computed(function(){
+  countrySelectOptions: computed(function(){
     return getCountrySelectOptions();
   }),
   actions: {
