@@ -7,10 +7,12 @@ import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
 const { dasherize, capitalize, camelize } = Ember.String;
+const { Component, inject, computed, get, on, guidFor, isBlank } = Ember;
 
-export default Ember.Component.extend({
-  store: Ember.inject.service(),
-  entityRouter: Ember.inject.service(),
+export default Component.extend({
+  store: inject.service(),
+  storage: inject.service(),
+  entityRouter: inject.service(),
   classNames: ['mist-model-table'],
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
@@ -42,7 +44,7 @@ export default Ember.Component.extend({
   },
   setActiveModelType(){
     // This function is needed for Polymorphic cases, where a choice of model type is passed
-    if(Ember.isBlank(this.get('activeModelType'))){
+    if(isBlank(this.get('activeModelType'))){
       if(this.get('isMultipleModelTypes')){
         this.set('activeModelType', this.get('modelType')[0]);
       } else {
@@ -52,33 +54,60 @@ export default Ember.Component.extend({
   },
   setListViews: task(function * (){
     let activeListView = this.get('activeListView');
+    let defaultListViewKey = this.get('defaultListView');
+    let savedListViewSelection = this.getSavedListViewSelection();
 
-    if(Ember.isBlank(this.get('availableListViews'))){
+    if(isBlank(this.get('availableListViews'))){
       let availableListViews = [];
-      if(!Ember.isBlank(this.get('defaultModelListView'))){
+      if(!isBlank(this.get('defaultModelListView'))){
         let availableListView = {};
         availableListView.value = 'All';
         availableListView.label = 'All'
         availableListViews.push(availableListView);
       }
 
-      const modelType = this.get('activeModelType');
-      yield this.get('store').query('list-view', {filter: {model: modelType}}).then((listViews) => {
-        listViews.forEach((listView) => {
-          let availableListView = {}
-          availableListView.value = listView.get('id');
-          availableListView.label = listView.get('name');
-          availableListViews.push(availableListView);
+      const grouping = this.get('listViewGrouping');
+      if(!isBlank(grouping)) { // Only if a grouping was provided, will we fetch them
+        let defaultListView;
+        let savedSelectedListView;
+
+        yield this.get('store').query('list-view', {filter: {grouping: grouping}}).then((listViews) => {
+          listViews.forEach((listView) => {
+            let availableListView = {}
+            availableListView.value = listView.get('id');
+            availableListView.label = listView.get('name');
+            availableListViews.push(availableListView);
+
+            if(listView.get('id') === savedListViewSelection){
+              savedSelectedListView = listView;
+            }
+
+            if(listView.get('key') === defaultListViewKey){
+              defaultListView = listView;
+            }
+          });
         });
-      });
+
+        // Here we check if we have a saved list view selection from a previous page visit
+        // In case we have nothing, we also check if there is a default provided
+        if(!isBlank(savedSelectedListView)){
+          activeListView = savedSelectedListView;
+          this.set('activeListViewKey', activeListView.get('id'));
+          this.set('activeListView', activeListView);
+          this.setQueryParamsBasedOnActiveListView();
+        } else if (!isBlank(defaultListView)) {
+          activeListView = defaultListView;
+          this.set('activeListViewKey', activeListView.get('id'));
+          this.set('activeListView', activeListView);
+          this.setQueryParamsBasedOnActiveListView();
+        }
+      }
 
       this.set('availableListViews', availableListViews);
-      if(!Ember.isBlank(this.get('activeListViewKey'))){
-        this.set('activeListViewKey', '');
-      }
+      this.set('displayListViewSelector', availableListViews.get('length') > 1);
     }
 
-    if(Ember.isBlank(activeListView)){
+    if(isBlank(activeListView)){
       this.set('activeListViewKey', 'All');
       this.set('activeListView', this.get('defaultModelListView'));
       this.setQueryParamsBasedOnActiveListView();
@@ -86,18 +115,18 @@ export default Ember.Component.extend({
   }),
   setQueryParamsBasedOnActiveListView(){
     const activeListView = this.get('activeListView');
-    const listViewLimit = Ember.get(activeListView, 'rows');
-    const listViewSort = Ember.get(activeListView, 'sort');
+    const listViewLimit = get(activeListView, 'rows');
+    const listViewSort = get(activeListView, 'sort');
     let queryParams = this.get('queryParams');
 
-    queryParams.set('limit', Ember.isBlank(listViewLimit) ? 10 : listViewLimit);
-    queryParams.set('sort', Ember.isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
-    queryParams.set('dir', Ember.isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
+    queryParams.set('limit', isBlank(listViewLimit) ? 10 : listViewLimit);
+    queryParams.set('sort', isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
+    queryParams.set('dir', isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
   },
-  isMultipleModelTypes: Ember.computed('modelType', function(){
+  isMultipleModelTypes: computed('modelType', function(){
     return Array.isArray(this.get('modelType'));
   }),
-  multipleModelTypeSelectOptions: Ember.computed('modelType', function(){
+  multipleModelTypeSelectOptions: computed('modelType', function(){
     const modelTypes = this.get('modelType');
     let selectOptions = [];
 
@@ -110,7 +139,7 @@ export default Ember.Component.extend({
 
     return selectOptions;
   }),
-  keyboardFind: Ember.on(keyUp('KeyF'), function(){
+  keyboardFind: on(keyUp('KeyF'), function(){
     if(!this.get('searchToggled')){
       this.toggleSearch();
       this.$('input[type="search"]').focus();
@@ -118,24 +147,24 @@ export default Ember.Component.extend({
       this.$('input[type="search"]').focus();
     }
   }),
-  keyboardRefresh: Ember.on(keyUp('KeyR'), function(){
+  keyboardRefresh: on(keyUp('KeyR'), function(){
     this.get('fetchRecords').perform();
   }),
-  keyboardNext: Ember.on(keyUp('ArrowRight'), function(){
+  keyboardNext: on(keyUp('ArrowRight'), function(){
     this.nextPage();
   }),
-  keyboardPrev: Ember.on(keyUp('ArrowLeft'), function(){
+  keyboardPrev: on(keyUp('ArrowLeft'), function(){
     this.prevPage();
   }),
-  keyboardDown: Ember.on(keyDown('ArrowDown'), function(event){
+  keyboardDown: on(keyDown('ArrowDown'), function(event){
     event.preventDefault();
     this.nextRow();
   }),
-  keyboardUp: Ember.on(keyDown('ArrowUp'), function(event){
+  keyboardUp: on(keyDown('ArrowUp'), function(event){
     event.preventDefault();
     this.prevRow();
   }),
-  keyboardEnter: Ember.on(keyDown('Enter'), function(){
+  keyboardEnter: on(keyDown('Enter'), function(){
     // this only has meaning when the table isn't multiSelect
     if(!this.get('multiSelect')){
       const activeRows = this.get('table.rows').filterBy('activated');
@@ -144,7 +173,7 @@ export default Ember.Component.extend({
       }
     }
   }),
-  keyboardSpace: Ember.on(keyDown('Space'), function(){
+  keyboardSpace: on(keyDown('Space'), function(){
     // this only has meaning when the table is multiSelect
     if(this.get('multiSelect')){
       const activeRows = this.get('table.rows').filterBy('activated');
@@ -154,7 +183,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  filters: Ember.computed({
+  filters: computed({
     get(){
       return this.get('queryParams.filter');
     },
@@ -163,24 +192,24 @@ export default Ember.Component.extend({
       return this.get('queryParams.standardFilter');
     }
   }),
-  amountSelected: Ember.computed('selectedModels.[]', function(){
+  amountSelected: computed('selectedModels.[]', function(){
     return this.get('selectedModels.length');
   }),
-  queryParams: Ember.computed(function(){
+  queryParams: computed(function(){
     let queryParams = this.get('_queryParams');
-    if(Ember.isBlank(queryParams)){
+    if(isBlank(queryParams)){
       this.set('_queryParams', QueryParams.create());
     }
     return this.get('_queryParams');
   }),
-  guid: Ember.computed(function(){
-    return Ember.guidFor(this);
+  guid: computed(function(){
+    return guidFor(this);
   }),
-  defaultModelListView: Ember.computed('activeModelType', function(){
+  defaultModelListView: computed('activeModelType', function(){
     let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     return ModelUtils.getDefaultListView(type);
   }),
-  columns: Ember.computed('activeModelType', 'activeListView', function(){
+  columns: computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
     const type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
     const activeListView = this.get('activeListView');
@@ -200,7 +229,7 @@ export default Ember.Component.extend({
       columns.push(column);
     }
 
-    Ember.get(activeListView, 'columns').forEach((modelColumn) => {
+    get(activeListView, 'columns').forEach((modelColumn) => {
       const camelizedColumn = camelize(modelColumn);
       let label = ModelUtils.getLabel(type, camelizedColumn);
       let column = {};
@@ -218,12 +247,12 @@ export default Ember.Component.extend({
 
     return columns;
   }),
-  isArrayTable: Ember.computed('models', function(){
+  isArrayTable: computed('models', function(){
     return this.get('arrayTable');
   }),
-  fixed: Ember.computed('tableHeight', function(){
+  fixed: computed('tableHeight', function(){
     // when a height of the table is passed, we set the column headers fixed
-    return !Ember.isBlank(this.get('tableHeight'));
+    return !isBlank(this.get('tableHeight'));
   }),
 
   fetchRecords: task(function * (){
@@ -237,16 +266,16 @@ export default Ember.Component.extend({
       let queryParams = this.get('queryParams');
 
       // First we filter by Search keyword
-      if(!Ember.isBlank(queryParams.search)){
+      if(!isBlank(queryParams.search)){
         models = models.filter((model) => {
-          const modelValueToCompare = model.get(Ember.String.camelize(queryParams.get('searchField')));
-          return !Ember.isBlank(modelValueToCompare) && StringUtils.wildcardMatch(modelValueToCompare.toUpperCase(), queryParams.search.toUpperCase());
+          const modelValueToCompare = model.get(camelize(queryParams.get('searchField')));
+          return !isBlank(modelValueToCompare) && StringUtils.wildcardMatch(modelValueToCompare.toUpperCase(), queryParams.search.toUpperCase());
         });
       }
 
       // Next we sort
-      if(!Ember.isBlank(queryParams.sort)){
-        const sortBy = Ember.String.camelize(queryParams.sort);
+      if(!isBlank(queryParams.sort)){
+        const sortBy = camelize(queryParams.sort);
         models = models.sortBy(sortBy);
         if(queryParams.dir === 'desc'){
           models = models.reverse();
@@ -276,7 +305,7 @@ export default Ember.Component.extend({
 
       // Lets also check if a listview is selected. And pass if to the query if needed
       const activeListView = this.get('activeListView');
-      if(this.get('activeListViewKey') !== 'All' && !Ember.isBlank(activeListView)){
+      if(this.get('activeListViewKey') !== 'All' && !isBlank(activeListView)){
         queryParams.filter['_listview'] = activeListView.get('id');
       } else {
         delete queryParams.filter['_listview'];
@@ -287,15 +316,15 @@ export default Ember.Component.extend({
         this.table.setRows(records);
         this.set('mapModels', records);
         let meta = records.get('meta');
-        this.set('queryParams.page', Ember.isBlank(meta['page-current']) ? 1 : meta['page-current']);
-        this.set('lastPage', Ember.isBlank(meta['page-count']) ? 1 : meta['page-count']);
-        this.set('resultRowFirst', Ember.isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
-        this.set('resultRowLast', Ember.isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
-        this.set('resultTotalCount', Ember.isBlank(meta['total-count']) ? 0 : meta['total-count']);
+        this.set('queryParams.page', isBlank(meta['page-current']) ? 1 : meta['page-current']);
+        this.set('lastPage', isBlank(meta['page-count']) ? 1 : meta['page-count']);
+        this.set('resultRowFirst', isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
+        this.set('resultRowLast', isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
+        this.set('resultTotalCount', isBlank(meta['total-count']) ? 0 : meta['total-count']);
         this.reSetSelected();
       });
     }
-    if(Ember.isBlank(this.get('table.columns'))){
+    if(isBlank(this.get('table.columns'))){
       this.setColumns();
     }
   }).drop(),
@@ -355,7 +384,7 @@ export default Ember.Component.extend({
       }
     });
 
-    if(Ember.isBlank(activatedIndex)){
+    if(isBlank(activatedIndex)){
       rows[0].set('activated', true);
       this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex+1 < rows.length){
@@ -373,7 +402,7 @@ export default Ember.Component.extend({
       }
     });
 
-    if(Ember.isBlank(activatedIndex)){
+    if(isBlank(activatedIndex)){
       rows[0].set('activated', true);
       this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex > 0){
@@ -405,7 +434,7 @@ export default Ember.Component.extend({
     }
   },
   rowSelected(selectedRow){
-    if(Ember.isBlank(this.get('onRowSelected'))){
+    if(isBlank(this.get('onRowSelected'))){
       if(this.get('multiSelect')){
         selectedRow.toggleProperty('rowSelected');
 
@@ -445,9 +474,9 @@ export default Ember.Component.extend({
 
       let location = rowToActivate.get('content').getLocation('location');
 
-      if(!Ember.isBlank(location)){
+      if(!isBlank(location)){
         let marker = location.getMarker('company-map');
-        if(!Ember.isBlank(marker)){
+        if(!isBlank(marker)){
           marker.setIcon('assets/images/map-marker-red.png');
         }
       }
@@ -458,9 +487,9 @@ export default Ember.Component.extend({
   rowDeactivateMapMarker(row){
     if(this.get('updateMarkersOnRowHover')){
       let location = row.get('content').getLocation('location');
-      if(!Ember.isBlank(location)){
+      if(!isBlank(location)){
         let marker = location.getMarker('company-map');
-        if(!Ember.isBlank(marker)){
+        if(!isBlank(marker)){
           marker.setIcon('assets/images/map-marker-purple.png');
         }
       }
@@ -469,7 +498,27 @@ export default Ember.Component.extend({
   deactivateRows(){
     this.get('table.rows').setEach('activated', false);
   },
+  getSavedListViewSelection(){
+    const listViewGrouping = this.get('listViewGrouping');
+    if(!isBlank(listViewGrouping)){
+      let listViewSelections = this.get('storage.listViewSelections');
+      if(!isBlank(listViewSelections) && listViewSelections.hasOwnProperty(listViewGrouping)){
+        return listViewSelections[listViewGrouping];
+      }
+    }
+  },
+  saveListViewSelection(){
+    const listViewGrouping = this.get('listViewGrouping');
+    if(!isBlank(listViewGrouping)){
+      let listViewSelections = this.get('storage.listViewSelections');
+      if(isBlank(listViewSelections)){
+        listViewSelections = {};
+      }
 
+      listViewSelections[listViewGrouping] = this.get('activeListViewKey');
+      this.set('storage.listViewSelections', listViewSelections);
+    }
+  },
   actions: {
     onColumnClick(column) {
       if(this.get('multiSelect') && column.get('selectAll')){
@@ -560,6 +609,7 @@ export default Ember.Component.extend({
       } else {
         this.set('activeListView', this.get('store').peekRecord('list-view', newListView))
       }
+      this.saveListViewSelection();
       this.setQueryParamsBasedOnActiveListView();
       this.get('fetchRecordsAndRefreshColumns').perform();
     }

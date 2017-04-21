@@ -6,7 +6,10 @@
     {{else}}
       <span style="width: 10px;height:10px;display:inline-block;"></span>
     {{/if}}
-    {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
+
+    {{#if displayListViewSelector}}
+      {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
+    {{/if}}
 
     {{#mist-menu id=(concat guid '-actions') class="actions"}}
       {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
