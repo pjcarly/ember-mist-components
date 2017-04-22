@@ -1,10 +1,11 @@
 import Ember from 'ember';
+const { Component, computed, isBlank } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'li',
   linkTo: false,
-  hasAction: Ember.computed('action', function(){
-    return !Ember.isBlank(this.get('action'));
+  hasAction: computed('action', function(){
+    return !isBlank(this.get('action'));
   }),
   click() {
     if(this.get('hasAction')){

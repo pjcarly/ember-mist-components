@@ -1,27 +1,29 @@
 import Ember from 'ember';
 import ImageUtilities from 'ember-mist-components/classes/image';
+const { htmlSafe } = Ember.String;
+const { Component, inject, computed, isBlank } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'div',
-  loggedInUser: Ember.inject.service(),
-  session: Ember.inject.service(),
+  loggedInUser: inject.service(),
+  session: inject.service(),
   classNameBindings: ['showProfileMenu::toggled'],
   showProfileMenu: false,
-  user: Ember.computed('loggedInUser.user', function(){
+  user: computed('loggedInUser.user', function(){
     return this.get('loggedInUser.user');
   }),
-  profileMenuClasses: Ember.computed('showProfileMenu', function(){
+  profileMenuClasses: computed('showProfileMenu', function(){
     let styleClass = 'main-menu';
     if(this.get('showProfileMenu')){
       styleClass += ' show';
     }
     return styleClass;
   }),
-  profileMenuBackgroundStyle: Ember.computed('user.bannerImage', function(){
+  profileMenuBackgroundStyle: computed('user.bannerImage', function(){
     const bannerImage = ImageUtilities.getSecureUrl(this.get('user'), 'bannerImage', this.get('session'));
 
-    if(!Ember.isBlank(bannerImage)) {
-      return Ember.String.htmlSafe('cursor:pointer; background: url("'+ bannerImage + '"); background-size: cover;');
+    if(!isBlank(bannerImage)) {
+      return htmlSafe('cursor:pointer; background: url("'+ bannerImage + '"); background-size: cover;');
     }
   }),
   actions: {

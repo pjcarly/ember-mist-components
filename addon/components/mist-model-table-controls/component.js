@@ -1,6 +1,7 @@
 import Ember from 'ember';
+const { Component, computed, isBlank } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['row'],
   rowSelectOptions: [{
     'value': '10',
@@ -18,14 +19,14 @@ export default Ember.Component.extend({
     'value': '200',
     'label': '200'
   }],
-  pageSelectOptions: Ember.computed('lastPage', function(){
+  pageSelectOptions: computed('lastPage', function(){
     const lastPage = this.get('lastPage');
     let selectOptions = [{
       'value': '1',
       'label': '1'
     }];
 
-    if(!Ember.isBlank(lastPage)){
+    if(!isBlank(lastPage)){
       for(let i = 2; i <= lastPage; i++){
         selectOptions.push({
           'value': (i.toString()),
@@ -36,7 +37,7 @@ export default Ember.Component.extend({
 
     return selectOptions;
   }),
-  rowsValue: Ember.computed('rows', function(){
+  rowsValue: computed('rows', function(){
     return this.get('rows').toString();
   }),
   actions: {

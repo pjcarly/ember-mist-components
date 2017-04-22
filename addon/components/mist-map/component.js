@@ -3,20 +3,23 @@ import Ember from 'ember';
 import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 
+const { inject, isBlank, observer, guidFor } = Ember;
+
 export default GMaps.extend({
   setBounds: false,
-  router: Ember.inject.service('-routing'),
+  router: inject.service('-routing'),
 
   setStyles() {
     let styles = this.get('styles');
 
-    if(!Ember.isBlank(styles)) {
+    if(!isBlank(styles)) {
       let map = this.get('map.map');
       map.set('styles', styles);
     }
   },
 
-  modelsChangedObserver: Ember.observer('models', function(){
+  modelsChangedObserver: observer('models', function(){
+    // TODO: find a way to remove observer
     this.setModels();
     this.setMapBounds();
   }),
@@ -31,19 +34,19 @@ export default GMaps.extend({
 
     let infowindow = new google.maps.InfoWindow();
 
-    if(!Ember.isBlank(models) && !Ember.isBlank(field) && !Ember.isBlank(mapName)) {
+    if(!isBlank(models) && !isBlank(field) && !isBlank(mapName)) {
       let map = this.get('map.map');
 
       models.forEach((model) => {
-        let modelGuid = Ember.guidFor(model);
+        let modelGuid = guidFor(model);
         let modelLocation = model.getLocation(field);
-        if(!Ember.isBlank(modelLocation)){
+        if(!isBlank(modelLocation)){
           let {lat, lng} = modelLocation.getProperties('lat', 'lng');
           let marker = null;
 
-          if(!Ember.isBlank(lat) && !Ember.isBlank(lng)){
+          if(!isBlank(lat) && !isBlank(lng)){
             let latLng = new google.maps.LatLng(lat, lng);
-            if(!Ember.isBlank(oldMistMarkers) && oldMistMarkers.hasOwnProperty(modelGuid)){
+            if(!isBlank(oldMistMarkers) && oldMistMarkers.hasOwnProperty(modelGuid)){
               marker = oldMistMarkers[modelGuid];
               delete oldMistMarkers[modelGuid];
             } else {
@@ -87,10 +90,10 @@ export default GMaps.extend({
     let models = this.get('models');
     let field = this.get('field');
 
-    if(!Ember.isBlank(models) && !Ember.isBlank(field) && !Ember.isBlank(mapName)) {
+    if(!isBlank(models) && !isBlank(field) && !isBlank(mapName)) {
       models.forEach((model) => {
         let location = model.getLocation(field);
-        if(!Ember.isBlank(location)){
+        if(!isBlank(location)){
           location.removeMarker(mapName);
         }
       });

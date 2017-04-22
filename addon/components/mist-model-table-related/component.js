@@ -4,20 +4,21 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import { task } from 'ember-concurrency';
 
-const { dasherize } = Ember.String;
+const { Component, computed, inject } = Ember;
+const { dasherize } = String;
 
-export default Ember.Component.extend(ModelTasksMixin, {
+export default Component.extend(ModelTasksMixin, {
   tagName: '',
-  entityCache: Ember.inject.service(),
-  store: Ember.inject.service(),
+  entityCache: inject.service(),
+  store: inject.service(),
 
-  modelType: Ember.computed('model', 'field', function(){
+  modelType: computed('model', 'field', function(){
     return ModelUtils.getChildModelTypeName(this.get('model'), this.get('field'));
   }),
-  parentField: Ember.computed('model', 'field', function(){
+  parentField: computed('model', 'field', function(){
     return ModelUtils.getRelationshipInverse(this.get('model'), this.get('field'));
   }),
-  filters: Ember.computed('model', 'parentField', function(){
+  filters: computed('model', 'parentField', function(){
     let filters = {};
     let parentField = dasherize(this.get('parentField'));
 

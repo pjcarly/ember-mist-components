@@ -1,8 +1,10 @@
 import Ember from 'ember';
 import Row from 'ember-light-table/components/lt-row';
 
+const { computed } = Ember;
+
 export default Row.extend({
   classNameBindings: ['isActivated', 'isRowSelected'],
-  isActivated: Ember.computed.readOnly('row.activated'),
-  isRowSelected: Ember.computed.readOnly('row.rowSelected')
+  isActivated: computed.readOnly('row.activated'),
+  isRowSelected: computed.readOnly('row.rowSelected')
 });
