@@ -5,7 +5,7 @@ import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import { task } from 'ember-concurrency';
 
 const { Component, computed, inject } = Ember;
-const { dasherize } = String;
+const { dasherize } = Ember.String;
 
 export default Component.extend(ModelTasksMixin, {
   tagName: '',

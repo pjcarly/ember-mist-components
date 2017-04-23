@@ -2,7 +2,7 @@ import Ember from 'ember';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 
-const { Mixn, Inflector, isBlank } = Ember;
+const { Mixin, Inflector, isBlank } = Ember;
 const { camelize } = String;
 
 export default Mixin.create({
