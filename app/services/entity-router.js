@@ -1,11 +1,13 @@
 import Ember from 'ember';
 import { getModelName, getParentRoute, getModelType } from 'ember-field-components/classes/model-utils';
 
-export default Ember.Service.extend({
+const { Service, isBlank, inject } = Ember;
+
+export default Service.extend({
   // beware, -routing is a private API, migrate once Routing as a Service is released:
-  //https://github.com/emberjs/ember.js/issues/12719
-  store: Ember.inject.service(),
-  router: Ember.inject.service('-routing'),
+  //https://github.com/emberjs/Ember.js/issues/12719
+  store: inject.service(),
+  router: inject.service('-routing'),
   transitionToView: function(model){
     this.transitionToModelRoute(model, 'view');
   },
@@ -17,7 +19,7 @@ export default Ember.Service.extend({
   },
   transitionToCreate: function(modelTypeName){
     const modelType = getModelType(modelTypeName, this.get('store'));
-    if(!Ember.isBlank(modelType.parentRoute)){
+    if(!isBlank(modelType.parentRoute)){
       this.get('router').transitionTo(`${modelType.parentRoute}.${modelTypeName}.new`);
     } else {
       this.get('router').transitionTo(`${modelTypeName}.new`);
@@ -30,7 +32,7 @@ export default Ember.Service.extend({
     const modelName = getModelName(model);
     const parentRoute = getParentRoute(model);
     let routePrefix = '';
-    if(!Ember.isBlank(parentRoute)){
+    if(!isBlank(parentRoute)){
       routePrefix = `${parentRoute}.`;
     }
     this.get('router').transitionTo(`${routePrefix}${modelName}.${route}`, [model.get('id')]);

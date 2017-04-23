@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+const { Object } = Ember;
+
+export default Object.extend({
 
 });

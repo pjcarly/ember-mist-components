@@ -1,10 +1,13 @@
 import DS from 'ember-data';
 
-export default DS.Transform.extend({
+const { isBlank } = Ember;
+const { Transform } = DS;
+
+export default Transform.extend({
   deserialize: function(serialized) {
     let location = {};
 
-    if(!Ember.isBlank(serialized)) {
+    if(!isBlank(serialized)) {
       location.lat = serialized.lat;
       location.lng = serialized.lng;
     }
@@ -14,7 +17,7 @@ export default DS.Transform.extend({
   serialize: function(deserialized) {
     let serializedLocation = {};
 
-    if(!Ember.isBlank(deserialized)) {
+    if(!isBlank(deserialized)) {
       serializedLocation['lat'] = deserialized.lat;
       serializedLocation['lng'] = deserialized.lng;
     }

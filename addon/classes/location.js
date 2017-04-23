@@ -1,10 +1,12 @@
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+const { Object, computed, isBlank } = Ember;
+
+export default Object.extend({
   markers: null,
   field: null,
   model: null,
-  lat: Ember.computed('model', 'field', {
+  lat: computed('model', 'field', {
     get(){
       let location = this.getLocationObject();
       return location.lat;
@@ -14,7 +16,7 @@ export default Ember.Object.extend({
       return value;
     }
   }),
-  lng: Ember.computed('model', 'field', {
+  lng: computed('model', 'field', {
     get(){
       let location = this.getLocationObject();
       return location.lng;
@@ -32,7 +34,7 @@ export default Ember.Object.extend({
   },
   getLocationObject(){
     let location = this.get('model').get(this.get('field'));
-    if(Ember.isBlank(location)){
+    if(isBlank(location)){
       location = {};
       location.lat = null;
       location.lng = null;
@@ -46,7 +48,7 @@ export default Ember.Object.extend({
   addMarker(mapName, marker){
     let markers = this.get('markers');
 
-    if(Ember.isBlank(markers)){
+    if(isBlank(markers)){
       markers = {};
     }
 
@@ -56,7 +58,7 @@ export default Ember.Object.extend({
   removeMarker(mapName) {
     let markers = this.get('markers');
 
-    if(!Ember.isBlank(markers) && markers.hasOwnProperty(mapName)){
+    if(!isBlank(markers) && markers.hasOwnProperty(mapName)){
       delete markers[mapName];
     }
 
@@ -65,7 +67,7 @@ export default Ember.Object.extend({
   getMarker(mapName) {
     let markers = this.get('markers');
 
-    if(!Ember.isBlank(markers) && markers.hasOwnProperty(mapName)){
+    if(!isBlank(markers) && markers.hasOwnProperty(mapName)){
       return markers[mapName];
     }
   }

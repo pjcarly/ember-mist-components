@@ -2,8 +2,10 @@ import Ember from 'ember';
 import Location from 'ember-mist-components/classes/location';
 import Address from 'ember-mist-components/classes/address';
 
-export default Ember.Mixin.create({
-  setDefaultValuesForAttributes: Ember.on('ready', function(){
+const { Mixin, on } = Ember;
+
+export default Mixin.create({
+  setDefaultValuesForAttributes: on('ready', function(){
     this.eachAttribute((name, attribute) => {
       if(attribute.type === 'location'){
         let locations = this.get('locations');

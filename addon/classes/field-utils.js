@@ -1,9 +1,11 @@
 import Ember from 'ember';
 
+const { isBlank } = Ember;
+
 export function transformFieldSelectOptionsToSelectOptions(fieldModel){
   const selectOptions = fieldModel.get('selectOptions');
   const transformedSelectOptions = [];
-  if(!Ember.isBlank(selectOptions)){
+  if(!isBlank(selectOptions)){
     for (const key in selectOptions) {
       if (selectOptions.hasOwnProperty(key)) {
         let selectOption = {};

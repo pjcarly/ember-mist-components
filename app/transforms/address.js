@@ -1,10 +1,14 @@
+import Ember from 'ember';
 import DS from 'ember-data';
+
+const { isBlank } = Ember;
+const { Transform } = DS;
 
 export default DS.Transform.extend({
   deserialize: function(serialized) {
     let address = {};
 
-    if(!Ember.isBlank(serialized)) {
+    if(!isBlank(serialized)) {
       address.street = serialized.street;
       address.postalCode = serialized['postal-code'];
       address.city = serialized.city;
@@ -23,7 +27,7 @@ export default DS.Transform.extend({
   serialize: function(deserialized) {
     let serializedAddress = {}
 
-    if(!Ember.isBlank(deserialized)) {
+    if(!isBlank(deserialized)) {
       serializedAddress['country'] = deserialized.country;
       serializedAddress['city'] = deserialized.city;
       serializedAddress['postal-code'] = deserialized.postalCode;

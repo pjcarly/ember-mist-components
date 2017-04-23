@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 
-export default Ember.Mixin.create({
+const { Mixin, isBlank } = Ember;
+
+export default Mixin.create({
   model(params) {
     const entityName = this.get('entityName');
     const type = ModelUtils.getModelType(entityName, this.get('store'));
@@ -10,11 +12,11 @@ export default Ember.Mixin.create({
 
     // Lets merge the different includes
     let includes = [];
-    if(!Ember.isBlank(modelDefaultIncludes) && modelDefaultIncludes.length > 0) {
+    if(!isBlank(modelDefaultIncludes) && modelDefaultIncludes.length > 0) {
       includes = includes.concat(modelDefaultIncludes);
     }
 
-    if(!Ember.isBlank(routeDefaultIncludes) && routeDefaultIncludes.length > 0) {
+    if(!isBlank(routeDefaultIncludes) && routeDefaultIncludes.length > 0) {
       includes = includes.concat(routeDefaultIncludes);
     }
 

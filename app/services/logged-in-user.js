@@ -1,16 +1,19 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
-  session: Ember.inject.service('session'),
-  store: Ember.inject.service(),
+const { Service, inject, computed, isBlank } = Ember;
+const { Promise } = Ember.RSVP;
+
+export default Service.extend({
+  session: inject.service('session'),
+  store: inject.service(),
   user: null,
-  isAuthenticated: Ember.computed.oneWay('session.isAuthenticated', function() {
+  isAuthenticated: computed.oneWay('session.isAuthenticated', function() {
     return this.get('session.isAuthenticated');
   }),
   loadCurrentUser() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const userId = this.get('session.data.authenticated.user_id');
-      if (!Ember.isEmpty(userId)) {
+      if (!isBlank(userId)) {
         return this.get('store').find('user', userId).then((user) => {
           this.set('user', user);
           resolve();

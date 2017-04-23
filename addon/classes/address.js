@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+const { Object, computed, isBlank } = Ember;
+
 export function getCountrySelectOptions(){
   return [{
     value: 'AF',
@@ -751,10 +753,10 @@ export function getCountrySelectOptions(){
   }];
 }
 
-export default Ember.Object.extend({
+export default Object.extend({
   model: null,
   field: null,
-  street: Ember.computed('model', 'field', {
+  street: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
       return address.street;
@@ -764,7 +766,7 @@ export default Ember.Object.extend({
       return value;
     }
   }),
-  city: Ember.computed('model', 'field', {
+  city: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
       return address.city;
@@ -774,7 +776,7 @@ export default Ember.Object.extend({
       return value;
     }
   }),
-  postalCode: Ember.computed('model', 'field', {
+  postalCode: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
       return address.postalCode;
@@ -784,7 +786,7 @@ export default Ember.Object.extend({
       return value;
     }
   }),
-  state: Ember.computed('model', 'field', {
+  state: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
       return address.state;
@@ -794,7 +796,7 @@ export default Ember.Object.extend({
       return value;
     }
   }),
-  country: Ember.computed('model', 'field', {
+  country: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
       return address.country;
@@ -812,7 +814,7 @@ export default Ember.Object.extend({
   },
   getAddressObject(){
     let address = this.get('model').get(this.get('field'));
-    if(Ember.isBlank(address)){
+    if(isBlank(address)){
       address = {};
       address.street = null;
       address.city = null;

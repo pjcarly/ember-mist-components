@@ -1,10 +1,13 @@
 import DS from 'ember-data';
 
-export default DS.Transform.extend({
+const { isBlank } = Ember;
+const { Transform } = DS;
+
+export default Transform.extend({
   deserialize: function(serialized) {
     let file = {};
 
-    if(!Ember.isBlank(serialized)) {
+    if(!isBlank(serialized)) {
       file.id = serialized.id;
       file.filename = serialized.filename;
       file.uri = serialized.uri;
@@ -18,7 +21,7 @@ export default DS.Transform.extend({
   serialize: function(deserialized) {
     let serializedFile = {};
 
-    if(!Ember.isBlank(deserialized)) {
+    if(!isBlank(deserialized)) {
       serializedFile['id'] = deserialized.id;
       serializedFile['filename'] = deserialized.filename;
       serializedFile['uri'] = deserialized.uri;

@@ -1,19 +1,22 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
-export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
+const { JSONAPISerializer, EmbeddedRecordsMixin } = DS;
+const { isBlank, get, debug } = Ember;
+
+export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
   normalizeSaveResponse(store, primaryModelClass, payload, id) {
     const attrs = this.get('attrs');
 
     // Only if this serializer has attrs (needed by EmbeddedRecordsMixin)
     // If the payload doesn't include anything, we ignore this (just the model was returned, no includes)
     // And only if the id not is blank, for new models this has no meaning, as the record don't exist in the back-end yet
-    if(!Ember.isBlank(attrs) && payload.hasOwnProperty('included') && !Ember.isBlank(id)){
+    if(!isBlank(attrs) && payload.hasOwnProperty('included') && !isBlank(id)){
       // We check the relationships that should be embedded, when they are of type hasMany
       // We will check the response, and unload all missing models in the response from the store
       // Models who aren't present are considered deleted in the backend, and should be removed locally
       let relationshipsToCheck = {};
-      const relationshipsByName = Ember.get(primaryModelClass, 'relationshipsByName');
+      const relationshipsByName = get(primaryModelClass, 'relationshipsByName');
       for(const relationshipName in attrs) {
         if(attrs[relationshipName].embedded === 'always' && relationshipsByName.has(relationshipName)) {
           const relationship = relationshipsByName.get(relationshipName);
@@ -51,15 +54,15 @@ export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
-          if(!Ember.isBlank(localChildren)) {
+          if(!isBlank(localChildren)) {
             localChildren.toArray().forEach((localChild) => {
               const childId = localChild.get('id');
               // When the local child's id is blank, we also unload the model
               // this means that the record is newly created locally, and was created in the back-end (as the response is succesful)
               // but there is no way of mapping the local children with the ids of included records.
               // we just unload them, and the newly created, included models will just be added to the store later on
-              if(Ember.isBlank(childId) || Ember.isBlank(returnedIds) || !returnedIds.includes(childId)) {
-                Ember.debug(`(serializer) Unloading ${localChild.get('name')} because ${Ember.isBlank(childId) ? 'id was blank': 'id wasn\'t returned in included hash'}`);
+              if(isBlank(childId) || isBlank(returnedIds) || !returnedIds.includes(childId)) {
+                debug(`(serializer) Unloading ${localChild.get('name')} because ${isBlank(childId) ? 'id was blank': 'id wasn\'t returned in included hash'}`);
                 store.unloadRecord(localChild);
               }
             });
@@ -76,10 +79,10 @@ export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
     // Only if this serializer has attrs (needed by EmbeddedRecordsMixin)
     // And only if the id not is blank, for new models this has no meaning, as the record doesn't exist in the back-end yet
     // and will just be unloaded locally by the reset controller mixin
-    if(!Ember.isBlank(attrs) && !Ember.isBlank(id)){
+    if(!isBlank(attrs) && !isBlank(id)){
       // We check the relationships that should be embedded, when they are of type hasMany
       let relationshipsToCheck = {};
-      const relationshipsByName = Ember.get(primaryModelClass, 'relationshipsByName');
+      const relationshipsByName = get(primaryModelClass, 'relationshipsByName');
       for(const relationshipName in attrs) {
         if(attrs[relationshipName].embedded === 'always' && relationshipsByName.has(relationshipName)) {
           const relationship = relationshipsByName.get(relationshipName);
@@ -102,11 +105,11 @@ export default DS.JSONAPISerializer.extend(DS.EmbeddedRecordsMixin, {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
-          if(!Ember.isBlank(localChildren)) {
+          if(!isBlank(localChildren)) {
             localChildren.toArray().forEach((localChild) => {
               // the parent, and the children will be deleted by the back-end
               // but the children won't be automatically deleted locally, that is what we do here
-              Ember.debug(`(serializer) Unloading ${localChild.get('name')} because parent record was deleted`);
+              debug(`(serializer) Unloading ${localChild.get('name')} because parent record was deleted`);
               store.unloadRecord(localChild);
             });
           }

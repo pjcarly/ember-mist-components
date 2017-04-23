@@ -7,10 +7,12 @@ import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 import Push from 'pushjs';
 
-export default Ember.Mixin.create({
-  entityCache: Ember.inject.service(),
-  entityRouter: Ember.inject.service(),
-  store: Ember.inject.service(),
+const { Mixin, inject, isBlank, debug } = Ember;
+
+export default Mixin.create({
+  entityCache: inject.service(),
+  entityRouter: inject.service(),
+  store: inject.service(),
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {
@@ -45,7 +47,7 @@ export default Ember.Mixin.create({
   }).group('modelTasks'),
   cancel: task(function * (target) {
     const returnToModel = this.get('entityCache').getReturnToModelAndClear();
-    if(!Ember.isBlank(returnToModel)){
+    if(!isBlank(returnToModel)){
       target = returnToModel;
     }
 
@@ -93,7 +95,7 @@ export default Ember.Mixin.create({
       timeout: 4000,
       body: message
     });
-    Ember.debug(message); // TODO: change to Ember.debug after beta
+    debug(message);
   },
   actions: {
     print(model) {

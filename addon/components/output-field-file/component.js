@@ -3,4 +3,4 @@ import FieldOutputComponent from 'ember-field-components/mixins/component-field-
 
 const { Component } = Ember;
 
-export default Ember.Component.extend(FieldOutputComponent);
+export default Component.extend(FieldOutputComponent);

@@ -3,10 +3,11 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 import FieldUtils from 'ember-mist-components/classes/field-utils';
 
+const { Mixin, inject, isBlank } = Ember;
 const { dasherize, camelize } = Ember.String;
 
-export default Ember.Mixin.create({
-  store: Ember.inject.service(),
+export default Mixin.create({
+  store: inject.service(),
 
   init(){
     this._super(...arguments);
@@ -14,7 +15,7 @@ export default Ember.Mixin.create({
   },
   setSelectOptions: task(function * (){
     const selectOptionsOnAttribute = this.get('selectOptions');
-    if(!Ember.isBlank(selectOptionsOnAttribute)){
+    if(!isBlank(selectOptionsOnAttribute)){
       // selectoptions were defined on the model attribute, we use that above all
       this.set('cachedSelectOptions', selectOptionsOnAttribute);
     } else {
@@ -29,7 +30,7 @@ export default Ember.Mixin.create({
       // first we check if the local storage has the values cached
       const localKey = camelize(`selectoptions_${id}`);
       const localSelectOptions = this.get('storage').get(localKey);
-      if(!Ember.isBlank(localSelectOptions)) {
+      if(!isBlank(localSelectOptions)) {
         cachedSelectOptions = localSelectOptions;
       } else if(store.hasRecordForId('field', id)){
         // next we check if we haven't already loaded the selectOptions
@@ -42,10 +43,10 @@ export default Ember.Mixin.create({
         });
       }
 
-      if(!Ember.isBlank(cachedSelectOptions)){
+      if(!isBlank(cachedSelectOptions)){
         this.set('cachedSelectOptions', cachedSelectOptions);
 
-        if(Ember.isBlank(localSelectOptions)){
+        if(isBlank(localSelectOptions)){
           this.get('storage').set(localKey, cachedSelectOptions);
         }
       }
