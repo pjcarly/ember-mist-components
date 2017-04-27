@@ -33,5 +33,5 @@ export default Component.extend(ModelTasksMixin, {
     this.set('entityCache.cachedModel', cachedModel);
     this.set('entityCache.returnToModel', model);
     this.get('new').perform(modelType);
-  }).group('modelTasks'),
+  })
 });
