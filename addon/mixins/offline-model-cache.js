@@ -3,7 +3,7 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 
 const { Mixin, Inflector, isBlank } = Ember;
-const { camelize } = String;
+const { camelize } = Ember.String;
 
 export default Mixin.create({
   checkOfflineCache: task(function * (store, offlineCache, modelTypeName){
