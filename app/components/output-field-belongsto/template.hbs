@@ -1,13 +1,13 @@
 {{#if setInitialValue.last}}
-  {{#if lookupValue}}
-    <span class="output text">
-      <span class="value">
+  <span class="output text">
+    <span class="value">
+      {{#if lookupValue}}
         {{#if (or inline (not hasRoute))}}
           {{lookupValue.name}}
         {{else}}
           <a href={{href-to route lookupValue}}>{{lookupValue.name}}</a>
         {{/if}}
-      </span>
+      {{/if}}
     </span>
-  {{/if}}
+  </span>
 {{/if}}

@@ -207,7 +207,8 @@ export default Component.extend({
   }),
   defaultModelListView: computed('activeModelType', function(){
     let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
-    return ModelUtils.getDefaultListView(type);
+    const modelListView = this.get('modelListView');
+    return ModelUtils.getModelListView(type, modelListView);
   }),
   columns: computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
