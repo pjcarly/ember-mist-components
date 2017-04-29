@@ -1,12 +1,15 @@
 import Ember from 'ember';
 import ImageUtilities from 'ember-mist-components/classes/image';
-const { htmlSafe } = Ember.String;
-const { Component, inject, computed, isBlank } = Ember;
+
+
+const { Component, inject, computed, isBlank, String } = Ember;
+const { htmlSafe } = String;
+const { service } = inject;
 
 export default Component.extend({
   tagName: 'div',
-  loggedInUser: inject.service(),
-  session: inject.service(),
+  loggedInUser: service(),
+  session: service(),
   classNameBindings: ['showProfileMenu::toggled'],
   showProfileMenu: false,
   user: computed('loggedInUser.user', function(){

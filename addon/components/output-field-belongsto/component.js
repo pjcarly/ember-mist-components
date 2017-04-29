@@ -4,13 +4,14 @@ import FieldOutputComponent from 'ember-field-components/mixins/component-field-
 
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 import ModelUtils from 'ember-field-components/classes/model-utils';
+import { task } from 'ember-concurrency';
 
 const { Component, inject, computed, isBlank } = Ember;
-import { task } from 'ember-concurrency';
+const { service } = inject;
 
 export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
 
-  store: inject.service(),
+  store: service(),
   init(){
     this._super(...arguments);
     this.get('setInitialValue').perform();

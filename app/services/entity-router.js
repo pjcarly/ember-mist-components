@@ -2,12 +2,13 @@ import Ember from 'ember';
 import { getModelName, getParentRoute, getModelType } from 'ember-field-components/classes/model-utils';
 
 const { Service, isBlank, inject } = Ember;
+const { service } = inject;
 
 export default Service.extend({
   // beware, -routing is a private API, migrate once Routing as a Service is released:
   //https://github.com/emberjs/Ember.js/issues/12719
-  store: inject.service(),
-  router: inject.service('-routing'),
+  store: service(),
+  router: service('-routing'),
   transitionToView: function(model){
     this.transitionToModelRoute(model, 'view');
   },

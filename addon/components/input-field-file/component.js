@@ -3,11 +3,13 @@ import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
 import { task } from 'ember-concurrency';
+
 const { Component, inject, isBlank, isEmpty, getOwner } = Ember;
+const { service } = inject;
 
 export default Component.extend(FieldInputComponent, {
-  session: inject.service(),
-  ajax: inject.service(),
+  session: service(),
+  ajax: service(),
 
   deleteFile: task(function * (){
     let value = this.get('value');

@@ -3,11 +3,12 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 import FieldUtils from 'ember-mist-components/classes/field-utils';
 
-const { Mixin, inject, isBlank } = Ember;
-const { dasherize, camelize } = Ember.String;
+const { Mixin, inject, isBlank, String } = Ember;
+const { dasherize, camelize } = String;
+const { service } = inject;
 
 export default Mixin.create({
-  store: inject.service(),
+  store: service(),
 
   init(){
     this._super(...arguments);

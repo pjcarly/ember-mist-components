@@ -4,10 +4,11 @@ import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 
 const { inject, isBlank, observer, guidFor } = Ember;
+const { service } = inject;
 
 export default GMaps.extend({
   setBounds: false,
-  router: inject.service('-routing'),
+  router: service('-routing'),
 
   setStyles() {
     let styles = this.get('styles');

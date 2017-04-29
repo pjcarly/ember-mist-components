@@ -8,11 +8,12 @@ import { getModelName } from 'ember-field-components/classes/model-utils';
 import Push from 'pushjs';
 
 const { Mixin, inject, isBlank, debug } = Ember;
+const { service } = inject;
 
 export default Mixin.create({
-  entityCache: inject.service(),
-  entityRouter: inject.service(),
-  store: inject.service(),
+  entityCache: service(),
+  entityRouter: service(),
+  store: service(),
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {

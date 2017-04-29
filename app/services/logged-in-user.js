@@ -1,11 +1,12 @@
 import Ember from 'ember';
 
-const { Service, inject, computed, isBlank } = Ember;
-const { Promise } = Ember.RSVP;
+const { Service, inject, computed, isBlank, RSVP } = Ember;
+const { Promise } = RSVP;
+const { service } = inject;
 
 export default Service.extend({
-  session: inject.service('session'),
-  store: inject.service(),
+  session: service('session'),
+  store: service(),
   user: null,
   isAuthenticated: computed.oneWay('session.isAuthenticated', function() {
     return this.get('session.isAuthenticated');

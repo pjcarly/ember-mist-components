@@ -1,10 +1,14 @@
 import Ember from 'ember';
 import InputComponent from 'ember-field-components/mixins/component-input';
-const { Component, computed, isBlank } = Ember;
+import ModelUtils from 'ember-field-components/classes/model-utils';
+
+const { Component, computed, isBlank, inject } = Ember;
+const { service } = inject;
 
 export default Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
+  store: service(),
   activeModelType: computed('value', 'modelType', function(){
     // needed for polymorphic relationships
     if(Array.isArray(this.get('modelType'))){
@@ -16,6 +20,15 @@ export default Component.extend(InputComponent, {
       }
     } else {
       return this.get('modelType');
+    }
+  }),
+  modelTitle: computed('activeModelType', function(){
+    const activeModelTypeName = this.get('activeModelType');
+    if(!isBlank(activeModelTypeName)) {
+      const modelType = ModelUtils.getModelType(activeModelTypeName, this.get('store'));
+      return ModelUtils.getPlural(modelType);
+    } else {
+      return 'Models';
     }
   }),
   computedValue: computed('value', function(){

@@ -8,10 +8,11 @@ import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-c
 
 import { task } from 'ember-concurrency';
 const { Component, inject, computed, isBlank, assert } = Ember;
+const { service } = inject;
 
 export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, {
   tagName: '',
-  store: inject.service(),
+  store: service(),
   init(){
     this._super(...arguments);
     this.get('setInitialValue').perform();

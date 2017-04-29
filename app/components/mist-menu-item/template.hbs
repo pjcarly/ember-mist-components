@@ -8,7 +8,7 @@
   {{/if}}
 {{else}}
   {{#if linkTo}}
-    {{#link-to link}}{{yield}}{{/link-to}}
+    {{#link-to link current-when=activeFor}}{{yield}}{{/link-to}}
   {{else if link}}
     <a href={{href-to link}} class={{if className (concat className ' waves-effect') 'waves-effect'}}>
       {{yield}}

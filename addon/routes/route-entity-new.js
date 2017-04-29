@@ -3,10 +3,11 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import ResetControllerMixin from 'ember-field-components/mixins/route-reset-controller';
 
 const { Route, inject, isBlank } = Ember;
+const { service } = inject;
 
 export default Route.extend(AuthenticatedRouteMixin, ResetControllerMixin, {
-  store: inject.service(),
-  entityCache: inject.service(),
+  store: service(),
+  entityCache: service(),
 
   model() {
     let cache = this.get('entityCache');

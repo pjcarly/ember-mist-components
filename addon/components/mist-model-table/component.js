@@ -6,13 +6,14 @@ import StringUtils from 'ember-field-components/classes/utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
-const { dasherize, capitalize, camelize } = Ember.String;
-const { Component, inject, computed, get, on, guidFor, isBlank } = Ember;
+const { Component, inject, computed, get, on, guidFor, isBlank, String } = Ember;
+const { dasherize, capitalize, camelize } = String;
+const { service } = inject;
 
 export default Component.extend({
-  store: inject.service(),
-  storage: inject.service(),
-  entityRouter: inject.service(),
+  store: service(),
+  storage: service(),
+  entityRouter: service(),
   classNames: ['mist-model-table'],
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
@@ -20,7 +21,6 @@ export default Component.extend({
     this._super(...arguments);
 
     this.set('table', null);
-    this.set('fixedSearch', false);
     this.set('lastPage', 0);
     this.set('resultRowFirst', 0);
     this.set('resultRowLast', 0);
@@ -33,7 +33,11 @@ export default Component.extend({
   didInsertElement(){
     this._super(...arguments);
 
-    this.get('fetchRecords').perform();
+    this.get('initializeTable').perform();
+  },
+  initializeTable: task(function * (){
+    yield this.get('fetchRecords').perform();
+
     if(this.get('fixedSearch')){
       this.set('searchToggled', true);
     }
@@ -41,7 +45,7 @@ export default Component.extend({
     if(this.get('fixedSearch')){
       this.$('input[type="search"]').focus();
     }
-  },
+  }),
   setActiveModelType(){
     // This function is needed for Polymorphic cases, where a choice of model type is passed
     if(isBlank(this.get('activeModelType'))){

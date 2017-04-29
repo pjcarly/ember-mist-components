@@ -2,9 +2,10 @@ import Ember from 'ember';
 import AjaxService from 'ember-ajax/services/ajax';
 
 const { computed, inject, getOwner } = Ember;
+const { service } = inject;
 
 export default AjaxService.extend({
-  session: inject.service(),
+  session: service(),
   host: computed(function(){
     let config = getOwner(this).resolveRegistration('config:environment');
     return config.apiHost;

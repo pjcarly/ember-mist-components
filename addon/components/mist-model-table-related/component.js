@@ -4,13 +4,14 @@ import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import { task } from 'ember-concurrency';
 
-const { Component, computed, inject } = Ember;
-const { dasherize } = Ember.String;
+const { Component, computed, inject, String } = Ember;
+const { service } = inject;
+const { dasherize } = String;
 
 export default Component.extend(ModelTasksMixin, {
   tagName: '',
-  entityCache: inject.service(),
-  store: inject.service(),
+  entityCache: service(),
+  store: service(),
 
   modelType: computed('model', 'field', function(){
     return ModelUtils.getChildModelTypeName(this.get('model'), this.get('field'));
