@@ -4,7 +4,7 @@
   {{else}}
     {{#if (not hideNew)}}
       {{#table.new}}
-        {{#mist-button class="bgm-pink btn-float" click=(perform newFromRelated)}}<i class="zmdi zmdi-plus"></i>{{/mist-button}}
+        {{#mist-button class="bgm-pink btn-float" click=(action 'newFromRelated')}}<i class="zmdi zmdi-plus"></i>{{/mist-button}}
       {{/table.new}}
     {{/if}}
   {{/if}}

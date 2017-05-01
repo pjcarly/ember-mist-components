@@ -1,10 +1,8 @@
-/* jshint noyield:true */
 import Ember from 'ember';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
-import { task } from 'ember-concurrency';
 
-const { Component, computed, inject, String } = Ember;
+const { Component, computed, inject, String, isBlank } = Ember;
 const { service } = inject;
 const { dasherize } = String;
 
@@ -26,13 +24,22 @@ export default Component.extend(ModelTasksMixin, {
     filters[parentField] = this.get('model.id');
     return filters;
   }),
-  newFromRelated: task(function * () {
-    const modelType = this.get('modelType');
-    const model = this.get('model');
-    let cachedModel = this.get('store').createRecord(modelType);
-    cachedModel.set(this.get('parentField'), model);
-    this.set('entityCache.cachedModel', cachedModel);
-    this.set('entityCache.returnToModel', model);
-    this.get('new').perform(modelType);
-  })
+  preProcessNew(model){
+    const hook = this.get('preProcessNewHook');
+    if(!isBlank(hook)){
+      hook(model);
+    }
+  },
+  actions: {
+    newFromRelated(){
+      const modelType = this.get('modelType');
+      const model = this.get('model');
+      let cachedModel = this.get('store').createRecord(modelType);
+      cachedModel.set(this.get('parentField'), model);
+      this.preProcessNew(cachedModel);
+      this.set('entityCache.cachedModel', cachedModel);
+      this.set('entityCache.returnToModel', model);
+      this.get('new').perform(modelType);
+    }
+  }
 });
