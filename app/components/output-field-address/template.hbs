@@ -1,3 +1,5 @@
-{{output-text value=value.street}}<br/>
-{{output-text value=value.postalCode}} {{output-text value=value.city}}<br/>
-{{output-select value=value.country selectOptions=countrySelectOptions}}
+<div class="output-address">
+  {{output-text value=value.street}}<br/>
+  {{output-text value=value.postalCode}} {{output-text value=value.city}}<br/>
+  {{output-select value=value.country selectOptions=countrySelectOptions}}
+</div>

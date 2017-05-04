@@ -13,6 +13,6 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    {{input-select value=address.country selectOptions=countrySelectOptions valueChanged=countryChanged}}
+    {{input-select value=address.country selectOptions=countrySelectOptions valueChanged=(action 'countryChanged') none="No country selected (required for an address)"}}
   </div>
 </div>
