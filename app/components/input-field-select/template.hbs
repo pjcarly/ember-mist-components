@@ -4,6 +4,6 @@
   {{else if isSelectSearch}}
     {{input-select-search selectOptions=cachedSelectOptions value=value valueChanged='valueChanged' styleClass=styleClass inputId=inputId}}
   {{else}}
-    {{input-select selectOptions=cachedSelectOptions value=value showEmptyValue=showEmptyValue valueChanged='valueChanged' styleClass=styleClass inputId=inputId}}
+    {{input-select selectOptions=cachedSelectOptions value=value isRequired=isRequired valueChanged='valueChanged' styleClass=styleClass none=none inputId=inputId}}
   {{/if}}
 {{/if}}
