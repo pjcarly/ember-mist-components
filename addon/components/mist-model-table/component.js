@@ -234,11 +234,22 @@ export default Component.extend({
       columns.push(column);
     }
 
+    // here we loop over every column in the listview, ans format it for ember light table
     get(activeListView, 'columns').forEach((modelColumn) => {
-      const camelizedColumn = camelize(modelColumn);
-      let label = ModelUtils.getLabel(type, camelizedColumn);
-      let column = {};
+      // First we split the columns by a ".", this is so we dont loose the dot when camelizing, as it indicates a value path
+      // This only has effect for subobjects, like location, and address
+      let splittedColumns = modelColumn.toString().split('.');
+      splittedColumns.forEach((splittedColumn, index) => {
+        splittedColumns[index] = camelize(splittedColumn);
+      });
+      // We handled the ".", and now we can rejoin the column
+      const camelizedColumn = splittedColumns.join('.');
 
+      // We get the label from the model configuration
+      let label = ModelUtils.getLabel(type, camelizedColumn);
+
+      // And finally build the structure for ember-light-table
+      let column = {};
       column['label'] = label;
       column['valuePath'] = camelizedColumn;
       column['width'] = (modelColumn === 'id') ? '60px' : undefined;
