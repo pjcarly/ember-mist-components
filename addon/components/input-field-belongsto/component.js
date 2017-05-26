@@ -124,6 +124,10 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
       if(this.get('valueChanged')){
         this.get('valueChanged')(...arguments);
       }
+
+      // And finally clear potential Errors
+      let errors = model.get('errors');
+      errors.remove(field);
     }
   }
 });

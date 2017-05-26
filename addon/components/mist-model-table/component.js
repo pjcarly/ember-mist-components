@@ -99,7 +99,7 @@ export default Component.extend({
           this.set('activeListViewKey', activeListView.get('id'));
           this.set('activeListView', activeListView);
           this.setQueryParamsBasedOnActiveListView();
-        } else if (!isBlank(defaultListView)) {
+        } else if (!isBlank(defaultListView) && savedListViewSelection !== 'All') {
           activeListView = defaultListView;
           this.set('activeListViewKey', activeListView.get('id'));
           this.set('activeListView', activeListView);
