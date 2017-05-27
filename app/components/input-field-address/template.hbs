@@ -1,18 +1,20 @@
+{{#if address.countryCode}}
+  <div class="row">
+    <div class="col-xs-12">
+      {{input-text value=address.addressLine1 valueChanged=(action 'addressLine1Changed') placeholder="Street" inputId=inputId}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 p-r-5">
+      {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged') placeholder="Postal Code"}}
+    </div>
+    <div class="col-xs-6 p-l-5">
+      {{input-text value=address.locality valueChanged=(action 'localityChanged') placeholder="City"}}
+    </div>
+  </div>
+{{/if}}
 <div class="row">
   <div class="col-xs-12">
-    {{input-text value=address.street valueChanged=(action 'streetChanged') placeholder="Street" inputId=inputId}}
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-6 p-r-5">
-    {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged') placeholder="Postal Code"}}
-  </div>
-  <div class="col-xs-6 p-l-5">
-    {{input-text value=address.city valueChanged=(action 'cityChanged') placeholder="City"}}
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12">
-    {{input-select value=address.country selectOptions=countrySelectOptions valueChanged=(action 'countryChanged') none="No country selected (required for an address)"}}
+    {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- None --"}}
   </div>
 </div>

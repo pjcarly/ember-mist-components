@@ -13,20 +13,29 @@ export default Component.extend({
     return getCountrySelectOptions();
   }),
   actions: {
-    streetChanged(value) {
-      this.get('address').set('street', value);
+    countryCodeChanged(value) {
+      this.get('address').set('countryCode', value);
+    },
+    administrativeAreaChanged(value) {
+      this.get('address').set('administrativeArea', value);
+    },
+    localityChanged(value) {
+      this.get('address').set('locality', value);
+    },
+    dependentLocalityChanged(value) {
+      this.get('address').set('dependentLocality', value);
     },
     postalCodeChanged(value) {
       this.get('address').set('postalCode', value);
     },
-    cityChanged(value) {
-      this.get('address').set('city', value);
+    sortingCodeChanged(value) {
+      this.get('address').set('sortingCode', value);
     },
-    stateChanged(value) {
-      this.get('address').set('state', value);
+    addressLine1Changed(value) {
+      this.get('address').set('addressLine1', value);
     },
-    countryChanged(value) {
-      this.get('address').set('country', value);
+    addressLine2Changed(value) {
+      this.get('address').set('addressLine2', value);
     }
   }
 });

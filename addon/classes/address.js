@@ -756,23 +756,43 @@ export function getCountrySelectOptions(){
 export default Object.extend({
   model: null,
   field: null,
-  street: computed('model', 'field', {
+  countryCode: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
-      return address.street;
+      return address.countryCode;
     },
     set(key, value){
-      this.setObjectValue('street', value);
+      this.setObjectValue('countryCode', value);
       return value;
     }
   }),
-  city: computed('model', 'field', {
+  administrativeArea: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
-      return address.city;
+      return address.administrativeArea;
     },
     set(key, value){
-      this.setObjectValue('city', value);
+      this.setObjectValue('administrativeArea', value);
+      return value;
+    }
+  }),
+  locality: computed('model', 'field', {
+    get(){
+      let address = this.getAddressObject();
+      return address.locality;
+    },
+    set(key, value){
+      this.setObjectValue('locality', value);
+      return value;
+    }
+  }),
+  dependentLocality: computed('model', 'field', {
+    get(){
+      let address = this.getAddressObject();
+      return address.dependentLocality;
+    },
+    set(key, value){
+      this.setObjectValue('dependentLocality', value);
       return value;
     }
   }),
@@ -786,26 +806,37 @@ export default Object.extend({
       return value;
     }
   }),
-  state: computed('model', 'field', {
+  sortingCode: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
-      return address.state;
+      return address.sortingCode;
     },
     set(key, value){
-      this.setObjectValue('state', value);
+      this.setObjectValue('sortingCode', value);
       return value;
     }
   }),
-  country: computed('model', 'field', {
+  addressLine1: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();
-      return address.country;
+      return address.addressLine1;
     },
     set(key, value){
-      this.setObjectValue('country', value);
+      this.setObjectValue('addressLine1', value);
       return value;
     }
   }),
+  addressLine2: computed('model', 'field', {
+    get(){
+      let address = this.getAddressObject();
+      return address.addressLine2;
+    },
+    set(key, value){
+      this.setObjectValue('addressLine2', value);
+      return value;
+    }
+  }),
+
   setObjectValue(objectField, value){
     let newAddress = this.getAddressObject();
     newAddress[objectField] = value;
@@ -816,20 +847,27 @@ export default Object.extend({
     let address = this.get('model').get(this.get('field'));
     if(isBlank(address)){
       address = {};
-      address.street = null;
-      address.city = null;
+      address.countryCode = null;
+      address.administrativeArea = null;
+      address.locality = null;
+      address.dependentLocality = null;
       address.postalCode = null;
-      address.state = null;
-      address.country = null;
+      address.sortingCode = null;
+      address.addressLine1 = null;
+      address.addressLine2 = null;
       this.get('model').set(this.get('field'), address);
     }
 
     let newAddress = {};
-    newAddress['street'] = address.street;
-    newAddress['city'] = address.city;
+    newAddress['countryCode'] = address.countryCode;
+    newAddress['administrativeArea'] = address.administrativeArea;
+    newAddress['locality'] = address.locality;
+    newAddress['dependentLocality'] = address.dependentLocality;
     newAddress['postalCode'] = address.postalCode;
-    newAddress['state'] = address.state;
-    newAddress['country'] = address.country;
+    newAddress['sortingCode'] = address.sortingCode;
+    newAddress['addressLine1'] = address.addressLine1;
+    newAddress['addressLine2'] = address.addressLine2;
+
     return newAddress;
   },
 });
