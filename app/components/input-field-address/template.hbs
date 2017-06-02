@@ -1,20 +1,21 @@
-{{#if address.countryCode}}
-  <div class="row">
-    <div class="col-xs-12">
-      {{input-text value=address.addressLine1 valueChanged=(action 'addressLine1Changed') placeholder="Street" inputId=inputId}}
+{{#if addressFormat}}
+  {{#each displayRows as |row|}}
+    <div class="row">
+      {{#each row.columns as |column|}}
+        <div class={{row.columnClassName}}>
+          {{component column.component value=(get address column.field) valueChanged=(action 'addressFieldChanged' column.field) placeholder=column.label none=column.none selectOptions=column.selectOptions disabled=column.disabled}}
+        </div>
+      {{/each}}
     </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-6 p-r-5">
-      {{input-text value=address.postalCode valueChanged=(action 'postalCodeChanged') placeholder="Postal Code"}}
-    </div>
-    <div class="col-xs-6 p-l-5">
-      {{input-text value=address.locality valueChanged=(action 'localityChanged') placeholder="City"}}
-    </div>
-  </div>
+  {{/each}}
 {{/if}}
+
 <div class="row">
   <div class="col-xs-12">
-    {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- None --"}}
+    {{#if countrySelectOptions}}
+      {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
+    {{else}}
+      {{mist-spinner size="20px" class="text-center"}}
+    {{/if}}
   </div>
 </div>

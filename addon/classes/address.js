@@ -836,6 +836,18 @@ export default Object.extend({
       return value;
     }
   }),
+  clear(){
+    let address = {};
+    address.countryCode = null;
+    address.administrativeArea = null;
+    address.locality = null;
+    address.dependentLocality = null;
+    address.postalCode = null;
+    address.sortingCode = null;
+    address.addressLine1 = null;
+    address.addressLine2 = null;
+    this.get('model').set(this.get('field'), address);
+  },
 
   setObjectValue(objectField, value){
     let newAddress = this.getAddressObject();
