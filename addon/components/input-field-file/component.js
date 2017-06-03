@@ -21,12 +21,14 @@ export default Component.extend(FieldInputComponent, {
   uploadFile: task(function * (files){
     if (!isEmpty(files)) {
       let config = getOwner(this).resolveRegistration('config:environment');
+      let ajax = this.get('ajax');
+      ajax.setHeaders();
 
       var uploader = EmberUploader.Uploader.extend({
         url: `${config.apiEndpoint}file/files`,
         type: 'POST',
         ajaxSettings: {
-          headers: this.get('ajax.headers')
+          headers: ajax.get('headers')
         }
       }).create();
 

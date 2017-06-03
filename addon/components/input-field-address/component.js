@@ -14,19 +14,6 @@ export default Component.extend({
     this._super(...arguments);
     this.get('initializeAddress').perform();
   },
-  clearSelectOptions(){
-    this.set('administrativeAreaSelectOptions', null);
-    this.set('localitySelectOptions', null);
-    this.set('dependentLocalitySelectOptions', null);
-    this.set('postalCodeSelectOptions', null);
-    this.set('sortingCodeSelectOptions', null);
-    this.set('addressLine1SelectOptions', null);
-    this.set('addressLine2SelectOptions', null);
-    this.set('organizationSelectOptions', null);
-    this.set('givenNameSelectOptions', null);
-    this.set('additionalNameSelectOptions', null);
-    this.set('familyNameSelectOptions', null);
-  },
   reRenderRows(editedField){
     const format = this.get('addressFormat');
     const selectlistDepth = format.data.attributes['subdivision-depth'];
@@ -74,8 +61,6 @@ export default Component.extend({
     return parentValues.join(',');
   },
   initializeAddress: task(function * (){
-    this.set('address.countryCode', 'CL');
-
     yield this.get('setCountrySelectOptions').perform();
     yield this.get('setAddressFormat').perform();
   }),
@@ -84,6 +69,7 @@ export default Component.extend({
     let cachedCountrySelectOptions = storage.get('addressCountrySelectOptions');
 
     if(isBlank(cachedCountrySelectOptions)){
+      ajax.setHeaders();
       yield ajax.request('/api/meta/address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
           storage.set('addressCountrySelectOptions', response);
@@ -98,12 +84,11 @@ export default Component.extend({
     const { storage, ajax, address } = this.getProperties('storage', 'ajax', 'address');
     const countryCode = address.get('countryCode');
 
-    // lets clear potential previous selectoptions to start with
-    this.clearSelectOptions();
-
     if(isBlank(countryCode)){
       // no country code is chosen, the address must be cleared
       address.clear();
+      this.set('addressFormat', null);
+      this.notifyPropertyChange('field');
     } else {
       // first we check the localstorage for the format, we might have it already
       const storageKey = `addressFormat${countryCode}`;
@@ -111,6 +96,7 @@ export default Component.extend({
 
       if(isBlank(cachedAddressFormat)){
         // no cached format found, lets request it from the server
+        ajax.setHeaders();
         yield ajax.request(`/api/meta/address/format/${countryCode}`).then((response) => {
           storage.set(storageKey, response);
           this.set('addressFormat', response);
@@ -239,20 +225,30 @@ export default Component.extend({
   getSubdivisionSelectOptions: task(function * (parentGrouping){
     // a subdivision is basically a generic name for an address component which has selectoptions that need to be fetched
     let selectoptions = [];
+    const { ajax, storage } = this.getProperties('ajax', 'storage');
+    const cacheKey = 'addressSubdivisionSelectOptions' + replaceAll(parentGrouping, ',', '');
+    let cachedSubdivisionSelectOptions = storage.get(cacheKey);
 
-    yield this.get('ajax').request(`api/meta/address/subdivisions/${parentGrouping}`).then((response) => {
-      if(!isBlank(response) && !isBlank(response.data)){
-        for(let subdivision of response.data){
-          let selectoption = {};
-          selectoption.value = subdivision.attributes['code'];
-          selectoption.label = subdivision.attributes['name'];
-          if(!isBlank(subdivision.attributes['local-name'])) {
-            selectoption.label += ` (${subdivision.attributes['local-name']})`;
+    if(isNone(cachedSubdivisionSelectOptions)){
+      ajax.setHeaders();
+      yield ajax.request(`api/meta/address/subdivisions/${parentGrouping}`).then((response) => {
+        if(!isBlank(response) && !isBlank(response.data)){
+          for(let subdivision of response.data){
+            let selectoption = {};
+            selectoption.value = subdivision.attributes['code'];
+            selectoption.label = subdivision.attributes['name'];
+            if(!isBlank(subdivision.attributes['local-name'])) {
+              selectoption.label += ` (${subdivision.attributes['local-name']})`;
+            }
+            selectoptions.push(selectoption);
           }
-          selectoptions.push(selectoption);
+
+          storage.set(cacheKey, selectoptions);
         }
-      }
-    });
+      });
+    } else {
+      selectoptions = cachedSubdivisionSelectOptions;
+    }
 
     return selectoptions;
   }),
@@ -262,6 +258,9 @@ export default Component.extend({
   }),
   actions: {
     countryCodeChanged(value) {
+      this.get('address').clearExceptAddressLines();
+      this.notifyPropertyChange('field');
+
       this.get('address').set('countryCode', value);
       this.get('setAddressFormat').perform();
     },
