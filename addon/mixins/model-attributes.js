@@ -23,11 +23,14 @@ export default Mixin.create({
         let address = Address.create();
         address.model = this;
         address.field = name;
-        address.set('street', (!isBlank(currentValue) && currentValue.hasOwnProperty('street')) ? currentValue.street : null);
-        address.set('city', (!isBlank(currentValue) && currentValue.hasOwnProperty('city')) ? currentValue.city : null);
+        address.set('countryCode', (!isBlank(currentValue) && currentValue.hasOwnProperty('countryCode')) ? currentValue.countryCode : null);
+        address.set('administrativeArea', (!isBlank(currentValue) && currentValue.hasOwnProperty('administrativeArea')) ? currentValue.administrativeArea : null);
+        address.set('locality', (!isBlank(currentValue) && currentValue.hasOwnProperty('locality')) ? currentValue.locality : null);
+        address.set('dependentLocality', (!isBlank(currentValue) && currentValue.hasOwnProperty('dependentLocality')) ? currentValue.dependentLocality : null);
         address.set('postalCode', (!isBlank(currentValue) && currentValue.hasOwnProperty('postalCode')) ? currentValue.postalCode : null);
-        address.set('state', (!isBlank(currentValue) && currentValue.hasOwnProperty('state')) ? currentValue.state : null);
-        address.set('country', (!isBlank(currentValue) && currentValue.hasOwnProperty('country')) ? currentValue.country : null);
+        address.set('sortingCode', (!isBlank(currentValue) && currentValue.hasOwnProperty('sortingCode')) ? currentValue.sortingCode : null);
+        address.set('addressLine1', (!isBlank(currentValue) && currentValue.hasOwnProperty('addressLine1')) ? currentValue.addressLine1 : null);
+        address.set('addressLine2', (!isBlank(currentValue) && currentValue.hasOwnProperty('addressLine2')) ? currentValue.addressLine2 : null);
         addresses[name] = address;
       }
     });

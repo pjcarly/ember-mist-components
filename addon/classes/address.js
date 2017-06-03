@@ -837,7 +837,7 @@ export default Object.extend({
     }
   }),
   clear(){
-    let address = {};
+    let address = this.getAddressObject();
     address.countryCode = null;
     address.administrativeArea = null;
     address.locality = null;
@@ -847,9 +847,10 @@ export default Object.extend({
     address.addressLine1 = null;
     address.addressLine2 = null;
     this.get('model').set(this.get('field'), address);
+    this.notifyPropertyChange('field'); // So the above computed properties recalculate
   },
   clearExceptAddressLines(){
-    let address = {};
+    let address = this.getAddressObject();
     address.countryCode = null;
     address.administrativeArea = null;
     address.locality = null;
@@ -857,6 +858,7 @@ export default Object.extend({
     address.postalCode = null;
     address.sortingCode = null;
     this.get('model').set(this.get('field'), address);
+    this.notifyPropertyChange('field'); // So the above computed properties recalculate
   },
   setObjectValue(objectField, value){
     let newAddress = this.getAddressObject();
