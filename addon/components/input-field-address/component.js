@@ -122,16 +122,19 @@ export default Component.extend({
       const format = addressFormat.data.attributes.format;
 
       let rawStructurePerLine = format.split('\n');
+
       for(let rawLine of rawStructurePerLine){
-        let rawColumns = rawLine.split(' ');
+        let rawColumns = rawLine.split('%');
         let row = {};
         row.columns = [];
 
         for(let rawColumn of rawColumns){
           rawColumn = rawColumn.replace(/[^0-9a-z]/gi, ''); // we remove all none alpha numeric characters
-          let column = yield this.get('getDisplayColumnnForField').perform(rawColumn, addressFormat);
-          if(!isBlank(column)){
-            row.columns.push(column);
+          if(!isBlank(rawColumn)){
+            let column = yield this.get('getDisplayColumnnForField').perform(rawColumn, addressFormat);
+            if(!isBlank(column)){
+              row.columns.push(column);
+            }
           }
         }
 
