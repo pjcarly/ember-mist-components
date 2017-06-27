@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import ResetControllerMixin from 'ember-field-components/mixins/route-reset-controller';
+import ScrollToTop from 'ember-mist-components/mixins/route-scroll-to-top';
 
 const { Route, inject, isBlank } = Ember;
 const { service } = inject;
 
-export default Route.extend(AuthenticatedRouteMixin, ResetControllerMixin, {
+export default Route.extend(AuthenticatedRouteMixin, ResetControllerMixin, ScrollToTop, {
   store: service(),
   entityCache: service(),
 
