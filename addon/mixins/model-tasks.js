@@ -5,7 +5,6 @@ import DS from 'ember-data';
 import ModelUtils from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
 import { getModelName } from 'ember-field-components/classes/model-utils';
-import Push from 'pushjs';
 
 const { Mixin, inject, isBlank, debug } = Ember;
 const { service } = inject;
@@ -14,6 +13,7 @@ export default Mixin.create({
   entityCache: service(),
   entityRouter: service(),
   store: service(),
+  toast: service(),
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {
@@ -66,6 +66,7 @@ export default Mixin.create({
   save: task(function * (model) {
     yield model.save()
     .then(() => {
+      this.logMessage(`Success`, `Record saved`);
       this.get('entityRouter').transitionToView(model);
     })
     .catch((reason) => {
@@ -92,10 +93,7 @@ export default Mixin.create({
     yield store.findRecord(modelName, model.get('id'), options);
   }).group('modelTasks'),
   logMessage(subject, message){
-    Push.create(subject, {
-      timeout: 4000,
-      body: message
-    });
+    this.get('toast').info(message, subject);
     debug(message);
   },
   actions: {
