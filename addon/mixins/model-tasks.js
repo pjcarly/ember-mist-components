@@ -40,10 +40,11 @@ export default Mixin.create({
     model.deleteRecord();
     yield model.save()
     .then(() => {
+      this.successToast(`Success`, `Record deleted`);
       this.get('entityRouter').transitionToList(modelName);
     })
     .catch((reason) => {
-      this.logMessage(`There was an error saving your information`, reason.message);
+      this.logErrorMessage(`There was an error saving your information`, reason.message);
     });
   }).group('modelTasks'),
   cancel: task(function * (target) {
@@ -66,11 +67,11 @@ export default Mixin.create({
   save: task(function * (model) {
     yield model.save()
     .then(() => {
-      this.logMessage(`Success`, `Record saved`);
+      this.successToast(`Success`, `Record saved`);
       this.get('entityRouter').transitionToView(model);
     })
     .catch((reason) => {
-      this.logMessage(`There was an error saving your information`, reason.message);
+      this.logErrorMessage(`There was an error saving your information`, reason.message);
     });
   }).group('modelTasks'),
   new: task(function * (modelType) {
@@ -90,11 +91,29 @@ export default Mixin.create({
       options['include'] = defaultIncludes.join(',');
     }
 
-    yield store.findRecord(modelName, model.get('id'), options);
+    yield store.findRecord(modelName, model.get('id'), options)
+    .then(() => {
+      this.infoToast(`Success`, `Record Refreshed`);
+    })
+    .catch((reason) => {
+      this.logErrorMessage(`There was an error refreshing`, reason.message);
+    });
   }).group('modelTasks'),
-  logMessage(subject, message){
-    this.get('toast').info(message, subject);
+  logErrorMessage(subject, message){
+    this.errorToast(subject, message);
     debug(message);
+  },
+  successToast(subject, message){
+    this.get('toast').success(message, subject);
+  },
+  infoToast(subject, message){
+    this.get('toast').info(message, subject);
+  },
+  warningToast(subject, message){
+    this.get('toast').warning(message, subject);
+  },
+  errorToast(subject, message){
+    this.get('toast').error(message, subject);
   },
   actions: {
     print(model) {
