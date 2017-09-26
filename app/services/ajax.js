@@ -10,6 +10,10 @@ export default AjaxService.extend({
     let config = getOwner(this).resolveRegistration('config:environment');
     return config.apiHost;
   }),
+  endpoint: computed(function(){
+    let config = getOwner(this).resolveRegistration('config:environment');
+    return config.apiEndpoint;
+  }),
   setHeaders(){
     // TODO: issue below used to be the case because we used a computed property, now we just set call this function before executing a request
     //       However this is far from clean, lets find a way to fix this
