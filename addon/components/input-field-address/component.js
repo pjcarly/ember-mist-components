@@ -1,14 +1,44 @@
 import Ember from 'ember';
-import { task } from 'ember-concurrency';
+import { task, taskGroup } from 'ember-concurrency';
 import { replaceAll } from 'ember-field-components/classes/utils';
 
-const { Component, computed, isBlank, isNone, inject } = Ember;
+const { Component, computed, isBlank, isNone, inject, getOwner } = Ember;
 const { service } = inject;
 
 export default Component.extend({
   tagName: '',
   storage: service(),
   ajax: service(),
+  addressLoading: taskGroup(),
+
+  config: computed(function(){
+    return getOwner(this).resolveRegistration('config:environment');
+  }),
+  shouldCache: computed(function(){
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('cacheFields')) {
+      return config['ember-mist-components'].cacheFields;
+    }
+    return true;
+  }),
+  metaEndpoint: computed(function(){
+    const config = this.get('config');
+    return config.metaEndpoint;
+  }),
+  metaSecured: computed(function(){
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('addressMetaSecured')) {
+      return config['ember-mist-components'].addressMetaSecured;
+    }
+    return true;
+  }),
+  applyXS: computed(function(){
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
+      return config['ember-mist-components'].bootstrapVersion < 4;
+    }
+    return true;
+  }),
 
   didReceiveAttrs(){
     this._super(...arguments);
@@ -65,23 +95,27 @@ export default Component.extend({
     yield this.get('setAddressFormat').perform();
   }),
   setCountrySelectOptions: task(function * (){
-    const { storage, ajax } = this.getProperties('storage', 'ajax');
+    const { storage, ajax, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'shouldCache', 'metaSecured');
     let cachedCountrySelectOptions = storage.get('addressCountrySelectOptions');
 
-    if(isBlank(cachedCountrySelectOptions)){
-      ajax.setHeaders();
-      yield ajax.request('/api/meta/address/countries/selectoptions').then((response) => {
+    if(isBlank(cachedCountrySelectOptions) || !shouldCache){
+      if(metaSecured) {
+        ajax.setHeaders();
+      }
+      yield ajax.request(this.get('metaEndpoint') + 'address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
-          storage.set('addressCountrySelectOptions', response);
+          if(shouldCache) {
+            storage.set('addressCountrySelectOptions', response);
+          }
           this.set('countrySelectOptions', response);
         }
       });
     } else {
       this.set('countrySelectOptions', cachedCountrySelectOptions);
     }
-  }),
+  }).group('addressLoading'),
   setAddressFormat: task(function * (){
-    const { storage, ajax, address } = this.getProperties('storage', 'ajax', 'address');
+    const { storage, ajax, address, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'address', 'shouldCache', 'metaSecured');
     const countryCode = address.get('countryCode');
 
     if(isBlank(countryCode)){
@@ -94,11 +128,15 @@ export default Component.extend({
       const storageKey = `addressFormat${countryCode}`;
       let cachedAddressFormat = storage.get(storageKey);
 
-      if(isBlank(cachedAddressFormat)){
+      if(isBlank(cachedAddressFormat) || !shouldCache){
         // no cached format found, lets request it from the server
-        ajax.setHeaders();
-        yield ajax.request(`/api/meta/address/format/${countryCode}`).then((response) => {
-          storage.set(storageKey, response);
+        if(metaSecured) {
+          ajax.setHeaders();
+        }
+        yield ajax.request(this.get('metaEndpoint') + `address/format/${countryCode}`).then((response) => {
+          if(shouldCache) {
+            storage.set(storageKey, response);
+          }
           this.set('addressFormat', response);
         })
       } else {
@@ -107,7 +145,7 @@ export default Component.extend({
 
       this.get('setDisplayRows').perform();
     }
-  }),
+  }).group('addressLoading'),
   setDisplayRows: task(function * (){
     // here we build the structure the component must be formatted in the template
     // we disect the addressformat, and find out how we must display the individual components
@@ -141,14 +179,18 @@ export default Component.extend({
         row.amountOfColumns = row.columns.length;
 
         if(row.amountOfColumns > 0){
-          row.columnClassName = `col-xs-${12/row.amountOfColumns}`;
+          if(this.get('applyXS')) {
+            row.columnClassName = `col-xs-${12/row.amountOfColumns}`;
+          } else {
+            row.columnClassName = `col-${12/row.amountOfColumns}`;
+          }
           rows.push(row);
         }
       }
     }
 
     this.set('displayRows', rows);
-  }),
+  }).group('addressLoading'),
   getDisplayColumnnForField: task(function * (field, format){
     if(field !== 'familyName' && field !== 'givenName' && field !== 'organization' && field !== 'additionalName'){
       const selectlistDepth = format.data.attributes['subdivision-depth'];
@@ -224,17 +266,19 @@ export default Component.extend({
 
       return column;
     }
-  }),
+  }).group('addressLoading'),
   getSubdivisionSelectOptions: task(function * (parentGrouping){
     // a subdivision is basically a generic name for an address component which has selectoptions that need to be fetched
     let selectoptions = [];
-    const { ajax, storage } = this.getProperties('ajax', 'storage');
+    const { storage, ajax, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'shouldCache', 'metaSecured');
     const cacheKey = 'addressSubdivisionSelectOptions' + replaceAll(parentGrouping, ',', '');
     let cachedSubdivisionSelectOptions = storage.get(cacheKey);
 
-    if(isNone(cachedSubdivisionSelectOptions)){
-      ajax.setHeaders();
-      yield ajax.request(`api/meta/address/subdivisions/${parentGrouping}`).then((response) => {
+    if(isNone(cachedSubdivisionSelectOptions) || !shouldCache){
+      if(metaSecured) {
+        ajax.setHeaders();
+      }
+      yield ajax.request(this.get('metaEndpoint') + `address/subdivisions/${parentGrouping}`).then((response) => {
         if(!isBlank(response) && !isBlank(response.data)){
           for(let subdivision of response.data){
             let selectoption = {};
@@ -246,7 +290,9 @@ export default Component.extend({
             selectoptions.push(selectoption);
           }
 
-          storage.set(cacheKey, selectoptions);
+          if(shouldCache) {
+            storage.set(cacheKey, selectoptions);
+          }
         }
       });
     } else {
@@ -254,7 +300,7 @@ export default Component.extend({
     }
 
     return selectoptions;
-  }),
+  }).group('addressLoading'),
   address: computed('model', 'field', function(){
     let address = this.get('model').getAddress(this.get('field'));
     return address;

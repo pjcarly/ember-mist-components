@@ -11,11 +11,16 @@
 {{/if}}
 
 <div class="row">
-  <div class="col-xs-12">
+  <div class="{{if applyXS 'col-xs-12' 'col-12'}}">
     {{#if countrySelectOptions}}
       {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
-    {{else}}
-      {{mist-spinner size="20px" class="text-center"}}
     {{/if}}
   </div>
 </div>
+
+
+{{#if addressLoading.isRunning}}
+  <div class="address-spinner">
+    {{mist-spinner size="20px" class="text-center"}}
+  </div>
+{{/if}}
