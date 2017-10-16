@@ -9,7 +9,6 @@ const { service } = inject;
 export default Component.extend({
   tagName: 'div',
   loggedInUser: service(),
-  session: service(),
   classNameBindings: ['showProfileMenu::toggled'],
   showProfileMenu: false,
   user: computed('loggedInUser.user', function(){
@@ -23,7 +22,7 @@ export default Component.extend({
     return styleClass;
   }),
   profileMenuBackgroundStyle: computed('user.bannerImage', function(){
-    const bannerImage = ImageUtilities.getSecureUrl(this.get('user'), 'bannerImage', this.get('session'));
+    const bannerImage = ImageUtilities.getSecureUrl(this.get('user'), 'bannerImage');
 
     if(!isBlank(bannerImage)) {
       return htmlSafe('cursor:pointer; background: url("'+ bannerImage + '"); background-size: cover;');
