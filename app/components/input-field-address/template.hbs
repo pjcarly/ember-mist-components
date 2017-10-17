@@ -11,7 +11,7 @@
 {{/if}}
 
 <div class="row">
-  <div class="{{if applyXS 'col-xs-12' 'col-12'}}">
+  <div class="{{if applyXS 'col-xs-12' 'col-12'}} country-select">
     {{#if countrySelectOptions}}
       {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
     {{/if}}
