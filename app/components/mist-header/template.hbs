@@ -1,5 +1,5 @@
-<ul class="header-inner">
-  <li id="menu-trigger" class="{{if sidebarToggled 'open'}}" {{action 'toggleSidebar'}}>
+<ul class="h-inner">
+  <li id="menu-trigger" class="hi-trigger ma-trigger{{if sidebarToggled ' toggled'}}" {{action 'toggleSidebar'}}>
     <div class="line-wrap">
       <div class="line top"></div>
       <div class="line center"></div>
@@ -7,9 +7,11 @@
     </div>
   </li>
 
-  <li class="logo hidden-xs">
+  <li class="hi-logo hidden-xs">
     <a href="{{href-to "index"}}">{{title}}</a>
   </li>
 
-  {{yield}}
+  <li class="pull-right">
+    {{yield}}
+  </li>
 </ul>
