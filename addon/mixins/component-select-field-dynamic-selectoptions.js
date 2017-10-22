@@ -7,7 +7,7 @@ const { Mixin } = Ember;
 const { inject } = Ember;
 const { isBlank } = Ember;
 const { String } = Ember;
-const { dasherize } = Ember;
+const { dasherize } = String;
 const { camelize } = String;
 const { service } = inject;
 
