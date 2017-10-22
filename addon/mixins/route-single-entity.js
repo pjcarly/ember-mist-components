@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { getModelType, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
 
-const { Mixin ] = Ember;
+const { Mixin } = Ember;
 const { isBlank } = Ember;
 
 export default Mixin.create({
