@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
 import { padStart, replaceAll } from 'ember-field-components/classes/utils';
-const { Component, computed } = Ember;
+
+const { Component } = Ember;
+const { computed } = Ember;
 
 export default Component.extend(FieldInputComponent, {
   computedValue: computed('value', function(){

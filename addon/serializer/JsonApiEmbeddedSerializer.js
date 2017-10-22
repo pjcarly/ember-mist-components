@@ -1,8 +1,11 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
-const { JSONAPISerializer, EmbeddedRecordsMixin } = DS;
-const { isBlank, get, debug } = Ember;
+const { JSONAPISerializer } = DS;
+const { EmbeddedRecordsMixin } = DS;
+const { isBlank } = Ember;
+const { get } = Ember;
+const { debug } = Ember;
 
 export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
   normalizeSaveResponse(store, primaryModelClass, payload, id) {

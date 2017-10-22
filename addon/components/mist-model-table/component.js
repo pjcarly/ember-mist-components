@@ -1,13 +1,22 @@
 import Ember from 'ember';
 import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
-import ModelUtils from 'ember-field-components/classes/model-utils';
 import StringUtils from 'ember-field-components/classes/utils';
+import { getModelType, getModelListView, getDefaultIncludes, getLabel } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
-const { Component, inject, computed, get, on, guidFor, isBlank, String } = Ember;
-const { dasherize, capitalize, camelize } = String;
+const { Component } = Ember;
+const { inject } = Ember;
+const { computed } = Ember;
+const { get } = Ember;
+const { on } = Ember;
+const { guidFor } = Ember;
+const { isBlank } = Ember;
+const { String } = Ember;
+const { dasherize } = String;
+const { capitalize } = String;
+const { camelize } = String;
 const { service } = inject;
 
 export default Component.extend({
@@ -210,13 +219,13 @@ export default Component.extend({
     return guidFor(this);
   }),
   defaultModelListView: computed('activeModelType', function(){
-    let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
+    let type = getModelType(this.get('activeModelType'), this.get('store'));
     const modelListView = this.get('modelListView');
-    return ModelUtils.getModelListView(type, modelListView);
+    return getModelListView(type, modelListView);
   }),
   columns: computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
-    const type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
+    const type = getModelType(this.get('activeModelType'), this.get('store'));
     const activeListView = this.get('activeListView');
     const queryParams = this.get('queryParams');
     let columns = [];
@@ -246,7 +255,7 @@ export default Component.extend({
       const camelizedColumn = splittedColumns.join('.');
 
       // We get the label from the model configuration
-      let label = ModelUtils.getLabel(type, camelizedColumn);
+      let label = getLabel(type, camelizedColumn);
 
       // And finally build the structure for ember-light-table
       let column = {};
@@ -357,8 +366,8 @@ export default Component.extend({
 
   setDefaultIncludes(){
     // This method adds the default includes defined on the modeltype, to the queryParams object
-    let type = ModelUtils.getModelType(this.get('activeModelType'), this.get('store'));
-    let defaultIncludes = ModelUtils.getDefaultIncludes(type);
+    let type = getModelType(this.get('activeModelType'), this.get('store'));
+    let defaultIncludes = getDefaultIncludes(type);
     this.set('queryParams.include', defaultIncludes.join(','));
   },
 

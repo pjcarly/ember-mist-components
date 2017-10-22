@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import AjaxService from 'ember-ajax/services/ajax';
 
-const { computed, inject, getOwner } = Ember;
+const { computed } = Ember;
+const { inject } = Ember;
+const { getOwner } = Ember;
 const { service } = inject;
 
 export default AjaxService.extend({

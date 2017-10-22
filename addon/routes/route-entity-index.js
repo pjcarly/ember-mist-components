@@ -2,7 +2,8 @@ import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import ScrollToTop from 'ember-mist-components/mixins/route-scroll-to-top';
 
-const { Route, inject } = Ember;
+const { Route } = Ember;
+const { inject } = Ember;
 const { service } = inject;
 
 export default Route.extend(AuthenticatedRouteMixin, ScrollToTop, {

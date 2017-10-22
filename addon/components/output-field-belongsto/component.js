@@ -1,12 +1,14 @@
 /* jshint noyield:true */
 import Ember from 'ember';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
-
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { getParentModelTypeNames, getParentModelTypeName, hasRoute, getModelName } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 
-const { Component, inject, computed, isBlank } = Ember;
+const { Component } = Ember;
+const { inject } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
 const { service } = inject;
 
 export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
@@ -46,15 +48,15 @@ export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
   }),
   relationshipModelType: computed('model', 'field', function(){
     if(this.get('isPolymorphic')){
-      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+      return getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
     } else {
-      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+      return getParentModelTypeName(this.get('model'), this.get('field'));
     }
   }),
   hasRoute: computed('lookupValue', function(){
     const lookupValue = this.get('lookupValue');
     if(!isBlank(lookupValue)){
-      return ModelUtils.hasRoute(lookupValue.constructor);
+      return hasRoute(lookupValue.constructor);
     }
     return false;
   }),
@@ -68,7 +70,7 @@ export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
   route: computed('lookupValue', function(){
     const lookupValue = this.get('lookupValue');
     if(!isBlank(lookupValue)){
-      return `${ModelUtils.getModelName(lookupValue)}.view`;
+      return `${getModelName(lookupValue)}.view`;
     }
   })
 });

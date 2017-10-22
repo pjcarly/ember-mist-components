@@ -2,11 +2,13 @@
 /* global swal */
 import Ember from 'ember';
 import DS from 'ember-data';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { getModelType, getDefaultIncludes, getModelName } from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
-import { getModelName } from 'ember-field-components/classes/model-utils';
 
-const { Mixin, inject, isBlank, debug } = Ember;
+const { Mixin } = Ember;
+const { inject } = Ember;
+const { isBlank } = Ember;
+const { debug } = Ember;
 const { service } = inject;
 
 export default Mixin.create({
@@ -81,9 +83,9 @@ export default Mixin.create({
     model.doRollback(); // To clear any potential dirty state (else the reload won't work)
     const modelName = getModelName(model);
     const store = this.get('store');
-    const type = ModelUtils.getModelType(modelName, store);
+    const type = getModelType(modelName, store);
 
-    let defaultIncludes = ModelUtils.getDefaultIncludes(type);
+    let defaultIncludes = getDefaultIncludes(type);
     let options = {};
 
     // Lets also include the default includes

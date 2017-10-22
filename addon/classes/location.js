@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
-const { Object, computed, isBlank } = Ember;
+const { Object } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
 
 export default Object.extend({
   markers: null,

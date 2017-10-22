@@ -1,6 +1,9 @@
 import Ember from 'ember';
 import InputComponent from 'ember-field-components/mixins/component-input';
-const { Component, computed, isBlank } = Ember;
+
+const { Component } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
 
 export default Component.extend(InputComponent, {
   type: 'lookup',

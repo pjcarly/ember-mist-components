@@ -1,12 +1,14 @@
 import Ember from 'ember';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
-import ImageUtilities from 'ember-mist-components/classes/image';
+import { getSecureUrl } from 'ember-mist-components/classes/image';
 
-const { Component, computed, isBlank } = Ember;
+const { Component } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
 
 export default Component.extend(FieldOutputComponent, {
   imageUrl: computed('style', 'value', 'value.url', function(){
-    return ImageUtilities.getSecureUrl(this.get('model'), this.get('field'), this.get('style'));
+    return getSecureUrl(this.get('model'), this.get('field'), this.get('style'));
   }),
   actions: {
     clickImage(){

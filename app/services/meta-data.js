@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
-const { Service, inject } = Ember;
+const { Service } = Ember;
+const { inject } = Ember;
 const { service } = inject;
 
 export default Service.extend({

@@ -1,6 +1,10 @@
 import Ember from 'ember';
 
-const { Service, inject, computed, isBlank, RSVP } = Ember;
+const { Service } = Ember;
+const { inject } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
+const { RSVP } = Ember;
 const { Promise } = RSVP;
 const { service } = inject;
 

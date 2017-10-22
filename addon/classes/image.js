@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
-const { isBlank, $ } = Ember;
+const { isBlank } = Ember;
+const { $ } = Ember;
 
 export function getSecureUrl(model, field, style){
   const value = model.get(field);

@@ -1,8 +1,12 @@
 import Ember from 'ember';
-import ModelUtils from 'ember-field-components/classes/model-utils';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
+import { getChildModelTypeName, getRelationshipInverse} from 'ember-field-components/classes/model-utils';
 
-const { Component, computed, inject, String, isBlank } = Ember;
+const { Component } = Ember;
+const { computed } = Ember;
+const { inject } = Ember;
+const { String } = Ember;
+const { isBlank } = Ember;
 const { service } = inject;
 const { dasherize } = String;
 
@@ -12,10 +16,10 @@ export default Component.extend(ModelTasksMixin, {
   store: service(),
 
   modelType: computed('model', 'field', function(){
-    return ModelUtils.getChildModelTypeName(this.get('model'), this.get('field'));
+    return getChildModelTypeName(this.get('model'), this.get('field'));
   }),
   parentField: computed('model', 'field', function(){
-    return ModelUtils.getRelationshipInverse(this.get('model'), this.get('field'));
+    return getRelationshipInverse(this.get('model'), this.get('field'));
   }),
   filters: computed('model', 'parentField', function(){
     let filters = {};

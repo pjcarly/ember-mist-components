@@ -2,7 +2,8 @@ import Ember from 'ember';
 import Attribute from 'ember-field-components/classes/attribute';
 import ModelAttributes from 'ember-mist-components/mixins/model-attributes';
 
-const { Mixin, computed } = Ember;
+const { Mixin } = Ember;
+const { computed } = Ember;
 
 export default Mixin.create(ModelAttributes, {
   displayName: computed('name', function(){

@@ -2,13 +2,18 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
-
-import ModelUtils from 'ember-field-components/classes/model-utils';
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 
+import { getParentModelTypeNames, hasWidget, getParentModelType, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
-const { Component, inject, computed, isBlank, assert } = Ember;
+
+const { Component } = Ember;
+const { inject } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
+const { assert } = Ember;
 const { service } = inject;
+const { Model } = DS;
 
 export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, {
   tagName: '',
@@ -51,9 +56,9 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
   }),
   relationshipModelType: computed('model', 'field', function(){
     if(this.get('isPolymorphic')){
-      return ModelUtils.getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+      return getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
     } else {
-      return ModelUtils.getParentModelTypeName(this.get('model'), this.get('field'));
+      return getParentModelTypeName(this.get('model'), this.get('field'));
     }
   }),
   isRequired: computed('relationshipAttributeOptions', function(){
@@ -68,14 +73,14 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
     return this.get('model').belongsTo(this.get('field')).id();
   }),
   isSelect: computed(function(){
-    return ModelUtils.hasWidget(this.get('relationshipAttributeOptions'), 'select');
+    return hasWidget(this.get('relationshipAttributeOptions'), 'select');
   }),
   setSelectOptions: task(function * (){
     const store = this.get('store');
-    const relationshipType = ModelUtils.getParentModelType(this.get('model'), this.get('field'), store);
+    const relationshipType = getParentModelType(this.get('model'), this.get('field'), store);
     const relationshipTypeName = this.get('relationshipModelType');
 
-    assert('Select widget is only supported for Offline cacheable models', ModelUtils.modelTypeIsCacheable(relationshipType));
+    assert('Select widget is only supported for Offline cacheable models', modelTypeIsCacheable(relationshipType));
     assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
 
     const models = store.peekAll(relationshipTypeName);
@@ -99,15 +104,15 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
       const { field, model } = this.getProperties('field', 'model');
 
       if(!isBlank(value)) {
-        if(!(value instanceof DS.Model)) {
+        if(!(value instanceof Model)) {
           // Not with polymorphic relationships
           assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
 
           // we might have an Id instead of a model, happens when using Select widget
-          const relationshipType = ModelUtils.getParentModelType(model, field, this.get('store'));
+          const relationshipType = getParentModelType(model, field, this.get('store'));
 
           // only usable with cached data
-          assert('Value assign based on ID is only usable with cached models', ModelUtils.modelTypeIsCacheable(relationshipType));
+          assert('Value assign based on ID is only usable with cached models', modelTypeIsCacheable(relationshipType));
 
           // and it should already be available in the store
           const relationshipTypeName = this.get('relationshipModelType');

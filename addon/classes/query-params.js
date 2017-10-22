@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import { replaceAll } from 'ember-field-components/classes/utils';
 
-const { Object, computed, isBlank, copy } = Ember;
+const { Object } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
+const { copy } = Ember;
 
 export default Object.extend({
   init(){

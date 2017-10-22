@@ -1,5 +1,6 @@
 import Ember from 'ember';
-const { Component, isEmpty } = Ember;
+const { Component } = Ember;
+const { isEmpty } = Ember;
 
 export default Component.extend({
   actions: {

@@ -3,7 +3,10 @@ import Ember from 'ember';
 import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 
-const { inject, isBlank, observer, guidFor } = Ember;
+const { inject } = Ember;
+const { isBlank } = Ember;
+const { observer } = Ember;
+const { guidFor } = Ember;
 const { service } = inject;
 
 export default GMaps.extend({

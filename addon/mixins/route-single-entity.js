@@ -1,13 +1,14 @@
 import Ember from 'ember';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { getModelType, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
 
-const { Mixin, isBlank } = Ember;
+const { Mixin ] = Ember;
+const { isBlank } = Ember;
 
 export default Mixin.create({
   model(params) {
     const entityName = this.get('entityName');
-    const type = ModelUtils.getModelType(entityName, this.get('store'));
-    const modelDefaultIncludes = ModelUtils.getDefaultIncludes(type);
+    const type = getModelType(entityName, this.get('store'));
+    const modelDefaultIncludes = getDefaultIncludes(type);
     const routeDefaultIncludes = this.get('defaultIncludes');
 
     // Lets merge the different includes

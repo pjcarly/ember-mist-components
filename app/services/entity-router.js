@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import { getModelName, getModelType } from 'ember-field-components/classes/model-utils';
 
-const { Service, isBlank, inject } = Ember;
+const { Service } = Ember;
+const { isBlank } = Ember;
+const { inject } = Ember;
 const { service } = inject;
 
 export default Service.extend({

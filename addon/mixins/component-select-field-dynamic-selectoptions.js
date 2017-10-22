@@ -1,10 +1,14 @@
 import Ember from 'ember';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { getModelName } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
-import FieldUtils from 'ember-mist-components/classes/field-utils';
+import { transformFieldSelectOptionsToSelectOptions } from 'ember-mist-components/classes/field-utils';
 
-const { Mixin, inject, isBlank, String } = Ember;
-const { dasherize, camelize } = String;
+const { Mixin } = Ember;
+const { inject } = Ember;
+const { isBlank } = Ember;
+const { String } = Ember;
+const { dasherize } = Ember;
+const { camelize } = String;
 const { service } = inject;
 
 export default Mixin.create({
@@ -25,7 +29,7 @@ export default Mixin.create({
       let store = this.get('store');
       const field = this.get('field');
       const model = this.get('model');
-      const modelName = ModelUtils.getModelName(model);
+      const modelName = getModelName(model);
       const id = `${modelName}.${dasherize(field)}`;
 
       // first we check if the local storage has the values cached
@@ -36,11 +40,11 @@ export default Mixin.create({
       } else if(store.hasRecordForId('field', id)){
         // next we check if we haven't already loaded the selectOptions
         let fieldModel = store.peekRecord('field', id);
-        cachedSelectOptions = FieldUtils.transformFieldSelectOptionsToSelectOptions(fieldModel);
+        cachedSelectOptions = transformFieldSelectOptionsToSelectOptions(fieldModel);
       } else {
         // not yet loaded, let's do a callout
         yield store.findRecord('field', id).then((fieldModel) => {
-          cachedSelectOptions = FieldUtils.transformFieldSelectOptionsToSelectOptions(fieldModel);
+          cachedSelectOptions = transformFieldSelectOptionsToSelectOptions(fieldModel);
         });
       }
 

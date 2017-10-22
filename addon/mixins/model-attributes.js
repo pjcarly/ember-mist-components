@@ -2,7 +2,10 @@ import Ember from 'ember';
 import Location from 'ember-mist-components/classes/location';
 import Address from 'ember-mist-components/classes/address';
 
-const { Mixin, on, computed, isBlank } = Ember;
+const { Mixin } = Ember;
+const { on } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
 
 export default Mixin.create({
   setDefaultValuesForAttributes: on('ready', function(){

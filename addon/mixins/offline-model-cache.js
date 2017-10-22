@@ -1,15 +1,18 @@
 import Ember from 'ember';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { modelTypeIsCacheable, modelTypeWasLoaded, modelTypeHasBeenLoadedFromCache } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 
-const { Mixin, Inflector, isBlank, String } = Ember;
+const { Mixin } = Ember;
+const { Inflector } = Ember;
+const { isBlank } = Ember;
+const { String } = Ember;
 const { camelize } = String;
 
 export default Mixin.create({
   checkOfflineCache: task(function * (store, offlineCache, modelTypeName){
     const modelType = store.modelFor(modelTypeName);
     // first we check if the modelType is cacheable, and if so, lets check the cache, and push them in the store if not yet done so
-    if(ModelUtils.modelTypeIsCacheable(modelType) && !ModelUtils.modelTypeHasBeenLoadedFromCache(modelType)){
+    if(modelTypeIsCacheable(modelType) && !modelTypeHasBeenLoadedFromCache(modelType)){
       // So the modelType is cacheable, and hasn't already been loaded
       const localKey = camelize(`${modelTypeName}_store_cache`);
       const localCache = offlineCache.get(localKey);
@@ -38,7 +41,7 @@ export default Mixin.create({
       }
 
       // and finally we set the cached flag
-      ModelUtils.modelTypeWasLoaded(modelType);
+      modelTypeWasLoaded(modelType);
     }
   })
 });

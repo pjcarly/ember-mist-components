@@ -1,8 +1,11 @@
 import Ember from 'ember';
 import InputComponent from 'ember-field-components/mixins/component-input';
-import ModelUtils from 'ember-field-components/classes/model-utils';
+import { getModelType, getPlural } from 'ember-field-components/classes/model-utils';
 
-const { Component, computed, isBlank, inject } = Ember;
+const { Component } = Ember;
+const { computed } = Ember;
+const { isBlank } = Ember;
+const { inject } = Ember;
 const { service } = inject;
 
 export default Component.extend(InputComponent, {
@@ -25,8 +28,8 @@ export default Component.extend(InputComponent, {
   modelTitle: computed('activeModelType', function(){
     const activeModelTypeName = this.get('activeModelType');
     if(!isBlank(activeModelTypeName)) {
-      const modelType = ModelUtils.getModelType(activeModelTypeName, this.get('store'));
-      return ModelUtils.getPlural(modelType);
+      const modelType = getModelType(activeModelTypeName, this.get('store'));
+      return getPlural(modelType);
     } else {
       return 'Models';
     }

@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import MenuItem from '../mist-menu-item/component';
-const { computed, guidFor } = Ember;
+
+const { computed } = Ember;
+const { guidFor } = Ember;
 
 export default MenuItem.extend({
   classNames: ['dropdown'],
