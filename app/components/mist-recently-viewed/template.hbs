@@ -10,8 +10,8 @@
   <table class="table table-hover">
     <tbody>
       {{#each recentlyViewedRecords as |recentlyViewedRecord|}}
-        <tr {{action 'recordSelected' recentlyViewedRecord}}>
-          <td>{{recentlyViewedRecord.name}}</td>
+        <tr>
+          <td><a href="{{href-to (concat recentlyViewedRecord.type '.view') recentlyViewedRecord.id}}">{{recentlyViewedRecord.name}}</a></td>
         </tr>
       {{else}}
         <tr>
