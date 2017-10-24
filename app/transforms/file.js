@@ -14,6 +14,7 @@ export default Transform.extend({
       file.url = serialized.url;
       file.filemime = serialized.filemime;
       file.filesize = serialized.filesize;
+      file.hash = serialized.hash;
     }
 
     return file;
@@ -28,6 +29,7 @@ export default Transform.extend({
       serializedFile['url'] = deserialized.url;
       serializedFile['filemime'] = deserialized.filemimie;
       serializedFile['filesize'] = deserialized.filesize;
+      serializedFile['hash'] = deserialized.hash;
     }
 
     return serializedFile;

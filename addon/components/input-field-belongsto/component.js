@@ -4,7 +4,7 @@ import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 
-import { getParentModelTypeNames, hasWidget, getParentModelType, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
+import { getParentModelTypeNames, hasWidget, getParentModelType, getParentModelTypeName, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 
 const { Component } = Ember;

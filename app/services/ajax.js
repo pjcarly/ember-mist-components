@@ -26,15 +26,18 @@ export default AjaxService.extend({
     // When the Authorization header changes (because of a token refresh), this property will not be called, and will still return
     // the old auth header, resulting in an Access Denied
     // Investigate if this can be resolved using the Ember Evented events the session service triggers (authenticationSucceeded, sessionDataUpdated)
-    let headers = {};
-    let authHeader;
 
-    this.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
-      authHeader = headerValue;
-    });
+    if(this.get('session.isAuthenticated')) {
+      let headers = {};
+      let authHeader;
 
-    headers['Authorization'] = authHeader;
+      this.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+        authHeader = headerValue;
+      });
 
-    this.set('headers', headers);
+      headers['Authorization'] = authHeader;
+
+      this.set('headers', headers);
+    }
   }
 });
