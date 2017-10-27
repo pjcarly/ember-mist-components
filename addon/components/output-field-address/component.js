@@ -12,11 +12,13 @@ export default InputAddress.extend({
 
     if(!isBlank(displayRows)) {
       for(let row of displayRows) {
-        let emptyRow = false;
+        let emptyRow = true;
         for(let column of row.columns) {
           column.component = replaceAll(column.component, 'input', 'output');
 
-          emptyRow = isBlank(address.get(column.field)) || emptyRow;
+          if(emptyRow) {
+            emptyRow = isBlank(address.get(column.field));
+          }
         }
 
         row.emptyRow = emptyRow;
