@@ -1,7 +1,6 @@
 {{#if address.countryCode}}
   {{#if addressFormat}}
     {{#each outputDisplayRows as |row|}}
-      {{log row}}
       {{#if (not row.emptyRow)}}
         <div class="row">
           <div class="{{if applyXS 'col-xs-12' 'col-12'}}">
