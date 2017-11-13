@@ -4,7 +4,7 @@ import QueryParams from '../../classes/query-params';
 import StringUtils from 'ember-field-components/classes/utils';
 import { getModelType, getModelListView, getDefaultIncludes, getLabel } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
-import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
+//import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
 const { Component } = Ember;
 const { inject } = Ember;
@@ -152,49 +152,49 @@ export default Component.extend({
 
     return selectOptions;
   }),
-  keyboardFind: on(keyUp('KeyF'), function(){
-    if(!this.get('searchToggled')){
-      this.toggleSearch();
-      this.$('input[type="search"]').focus();
-    } else if(this.get('fixedSearch')) {
-      this.$('input[type="search"]').focus();
-    }
-  }),
-  keyboardRefresh: on(keyUp('KeyR'), function(){
-    this.get('fetchRecords').perform();
-  }),
-  keyboardNext: on(keyUp('ArrowRight'), function(){
-    this.nextPage();
-  }),
-  keyboardPrev: on(keyUp('ArrowLeft'), function(){
-    this.prevPage();
-  }),
-  keyboardDown: on(keyDown('ArrowDown'), function(event){
-    event.preventDefault();
-    this.nextRow();
-  }),
-  keyboardUp: on(keyDown('ArrowUp'), function(event){
-    event.preventDefault();
-    this.prevRow();
-  }),
-  keyboardEnter: on(keyDown('Enter'), function(){
-    // this only has meaning when the table isn't multiSelect
-    if(!this.get('multiSelect')){
-      const activeRows = this.get('table.rows').filterBy('activated');
-      if(activeRows.length > 0){
-        this.rowSelected(activeRows[0]);
-      }
-    }
-  }),
-  keyboardSpace: on(keyDown('Space'), function(){
-    // this only has meaning when the table is multiSelect
-    if(this.get('multiSelect')){
-      const activeRows = this.get('table.rows').filterBy('activated');
-      if(activeRows.length > 0){
-        this.rowSelected(activeRows[0]);
-      }
-    }
-  }),
+  // keyboardFind: on(keyUp('KeyF'), function(){
+  //   if(!this.get('searchToggled')){
+  //     this.toggleSearch();
+  //     this.$('input[type="search"]').focus();
+  //   } else if(this.get('fixedSearch')) {
+  //     this.$('input[type="search"]').focus();
+  //   }
+  // }),
+  // keyboardRefresh: on(keyUp('KeyR'), function(){
+  //   this.get('fetchRecords').perform();
+  // }),
+  // keyboardNext: on(keyUp('ArrowRight'), function(){
+  //   this.nextPage();
+  // }),
+  // keyboardPrev: on(keyUp('ArrowLeft'), function(){
+  //   this.prevPage();
+  // }),
+  // keyboardDown: on(keyDown('ArrowDown'), function(event){
+  //   event.preventDefault();
+  //   this.nextRow();
+  // }),
+  // keyboardUp: on(keyDown('ArrowUp'), function(event){
+  //   event.preventDefault();
+  //   this.prevRow();
+  // }),
+  // keyboardEnter: on(keyDown('Enter'), function(){
+  //   // this only has meaning when the table isn't multiSelect
+  //   if(!this.get('multiSelect')){
+  //     const activeRows = this.get('table.rows').filterBy('activated');
+  //     if(activeRows.length > 0){
+  //       this.rowSelected(activeRows[0]);
+  //     }
+  //   }
+  // }),
+  // keyboardSpace: on(keyDown('Space'), function(){
+  //   // this only has meaning when the table is multiSelect
+  //   if(this.get('multiSelect')){
+  //     const activeRows = this.get('table.rows').filterBy('activated');
+  //     if(activeRows.length > 0){
+  //       this.rowSelected(activeRows[0]);
+  //     }
+  //   }
+  // }),
 
   filters: computed({
     get(){
