@@ -1,19 +1,15 @@
-{{#if editmode}}
-  {{#input-field-image class="input-field-image" model=model field=field as |showModal|}}
-    <div class="banner-image">
+<div class="banner-image">
+  {{#if editmode}}
+    {{#input-field-image model=model field=field as |showModal|}}
       {{#if value.url}}
-        {{output-field-image model=model field=field style=style clickImage=(action showModal)}}
+        {{output-image value=value styleClass="cursor-pointer" style="mist_banner_image" imageClicked=(action showModal)}}
       {{else}}
         <div class="field-wrapper" {{action showModal}}>
           <span class="zmdi zmdi-hc-2x zmdi-camera"></span>
         </div>
       {{/if}}
-    </div>
-  {{/input-field-image}}
-{{else}}
-  <div class="banner-image">
-    {{#if value.url}}
-      {{output-field-image model=model field=field style=style}}
-    {{/if}}
-  </div>
-{{/if}}
+    {{/input-field-image}}
+  {{else}}
+    {{output-field-image model=model field=field options=(hash style='mist_banner_image')}}
+  {{/if}}
+</div>

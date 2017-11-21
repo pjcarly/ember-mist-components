@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { getSecureUrl } from 'ember-mist-components/classes/image';
 
 const { Component } = Ember;
 const { inject } = Ember;
@@ -25,10 +24,10 @@ export default Component.extend({
     return styleClass;
   }),
   profileMenuBackgroundStyle: computed('user.bannerImage', function(){
-    const bannerImage = getSecureUrl(this.get('user'), 'bannerImage');
+    const bannerImage = this.get('user.bannerImage');
 
     if(!isBlank(bannerImage)) {
-      return htmlSafe('cursor:pointer; background: url("'+ bannerImage + '"); background-size: cover;');
+      return htmlSafe('cursor:pointer; background: url("'+ bannerImage.url + '"); background-size: cover;');
     }
   }),
   actions: {

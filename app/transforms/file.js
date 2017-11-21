@@ -10,7 +10,6 @@ export default Transform.extend({
     if(!isBlank(serialized)) {
       file.id = serialized.id;
       file.filename = serialized.filename;
-      file.uri = serialized.uri;
       file.url = serialized.url;
       file.filemime = serialized.filemime;
       file.filesize = serialized.filesize;
@@ -25,7 +24,6 @@ export default Transform.extend({
     if(!isBlank(deserialized)) {
       serializedFile['id'] = deserialized.id;
       serializedFile['filename'] = deserialized.filename;
-      serializedFile['uri'] = deserialized.uri;
       serializedFile['url'] = deserialized.url;
       serializedFile['filemime'] = deserialized.filemimie;
       serializedFile['filesize'] = deserialized.filesize;

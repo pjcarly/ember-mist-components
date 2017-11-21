@@ -13,9 +13,9 @@
 {{else}}
   {{#if uploadFile.isRunning}}
     <button class="btn btn-default waves-effect" disabled="disabled">
-      Uploading {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+      Uploading {{activeFile}}/{{totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
     </button>
   {{else}}
-    {{input-file valueChanged='valueChanged' inputId=inputId}}
+    {{input-file valueChanged=(action 'valueChanged') multiple=multiple inputId=inputId}}
   {{/if}}
 {{/if}}

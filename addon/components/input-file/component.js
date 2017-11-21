@@ -3,6 +3,7 @@ const { Component } = Ember;
 const { isEmpty } = Ember;
 
 export default Component.extend({
+  tagName: '',
   actions: {
     filesSelected(event){
       const input = event.target;

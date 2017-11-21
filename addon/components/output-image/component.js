@@ -1,9 +1,10 @@
 import Ember from 'ember';
-import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
 
 const { Component } = Ember;
 
-export default Component.extend(FieldOutputComponent, {
+export default Component.extend({
+  tagName: '',
+  type: 'image',
   actions: {
     imageClicked(){
       if(this.get('imageClicked')){
