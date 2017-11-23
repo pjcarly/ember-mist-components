@@ -6,7 +6,7 @@
       </div>
       <div class="modal-body text-center">
         {{#if modalVisible}}
-          {{input-file-drupal value=value field=field modelName=modelName options=options valueChanged=(action 'valueChanged')}}
+          {{input-file-drupal value=value field=field modelName=modelName options=modifiedOptions valueChanged=(action 'valueChanged')}}
 
           {{#if value.id}}
             {{output-image value=value styleClass="image-preview"}}
@@ -20,9 +20,15 @@
   </div>
 </div>
 
-
-{{#if hasBlock}}
-  {{yield (action 'showModal')}}
-{{else}}
-  {{#mist-button click=(action 'showModal')}}Upload Image{{/mist-button}}
-{{/if}}
+<div class="input-field-image-controls">
+  {{#if hasBlock}}
+    {{yield (action 'showModal') value}}
+  {{else}}
+    {{#if value.id}}
+      {{output-image-link value=value}}
+      {{#mist-button class="btn-xs" click=(action 'showModal')}}Edit Image{{/mist-button}}
+    {{else}}
+      {{#mist-button class="btn-xs" click=(action 'showModal')}}Upload Image{{/mist-button}}
+    {{/if}}
+  {{/if}}
+</div>

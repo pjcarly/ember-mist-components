@@ -1,8 +1,25 @@
+import Ember from 'ember';
 import InputFieldFile from '../input-field-file/component';
+
+const { isBlank } = Ember;
+const { computed } = Ember;
 
 export default InputFieldFile.extend({
   tagName: 'div',
   type: 'image',
+  modifiedOptions: computed('options', function(){
+    let options = this.get('options');
+
+    if(isBlank(options)) {
+      options = {};
+    }
+
+    if(!options.endpoint) {
+      options.endpoint = 'image/images';
+    }
+
+    return options;
+  }),
   actions: {
     showModal() {
       this.$('.modal').modal('show');

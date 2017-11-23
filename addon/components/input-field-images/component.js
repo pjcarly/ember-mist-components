@@ -15,6 +15,10 @@ export default InputFieldFile.extend({
   modifiedOptions: computed('options', function(){
     let options = this.get('options');
 
+    if(isBlank(options)) {
+      options = {};
+    }
+
     if(!options.endpoint) {
       options.endpoint = 'image/images';
     }

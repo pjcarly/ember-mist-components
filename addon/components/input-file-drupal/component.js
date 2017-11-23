@@ -15,7 +15,6 @@ const { dasherize } = String;
 const { htmlSafe } = String;
 
 export default Component.extend({
-  tagName: '',
   ajax: service(),
   toast: service(),
   fieldHeaderValue: computed('modelName', 'field', function(){

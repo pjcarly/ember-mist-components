@@ -1,5 +1,9 @@
 {{#if fetchRecords.last}}
   <div class={{concat 'card-header ch-alt mist-model-table-header' (if searchToggled ' search-toggled')}}>
+
+    {{!-- TODO: partial loading --}}
+    {{!-- <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-unfold-more zmdi-hc-lg"></i></button> --}}
+
     <h2>{{title}}</h2>
     {{#if fetchRecords.isRunning}}
       {{mist-spinner size="10px" tagName="span"}}
