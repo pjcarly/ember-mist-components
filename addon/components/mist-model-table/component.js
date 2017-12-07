@@ -39,7 +39,7 @@ export default Component.extend({
     this.setActiveModelType();
     this.set('table', new Table([]));
   },
-  didInsertElement(){
+  didReceiveAttrs(){
     this._super(...arguments);
 
     this.get('initializeTable').perform();
