@@ -4,6 +4,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import { getModelType, getDefaultIncludes, getModelName } from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
+import { removeRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
 
 const { Mixin } = Ember;
 const { inject } = Ember;
@@ -16,6 +17,7 @@ export default Mixin.create({
   entityRouter: service(),
   store: service(),
   toast: service(),
+  storage: service(),
   modelTasks: taskGroup().drop(),
 
   view: task(function * (model) {
@@ -39,14 +41,16 @@ export default Mixin.create({
   }).group('modelTasks'),
   deleteWithoutConfirm: task(function * (model) {
     const modelName = getModelName(model);
+    const modelId = model.get('id');
     model.deleteRecord();
     yield model.save()
     .then(() => {
       this.successToast(`Success`, `Record deleted`);
       this.get('entityRouter').transitionToList(modelName);
+      removeRecentlyViewed(modelName, modelId, this.get('storage'));
     })
     .catch((reason) => {
-      this.logErrorMessage(`There was an error saving your information`, reason.message);
+      this.logErrorMessage(`There was an error deleting your data`, reason.message);
     });
   }).group('modelTasks'),
   cancel: task(function * (target) {
