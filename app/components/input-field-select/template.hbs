@@ -3,6 +3,8 @@
     {{input-button-group selectOptions=cachedSelectOptions value=value valueChanged='valueChanged' styleClass=styleClass inputId=inputId}}
   {{else if isSelectSearch}}
     {{input-select-search selectOptions=cachedSelectOptions value=value valueChanged='valueChanged' styleClass=styleClass inputId=inputId}}
+  {{else if isCountrySelect}}
+    {{input-select-country value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
   {{else}}
     {{input-select selectOptions=cachedSelectOptions value=value isRequired=isRequired valueChanged='valueChanged' styleClass=styleClass none=none inputId=inputId}}
   {{/if}}
