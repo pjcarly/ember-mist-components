@@ -14,6 +14,8 @@ export default Transform.extend({
       file.filemime = serialized.filemime;
       file.filesize = serialized.filesize;
       file.hash = serialized.hash;
+    } else {
+      file = null;
     }
 
     return file;
@@ -28,6 +30,8 @@ export default Transform.extend({
       serializedFile['filemime'] = deserialized.filemimie;
       serializedFile['filesize'] = deserialized.filesize;
       serializedFile['hash'] = deserialized.hash;
+    } else {
+      serializedFile = null;
     }
 
     return serializedFile;
