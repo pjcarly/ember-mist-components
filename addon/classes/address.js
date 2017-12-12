@@ -7,6 +7,32 @@ const { isBlank } = Ember;
 export default Object.extend({
   model: null,
   field: null,
+  validateAddress(){
+    const { format, countryCode, administrativeArea, locality, dependentLocality, postalCode, sortingCode, addressLine1, addressLine2 } = this.getProperties('format', 'countryCode', 'administrativeArea', 'locality', 'dependentLocality', 'postalCode', 'sortingCode', 'addressLine1', 'addressLine2');
+    const ignoreFields = ['organization', 'givenName', 'additionalName', 'familyName'];
+    let returnValue = false;
+
+    if(isBlank(format)) {
+      returnValue = false;
+    } else {
+      returnValue = true;
+      const requiredFields = format.data.attributes['required-fields'];
+      for(const requiredField of requiredFields) {
+        if(!ignoreFields.includes(requiredField)){
+          if(isBlank(this.get(requiredField))) {
+            returnValue = false;
+            break;
+          }
+        }
+      }
+    }
+
+    this.set('isValidAddress', returnValue);
+  },
+  isValid: computed('isValidAddress', 'countryCode', 'administrativeArea', 'locality', 'dependentLocality', 'postalCode', 'sortingCode', 'addressLine1', 'addressLine2', function(){
+    this.validateAddress();
+    return this.get('isValidAddress');
+  }),
   countryCode: computed('model', 'field', {
     get(){
       let address = this.getAddressObject();

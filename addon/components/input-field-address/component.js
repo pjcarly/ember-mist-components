@@ -50,7 +50,7 @@ export default Component.extend({
     this.get('initializeAddress').perform();
   },
   reRenderRows(editedField){
-    const format = this.get('addressFormat');
+    const format = this.get('address.format');
     const selectlistDepth = format.data.attributes['subdivision-depth'];
 
     if(selectlistDepth !== 0){
@@ -65,7 +65,8 @@ export default Component.extend({
   },
   resetValues(editedField){
     // here we reset values of address, for fields where parent dependencies change
-    const {address, addressFormat} = this.getProperties('address', 'addressFormat');
+    const address = this.get('address');
+    const addressFormat = address.get('format');
     const selectlistDepth = addressFormat.data.attributes['subdivision-depth'];
 
     if(selectlistDepth !== 0){
@@ -81,7 +82,8 @@ export default Component.extend({
     }
   },
   getParentGroupingForField(field){
-    const {address, addressFormat} = this.getProperties('address', 'addressFormat');
+    const address = this.get('address');
+    const addressFormat = address.get('format');
     const usedFields = addressFormat.data.attributes['used-fields']; // this is an array, containing the used fields in the addressFormat, sorted from big to small
     const zeroBasedPositionOfField = usedFields.indexOf(field);
 
@@ -126,7 +128,8 @@ export default Component.extend({
     if(isBlank(countryCode)){
       // no country code is chosen, the address must be cleared
       address.clear();
-      this.set('addressFormat', null);
+      address.set('format', null);
+      address.validateAddress();
       this.notifyPropertyChange('field');
     } else {
       // first we check the localstorage for the format, we might have it already
@@ -142,10 +145,12 @@ export default Component.extend({
           if(shouldCache) {
             storage.set(storageKey, response);
           }
-          this.set('addressFormat', response);
+          address.set('format', response);
+          address.validateAddress();
         })
       } else {
-        this.set('addressFormat', cachedAddressFormat);
+        address.set('format', cachedAddressFormat);
+        address.validateAddress();
       }
 
       this.get('setDisplayRows').perform();
@@ -158,7 +163,7 @@ export default Component.extend({
     // - depending on the country, some parts are required, some parts not
     // - depending on the country, a selectlist for certain parts are used (f/e US States)
     // - depending on the country some parts have a different label (state, province, region, island, ...)
-    const addressFormat = this.get('addressFormat');
+    const addressFormat = this.get('address.format');
     const rows = [];
 
     if(!isBlank(addressFormat) && !isBlank(addressFormat.data.attributes.format)){
