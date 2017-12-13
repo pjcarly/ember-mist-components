@@ -9,7 +9,7 @@
     <div class="carousel-inner" role="listbox">
       {{#each value as |imageValue index|}}
         <div class="item{{if (eq index 0) " active" }}">
-          {{output-image style=options.style value=imageValue imageClicked=(action 'imageClicked' imageValue)}}
+          {{output-image style=options.style styleClass=styleClass value=imageValue imageClicked=(action 'imageClicked' imageValue)}}
         </div>
       {{/each}}
     </div>
