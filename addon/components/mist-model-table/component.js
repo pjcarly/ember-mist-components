@@ -14,6 +14,7 @@ const { on } = Ember;
 const { guidFor } = Ember;
 const { isBlank } = Ember;
 const { String } = Ember;
+const { assert } = Ember;
 const { dasherize } = String;
 const { capitalize } = String;
 const { camelize } = String;
@@ -128,6 +129,7 @@ export default Component.extend({
   }),
   setQueryParamsBasedOnActiveListView(){
     const activeListView = this.get('activeListView');
+    assert(`Listview not found`, !isBlank(activeListView));
     const listViewLimit = get(activeListView, 'rows');
     const listViewSort = get(activeListView, 'sort');
     let queryParams = this.get('queryParams');
