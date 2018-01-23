@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { getModelType, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
+import { removeRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
 
 const { Mixin } = Ember;
 const { isBlank } = Ember;
@@ -33,5 +34,22 @@ export default Mixin.create({
     }
 
     return this.store.findRecord(entityName, params[`${entityName}_id`], options);
+  },
+  actions: {
+    error(error, transition){
+      const entityType = this.get('entityName');
+      if(!isBlank(entityType)) {
+        const idParam = `${entityType}_id`;
+        const routeName = transition.targetName;
+
+        if(!isBlank(idParam) && transition.params.hasOwnProperty(routeName) && transition.params[routeName].hasOwnProperty(idParam)) {
+          const id = transition.params[routeName][idParam];
+          if(!isBlank(id)) {
+            removeRecentlyViewed(entityType, id, this.get('storage'));
+          }
+        }
+      }
+      return true;
+    }
   }
 });
