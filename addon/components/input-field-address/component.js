@@ -13,6 +13,7 @@ const { service } = inject;
 export default Component.extend({
   tagName: '',
   storage: service(),
+  store: service(),
   ajax: service(),
   addressLoading: taskGroup(),
 
@@ -129,7 +130,7 @@ export default Component.extend({
       // no country code is chosen, the address must be cleared
       address.clear();
       address.set('format', null);
-      address.validateAddress();
+      address.notifyPropertyChange('format');
       this.notifyPropertyChange('field');
     } else {
       // first we check the localstorage for the format, we might have it already
@@ -146,11 +147,11 @@ export default Component.extend({
             storage.set(storageKey, response);
           }
           address.set('format', response);
-          address.validateAddress();
+          address.notifyPropertyChange('format');
         })
       } else {
         address.set('format', cachedAddressFormat);
-        address.validateAddress();
+        address.notifyPropertyChange('format');
       }
 
       this.get('setDisplayRows').perform();
@@ -312,7 +313,14 @@ export default Component.extend({
     return selectoptions;
   }).group('addressLoading'),
   address: computed('model', 'field', function(){
-    let address = this.get('model').getAddress(this.get('field'));
+    const model = this.get('model');
+    let address = model.get(this.get('field'));
+
+    if(isBlank(address)){
+      address = this.get('store').createFragment('address', {});
+      model.set(this.get('field'), address);
+    }
+
     return address;
   }),
   actions: {

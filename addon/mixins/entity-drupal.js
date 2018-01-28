@@ -1,11 +1,10 @@
 import Ember from 'ember';
 import Attribute from 'ember-field-components/classes/attribute';
-import ModelAttributes from 'ember-mist-components/mixins/model-attributes';
 
 const { Mixin } = Ember;
 const { computed } = Ember;
 
-export default Mixin.create(ModelAttributes, {
+export default Mixin.create({
   displayName: computed('name', function(){
     return this.get('name'); // needed for ember-aupac-typeahead
   }),
