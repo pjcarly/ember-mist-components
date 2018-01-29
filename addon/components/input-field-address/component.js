@@ -15,7 +15,7 @@ export default Component.extend({
   storage: service(),
   store: service(),
   ajax: service(),
-  addressLoading: taskGroup(),
+  addressLoading: taskGroup().keepLatest(),
 
   config: computed(function(){
     return getOwner(this).resolveRegistration('config:environment');
@@ -323,6 +323,10 @@ export default Component.extend({
 
     return address;
   }),
+  removeAddressErrors(){
+    const errors = this.get('model.errors');
+    errors._remove(this.get('field'));
+  },
   actions: {
     countryCodeChanged(value) {
       this.get('address').clearExceptAddressLines();
@@ -330,11 +334,13 @@ export default Component.extend({
 
       this.get('address').set('countryCode', value);
       this.get('setAddressFormat').perform();
+      this.removeAddressErrors();
     },
     addressFieldChanged(field, value) {
       this.get('address').set(field, value);
       this.resetValues(field);
       this.reRenderRows(field);
+      this.removeAddressErrors();
     }
   }
 });
