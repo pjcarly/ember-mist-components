@@ -15,7 +15,7 @@ export default Component.extend({
   storage: service(),
   store: service(),
   ajax: service(),
-  addressLoading: taskGroup().keepLatest(),
+  addressLoading: taskGroup(),
 
   config: computed(function(){
     return getOwner(this).resolveRegistration('config:environment');
@@ -327,11 +327,17 @@ export default Component.extend({
     const errors = this.get('model.errors');
     errors._remove(this.get('field'));
   },
+  cancelAllTasks(){
+    this.get('getSubdivisionSelectOptions').cancelAll();
+    this.get('getDisplayColumnnForField').cancelAll();
+    this.get('setDisplayRows').cancelAll();
+    this.get('setAddressFormat').cancelAll();
+  },
   actions: {
     countryCodeChanged(value) {
       this.get('address').clearExceptAddressLines();
+      this.cancelAllTasks();
       this.notifyPropertyChange('field');
-
       this.get('address').set('countryCode', value);
       this.get('setAddressFormat').perform();
       this.removeAddressErrors();
