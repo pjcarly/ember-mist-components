@@ -35,6 +35,18 @@ export default Fragment.extend({
     this.set('addressLine1', null);
     this.set('addressLine2', null);
   },
+  getPOJO(){
+    const pojo = {};
+    pojo.countryCode = this.get('countryCode');
+    pojo.administrativeArea = this.get('administrativeArea');
+    pojo.locality = this.get('locality');
+    pojo.dependentLocality = this.get('dependentLocality');
+    pojo.postalCode = this.get('postalCode');
+    pojo.sortingCode = this.get('sortingCode');
+    pojo.addressLine1 = this.get('addressLine1');
+    pojo.addressLine2 = this.get('addressLine2');
+    return pojo;
+  },
   clearExceptAddressLines(){
     this.set('countryCode', null);
     this.set('administrativeArea', null);
