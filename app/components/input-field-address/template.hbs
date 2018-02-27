@@ -1,3 +1,11 @@
+<div class="row">
+  <div class="{{if applyXS 'col-xs-12' 'col-12'}} country-select">
+    {{#if countrySelectOptions}}
+      {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
+    {{/if}}
+  </div>
+</div>
+
 {{#if address.format}}
   {{#each displayRows as |row|}}
     <div class="row">
@@ -9,15 +17,6 @@
     </div>
   {{/each}}
 {{/if}}
-
-<div class="row">
-  <div class="{{if applyXS 'col-xs-12' 'col-12'}} country-select">
-    {{#if countrySelectOptions}}
-      {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
-    {{/if}}
-  </div>
-</div>
-
 
 {{#if addressLoading.isRunning}}
   <div class="address-spinner">
