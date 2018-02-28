@@ -27,9 +27,9 @@ export default Component.extend({
     }
     return true;
   }),
-  metaEndpoint: computed(function(){
+  apiEndpoint: computed(function(){
     const config = this.get('config');
-    return config.metaEndpoint;
+    return config.apiEndpoint;
   }),
   metaSecured: computed(function(){
     const config = this.get('config');
@@ -110,7 +110,7 @@ export default Component.extend({
       if(metaSecured) {
         ajax.setHeaders();
       }
-      yield ajax.request(this.get('metaEndpoint') + 'address/countries/selectoptions').then((response) => {
+      yield ajax.request(this.get('apiEndpoint') + 'address/address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
           if(shouldCache) {
             storage.set('addressCountrySelectOptions', response);
@@ -142,7 +142,7 @@ export default Component.extend({
         if(metaSecured) {
           ajax.setHeaders();
         }
-        yield ajax.request(this.get('metaEndpoint') + `address/format/${countryCode}`).then((response) => {
+        yield ajax.request(this.get('apiEndpoint') + `address/address/format/${countryCode}`).then((response) => {
           if(shouldCache) {
             storage.set(storageKey, response);
           }
@@ -289,7 +289,7 @@ export default Component.extend({
       if(metaSecured) {
         ajax.setHeaders();
       }
-      yield ajax.request(this.get('metaEndpoint') + `address/subdivisions/${parentGrouping}`).then((response) => {
+      yield ajax.request(this.get('apiEndpoint') + `address/address/subdivisions/${parentGrouping}`).then((response) => {
         if(!isBlank(response) && !isBlank(response.data)){
           for(let subdivision of response.data){
             let selectoption = {};
