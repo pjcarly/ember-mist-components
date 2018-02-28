@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { task } from 'ember-concurrency';
 
 const { Component } = Ember;
 const { computed } = Ember;

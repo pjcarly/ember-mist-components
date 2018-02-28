@@ -1,4 +1,3 @@
-/* global moment */
 import Ember from 'ember';
 
 const { Helper } = Ember;

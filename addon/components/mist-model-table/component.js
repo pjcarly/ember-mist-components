@@ -10,7 +10,6 @@ const { Component } = Ember;
 const { inject } = Ember;
 const { computed } = Ember;
 const { get } = Ember;
-const { on } = Ember;
 const { guidFor } = Ember;
 const { isBlank } = Ember;
 const { String } = Ember;

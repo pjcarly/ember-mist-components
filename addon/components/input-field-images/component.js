@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import InputFieldFile from '../input-field-file/component';
-import { getModelName } from 'ember-field-components/classes/model-utils';
 
 const { isBlank } = Ember;
 const { computed } = Ember;

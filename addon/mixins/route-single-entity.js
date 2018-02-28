@@ -14,7 +14,7 @@ export default Mixin.create({
 
     // Lets merge the different includes
     let includes = [];
-    if(!isBlank(modelDefaultIncludes) && modelDefaultIncludes.length > 0) {
+    if(!isBlank(modelDefaultIncludes) && modelDefaultIncludes.length > 0) {
       includes = includes.concat(modelDefaultIncludes);
     }
 

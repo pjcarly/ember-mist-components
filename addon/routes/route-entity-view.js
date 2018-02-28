@@ -5,7 +5,6 @@ import ScrollToTop from 'ember-mist-components/mixins/route-scroll-to-top';
 import { addRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
 
 const { Route } = Ember;
-const { isBlank } = Ember;
 const { inject } = Ember;
 const { service } = inject;
 

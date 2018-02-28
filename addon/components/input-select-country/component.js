@@ -1,11 +1,9 @@
 import Ember from 'ember';
 import { task, taskGroup } from 'ember-concurrency';
-import { replaceAll } from 'ember-field-components/classes/utils';
 
 const { Component } = Ember;
 const { computed } = Ember;
 const { isBlank } = Ember;
-const { isNone } = Ember;
 const { inject } = Ember;
 const { getOwner } = Ember;
 const { service } = inject;
@@ -26,9 +24,9 @@ export default Component.extend({
     }
     return true;
   }),
-  metaEndpoint: computed(function(){
+  apiEndpoint: computed(function(){
     const config = this.get('config');
-    return config.metaEndpoint;
+    return config.apiEndpoint;
   }),
   metaSecured: computed(function(){
     const config = this.get('config');
@@ -50,7 +48,7 @@ export default Component.extend({
       if(metaSecured) {
         ajax.setHeaders();
       }
-      yield ajax.request(this.get('metaEndpoint') + 'address/countries/selectoptions').then((response) => {
+      yield ajax.request(this.get('apiEndpoint') + 'address/address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
           if(shouldCache) {
             storage.set('addressCountrySelectOptions', response);

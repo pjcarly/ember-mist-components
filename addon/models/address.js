@@ -60,7 +60,7 @@ export default Fragment.extend({
     return isBlank(countryCode) && isBlank(administrativeArea) && isBlank(locality) && isBlank(dependentLocality) && isBlank(postalCode) && isBlank(sortingCode) && isBlank(addressLine1) && isBlank(addressLine2);
   }),
   isValidModel: computed('format', 'countryCode', 'administrativeArea', 'locality', 'dependentLocality', 'postalCode', 'sortingCode', 'addressLine1', 'addressLine2', function(){
-    const { format, countryCode, administrativeArea, locality, dependentLocality, postalCode, sortingCode, addressLine1, addressLine2 } = this.getProperties('format', 'countryCode', 'administrativeArea', 'locality', 'dependentLocality', 'postalCode', 'sortingCode', 'addressLine1', 'addressLine2');
+    const { format } = this.getProperties('format');
     const ignoreFields = ['organization', 'givenName', 'additionalName', 'familyName'];
     let returnValue = false;
 

@@ -8,7 +8,6 @@ const { computed } = Ember;
 const { inject } = Ember;
 const { isBlank } = Ember;
 const { isEmpty } = Ember;
-const { getOwner } = Ember;
 const { service } = inject;
 const { String } = Ember;
 const { dasherize } = String;
