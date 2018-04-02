@@ -1,0 +1,37 @@
+{{#if grouping}}
+  <button class="btn bgm-pink waves-effect" {{action 'showModal'}}>{{yield}}</button>
+
+  <div class="modal fade text-left" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Choose a template</h4>
+        </div>
+        <div class="modal-body field-padding">
+          {{#if modalVisible}}
+            <label for="print-template">Templates</label>
+            {{#if fetchTemplates.isIdle}}
+              {{#if (gt selectOptions.length 0)}}
+                {{input-select value=value selectOptions=selectOptions isRequired=true valueChanged=(action 'templateValueChanged')}}
+              {{else}}
+                <span>No templates found</span>
+              {{/if}}
+            {{else}}
+              {{mist-spinner size="20px"}}
+            {{/if}}
+          {{/if}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link waves-effect" {{action 'closeModal'}}>Close</button>
+          <button type="button" class="btn bgm-pink waves-effect" {{action 'generatePdf'}}>
+            {{#if triggerDownload.isIdle}}
+              Generate
+            {{else}}
+              Generating {{mist-spinner size="10px" tagName="span"}}
+            {{/if}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/if}}
