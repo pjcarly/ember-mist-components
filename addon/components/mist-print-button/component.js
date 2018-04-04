@@ -33,7 +33,7 @@ export default Component.extend({
 
       let anchor = document.createElement("a");
 
-      yield fetch(`${this.get('apiEndpoint')}template/pdf-generate/${this.get('value')}?id=${this.get('model.id')}`, { headers })
+      yield fetch(`${this.get('apiEndpoint')}template/pdf-generate/${this.get('value')}?id=${this.get('model.id')}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, { headers })
       .then(response => response.blob())
       .then(blobby => {
           let objectUrl = window.URL.createObjectURL(blobby);
