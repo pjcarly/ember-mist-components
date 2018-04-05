@@ -3,6 +3,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
+import DynamicObserverComponent from 'ember-field-components/mixins/component-dynamic-observer';
 
 import { getParentModelTypeNames, hasWidget, getParentModelType, getParentModelTypeName, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
@@ -15,7 +16,7 @@ const { assert } = Ember;
 const { service } = inject;
 const { Model } = DS;
 
-export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, {
+export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, DynamicObserverComponent, {
   tagName: '',
   store: service(),
   init(){
@@ -53,7 +54,12 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
     if(this.get('isSelect')){
       yield this.get('setSelectOptions').perform();
     }
-  }),
+  }).drop(),
+  valueObserver() {
+    // TODO: Known bug. code enters twice
+    this._super(...arguments);
+    this.get('setInitialValue').perform();
+  },
   relationshipModelType: computed('model', 'field', function(){
     if(this.get('isPolymorphic')){
       return getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
@@ -94,7 +100,7 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
     });
 
     this.set('selectOptions', selectOptions);
-  }),
+  }).drop(),
   noChoiceAvailable: computed('selectOptions', 'value', function(){
     const selectOptions = this.get('selectOptions');
     return (selectOptions.get('length') === 1) && selectOptions[0].value === this.get('fieldId');
@@ -124,7 +130,6 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
       }
 
       model.set(field, value);
-      this.set('lookupValue', value);
 
       if(this.get('valueChanged')){
         this.get('valueChanged')(...arguments);
