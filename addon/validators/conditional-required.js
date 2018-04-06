@@ -7,7 +7,7 @@ export default Validator.extend({
   validate(name, value, attribute, model) {
     const requiredField = attribute.options.validation.conditionalRequired;
 
-    if(model.get(requiredField)){
+    if(model.get(requiredField) && isBlank(value)){
       return this.format();
     }
   }
