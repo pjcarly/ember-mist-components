@@ -25,7 +25,6 @@ export default Component.extend({
   triggerDownload: task(function * (){
     if(this.get('session.isAuthenticated')) {
       let headers = new Headers();
-      let authHeader;
 
       yield this.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
         headers.append('Authorization', headerValue);
