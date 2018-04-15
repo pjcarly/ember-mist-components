@@ -105,6 +105,28 @@ export default Mixin.create({
       this.logErrorMessage(`There was an error refreshing`, reason.message);
     });
   }).group('modelTasks'),
+  invokeModelActionAndRefresh: task(function * (model, action) {
+    const actionToInvoke = model.get(action).bind(model);
+    yield actionToInvoke()
+    .then(() => {
+      this.successToast('Success', 'Action successful');
+    })
+    .catch((error) => {
+      this.errorToast('Error', error);
+    })
+
+    yield model.reload();
+  }).group('modelTasks'),
+  invokeModelAction: task(function * (model, action) {
+    const actionToInvoke = model.get(action).bind(model);
+    yield actionToInvoke()
+    .then(() => {
+      this.successToast('Success', 'Action successful');
+    })
+    .catch((error) => {
+      this.errorToast('Error', error);
+    })
+  }).group('modelTasks'),
   logErrorMessage(subject, message){
     this.errorToast(subject, message);
     debug(message);
