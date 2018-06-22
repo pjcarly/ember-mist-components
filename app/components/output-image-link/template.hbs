@@ -1,4 +1,6 @@
 {{#if value.url}}
   <a href={{image-url value style}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+{{else}}
+  <span class="'value empty"></span>
 {{/if}}
 
