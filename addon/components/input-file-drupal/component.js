@@ -10,6 +10,7 @@ const { isBlank } = Ember;
 const { isEmpty } = Ember;
 const { service } = inject;
 const { String } = Ember;
+const { merge } = Ember;
 const { dasherize } = String;
 const { htmlSafe } = String;
 
@@ -30,6 +31,12 @@ export default Component.extend({
       ajax.setHeaders();
       let headers = ajax.get('headers');
       const fieldHeaderValue = this.get('fieldHeaderValue');
+      const componentOptions = this.get('options');
+
+      // Merge the headers with the possible
+      if(!isBlank(componentOptions) && componentOptions.headers){
+        merge(headers, componentOptions.headers);
+      }
 
       if(!isBlank(fieldHeaderValue)) {
         headers['X-Mist-Field-Target'] = fieldHeaderValue;
@@ -43,7 +50,6 @@ export default Component.extend({
       };
 
       // lets check for a possible other endpoint
-      const componentOptions = this.get('options');
       if(!isBlank(componentOptions) && componentOptions.endpoint) {
         uploaderOptions['url'] = `${ajax.get('endpoint')}${componentOptions.endpoint}`;
       } else {
