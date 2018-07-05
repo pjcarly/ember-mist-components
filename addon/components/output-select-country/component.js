@@ -35,7 +35,6 @@ export default Component.extend({
     }
     return true;
   }),
-
   didReceiveAttrs(){
     this._super(...arguments);
     this.get('setCountrySelectOptions').perform();
