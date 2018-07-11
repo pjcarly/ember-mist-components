@@ -3,24 +3,18 @@
 
     {{!-- TODO: partial loading --}}
     {{!-- <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-unfold-more zmdi-hc-lg"></i></button> --}}
+    <div class="table-header-title-wrapper">
+      <h2>{{title}}</h2>
+      {{#if fetchRecords.isRunning}}
+        {{mist-spinner size="10px" tagName="span"}}
+      {{else}}
+        <span style="width: 10px;height:10px;display:inline-block;"></span>
+      {{/if}}
 
-    <h2>{{title}}</h2>
-    {{#if fetchRecords.isRunning}}
-      {{mist-spinner size="10px" tagName="span"}}
-    {{else}}
-      <span style="width: 10px;height:10px;display:inline-block;"></span>
-    {{/if}}
-
-    {{#if displayListViewSelector}}
-      {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
-    {{/if}}
-
-    {{#mist-menu id=(concat guid '-actions') class="actions"}}
-      {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
-      {{#mist-menu-dropdown-item}}
-        {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
-      {{/mist-menu-dropdown-item}}
-    {{/mist-menu}}
+      {{#if displayListViewSelector}}
+        {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
+      {{/if}}
+    </div>
 
     <div class="h-search-wrap">
       <div class="hsw-inner">
@@ -34,6 +28,13 @@
     </div>
 
     <div id={{concat guid '-new'}}></div>
+
+    {{#mist-menu id=(concat guid '-actions') class="actions"}}
+      {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
+      {{#mist-menu-dropdown-item className="waves-circle"}}
+        {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
+      {{/mist-menu-dropdown-item}}
+    {{/mist-menu}}
   </div>
 
   <div id={{concat guid '-map'}}></div>
