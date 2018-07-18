@@ -27,9 +27,8 @@ export default Component.extend({
   }).drop(),
   uploadFile: task(function * (files){
     if (!isEmpty(files)) {
-      let ajax = this.get('ajax');
-      ajax.setHeaders();
-      let headers = ajax.get('headers');
+      const ajax = this.get('ajax');
+      const headers = ajax.get('headers');
       const fieldHeaderValue = this.get('fieldHeaderValue');
       const componentOptions = this.get('options');
 

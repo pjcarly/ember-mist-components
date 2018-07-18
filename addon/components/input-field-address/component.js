@@ -31,13 +31,6 @@ export default Component.extend({
     const config = this.get('config');
     return config.apiEndpoint;
   }),
-  metaSecured: computed(function(){
-    const config = this.get('config');
-    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('addressMetaSecured')) {
-      return config['ember-mist-components'].addressMetaSecured;
-    }
-    return true;
-  }),
   applyXS: computed(function(){
     const config = this.get('config');
     if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
@@ -103,13 +96,10 @@ export default Component.extend({
     yield this.get('setAddressFormat').perform();
   }),
   setCountrySelectOptions: task(function * (){
-    const { storage, ajax, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'shouldCache', 'metaSecured');
+    const { storage, ajax, shouldCache } = this.getProperties('storage', 'ajax', 'shouldCache');
     let cachedCountrySelectOptions = storage.get('addressCountrySelectOptions');
 
     if(isBlank(cachedCountrySelectOptions) || !shouldCache){
-      if(metaSecured) {
-        ajax.setHeaders();
-      }
       yield ajax.request(this.get('apiEndpoint') + 'address/address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
           if(shouldCache) {
@@ -123,7 +113,7 @@ export default Component.extend({
     }
   }).group('addressLoading'),
   setAddressFormat: task(function * (){
-    const { storage, ajax, address, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'address', 'shouldCache', 'metaSecured');
+    const { storage, ajax, address, shouldCache } = this.getProperties('storage', 'ajax', 'address', 'shouldCache');
     const countryCode = address.get('countryCode');
 
     if(isBlank(countryCode)){
@@ -139,9 +129,6 @@ export default Component.extend({
 
       if(isBlank(cachedAddressFormat) || !shouldCache){
         // no cached format found, lets request it from the server
-        if(metaSecured) {
-          ajax.setHeaders();
-        }
         yield ajax.request(this.get('apiEndpoint') + `address/address/format/${countryCode}`).then((response) => {
           if(shouldCache) {
             storage.set(storageKey, response);
@@ -281,14 +268,11 @@ export default Component.extend({
   getSubdivisionSelectOptions: task(function * (parentGrouping){
     // a subdivision is basically a generic name for an address component which has selectoptions that need to be fetched
     let selectoptions = [];
-    const { storage, ajax, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'shouldCache', 'metaSecured');
+    const { storage, ajax, shouldCache } = this.getProperties('storage', 'ajax', 'shouldCache');
     const cacheKey = 'addressSubdivisionSelectOptions' + replaceAll(parentGrouping, ',', '');
     let cachedSubdivisionSelectOptions = storage.get(cacheKey);
 
     if(isNone(cachedSubdivisionSelectOptions) || !shouldCache){
-      if(metaSecured) {
-        ajax.setHeaders();
-      }
       yield ajax.request(this.get('apiEndpoint') + `address/address/subdivisions/${parentGrouping}`).then((response) => {
         if(!isBlank(response) && !isBlank(response.data)){
           for(let subdivision of response.data){

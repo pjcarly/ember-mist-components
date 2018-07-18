@@ -17,6 +17,7 @@ export default Component.extend({
   config: computed(function(){
     return getOwner(this).resolveRegistration('config:environment');
   }),
+
   shouldCache: computed(function(){
     const config = this.get('config');
     if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('cacheFields')) {
@@ -24,30 +25,22 @@ export default Component.extend({
     }
     return true;
   }),
+
   apiEndpoint: computed(function(){
     const config = this.get('config');
     return config.apiEndpoint;
-  }),
-  metaSecured: computed(function(){
-    const config = this.get('config');
-    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('addressMetaSecured')) {
-      return config['ember-mist-components'].addressMetaSecured;
-    }
-    return true;
   }),
 
   didReceiveAttrs(){
     this._super(...arguments);
     this.get('setCountrySelectOptions').perform();
   },
+
   setCountrySelectOptions: task(function * (){
-    const { storage, ajax, shouldCache, metaSecured } = this.getProperties('storage', 'ajax', 'shouldCache', 'metaSecured');
+    const { storage, ajax, shouldCache } = this.getProperties('storage', 'ajax', 'shouldCache');
     let cachedCountrySelectOptions = storage.get('addressCountrySelectOptions');
 
     if(isBlank(cachedCountrySelectOptions) || !shouldCache){
-      if(metaSecured) {
-        ajax.setHeaders();
-      }
       yield ajax.request(this.get('apiEndpoint') + 'address/address/countries/selectoptions').then((response) => {
         if(!isBlank(response)){
           if(shouldCache) {
@@ -60,6 +53,7 @@ export default Component.extend({
       this.set('countrySelectOptions', cachedCountrySelectOptions);
     }
   }).group('addressLoading'),
+
   actions: {
     countryCodeChanged(value) {
       this.get('valueChanged')(value);
