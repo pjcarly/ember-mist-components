@@ -39,11 +39,10 @@ export default Mixin.create({
     error(error, transition){
       const entityType = this.get('entityName');
       if(!isBlank(entityType)) {
-        const idParam = `${entityType}_id`;
         const routeName = transition.targetName;
 
-        if(!isBlank(idParam) && transition.params.hasOwnProperty(routeName) && transition.params[routeName].hasOwnProperty(idParam)) {
-          const id = transition.params[routeName][idParam];
+        if(transition.params.hasOwnProperty(routeName) && transition.params[routeName].hasOwnProperty(`id`)) {
+          const id = transition.params[routeName][`id`];
           if(!isBlank(id)) {
             removeRecentlyViewed(entityType, id, this.get('storage'));
           }
