@@ -34,7 +34,7 @@ export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
     if(!isBlank(fieldId)){
       if(isPolymorphic){
         // AAARGGHH private ED api, watch out!
-        relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseRecord.modelName;
+        relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseInternalModel.modelName;
       }
 
       if(store.hasRecordForId(relationshipTypeName, fieldId)){
@@ -48,7 +48,7 @@ export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
   }),
   relationshipModelType: computed('model', 'field', function(){
     if(this.get('isPolymorphic')){
-      return getParentModelTypeNames(this.get('model'), this.get('field'), this.get('store'));
+      return getParentModelTypeNames(this.get('model'), this.get('field'));
     } else {
       return getParentModelTypeName(this.get('model'), this.get('field'));
     }

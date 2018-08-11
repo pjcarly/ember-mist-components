@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
 import StringUtils from 'ember-field-components/classes/utils';
-import { getModelType, getModelListView, getDefaultIncludes, getLabel } from 'ember-field-components/classes/model-utils';
+import { getModelType, getModelListView, getDefaultIncludes, getLabel, getPlural } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 //import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 
@@ -141,13 +141,15 @@ export default Component.extend({
     return Array.isArray(this.get('modelType'));
   }),
   multipleModelTypeSelectOptions: computed('modelType', function(){
-    const modelTypes = this.get('modelType');
+    const modelTypeNames = this.get('modelType');
+    const store = this.get('store');
     let selectOptions = [];
 
-    modelTypes.forEach((modelType) => {
+    modelTypeNames.forEach((modelTypeName) => {
+      const modelType = getModelType(modelTypeName, this.get('store'));
       let selectOption = {};
-      selectOption.value = modelType;
-      selectOption.label = capitalize(modelType);
+      selectOption.value = modelTypeName;
+      selectOption.label = getPlural(modelType);
       selectOptions.push(selectOption);
     });
 
@@ -226,7 +228,8 @@ export default Component.extend({
   }),
   columns: computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
-    const type = getModelType(this.get('activeModelType'), this.get('store'));
+    const activeModelType = this.get('activeModelType');
+    const type = getModelType(activeModelType, this.get('store'));
     const activeListView = this.get('activeListView');
     const queryParams = this.get('queryParams');
     let columns = [];
@@ -356,13 +359,15 @@ export default Component.extend({
   }).drop(),
 
   fetchRecordsAndRefreshColumns: task(function * (){
+    this.set('activeListView', null);
     yield this.get('fetchRecords').perform();
     // Needed for polymorphic tables
     this.setColumns();
   }).drop(),
 
   setColumns(){
-    this.get('table').setColumns(this.get('columns'));
+    const columns = this.get('columns');
+    this.get('table').setColumns(columns);
   },
 
   setDefaultIncludes(){

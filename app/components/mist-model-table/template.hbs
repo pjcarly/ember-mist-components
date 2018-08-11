@@ -42,7 +42,7 @@
 
   {{#if isMultipleModelTypes}}
     <div class="model-type-selector">
-      Type: {{input-select class="plain-select" selectOptions=multipleModelTypeSelectOptions value=activeModelType isRequired=true valueChanged=(action 'activeModelTypeChanged')}}
+      {{input-select class="plain-select" selectOptions=multipleModelTypeSelectOptions value=activeModelType isRequired=true valueChanged=(action 'activeModelTypeChanged')}}
     </div>
   {{/if}}
 
