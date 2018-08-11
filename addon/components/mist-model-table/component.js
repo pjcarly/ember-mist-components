@@ -15,14 +15,12 @@ const { isBlank } = Ember;
 const { String } = Ember;
 const { assert } = Ember;
 const { dasherize } = String;
-const { capitalize } = String;
 const { camelize } = String;
 const { service } = inject;
 
 export default Component.extend({
   store: service(),
   storage: service(),
-  entityRouter: service(),
   classNames: ['mist-model-table'],
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
@@ -182,7 +180,7 @@ export default Component.extend({
   // }),
   // keyboardEnter: on(keyDown('Enter'), function(){
   //   // this only has meaning when the table isn't multiSelect
-  //   if(!this.get('multiSelect')){
+  //   if(!this.get('isMultiSelect')){
   //     const activeRows = this.get('table.rows').filterBy('activated');
   //     if(activeRows.length > 0){
   //       this.rowSelected(activeRows[0]);
@@ -191,7 +189,7 @@ export default Component.extend({
   // }),
   // keyboardSpace: on(keyDown('Space'), function(){
   //   // this only has meaning when the table is multiSelect
-  //   if(this.get('multiSelect')){
+  //   if(this.get('isMultiSelect')){
   //     const activeRows = this.get('table.rows').filterBy('activated');
   //     if(activeRows.length > 0){
   //       this.rowSelected(activeRows[0]);
@@ -226,6 +224,9 @@ export default Component.extend({
     const modelListView = this.get('modelListView');
     return getModelListView(type, modelListView);
   }),
+  isMultiSelect: computed('multiselect', function(){
+    return this.get('multiselect') === true;
+  }),
   columns: computed('activeModelType', 'activeListView', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
     const activeModelType = this.get('activeModelType');
@@ -234,7 +235,7 @@ export default Component.extend({
     const queryParams = this.get('queryParams');
     let columns = [];
 
-    if(this.get('multiSelect')){
+    if(this.get('isMultiSelect')){
       let column = {};
       column['label'] = '';
       column['width'] = '60px';
@@ -264,7 +265,9 @@ export default Component.extend({
       // And finally build the structure for ember-light-table
       let column = {};
       column['label'] = label;
+      column['modelType'] = activeModelType;
       column['valuePath'] = camelizedColumn;
+      column['transitionToModel'] = (isBlank(this.get('onRowSelected')) && !this.get('isMultiSelect')); // When no row selected action or multiselect is provided, we will route to the model being displayed
       column['width'] = (modelColumn === 'id') ? '60px' : undefined;
       column['resizable'] = (modelColumn !== 'id');
       column['cellComponent'] = 'mist-model-table-cell';
@@ -443,7 +446,7 @@ export default Component.extend({
     }
   },
   reSetSelected(){
-    if(this.get('multiSelect')){
+    if(this.get('isMultiSelect')){
       // this function makes sure, that when we change limits, pages, refresh, ...
       // we set the selected attribute to the correct rows
       let selectedModels = this.get('selectedModels');
@@ -466,7 +469,7 @@ export default Component.extend({
   },
   rowSelected(selectedRow){
     if(isBlank(this.get('onRowSelected'))){
-      if(this.get('multiSelect')){
+      if(this.get('isMultiSelect')){
         selectedRow.toggleProperty('rowSelected');
 
         let selectedModels = this.get('selectedModels');
@@ -488,8 +491,6 @@ export default Component.extend({
         } else {
           this.setSelectAllColumn();
         }
-      } else {
-        this.get('entityRouter').transitionToView(selectedRow.get('content'));
       }
     } else {
       this.sendAction('onRowSelected', selectedRow);
@@ -552,7 +553,7 @@ export default Component.extend({
   },
   actions: {
     onColumnClick(column) {
-      if(this.get('multiSelect') && column.get('selectAll')){
+      if(this.get('isMultiSelect') && column.get('selectAll')){
         column.set('sorted', false);
         column.toggleProperty('valuePath');
 
