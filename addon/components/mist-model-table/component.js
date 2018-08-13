@@ -202,8 +202,8 @@ export default Component.extend({
       return this.get('queryParams.filter');
     },
     set(key, value){
-      this.set('queryParams.standardFilter', value);
-      return this.get('queryParams.standardFilter');
+      this.set('queryParams.baseConditions', value);
+      return this.get('queryParams.baseConditions');
     }
   }),
   amountSelected: computed('selectedModels.[]', function(){
@@ -339,7 +339,7 @@ export default Component.extend({
       const activeListView = this.get('activeListView');
       if(this.get('activeListViewKey') !== 'All' && !isBlank(activeListView)){
         queryParams.filter['_listview'] = activeListView.get('id');
-      } else {
+      } else if(queryParams.filter) {
         delete queryParams.filter['_listview'];
       }
 

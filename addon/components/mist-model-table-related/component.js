@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import { getChildModelTypeName, getRelationshipInverse} from 'ember-field-components/classes/model-utils';
+import QueryCondition from 'ember-mist-components/classes/query-condition';
 
 const { Component } = Ember;
 const { computed } = Ember;
@@ -22,10 +23,12 @@ export default Component.extend(ModelTasksMixin, {
     return getRelationshipInverse(this.get('model'), this.get('field'));
   }),
   filters: computed('model', 'parentField', function(){
-    let filters = {};
-    let parentField = dasherize(this.get('parentField'));
-
-    filters[parentField] = this.get('model.id');
+    const filters = [];
+    const filter = QueryCondition.create();
+    filter.set('field', dasherize(this.get('parentField')));
+    filter.set('operator', '=');
+    filter.set('id', this.get('model.id'));
+    filters.push(filter);
     return filters;
   }),
   preProcessNew(model){
