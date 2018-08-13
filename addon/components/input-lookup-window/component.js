@@ -28,9 +28,6 @@ export default Component.extend(InputComponent, {
       return this.get('value.name');
     }
   }),
-  typeaheadParams: computed(function(){
-    return { filter: { name: { operator: 'STARTS_WITH' } } };
-  }),
   actions: {
     showModal() {
       this.$('.modal').modal('show');

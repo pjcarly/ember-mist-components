@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-body">
         {{#if modalVisible}}
-          {{#mist-model-table title=title modelType=modelType activeModelType=activeModelType tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
+          {{#mist-model-table title=title modelType=modelType activeModelType=activeModelType filters=filters tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
             {{#table.actions}}
               {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
             {{/table.actions}}

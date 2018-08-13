@@ -1,11 +1,9 @@
 import Ember from 'ember';
 import QueryCondition from 'ember-mist-components/classes/query-condition';
-import { replaceAll } from 'ember-field-components/classes/utils';
 
 const { Object } = Ember;
 const { computed } = Ember;
 const { isBlank } = Ember;
-const { copy } = Ember;
 
 export default Object.extend({
   init(){
@@ -24,8 +22,6 @@ export default Object.extend({
     this.set('conditions', []);
   },
   params: computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'baseConditions', function(){
-    const { baseConditions, conditions } = this.getProperties('baseConditions', 'conditions');
-
     let queryParams = {};
 
     // The page of the results we want to fetch

@@ -81,6 +81,15 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
   isSelect: computed(function(){
     return hasWidget(this.get('relationshipAttributeOptions'), 'select');
   }),
+  filters: computed('relationshipAttributeOptions', function(){
+    const options = this.get('relationshipAttributeOptions');
+
+    if(options.filters){
+      return options.filters;
+    }
+
+    return [];
+  }),
   setSelectOptions: task(function * (){
     const store = this.get('store');
     const relationshipType = getParentModelType(this.get('model'), this.get('field'), store);

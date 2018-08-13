@@ -1,17 +1,36 @@
 import Ember from 'ember';
 import InputComponent from 'ember-field-components/mixins/component-input';
+import QueryCondition from 'ember-mist-components/classes/query-condition';
 import { getModelType, getPlural } from 'ember-field-components/classes/model-utils';
 
 const { Component } = Ember;
 const { computed } = Ember;
 const { isBlank } = Ember;
 const { inject } = Ember;
+const { String } = Ember;
 const { service } = inject;
+const { dasherize } = String;
 
 export default Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
   store: service(),
+  lookupFilters: computed('filters', function(){
+    const filters = this.get('filters');
+    const lookupFilters = [];
+    filters.forEach((filter) => {
+      if(!isBlank(filter.value) || !isBlank(filter.field)){
+        const lookupFilter = QueryCondition.create();
+        lookupFilter.set('field', dasherize(filter.field));
+        lookupFilter.set('operator', filter.operator ? filter.operator : '=');
+        lookupFilter.set('value', filter.value);
+
+        lookupFilters.push(lookupFilter);
+      }
+    });
+
+    return lookupFilters;
+  }),
   activeModelType: computed('value', 'modelType', function(){
     // needed for polymorphic relationships
     if(Array.isArray(this.get('modelType'))){
@@ -41,8 +60,21 @@ export default Component.extend(InputComponent, {
       return this.get('value.name');
     }
   }),
-  typeaheadParams: computed(function(){
-    return { filter: { name: { operator: 'STARTS_WITH' } } };
+  typeaheadParams: computed('lookupFilters', function(){
+    const returnValue = {};
+    const lookupFilters = this.get('lookupFilters');
+
+    returnValue.filter = {};
+    returnValue.filter['1'] = {
+      field: 'name',
+      operator: 'STARTS_WITH'
+    }
+
+    lookupFilters.forEach((lookupFilter, index) => {
+      returnValue.filter[index+2] = lookupFilter.get('object')
+    });
+
+    return returnValue;
   }),
   actions: {
     showModal() {

@@ -6,6 +6,6 @@
       {{input-select selectOptions=selectOptions value=fieldId isRequired=isRequired valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
     {{/if}}
   {{else}}
-    {{input-lookup value=lookupValue title="Models" modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
+    {{input-lookup filters=filters value=lookupValue title="Models" modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
   {{/if}}
 {{/if}}

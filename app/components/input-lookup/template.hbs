@@ -1,5 +1,5 @@
 <div class="field-wrapper">
-  {{aupac-ember-data-typeahead selection=value displayKey="name" placeholder=placeholder queryKey="filter[name][value]" params=typeaheadParams class='form-control' modelClass=activeModelType action=(action 'typeaheadSelected')}}
+  {{aupac-ember-data-typeahead selection=value displayKey="name" placeholder=placeholder queryKey="filter[1][value]" params=typeaheadParams class='form-control' modelClass=activeModelType action=(action 'typeaheadSelected')}}
 
   {{#if computedValue}}
     <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>
@@ -7,5 +7,5 @@
     </button>
   {{/if}}
 
-  {{input-lookup-window title=modelTitle modelType=modelType activeModelType=activeModelType valueChanged=(action 'typeaheadSelected')}}
+  {{input-lookup-window title=modelTitle modelType=modelType filters=lookupFilters activeModelType=activeModelType valueChanged=(action 'typeaheadSelected')}}
 </div>
