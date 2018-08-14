@@ -82,7 +82,7 @@ export default Component.extend({
         let defaultListView;
         let savedSelectedListView;
 
-        yield this.get('store').query('list-view', {filter: {grouping: grouping}}).then((listViews) => {
+        yield this.get('store').query('list-view', {filter: {1: { field: 'grouping', value: grouping}}}).then((listViews) => {
           listViews.forEach((listView) => {
             let availableListView = {}
             availableListView.value = listView.get('id');
@@ -337,7 +337,11 @@ export default Component.extend({
 
       // Lets also check if a listview is selected. And pass if to the query if needed
       const activeListView = this.get('activeListView');
+      const activeListViewKey = this.get('activeListViewKey');
       if(this.get('activeListViewKey') !== 'All' && !isBlank(activeListView)){
+        if(!queryParams.filter){
+          queryParams.filter = {};
+        }
         queryParams.filter['_listview'] = activeListView.get('id');
       } else if(queryParams.filter) {
         delete queryParams.filter['_listview'];
@@ -362,7 +366,6 @@ export default Component.extend({
   }).drop(),
 
   fetchRecordsAndRefreshColumns: task(function * (){
-    this.set('activeListView', null);
     yield this.get('fetchRecords').perform();
     // Needed for polymorphic tables
     this.setColumns();
@@ -631,6 +634,8 @@ export default Component.extend({
     },
     activeModelTypeChanged(activeModelType){
       this.set('activeModelType', activeModelType);
+      this.set('activeListView', null);
+      this.set('activeListViewKey', 'All');
       this.get('fetchRecordsAndRefreshColumns').perform();
     },
     listViewChanged(newListView){
