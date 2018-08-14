@@ -53,7 +53,10 @@ export default Component.extend({
     let pdfResults = [];
     yield this.get('store').query('pdf', {
       filter: {
-        grouping: grouping
+        1: {
+          field: 'grouping',
+          value: grouping
+        }
       }
     }).then((results) => {
       pdfResults = results;

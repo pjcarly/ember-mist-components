@@ -1,8 +1,15 @@
 {{#if fetchRecords.last}}
-  <div class={{concat 'card-header ch-alt mist-model-table-header' (if searchToggled ' search-toggled')}}>
+  {{#if (and displayListViewSelector listViewsAsTabs)}}
+    <ul class="list-view-tabs{{if (eq bootstrapVersion 4) ' nav nav-tabs' ' tab-nav'}}" role="tablist">
+      {{#each availableListViews as |listView|}}
+        <li class="{{if (eq listView.value activeListViewKey) 'active'}}{{if (eq bootstrapVersion 4) ' nav-item'}}">
+          <a class="{{if (eq listView.value activeListViewKey) 'active'}}{{if (eq bootstrapVersion 4) ' nav-link'}}" role="tab" {{action 'listViewChanged' listView.value}}>{{listView.label}}</a>
+        </li>
+      {{/each}}
+    </ul>
+  {{/if}}
 
-    {{!-- TODO: partial loading --}}
-    {{!-- <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-unfold-more zmdi-hc-lg"></i></button> --}}
+  <div class={{concat 'card-header ch-alt mist-model-table-header' (if searchToggled ' search-toggled')}}>
     <div class="table-header-title-wrapper">
       <h2>{{title}}</h2>
       {{#if fetchRecords.isRunning}}
@@ -11,7 +18,7 @@
         <span style="width: 10px;height:10px;display:inline-block;"></span>
       {{/if}}
 
-      {{#if displayListViewSelector}}
+      {{#if (and displayListViewSelector (not listViewsAsTabs))}}
         {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
       {{/if}}
     </div>

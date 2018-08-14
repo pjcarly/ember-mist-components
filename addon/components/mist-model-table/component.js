@@ -14,6 +14,7 @@ const { guidFor } = Ember;
 const { isBlank } = Ember;
 const { String } = Ember;
 const { assert } = Ember;
+const { getOwner } = Ember;
 const { dasherize } = String;
 const { camelize } = String;
 const { service } = inject;
@@ -63,6 +64,15 @@ export default Component.extend({
       }
     }
   },
+  config: computed(function(){
+    return getOwner(this).resolveRegistration('config:environment');
+  }),
+  bootstrapVersion: computed(function(){
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
+      return config['ember-mist-components'].bootstrapVersion;
+    }
+  }),
   setListViews: task(function * (){
     let activeListView = this.get('activeListView');
     let defaultListViewKey = this.get('defaultListView');
@@ -140,7 +150,6 @@ export default Component.extend({
   }),
   multipleModelTypeSelectOptions: computed('modelType', function(){
     const modelTypeNames = this.get('modelType');
-    const store = this.get('store');
     let selectOptions = [];
 
     modelTypeNames.forEach((modelTypeName) => {
@@ -337,7 +346,6 @@ export default Component.extend({
 
       // Lets also check if a listview is selected. And pass if to the query if needed
       const activeListView = this.get('activeListView');
-      const activeListViewKey = this.get('activeListViewKey');
       if(this.get('activeListViewKey') !== 'All' && !isBlank(activeListView)){
         if(!queryParams.filter){
           queryParams.filter = {};
