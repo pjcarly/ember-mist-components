@@ -1,0 +1,12 @@
+<div class="horizontal timeline">
+  <div class="steps">
+    {{#each tasks as |task|}}
+      <div class="step {{task.status}}">
+        <span class="top">{{task.title}}</span>
+        <span class="bottom">{{moment-format task.dueDate 'DDMMM YYYY'}}</span>
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="line" style="width: {{width}}%;"></div>
+</div>
