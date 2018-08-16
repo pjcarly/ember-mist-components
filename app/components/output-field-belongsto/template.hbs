@@ -3,9 +3,19 @@
     {{#if lookupValue}}
       <span class="value">
         {{#if (or inline (not hasRoute))}}
-          {{lookupValue.name}}
+          {{#if fieldOptions.nameColumn}}
+            {{get lookupValue fieldOptions.nameColumn}}
+          {{else}}
+            {{lookupValue.name}}
+          {{/if}}
         {{else}}
-          <a href={{href-to route lookupValue}}>{{lookupValue.name}}</a>
+          <a href={{href-to route lookupValue}}>
+            {{#if fieldOptions.nameColumn}}
+              {{get lookupValue fieldOptions.nameColumn}}
+            {{else}}
+              {{lookupValue.name}}
+            {{/if}}
+          </a>
         {{/if}}
       </span>
     {{else}}
