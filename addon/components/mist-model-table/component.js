@@ -138,11 +138,11 @@ export default Component.extend({
     const activeListView = this.get('activeListView');
     assert(`Listview not found`, !isBlank(activeListView));
     const listViewLimit = get(activeListView, 'rows');
-    const listViewSort = get(activeListView, 'sort');
+    const listViewSort = get(activeListView, 'sortOrder');
     let queryParams = this.get('queryParams');
 
     queryParams.set('limit', isBlank(listViewLimit) ? 10 : listViewLimit);
-    queryParams.set('sort', isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
+    queryParams.set('sortOrder', isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
     queryParams.set('dir', isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
   },
   isMultipleModelTypes: computed('modelType', function(){

@@ -1,0 +1,11 @@
+{{#if hasPrefix}}
+ {{prefix}}
+{{/if}}
+<span class={{if value 'value' 'value empty'}}>
+  {{#each value as |singleValue|}}
+    {{singleValue}}<br/>
+  {{/each}}
+</span>
+{{#if hasSuffix}}
+  {{suffix}}
+{{/if}}
