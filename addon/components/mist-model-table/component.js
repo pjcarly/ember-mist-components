@@ -67,10 +67,16 @@ export default Component.extend({
   config: computed(function(){
     return getOwner(this).resolveRegistration('config:environment');
   }),
-  bootstrapVersion: computed(function(){
+  bootstrapVersion: computed('config', function(){
     const config = this.get('config');
     if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
       return config['ember-mist-components'].bootstrapVersion;
+    }
+  }),
+  displayListViewLinks: computed('config', function(){
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('displayListViewLinks')) {
+      return config['ember-mist-components'].displayListViewLinks;
     }
   }),
   setListViews: task(function * (){

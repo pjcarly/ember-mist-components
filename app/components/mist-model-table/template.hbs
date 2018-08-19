@@ -39,6 +39,20 @@
     {{#mist-menu id=(concat guid '-actions') class="actions"}}
       {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
       {{#mist-menu-dropdown-item className="waves-circle"}}
+        {{#if (and listViewGrouping displayListViewLinks)}}
+          {{#if (and activeListViewKey (is-numeric activeListViewKey))}}
+            {{#mist-menu-item}}
+              <a href="{{href-to 'list-view.edit' activeListViewKey}}">
+                <i class="zmdi zmdi-menu"></i> Edit List View
+              </a>
+            {{/mist-menu-item}}
+          {{/if}}
+          {{#mist-menu-item}}
+            <a href="{{href-to 'list-view.new'}}">
+              <i class="zmdi zmdi-playlist-plus"></i> New List View
+            </a>
+          {{/mist-menu-item}}
+        {{/if}}
         {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
       {{/mist-menu-dropdown-item}}
     {{/mist-menu}}
