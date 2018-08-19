@@ -2,40 +2,33 @@ import Ember from 'ember';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
 
 const { Component } = Ember;
+const { computed } = Ember;
 const { isBlank } = Ember;
+const { A } = Ember;
 
+// TODO: fix bug, when pushing new object on the array, for some reason the object in the template isnt pushed to the end of the array, but instead to the end-1 position
 export default Component.extend(FieldInputComponent, {
+  items: computed('value.@each', function(){
+    return isBlank(this.get('value')) ? A() : this.get('value');
+  }),
   actions: {
     reorderLines(reorderedLines){
       this.set('value', reorderedLines);
     },
     setArrayValue(index, newValue){
-      const array = this.get('value');
-      array[index] = newValue;
+      const items = this.get('items');
+      items[index] = newValue;
+      this.set('value', items);
     },
     removeIndexFromValue(indexToRemove){
-      const array = this.get('value');
-      const newArray = [];
-
-      array.forEach((singleValue, index) => {
-        if(index !== indexToRemove){
-          newArray.push(singleValue);
-        }
-      });
-
-      this.set('value', newArray);
+      const items = this.get('items');
+      items.removeAt(indexToRemove);
+      this.set('value', items);
     },
     addNewValue(){
-      const value = isBlank(this.get('value')) ? [] : this.get('value');
-      const newValue = [];
-
-      value.forEach((singleValue) => {
-        newValue.push(singleValue);
-      });
-
-      newValue.push('');
-
-      this.set('value', newValue);
+      const items = this.get('items');
+      items.pushObject('');
+      this.set('value', items);
     }
   }
 });

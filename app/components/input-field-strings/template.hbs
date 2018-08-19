@@ -5,13 +5,13 @@
 </div>
 
 {{#sortable-group tagName="div" onChange=(action 'reorderLines') as |group|}}
-  {{#each value as |singleValue index|}}
-      {{#sortable-item tagName="div" model=singleValue group=group handle=".sort-handle"}}
-        <div class="b-0 sort-handle">&varr;</div>
-        {{input-text value=singleValue valueChanged=(action 'setArrayValue' index)}}
-        <a {{action 'removeIndexFromValue' index}} class="btn btn-default icon-button">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      {{/sortable-item}}
+  {{#each items as |item index|}}
+    {{#sortable-item tagName="div" model=item group=group handle=".sort-handle"}}
+      <div class="b-0 sort-handle">&varr;</div>
+      {{input-text value=item valueChanged=(action 'setArrayValue' index)}}
+      <a {{action 'removeIndexFromValue' index}} class="btn btn-default icon-button">
+        <span class="glyphicon glyphicon-remove"></span>
+      </a>
+    {{/sortable-item}}
   {{/each}}
 {{/sortable-group}}
