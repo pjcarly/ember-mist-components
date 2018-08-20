@@ -3,6 +3,7 @@ import DS from 'ember-data';
 
 const { Transform } = DS;
 const { A } = Ember;
+const { isBlank } = Ember;
 
 export default Transform.extend({
   deserialize: function(serialized) {
