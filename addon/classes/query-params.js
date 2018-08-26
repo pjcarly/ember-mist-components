@@ -53,17 +53,21 @@ export default Object.extend({
     let conditionIndex = 1; // we keep an index over all filters, as each filter will be passed in the query string with as key the index
 
     // First we apply base conditions (these are conditions passed in through the component params)
-    this.get('baseConditions').forEach((baseCondition) => {
-      filterParam[conditionIndex++] = baseCondition.get('object');
-    });
+    if(!isBlank(this.get('baseConditions'))){
+      this.get('baseConditions').forEach((baseCondition) => {
+        filterParam[conditionIndex++] = baseCondition.get('object');
+      });
+    }
 
     // Next we add possible conditions added to the query params object
-    this.get('conditions').forEach((condition) => {
-      const conditionObject = condition.get('object');
-      if(!isBlank(conditionObject)){
-        queryParams.filter[conditionIndex++] = conditionObject;
-      }
-    });
+    if(!isBlank(this.get('conditions'))){
+      this.get('conditions').forEach((condition) => {
+        const conditionObject = condition.get('object');
+        if(!isBlank(conditionObject)){
+          queryParams.filter[conditionIndex++] = conditionObject;
+        }
+      });
+    }
 
     // We must also check if a search query was passed, and add a condition for it as well
     if(!isBlank(this.get('search'))){
