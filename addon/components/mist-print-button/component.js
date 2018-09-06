@@ -26,9 +26,11 @@ export default Component.extend({
     if(this.get('session.isAuthenticated')) {
       let headers = new Headers();
 
-      yield this.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
-        headers.append('Authorization', headerValue);
-      });
+      // Lets find the token to send with the request
+      const { access_token } = this.get('session.data.authenticated');
+      if(!isBlank(access_token)){
+        headers.append('Authorization', `Bearer ${access_token}`);
+      }
 
       let anchor = document.createElement("a");
 
