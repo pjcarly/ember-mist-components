@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { replaceAll } from 'ember-field-components/classes/utils';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
-const { Object } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-
-export default Object.extend({
+export default EmberObject.extend({
   init(){
     this.set('field', null);
     this.set('operator', '=');

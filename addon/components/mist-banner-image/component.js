@@ -1,10 +1,7 @@
-import Ember from 'ember';
 import DynamicObserverComponent from 'ember-field-components/mixins/component-dynamic-observer';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
 export default Component.extend(DynamicObserverComponent, {
   tagName: null,

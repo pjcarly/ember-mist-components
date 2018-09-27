@@ -1,9 +1,7 @@
-import Ember from 'ember';
 import InputFieldFile from '../input-field-file/component';
-
-const { isBlank } = Ember;
-const { computed } = Ember;
-const { guidFor } = Ember;
+import { isBlank } from '@ember/utils';
+import { computed } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 
 export default InputFieldFile.extend({
   tagName: 'div',

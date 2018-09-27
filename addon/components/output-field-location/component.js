@@ -1,8 +1,6 @@
-import Ember from 'ember';
 import InputFieldLocation from 'ember-mist-components/components/input-field-location/component';
-
-const { computed } = Ember;
-const { getOwner } = Ember;
+import { computed } from '@ember/object';
+import { getOwner } from '@ember/application';
 
 export default InputFieldLocation.extend({
   key: computed(function(){

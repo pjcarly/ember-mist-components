@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { isBlank } = Ember;
+import { isBlank } from '@ember/utils';
 
 export function transformFieldSelectOptionsToSelectOptions(fieldModel){
   const selectOptions = fieldModel.get('selectOptions');

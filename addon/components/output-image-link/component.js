@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import OutputComponent from 'ember-field-components/mixins/component-output';
-
-const { Component } = Ember;
 
 export default Component.extend(OutputComponent, {
   type: 'image-link'

@@ -1,8 +1,6 @@
-import Ember from 'ember';
 import EntityNewRouteMixin from 'ember-mist-components/routes/route-entity-new';
 
-const { inject } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
 
 export default EntityNewRouteMixin.extend({
   loggedInUser: service(),

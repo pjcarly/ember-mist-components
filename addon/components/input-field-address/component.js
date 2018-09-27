@@ -1,14 +1,12 @@
-import Ember from 'ember';
 import { task, taskGroup } from 'ember-concurrency';
 import { replaceAll } from 'ember-field-components/classes/utils';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { isNone } from '@ember/utils';
+import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
 
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { isNone } = Ember;
-const { inject } = Ember;
-const { getOwner } = Ember;
-const { service } = inject;
 
 export default Component.extend({
   tagName: '',

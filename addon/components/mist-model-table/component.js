@@ -1,23 +1,19 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
 import StringUtils from 'ember-field-components/classes/utils';
 import { getModelType, getModelListView, getDefaultIncludes, getLabel, getPlural } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 //import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
-
-const { Component } = Ember;
-const { inject } = Ember;
-const { computed } = Ember;
-const { get } = Ember;
-const { guidFor } = Ember;
-const { isBlank } = Ember;
-const { String } = Ember;
-const { assert } = Ember;
-const { getOwner } = Ember;
-const { dasherize } = String;
-const { camelize } = String;
-const { service } = inject;
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { get } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
+import { isBlank } from '@ember/utils';
+import { assert } from '@ember/debug';
+import { getOwner } from '@ember/application';
+import { dasherize } from '@ember/string';
+import { camelize } from '@ember/string';
 
 export default Component.extend({
   store: service(),

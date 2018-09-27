@@ -1,6 +1,5 @@
-import Ember from 'ember';
 import Validator from 'ember-attribute-validations/validator';
-const { isBlank } = Ember;
+import { isBlank } from '@ember/utils';
 
 export default Validator.extend({
   message: '%@ is an invalid address for the selected country, fill in the required fields',

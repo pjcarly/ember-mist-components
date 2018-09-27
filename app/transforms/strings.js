@@ -1,9 +1,8 @@
-import Ember from 'ember';
 import DS from 'ember-data';
+import { A } from '@ember/array';
+import { isBlank } from '@ember/utils';
 
 const { Transform } = DS;
-const { A } = Ember;
-const { isBlank } = Ember;
 
 export default Transform.extend({
   deserialize: function(serialized) {

@@ -1,8 +1,6 @@
-import Ember from 'ember';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
 export default Component.extend({
   tagName: '',

@@ -1,6 +1,5 @@
-import Ember from 'ember';
 import { getModelName } from 'ember-field-components/classes/model-utils';
-const { isBlank } = Ember;
+import { isBlank } from '@ember/utils';
 
 export function removeRecentlyViewed(type, id, storage){
   let oldRecentlyViewedRecords = storage.get('recentlyViewedRecords');

@@ -1,9 +1,7 @@
-import Ember from 'ember';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { guidFor } = Ember;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 
 export default Component.extend(FieldOutputComponent, {
   carouselName: computed(function(){

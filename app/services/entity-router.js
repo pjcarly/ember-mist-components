@@ -1,9 +1,6 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import { getModelName } from 'ember-field-components/classes/model-utils';
-
-const { Service } = Ember;
-const { inject } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
 
 export default Service.extend({
   // beware, -routing is a private API, migrate once Routing as a Service is released:

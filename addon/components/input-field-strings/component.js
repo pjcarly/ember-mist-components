@@ -1,10 +1,8 @@
-import Ember from 'ember';
 import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { A } = Ember;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { A } from '@ember/array';
 
 // TODO: fix bug, when pushing new object on the array, for some reason the object in the template isnt pushed to the end of the array, but instead to the end-1 position
 export default Component.extend(FieldInputComponent, {

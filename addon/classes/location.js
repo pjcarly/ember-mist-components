@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
-const { Object } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-
-export default Object.extend({
+export default EmberObject.extend({
   markers: null,
   field: null,
   model: null,

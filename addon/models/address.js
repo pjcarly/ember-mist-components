@@ -1,8 +1,7 @@
-import Ember from 'ember';
-import attr from 'ember-data/attr';
 import Fragment from 'ember-data-model-fragments/fragment';
-const { computed } = Ember;
-const { isBlank } = Ember;
+import attr from 'ember-data/attr';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
 export default Fragment.extend({
   countryCode: attr('string'),

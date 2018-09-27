@@ -1,15 +1,11 @@
-import Ember from 'ember';
 import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
-import { getChildModelTypeName, getRelationshipInverse} from 'ember-field-components/classes/model-utils';
 import QueryCondition from 'ember-mist-components/classes/query-condition';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { inject } = Ember;
-const { String } = Ember;
-const { isBlank } = Ember;
-const { service } = inject;
-const { dasherize } = String;
+import Component from '@ember/component';
+import { getChildModelTypeName, getRelationshipInverse } from 'ember-field-components/classes/model-utils';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { dasherize } from '@ember/string';
 
 export default Component.extend(ModelTasksMixin, {
   tagName: '',

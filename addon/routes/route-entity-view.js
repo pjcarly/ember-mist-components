@@ -1,12 +1,9 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import SingleEntityRouteMixin from 'ember-mist-components/mixins/route-single-entity';
 import ScrollToTop from 'ember-mist-components/mixins/route-scroll-to-top';
 import { addRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
-
-const { Route } = Ember;
-const { inject } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
 
 export default Route.extend(AuthenticatedRouteMixin, SingleEntityRouteMixin, ScrollToTop, {
   entityCache: service(),

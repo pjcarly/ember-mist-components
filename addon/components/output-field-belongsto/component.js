@@ -1,18 +1,13 @@
-/* jshint noyield:true */
-import Ember from 'ember';
+import Component from '@ember/component';
 import FieldOutputComponent from 'ember-field-components/mixins/component-field-output-super';
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
 import { getParentModelTypeNames, getParentModelTypeName, hasRoute, getModelName } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
-
-const { Component } = Ember;
-const { inject } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
 export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
-
   store: service(),
   init(){
     this._super(...arguments);

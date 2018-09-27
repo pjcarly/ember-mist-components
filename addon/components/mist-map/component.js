@@ -1,13 +1,9 @@
-/* global google */
-import Ember from 'ember';
 import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
-
-const { inject } = Ember;
-const { isBlank } = Ember;
-const { observer } = Ember;
-const { guidFor } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { observer } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 
 export default GMaps.extend({
   setBounds: false,

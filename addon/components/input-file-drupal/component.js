@@ -1,18 +1,13 @@
-/* jshint noyield:true */
-import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+import Component from '@ember/component';
 import { task } from 'ember-concurrency';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { inject } = Ember;
-const { isBlank } = Ember;
-const { isEmpty } = Ember;
-const { service } = inject;
-const { String } = Ember;
-const { merge } = Ember;
-const { dasherize } = String;
-const { htmlSafe } = String;
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { isEmpty } from '@ember/utils';
+import { merge } from '@ember/polyfills';
+import { dasherize } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 
 export default Component.extend({
   ajax: service(),

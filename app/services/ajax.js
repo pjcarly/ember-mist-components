@@ -1,11 +1,8 @@
-import Ember from 'ember';
 import AjaxService from 'ember-ajax/services/ajax';
-
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { inject } = Ember;
-const { getOwner } = Ember;
-const { service } = inject;
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
 
 export default AjaxService.extend({
   session: service(),

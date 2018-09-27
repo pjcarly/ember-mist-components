@@ -1,5 +1,5 @@
 /* jshint noyield:true */
-import Ember from 'ember';
+import Component from '@ember/component';
 import DS from 'ember-data';
 import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
 import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
@@ -7,13 +7,11 @@ import DynamicObserverComponent from 'ember-field-components/mixins/component-dy
 
 import { getParentModelTypeNames, hasWidget, getParentModelType, getParentModelTypeName, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { assert } from '@ember/debug';
 
-const { Component } = Ember;
-const { inject } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { assert } = Ember;
-const { service } = inject;
 const { Model } = DS;
 
 export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, DynamicObserverComponent, {

@@ -1,16 +1,11 @@
-/* jshint noyield:true */
-/* global swal */
-import Ember from 'ember';
 import DS from 'ember-data';
+import Mixin from '@ember/object/mixin';
 import { getModelType, getDefaultIncludes, getModelName } from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
 import { removeRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
-
-const { Mixin } = Ember;
-const { inject } = Ember;
-const { isBlank } = Ember;
-const { debug } = Ember;
-const { service } = inject;
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { debug } from '@ember/debug';
 
 export default Mixin.create({
   entityCache: service(),

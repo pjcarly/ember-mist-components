@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import { getModelType, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
 import { removeRecentlyViewed } from 'ember-mist-components/classes/recently-viewed';
-
-const { Mixin } = Ember;
-const { isBlank } = Ember;
+import { isBlank } from '@ember/utils';
 
 export default Mixin.create({
   model(params) {

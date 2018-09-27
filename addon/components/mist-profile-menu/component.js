@@ -1,12 +1,8 @@
-import Ember from 'ember';
-
-const { Component } = Ember;
-const { inject } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { String } = Ember;
-const { htmlSafe } = String;
-const { service } = inject;
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { htmlSafe } from '@ember/template';
 
 export default Component.extend({
   tagName: 'div',

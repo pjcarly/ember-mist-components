@@ -1,15 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import InputComponent from 'ember-field-components/mixins/component-input';
 import QueryCondition from 'ember-mist-components/classes/query-condition';
 import { getModelType, getPlural } from 'ember-field-components/classes/model-utils';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { inject } = Ember;
-const { String } = Ember;
-const { service } = inject;
-const { dasherize } = String;
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { inject as service } from '@ember/service';
+import { dasherize } from '@ember/string';
 
 export default Component.extend(InputComponent, {
   type: 'lookup',

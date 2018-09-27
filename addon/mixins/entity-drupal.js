@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import Attribute from 'ember-field-components/classes/attribute';
-
-const { Mixin } = Ember;
-const { computed } = Ember;
+import { computed } from '@ember/object';
 
 export default Mixin.create({
   displayName: computed('name', function(){

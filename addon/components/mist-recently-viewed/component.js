@@ -1,10 +1,7 @@
-import Ember from 'ember';
-
-const { Component } = Ember;
-const { computed } = Ember;
-const { isBlank } = Ember;
-const { inject } = Ember;
-const { service } = inject;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
   classNames: ['card recently-viewed'],

@@ -1,7 +1,6 @@
-import Ember from 'ember';
 import DS from 'ember-data';
+import { isBlank } from '@ember/utils';
 
-const { isBlank } = Ember;
 const { Transform } = DS;
 
 export default Transform.extend({

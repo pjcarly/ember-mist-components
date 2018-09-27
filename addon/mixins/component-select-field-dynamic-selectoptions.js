@@ -1,15 +1,12 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 import { transformFieldSelectOptionsToSelectOptions } from 'ember-mist-components/classes/field-utils';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { dasherize } from '@ember/string';
+import { camelize } from '@ember/string';
 
-const { Mixin } = Ember;
-const { inject } = Ember;
-const { isBlank } = Ember;
-const { String } = Ember;
-const { dasherize } = String;
-const { camelize } = String;
-const { service } = inject;
 
 export default Mixin.create({
   store: service(),
