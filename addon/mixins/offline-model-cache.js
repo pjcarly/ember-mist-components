@@ -1,11 +1,9 @@
-import Ember from 'ember';
 import Mixin from '@ember/object/mixin';
 import { modelTypeIsCacheable, modelTypeWasLoaded, modelTypeHasBeenLoadedFromCache } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
+import { singularize } from 'ember-inflector';
 import { isBlank } from '@ember/utils';
 import { camelize } from '@ember/string';
-
-const { Inflector } = Ember;
 
 export default Mixin.create({
   checkOfflineCache: task(function * (store, offlineCache, modelTypeName){
@@ -26,10 +24,9 @@ export default Mixin.create({
           if(!isBlank(records) && records.get('length') > 0){
             // we found data, let's build a valid jsonapi document
             let payload = {data: []};
-            const inflector = new Inflector(Inflector.defaultRules);
             records.forEach((record) => {
               let serializedRecord = record.serialize({includeId: true}).data;
-              serializedRecord.type = inflector.singularize(serializedRecord.type);
+              serializedRecord.type = singularize(serializedRecord.type);
               payload.data.push(serializedRecord);
             });
 
