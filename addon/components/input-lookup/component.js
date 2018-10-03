@@ -83,14 +83,14 @@ export default Component.extend(InputComponent, {
     },
     clearLookup() {
       this.set('value', null);
-      this.sendAction('valueChanged', null);
+      this.notifyAction(null);
     },
     rowSelected(row){
       this.send('closeModal');
-      this.sendAction('valueChanged', row.get('content'));
+      this.notifyAction(row.get('content'));
     },
     typeaheadSelected(model){
-      this.sendAction('valueChanged', model);
+      this.notifyAction(model);
     }
   }
 });

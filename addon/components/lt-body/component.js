@@ -3,10 +3,16 @@ import Body from 'ember-light-table/components/lt-body';
 export default Body.extend({
   actions: {
     onRowMouseEnter(/*row*/) {
-      this.sendAction('onRowMouseEnter', ...arguments);
+      const onRowMouseEnter = this.get('onRowMouseEnter');
+      if(onRowMouseEnter){
+        onRowMouseEnter(...arguments);
+      }
     },
     onRowMouseLeave(/*row*/) {
-      this.sendAction('onRowMouseLeave', ...arguments);
+      const onRowMouseLeave = this.get('onRowMouseLeave');
+      if(onRowMouseLeave){
+        onRowMouseLeave(...arguments);
+      }
     }
   }
 });

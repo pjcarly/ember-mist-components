@@ -506,7 +506,10 @@ export default Component.extend({
         }
       }
     } else {
-      this.sendAction('onRowSelected', selectedRow);
+      const onRowSelected = this.get('onRowSelected');
+      if(onRowSelected){
+        onRowSelected(selectedRow);
+      }
     }
   },
   rowActivateMapMarker(rowToActivate){

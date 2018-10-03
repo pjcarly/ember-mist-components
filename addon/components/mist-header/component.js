@@ -6,7 +6,10 @@ export default Component.extend({
   sidebarToggled: false,
   actions: {
     toggleSidebar() {
-      this.sendAction('toggleSidebar');
+      const toggleSidebar = this.get('toggleSidebar');
+      if(toggleSidebar){
+        toggleSidebar();
+      }
     }
   }
 });

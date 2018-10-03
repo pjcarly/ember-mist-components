@@ -3,10 +3,8 @@ import { getModelName } from 'ember-field-components/classes/model-utils';
 import { inject as service } from '@ember/service';
 
 export default Service.extend({
-  // beware, -routing is a private API, migrate once Routing as a Service is released:
-  //https://github.com/emberjs/Ember.js/issues/12719
   store: service(),
-  router: service('-routing'),
+  router: service(),
   transitionToView: function(model){
     this.transitionToModelRoute(model, 'view');
   },
@@ -24,6 +22,6 @@ export default Service.extend({
   },
   transitionToModelRoute: function(model, route) {
     const modelName = getModelName(model);
-    this.get('router').transitionTo(`${modelName}.${route}`, [model.get('id')]);
+    this.get('router').transitionTo(`${modelName}.${route}`, model.get('id'));
   }
 });

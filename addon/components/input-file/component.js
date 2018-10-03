@@ -7,7 +7,10 @@ export default Component.extend({
     filesSelected(event){
       const input = event.target;
       if (!isEmpty(input.files)) {
-        this.sendAction('valueChanged', input.files);
+        const valueChanged = this.get('valueChanged');
+        if(valueChanged){
+          valueChanged(input.files);
+        }
       }
     }
   }

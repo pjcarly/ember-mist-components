@@ -1,4 +1,4 @@
-{{#if setInitialValue.last}}
+{{#if (and setInitialValue.last setInitialValue.isIdle)}}
   {{#if isSelect}}
     {{#if noChoiceAvailable}}
       {{output-text value=selectOptions.firstObject.label class="read-only-output-text"}}

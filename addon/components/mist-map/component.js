@@ -1,3 +1,4 @@
+/* global google */
 import GMaps from 'ember-cli-g-maps/components/g-maps';
 import { getModelName } from 'ember-field-components/classes/model-utils';
 import { inject as service } from '@ember/service';

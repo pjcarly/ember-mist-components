@@ -50,7 +50,7 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
     }
 
     if(this.get('isSelect')){
-      yield this.get('setSelectOptions').perform();
+      this.setSelectOptions();
     }
   }).drop(),
   valueObserver() {
@@ -71,7 +71,7 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
   }),
   isPolymorphic: computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
-    return options.hasOwnProperty('polymorphic') && options.polymorphic;
+    return !isBlank(options) && options.hasOwnProperty('polymorphic') && options.polymorphic;
   }),
   fieldId: computed('model', 'field', function(){
     return this.get('model').belongsTo(this.get('field')).id();
@@ -82,13 +82,13 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
   filters: computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
 
-    if(options.filters){
+    if(!isBlank(options) && options.hasOwnProperty('filters')){
       return options.filters;
     }
 
     return [];
   }),
-  setSelectOptions: task(function * (){
+  setSelectOptions(){
     const store = this.get('store');
     const relationshipType = getParentModelType(this.get('model'), this.get('field'), store);
     const relationshipTypeName = this.get('relationshipModelType');
@@ -107,13 +107,13 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
     });
 
     this.set('selectOptions', selectOptions);
-  }).drop(),
+  },
   noChoiceAvailable: computed('selectOptions', 'value', function(){
     const selectOptions = this.get('selectOptions');
     return (selectOptions.get('length') === 1) && selectOptions[0].value === this.get('fieldId');
   }),
   actions: {
-    valueChanged: function(value){
+    valueChanged(value){
       const { field, model } = this.getProperties('field', 'model');
 
       if(!isBlank(value)) {

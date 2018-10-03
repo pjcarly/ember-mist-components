@@ -1,3 +1,4 @@
+/* global swal */
 import DS from 'ember-data';
 import Mixin from '@ember/object/mixin';
 import { getModelType, getDefaultIncludes, getModelName } from 'ember-field-components/classes/model-utils';

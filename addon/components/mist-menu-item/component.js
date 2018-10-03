@@ -10,7 +10,7 @@ export default Component.extend({
   }),
   click() {
     if(this.get('hasAction')){
-      return this.sendAction();
+      this.get('action')();
     }
   }
 });

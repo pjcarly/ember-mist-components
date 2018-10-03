@@ -57,7 +57,7 @@ export default Component.extend(FieldOutputComponent, OfflineModelCacheMixin, {
   }),
   isPolymorphic: computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
-    return options.hasOwnProperty('polymorphic') && options.polymorphic;
+    return !isBlank(options) && options.hasOwnProperty('polymorphic') && options.polymorphic;
   }),
   fieldId: computed('model', 'field', function(){
     return this.get('model').belongsTo(this.get('field')).id();
