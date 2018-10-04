@@ -1,11 +1,13 @@
-{{#if (and setInitialValue.last setInitialValue.isIdle)}}
-  {{#if isSelect}}
+{{#if isSelect}}
+  {{#if (not selectOptionsNotLoaded)}}
     {{#if noChoiceAvailable}}
       {{output-text value=selectOptions.firstObject.label class="read-only-output-text"}}
     {{else}}
       {{input-select selectOptions=selectOptions value=fieldId isRequired=isRequired valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
     {{/if}}
   {{else}}
-    {{input-lookup filters=filters value=lookupValue title="Models" modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
+    {{mist-spinner size="20px"}}
   {{/if}}
+{{else}}
+  {{input-lookup filters=filters value=(get model field) title="Models" modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
 {{/if}}

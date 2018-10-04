@@ -1,80 +1,26 @@
 /* jshint noyield:true */
-import Component from '@ember/component';
-import DS from 'ember-data';
-import ComponentFieldTypeMixin from 'ember-field-components/mixins/component-field-type';
-import OfflineModelCacheMixin from 'ember-mist-components/mixins/offline-model-cache';
+import OutputFieldBelongsToComponent from '../output-field-belongsto/component';
+import Model from 'ember-data/model';
 import DynamicObserverComponent from 'ember-field-components/mixins/component-dynamic-observer';
 
-import { getParentModelTypeNames, hasWidget, getParentModelType, getParentModelTypeName, modelTypeIsCacheable } from 'ember-field-components/classes/model-utils';
+import { none } from '@ember/object/computed';
+import { hasWidget } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
 
-const { Model } = DS;
-
-export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin, DynamicObserverComponent, {
+export default OutputFieldBelongsToComponent.extend(DynamicObserverComponent, {
   tagName: '',
   store: service(),
   init(){
     this._super(...arguments);
-    this.get('setInitialValue').perform();
+    this.get('setSelectOptions').perform();
   },
-  setInitialValue: task(function * (){
-    const { field, model, store, storage, fieldId, isPolymorphic } = this.getProperties('field', 'model', 'store', 'storage', 'fieldId', 'isPolymorphic');
-    let relationshipTypeName = this.get('relationshipModelType');
-
-    // This can potentially be an array of modeltypenames in case of a polymorphic relationship
-    if(isPolymorphic){
-      for(const singleRelationshipTypeName of relationshipTypeName){
-        yield this.get('checkOfflineCache').perform(store, storage, singleRelationshipTypeName);
-      }
-    } else {
-      yield this.get('checkOfflineCache').perform(store, storage, relationshipTypeName);
-    }
-
-    if(!isBlank(fieldId)){
-      if(isPolymorphic){
-        // AAARGGHH private ED api, watch out!
-        relationshipTypeName = model.belongsTo(field).belongsToRelationship.inverseInternalModel.modelName;
-      }
-
-      if(store.hasRecordForId(relationshipTypeName, fieldId)){
-        this.set('lookupValue', store.peekRecord(relationshipTypeName, fieldId));
-      } else {
-        yield model.get(field).then((value) => {
-          this.set('lookupValue', value);
-        });
-      }
-    }
-
-    if(this.get('isSelect')){
-      this.setSelectOptions();
-    }
-  }).drop(),
-  valueObserver() {
-    // TODO: Known bug. code enters twice
-    this._super(...arguments);
-    this.get('setInitialValue').perform();
-  },
-  relationshipModelType: computed('model', 'field', function(){
-    if(this.get('isPolymorphic')){
-      return getParentModelTypeNames(this.get('model'), this.get('field'));
-    } else {
-      return getParentModelTypeName(this.get('model'), this.get('field'));
-    }
-  }),
   isRequired: computed('relationshipAttributeOptions', function(){
     const options = this.get('relationshipAttributeOptions');
     return options.hasOwnProperty('validation') && options.validation.hasOwnProperty('required') && options.validation.required;
-  }),
-  isPolymorphic: computed('relationshipAttributeOptions', function(){
-    const options = this.get('relationshipAttributeOptions');
-    return !isBlank(options) && options.hasOwnProperty('polymorphic') && options.polymorphic;
-  }),
-  fieldId: computed('model', 'field', function(){
-    return this.get('model').belongsTo(this.get('field')).id();
   }),
   isSelect: computed(function(){
     return hasWidget(this.get('relationshipAttributeOptions'), 'select');
@@ -88,26 +34,28 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
 
     return [];
   }),
-  setSelectOptions(){
-    const store = this.get('store');
-    const relationshipType = getParentModelType(this.get('model'), this.get('field'), store);
-    const relationshipTypeName = this.get('relationshipModelType');
+  selectOptionsNotLoaded: none('selectOptions'),
+  setSelectOptions: task(function *(){
+    if(this.get('isSelect')){
+      assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
 
-    assert('Select widget is only supported for Offline cacheable models', modelTypeIsCacheable(relationshipType));
-    assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
+      const relationshipTypeName = this.get('relationshipModelType');
+      // loadAll is provided by the ember-data-storefront addon, and does magic to not load data twice
+      // This is really helpful in case there are multiple components referencing to the same type in the template
+      // The query will only be done once
+      const models = yield this.get('store').loadAll(relationshipTypeName);
 
-    const models = store.peekAll(relationshipTypeName);
+      let selectOptions = [];
+      models.forEach((model) => {
+        let selectOption = {};
+        selectOption.value = model.get('id');
+        selectOption.label = model.get('name');
+        selectOptions.push(selectOption);
+      });
 
-    let selectOptions = [];
-    models.forEach((model) => {
-      let selectOption = {};
-      selectOption.value = model.get('id');
-      selectOption.label = model.get('name');
-      selectOptions.push(selectOption);
-    });
-
-    this.set('selectOptions', selectOptions);
-  },
+      this.set('selectOptions', selectOptions);
+    }
+  }).drop(),
   noChoiceAvailable: computed('selectOptions', 'value', function(){
     const selectOptions = this.get('selectOptions');
     return (selectOptions.get('length') === 1) && selectOptions[0].value === this.get('fieldId');
@@ -118,16 +66,12 @@ export default Component.extend(ComponentFieldTypeMixin, OfflineModelCacheMixin,
 
       if(!isBlank(value)) {
         if(!(value instanceof Model)) {
-          // Not with polymorphic relationships
+          // In case a Select widget was used, the returned value is not the Model itself, but the ID of the model,
+          // We must find that model in the store by the ID (which should be loaded in the store already because of the setSelectOptions function)
+
+          // This isnt possible with polymorphic relationships
           assert('Select widget is not supported for polymorphic relationships', !this.get('isPolymorphic'));
 
-          // we might have an Id instead of a model, happens when using Select widget
-          const relationshipType = getParentModelType(model, field, this.get('store'));
-
-          // only usable with cached data
-          assert('Value assign based on ID is only usable with cached models', modelTypeIsCacheable(relationshipType));
-
-          // and it should already be available in the store
           const relationshipTypeName = this.get('relationshipModelType');
           let foundModel = this.get('store').peekRecord(relationshipTypeName, value);
           assert(`Model with id: ${value} and type: ${relationshipTypeName} not found in store`, !isBlank(foundModel));

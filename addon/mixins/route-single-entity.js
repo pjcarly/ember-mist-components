@@ -31,7 +31,7 @@ export default Mixin.create({
       options['include'] = uniqueIncludes.join(',');
     }
 
-    return this.store.findRecord(entityName, params[`id`], options);
+    return this.store.loadRecord(entityName, params[`id`], options);
   },
   actions: {
     error(error, transition){

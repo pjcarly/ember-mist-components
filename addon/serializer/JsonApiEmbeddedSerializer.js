@@ -1,7 +1,5 @@
-import DS from 'ember-data';
-
-const { JSONAPISerializer } = DS;
-const { EmbeddedRecordsMixin } = DS;
+import EmbeddedRecordsMixin from 'ember-data/serializers/embedded-records-mixin'
+import JSONAPISerializer from 'ember-data/serializers/json-api';
 import { isBlank } from '@ember/utils';
 import { get } from '@ember/object';
 import { debug } from '@ember/debug';
@@ -103,7 +101,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
         for(const relationshipType in relationshipsToCheck) {
           const relationship = relationshipsToCheck[relationshipType];
 
-          let localChildren = localModel.hasMany(relationship.key).value();
+          let localChildren = localModel.get(relationship.key);
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found

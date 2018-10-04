@@ -40,7 +40,7 @@ export default Mixin.create({
         cachedSelectOptions = transformFieldSelectOptionsToSelectOptions(fieldModel);
       } else {
         // not yet loaded, let's do a callout
-        yield store.findRecord('field', id).then((fieldModel) => {
+        yield store.loadRecord('field', id).then((fieldModel) => {
           cachedSelectOptions = transformFieldSelectOptionsToSelectOptions(fieldModel);
         });
       }

@@ -20,7 +20,7 @@ export default Mixin.create({
         // nothing found locally, let's ask the server for initial data
         // findAll on store, will push the found records in the store by default,
         // we don't need to do that manually afterwards
-        yield store.findAll(modelTypeName, {reload: true}).then((records) => {
+        yield store.loadAll(modelTypeName, {reload: true}).then((records) => {
           if(!isBlank(records) && records.get('length') > 0){
             // we found data, let's build a valid jsonapi document
             let payload = {data: []};

@@ -1,25 +1,15 @@
-{{#if setInitialValue.last}}
-  <span class="output text">
-    {{#if lookupValue}}
-      <span class="value">
-        {{#if (or inline (not hasRoute))}}
-          {{#if fieldOptions.nameColumn}}
-            {{get lookupValue fieldOptions.nameColumn}}
-          {{else}}
-            {{lookupValue.name}}
-          {{/if}}
-        {{else}}
-          <a href={{href-to route lookupValue}}>
-            {{#if fieldOptions.nameColumn}}
-              {{get lookupValue fieldOptions.nameColumn}}
-            {{else}}
-              {{lookupValue.name}}
-            {{/if}}
-          </a>
-        {{/if}}
-      </span>
-    {{else}}
-      <span class="value empty"></span>
-    {{/if}}
-  </span>
-{{/if}}
+<span class="output text">
+  {{#if value}}
+    <span class="value">
+      {{#if (or inline (not value.hasRoute))}}
+        {{value.name}}
+      {{else}}
+        <a href={{href-to route value}}>
+          {{value.name}}
+        </a>
+      {{/if}}
+    </span>
+  {{else}}
+    <span class="value empty"></span>
+  {{/if}}
+</span>

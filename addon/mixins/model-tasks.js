@@ -1,5 +1,5 @@
 /* global swal */
-import DS from 'ember-data';
+import Model from 'ember-data/model';
 import Mixin from '@ember/object/mixin';
 import { getModelType, getDefaultIncludes, getModelName } from 'ember-field-components/classes/model-utils';
 import { task, taskGroup } from 'ember-concurrency';
@@ -55,7 +55,7 @@ export default Mixin.create({
       target = returnToModel;
     }
 
-    if(target instanceof DS.Model) {
+    if(target instanceof Model) {
       if(!target.get('isNew')){
         this.get('entityRouter').transitionToView(target);
       } else {
@@ -93,7 +93,7 @@ export default Mixin.create({
       options['include'] = defaultIncludes.join(',');
     }
 
-    yield store.findRecord(modelName, model.get('id'), options)
+    yield store.loadRecord(modelName, model.get('id'), options)
     .then(() => {
       this.infoToast(`Success`, `Record Refreshed`);
     })

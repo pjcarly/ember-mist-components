@@ -32,6 +32,7 @@
     "ember-concurrency": "^0.8.21",
     "ember-data": "^3.3.0",
     "ember-data-model-fragments": "^3.3.0",
+    "ember-data-storefront": "^0.14.1",
     "ember-disable-prototype-extensions": "^1.1.3",
     "ember-export-application-global": "^2.0.0",
     "ember-inflector": "^3.0.0",
