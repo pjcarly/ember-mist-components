@@ -25,10 +25,10 @@ export default Component.extend(FieldOutputComponent, {
       return relationship.get('id');
     }
   }),
-  route: computed('lookupValue', function(){
-    const lookupValue = this.get('lookupValue');
-    if(!isBlank(lookupValue)){
-      return `${getModelName(lookupValue)}.view`;
+  route: computed('value', function(){
+    const value = this.get('value');
+    if(!isBlank(value)){
+      return `${getModelName(value)}.view`;
     }
   })
 });
