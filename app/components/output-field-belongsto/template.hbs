@@ -1,7 +1,7 @@
 <span class="output text">
   {{#if value}}
     <span class="value">
-      {{#if (or inline (not value.hasRoute))}}
+      {{#if (or inline (not value.hasViewRoute))}}
         {{value.name}}
       {{else}}
         <a href={{href-to route value}}>
