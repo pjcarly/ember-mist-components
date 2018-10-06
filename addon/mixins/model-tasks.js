@@ -67,14 +67,18 @@ export default Mixin.create({
     }
   }).group('modelTasks'),
   save: task(function * (model) {
-    yield model.save()
-    .then(() => {
-      this.successToast(`Success`, `Record saved`);
+    if(model.get('isDirty')) {
+      yield model.save()
+      .then(() => {
+        this.successToast(`Success`, `Record saved`);
+        this.get('entityRouter').transitionToView(model);
+      })
+      .catch((reason) => {
+        this.logErrorMessage(`There was an error saving your information`, reason.message);
+      });
+    } else {
       this.get('entityRouter').transitionToView(model);
-    })
-    .catch((reason) => {
-      this.logErrorMessage(`There was an error saving your information`, reason.message);
-    });
+    }
   }).group('modelTasks'),
   new: task(function * (modelType) {
     this.get('entityRouter').transitionToCreate(modelType);
