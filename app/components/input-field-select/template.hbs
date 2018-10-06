@@ -6,6 +6,6 @@
   {{else if isCountrySelect}}
     {{input-select-country value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
   {{else}}
-    {{input-select selectOptions=cachedSelectOptions value=value isRequired=isRequired valueChanged=(action 'valueChanged') styleClass=styleClass none=none inputId=inputId}}
+    {{input-select selectOptions=cachedSelectOptions value=value isRequired=required valueChanged=(action 'valueChanged') styleClass=styleClass none=none inputId=inputId}}
   {{/if}}
 {{/if}}
