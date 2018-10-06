@@ -7,14 +7,9 @@ import { isBlank } from '@ember/utils';
 import { dasherize } from '@ember/string';
 import { camelize } from '@ember/string';
 
-
 export default Mixin.create({
   store: service(),
 
-  init(){
-    this._super(...arguments);
-    this.get('setSelectOptions').perform();
-  },
   setSelectOptions: task(function * (){
     const selectOptionsOnAttribute = this.get('selectOptions');
     if(!isBlank(selectOptionsOnAttribute)){

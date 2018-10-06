@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 export default Service.extend({
   store: service(),
   router: service(),
+
   transitionToView: function(model){
     this.transitionToModelRoute(model, 'view');
   },

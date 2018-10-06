@@ -1,4 +1,4 @@
-import EmbeddedRecordsMixin from 'ember-data/serializers/embedded-records-mixin'
+import EmbeddedRecordsMixin from 'ember-data/serializers/embedded-records-mixin';
 import JSONAPISerializer from 'ember-data/serializers/json-api';
 import { isBlank } from '@ember/utils';
 import { get } from '@ember/object';

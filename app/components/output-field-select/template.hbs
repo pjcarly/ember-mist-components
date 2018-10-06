@@ -1,7 +1,5 @@
-{{#if setSelectOptionsRanOnce}}
-  {{#if isCountrySelect}}
-    {{output-select-country value=value}}
-  {{else}}
-    {{output-select value=value selectOptions=cachedSelectOptions}}
-  {{/if}}
+{{#if isCountrySelect}}
+  {{output-select-country value=value}}
+{{else if setSelectOptionsRanOnce}}
+  {{output-select value=value selectOptions=cachedSelectOptions}}
 {{/if}}

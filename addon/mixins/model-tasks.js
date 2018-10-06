@@ -14,8 +14,8 @@ export default Mixin.create({
   store: service(),
   toast: service(),
   storage: service(),
-  modelTasks: taskGroup().drop(),
 
+  modelTasks: taskGroup().drop(),
   view: task(function * (model) {
     this.get('entityRouter').transitionToView(model);
   }).group('modelTasks'),
@@ -84,7 +84,7 @@ export default Mixin.create({
     this.get('entityRouter').transitionToCreate(modelType);
   }).group('modelTasks'),
   refresh: task(function * (model) {
-    model.doRollback(); // To clear any potential dirty state (else the reload won't work)
+    model.rollback(); // To clear any potential dirty state (else the reload won't work)
     const modelName = getModelName(model);
     const store = this.get('store');
     const type = getModelType(modelName, store);
