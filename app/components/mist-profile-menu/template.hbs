@@ -1,12 +1,12 @@
 <a {{action "toggleProfileMenu"}} style={{profileMenuBackgroundStyle}}>
   <div class="sp-pic">
-    {{output-field-image model=user field="userPicture"}}
+    {{#if user}}
+      {{output-field-image model=user field="userPicture"}}
+    {{/if}}
   </div>
 
   <div class="sp-info">
-    {{user.name}}
-
-      <i class="zmdi zmdi-chevron-up"></i>
+    {{user.name}} <i class="zmdi zmdi-chevron-up"></i>
   </div>
 </a>
 
