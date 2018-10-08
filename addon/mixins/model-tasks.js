@@ -67,7 +67,7 @@ export default Mixin.create({
     }
   }).group('modelTasks'),
   save: task(function * (model) {
-    if(model.get('isDirty')) {
+    if(model.get('isDirtyOrDeleted')) {
       yield model.save()
       .then(() => {
         this.successToast(`Success`, `Record saved`);
