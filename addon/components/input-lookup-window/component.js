@@ -2,13 +2,14 @@ import InputComponent from 'ember-field-components/mixins/component-input';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
+import { isArray } from '@ember/array';
 
 export default Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
   activeModelType: computed('value', 'modelType', function(){
     // needed for polymorphic relationships
-    if(Array.isArray(this.get('modelType'))){
+    if(isArray(this.get('modelType'))){
       const value = this.get('value');
       if(!isBlank(value)){
         return value.constructor.modelName;

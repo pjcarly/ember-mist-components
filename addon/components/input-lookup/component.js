@@ -6,6 +6,7 @@ import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import { dasherize } from '@ember/string';
+import { isArray } from '@ember/array';
 
 export default Component.extend(InputComponent, {
   type: 'lookup',
@@ -29,7 +30,7 @@ export default Component.extend(InputComponent, {
   }),
   activeModelType: computed('value', 'modelType', function(){
     // needed for polymorphic relationships
-    if(Array.isArray(this.get('modelType'))){
+    if(isArray(this.get('modelType'))){
       const value = this.get('value');
       if(!isBlank(value)){
         return value.constructor.modelName;

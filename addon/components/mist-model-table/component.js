@@ -14,6 +14,7 @@ import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
 import { dasherize } from '@ember/string';
 import { camelize } from '@ember/string';
+import { isArray } from '@ember/array';
 
 export default Component.extend({
   store: service(),
@@ -148,7 +149,7 @@ export default Component.extend({
     queryParams.set('dir', isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
   },
   isMultipleModelTypes: computed('modelType', function(){
-    return Array.isArray(this.get('modelType'));
+    return isArray(this.get('modelType'));
   }),
   multipleModelTypeSelectOptions: computed('modelType', function(){
     const modelTypeNames = this.get('modelType');
