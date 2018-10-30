@@ -1603,11 +1603,6 @@ body@^5.1.0:
     raw-body "~1.1.0"
     safe-json-parse "~1.0.1"
 
-bootstrap@3.3.7:
-  version "3.3.7"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
-  integrity sha1-WjiTlFSfIzMIdaOxUGVldPip63E=
-
 bops@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/bops/-/bops-0.0.3.tgz#c5cbf6fea8be7401ca5ea6d1679e6c4e8b407c79"
@@ -2589,13 +2584,6 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
-corejs-typeahead@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/corejs-typeahead/-/corejs-typeahead-1.2.1.tgz#345a8afe664cc494075b59b64777807f0b3f132b"
-  integrity sha1-NFqK/mZMxJQHW1m2R3eAfws/Eys=
-  dependencies:
-    jquery ">=1.11"
-
 create-error-class@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
@@ -2823,26 +2811,14 @@ ember-assign-polyfill@~2.4.0:
   dependencies:
     ember-cli-babel "^6.11.0"
 
-ember-aupac-control@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/ember-aupac-control/-/ember-aupac-control-1.2.0.tgz#9ae49d5c8d0d9a6e2888ebec3c5354b0547829bb"
-  integrity sha1-muSdXI0Nmm4oiOvsPFNUsFR4Kbs=
+ember-basic-dropdown@^1.0.0:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ember-basic-dropdown/-/ember-basic-dropdown-1.0.3.tgz#bd785c84ea2b366951e0630f173c84677ed53b6c"
+  integrity sha512-KADH7ODEuAydTZ45+WVoA13iXGYeS1sE7D8tcfM2RMJ6MyW+KqjGD5jDTZEc8UtDDFtVRTh8cmTCQfWikxUfxg==
   dependencies:
-    bootstrap "3.3.7"
-    ember-cli-babel "^6.6.0"
-    ember-cli-htmlbars "^2.0.1"
-
-ember-aupac-typeahead@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ember-aupac-typeahead/-/ember-aupac-typeahead-3.1.0.tgz#4b2c741fd0b65ea7e1befcf8823fc793e41a21ad"
-  integrity sha512-Q9q83xOAsUNZrKe340fecLgDTzU5Cy9D6JJWsabiepHES8zG8Y52fk84HFJURt1EqKiaycZ65H3QmXI/LfUcoQ==
-  dependencies:
-    broccoli-funnel "^2.0.1"
-    broccoli-merge-trees "^2.0.0"
-    corejs-typeahead "^1.2.1"
-    ember-aupac-control "^1.2.0"
-    ember-cli-babel "^6.6.0"
-    ember-cli-htmlbars "^2.0.1"
+    ember-cli-babel "^6.12.0"
+    ember-cli-htmlbars "^2.0.3"
+    ember-maybe-in-element "^0.1.3"
 
 ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.10.0, ember-cli-babel@^6.11.0, ember-cli-babel@^6.12.0, ember-cli-babel@^6.16.0, ember-cli-babel@^6.3.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.8.0, ember-cli-babel@^6.8.1, ember-cli-babel@^6.8.2:
   version "6.17.2"
@@ -3181,6 +3157,15 @@ ember-composable-helpers@^2.1.0:
     broccoli-funnel "^1.0.1"
     ember-cli-babel "^6.6.0"
 
+ember-concurrency@^0.8.19:
+  version "0.8.22"
+  resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-0.8.22.tgz#900e870aae486e1f5fcb168bbb4efba02561a5ad"
+  integrity sha512-njLqyjMxBf8fapIV8WPyG2gFbSCIQgMpk33uSs5Ih7HsfFAz60KwVo9sMVPBYAJwQmF8jFPm7Ph+mjkiQXHmmA==
+  dependencies:
+    babel-core "^6.24.1"
+    ember-cli-babel "^6.8.2"
+    ember-maybe-import-regenerator "^0.1.5"
+
 ember-concurrency@^0.8.21:
   version "0.8.21"
   resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-0.8.21.tgz#23263e00455d32bb7f5b1b344376143019796ac6"
@@ -3384,6 +3369,25 @@ ember-maybe-import-regenerator@^0.1.5:
     ember-cli-babel "^6.0.0-beta.4"
     regenerator-runtime "^0.9.5"
 
+ember-maybe-in-element@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/ember-maybe-in-element/-/ember-maybe-in-element-0.1.3.tgz#1c89be49246e580c1090336ad8be31e373f71b60"
+  integrity sha512-cAiG6N9HwvoPsMIePgwECilPrKRrIdfKqx9g8qWHKPS4vwrgS2PTeLmOcJvVYbBTXkHaFZmecDRpf6xAj6zk7A==
+  dependencies:
+    ember-cli-babel "^6.11.0"
+
+ember-power-select@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/ember-power-select/-/ember-power-select-2.0.9.tgz#ebe08f7d3f2fdec44558370adaa6b533486132b5"
+  integrity sha512-qx/kfPEgUm/dIgV31+gXNqoWd3ZAn547SyZokdtpqzICrUQMurLhadYY2KGHNuoT70Hr7JjdOm8/m44p11L+sA==
+  dependencies:
+    ember-basic-dropdown "^1.0.0"
+    ember-cli-babel "^6.16.0"
+    ember-cli-htmlbars "^3.0.0"
+    ember-concurrency "^0.8.19"
+    ember-text-measurer "^0.4.0"
+    ember-truth-helpers "^2.0.0"
+
 ember-qunit@^3.3.2:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-3.4.1.tgz#204a2d39a5d44d494c56bf17cf3fd12f06210359"
@@ -3482,6 +3486,13 @@ ember-source@~3.4.1:
     inflection "^1.12.0"
     jquery "^3.3.1"
     resolve "^1.6.0"
+
+ember-text-measurer@^0.4.0:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/ember-text-measurer/-/ember-text-measurer-0.4.1.tgz#30ababa7100b2ffb86f8c37fe2b4b56d2592c626"
+  integrity sha512-fwRoaGF0pemMyJ5S/j5FYt7PZva8MyZA33DwkL1LLAR9T5hQyatSbZaLl4D1a5Kv8kDXX0tTFZT9xCPPKahYTg==
+  dependencies:
+    ember-cli-babel "^6.8.2"
 
 ember-toastr@^1.7.2:
   version "1.7.2"
@@ -4975,7 +4986,7 @@ jquery-deferred@^0.3.0:
   resolved "https://registry.yarnpkg.com/jquery-deferred/-/jquery-deferred-0.3.1.tgz#596eca1caaff54f61b110962b23cafea74c35355"
   integrity sha1-WW7KHKr/VPYbEQlisjyv6nTDU1U=
 
-jquery@>=1.11, jquery@^3.3.1:
+jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
   integrity sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==

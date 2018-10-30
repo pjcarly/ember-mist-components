@@ -57,22 +57,6 @@ export default Component.extend(InputComponent, {
       return this.get('value.name');
     }
   }),
-  typeaheadParams: computed('lookupFilters', function(){
-    const returnValue = {};
-    const lookupFilters = this.get('lookupFilters');
-
-    returnValue.filter = {};
-    returnValue.filter['1'] = {
-      field: 'name',
-      operator: 'STARTS_WITH'
-    }
-
-    lookupFilters.forEach((lookupFilter, index) => {
-      returnValue.filter[index+2] = lookupFilter.get('object')
-    });
-
-    return returnValue;
-  }),
   actions: {
     showModal() {
       this.$('.modal').modal('show');
