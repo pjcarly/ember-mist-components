@@ -1,4 +1,6 @@
-{{#if isSelect}}
+{{#if (component-exists dynamicComponentName)}}
+  {{component dynamicComponentName filters=filters value=(get model field) modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
+{{else if isSelect}}
   {{#if (not selectOptionsNotLoaded)}}
     {{#if noChoiceAvailable}}
       {{output-text value=selectOptions.firstObject.label class="read-only-output-text"}}

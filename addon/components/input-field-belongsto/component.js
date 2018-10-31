@@ -34,6 +34,10 @@ export default OutputFieldBelongsToComponent.extend(DynamicObserverComponent, {
 
     return [];
   }),
+  dynamicComponentName: computed('relationshipModelType', function(){
+    const relationshipModelType = this.get('relationshipModelType');
+    return `input-belongsto-${relationshipModelType}`;
+  }),
   selectOptionsNotLoaded: none('selectOptions'),
   setSelectOptions: task(function *(){
     if(this.get('isSelect')){
