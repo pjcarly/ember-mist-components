@@ -16,7 +16,7 @@ export default AjaxService.extend({
   }),
   headers: computed('session.data.authenticated.access_token', function(){
     const headers = {};
-    const { access_token } = this.get('session.data.authenticated');
+    const access_token = this.get('session.data.authenticated.access_token');
 
     if(!isBlank(access_token)){
       headers['Authorization'] = `Bearer ${access_token}`;
