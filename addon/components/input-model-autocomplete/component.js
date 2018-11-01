@@ -27,7 +27,11 @@ export default Component.extend({
   }),
   queryParams: computed('filters', function(){
     const returnValue = {};
-    const lookupFilters = this.get('filters');
+    let lookupFilters = this.get('filters');
+
+    if(isBlank(lookupFilters)){
+      lookupFilters = [];
+    }
 
     returnValue.filter = {};
     returnValue.filter['1'] = {
@@ -41,7 +45,19 @@ export default Component.extend({
 
     return returnValue;
   }),
+  focusComesFromOutside(e) {
+    let blurredEl = e.relatedTarget;
+    if (isBlank(blurredEl)) {
+      return false;
+    }
+    return !blurredEl.classList.contains('ember-power-select-search-input');
+  },
   actions: {
+    handleFocus(select, e) {
+      if (this.focusComesFromOutside(e)) {
+        select.actions.open();
+      }
+    },
     valueChanged(value){
       const action = this.get('valueChanged');
       if(!isBlank(action)){
