@@ -1,3 +1,4 @@
+/* global window */
 import Component from '@ember/component';
 import { task } from 'ember-concurrency';
 import { computed } from '@ember/object';
@@ -7,7 +8,6 @@ import { getOwner } from '@ember/application';
 
 export default Component.extend({
   store: service(),
-  session: service(),
   config: computed(function(){
     return getOwner(this).resolveRegistration('config:environment');
   }),
@@ -15,37 +15,26 @@ export default Component.extend({
     const config = this.get('config');
     return config.apiEndpoint;
   }),
+  template: computed('value', function(){
+    const store = this.get('store');
+    return store.peekRecord('pdf', this.get('value'));
+  }),
   showModal(){
     this.$('.modal').modal('show');
     this.get('fetchTemplates').perform();
   },
-  triggerDownload: task(function * (){
-    if(this.get('session.isAuthenticated')) {
-      let headers = new Headers();
+  generatePdf: task(function * (){
+    const template = this.get('template');
+    const model = this.get('model');
+    let digest = null;
 
-      // Lets find the token to send with the request
-      const { access_token } = this.get('session.data.authenticated');
-      if(!isBlank(access_token)){
-        headers.append('Authorization', `Bearer ${access_token}`);
-      }
+    yield template.generateDigest({ id: model.get('id')})
+    .then((results) => {
+      digest = results.digest;
+    });
 
-      let anchor = document.createElement("a");
-
-      yield fetch(`${this.get('apiEndpoint')}template/pdf-generate/${this.get('value')}?id=${this.get('model.id')}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, { headers })
-      .then(response => response.blob())
-      .then(blobby => {
-          let objectUrl = window.URL.createObjectURL(blobby);
-
-          anchor.href = objectUrl;
-          anchor.download = `${this.get('model.name')}.pdf`;
-          anchor.click();
-
-          window.URL.revokeObjectURL(objectUrl);
-      });
-
-      anchor.remove();
-    }
-  }).drop(),
+    window.open(`${this.get('apiEndpoint')}template/pdf-generate/${this.get('template.key')}?id=${this.get('model.id')}&digest=${digest}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, '_blank');
+  }),
   fetchTemplates: task(function * (){
     const grouping = this.get('grouping');
 
@@ -65,10 +54,11 @@ export default Component.extend({
     let value = null;
     pdfResults.forEach((pdfResult) => {
       if(isBlank(value)){
-        value = pdfResult.get('key');
+        value = pdfResult.get('id');
       }
+
       let selectOption = {};
-      selectOption.value = pdfResult.get('key');
+      selectOption.value = pdfResult.get('id');
       selectOption.label = pdfResult.get('name');
       selectOptions.push(selectOption);
     });
@@ -87,9 +77,6 @@ export default Component.extend({
     },
     templateValueChanged(value){
       this.set('value', value);
-    },
-    generatePdf(){
-      this.get('triggerDownload').perform();
     }
   }
 });

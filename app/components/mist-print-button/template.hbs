@@ -23,8 +23,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-link waves-effect" {{action 'closeModal'}}>Close</button>
-          <button type="button" class="btn bgm-pink waves-effect" {{action 'generatePdf'}}>
-            {{#if triggerDownload.isIdle}}
+          <button type="button" class="btn bgm-pink waves-effect" onclick={{perform generatePdf}}>
+            {{#if generatePdf.isIdle}}
               Generate
             {{else}}
               Generating {{mist-spinner size="10px" tagName="span"}}
