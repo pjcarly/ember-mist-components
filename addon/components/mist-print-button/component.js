@@ -33,7 +33,7 @@ export default Component.extend({
       digest = results.digest;
     });
 
-    window.open(`${this.get('apiEndpoint')}template/pdf-generate/${this.get('template.key')}?id=${this.get('model.id')}&digest=${digest}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, '_blank');
+    window.open(`${this.get('apiEndpoint')}template/generate/${this.get('template.key')}?id=${this.get('model.id')}&digest=${digest}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, '_blank');
   }),
   fetchTemplates: task(function * (){
     const grouping = this.get('grouping');
