@@ -67,7 +67,9 @@ export default Mixin.create({
     }
   }).group('modelTasks'),
   save: task(function * (model) {
-    if(model.get('isDirtyOrDeleted')) {
+    model.hasDirtyEmbeddedRelationships();
+
+    if(model.get('isDirtyOrDeleted') || model.hasDirtyEmbeddedRelationships()){
       yield model.save()
       .then(() => {
         this.successToast(`Success`, `Record saved`);
