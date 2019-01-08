@@ -1,3 +1,3 @@
-{{#power-select class='form-control' triggerId=inputId placeholder=placeholder search=(perform searchTask) selected=value onchange=(action 'valueChanged') onfocus=(action 'handleFocus') allowClear=(not hideClear) as |model|}}
+{{#power-select class='form-control' triggerId=inputId placeholder=placeholder search=(perform searchTask) selected=value onchange=(action 'valueChanged') onfocus=(action 'handleFocus') allowClear=(not hideClear) renderInPlace=shouldRenderInPlace as |model|}}
   {{model.name}}
 {{/power-select}}

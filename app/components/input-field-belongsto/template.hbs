@@ -1,5 +1,5 @@
 {{#if (component-exists dynamicComponentName)}}
-  {{component dynamicComponentName filters=filters value=(get model field) modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId}}
+  {{component dynamicComponentName filters=filters value=(get model field) modelType=relationshipModelType valueChanged=(action 'valueChanged') placeholder=placeholder styleClass=styleClass inputId=inputId options=options}}
 {{else if isSelect}}
   {{#if (not selectOptionsNotLoaded)}}
     {{#if noChoiceAvailable}}

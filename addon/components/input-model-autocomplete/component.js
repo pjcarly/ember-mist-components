@@ -25,6 +25,10 @@ export default Component.extend({
       debug(error);
     })
   }),
+  shouldRenderInPlace: computed('options.renderInPlace', function(){
+    const options = this.get('options');
+    return !isBlank(options) && options.renderInPlace;
+  }),
   queryParams: computed('filters', function(){
     const returnValue = {};
     let lookupFilters = this.get('filters');
