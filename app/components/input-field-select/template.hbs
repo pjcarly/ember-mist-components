@@ -1,4 +1,16 @@
-{{#if setSelectOptionsRanOnce}}
+{{#if selectOptions}}
+  {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
+  {{#if isButtonGroup}}
+    {{input-button-group selectOptions=selectOptions value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
+  {{else if isSelectSearch}}
+    {{input-select-search selectOptions=selectOptions value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
+  {{else if isCountrySelect}}
+    {{input-select-country value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
+  {{else}}
+    {{input-select selectOptions=selectOptions value=value isRequired=required valueChanged=(action 'valueChanged') styleClass=styleClass none=none inputId=inputId}}
+  {{/if}}
+{{else if setSelectOptionsRanOnce}}
+  {{!-- No selectoptions on the attribute, lets fetch them from the back-end --}}
   {{#if isButtonGroup}}
     {{input-button-group selectOptions=cachedSelectOptions value=value valueChanged=(action 'valueChanged') styleClass=styleClass inputId=inputId}}
   {{else if isSelectSearch}}
