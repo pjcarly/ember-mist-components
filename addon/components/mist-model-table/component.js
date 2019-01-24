@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import Table from 'ember-light-table';
 import QueryParams from '../../classes/query-params';
 import StringUtils from 'ember-field-components/classes/utils';
-import { getModelType, getModelListView, getDefaultIncludes, getLabel, getPlural } from 'ember-field-components/classes/model-utils';
+import { getModelType, getModelListView, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
 import { task } from 'ember-concurrency';
 //import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
 import { inject as service } from '@ember/service';
@@ -12,13 +12,13 @@ import { guidFor } from '@ember/object/internals';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
-import { dasherize } from '@ember/string';
-import { camelize } from '@ember/string';
+import { camelize, dasherize, capitalize } from '@ember/string';
 import { isArray } from '@ember/array';
 
 export default Component.extend({
   store: service(),
   storage: service(),
+  intl: service(),
   classNames: ['mist-model-table'],
   classNameBindings: ['displaySelected', 'fixedSearch'],
 
@@ -151,15 +151,18 @@ export default Component.extend({
   isMultipleModelTypes: computed('modelType', function(){
     return isArray(this.get('modelType'));
   }),
-  multipleModelTypeSelectOptions: computed('modelType', function(){
+  multipleModelTypeSelectOptions: computed('modelType', 'intl.locale', function(){
     const modelTypeNames = this.get('modelType');
+    const intl = this.get('intl');
+
     let selectOptions = [];
 
     modelTypeNames.forEach((modelTypeName) => {
-      const modelType = getModelType(modelTypeName, this.get('store'));
+      const plural = intl.exists(`ember-field-components.${modelTypeName}.plural`) ? intl.t(`ember-field-components.${modelTypeName}.plural`) : modelTypeName;
+
       let selectOption = {};
       selectOption.value = modelTypeName;
-      selectOption.label = getPlural(modelType);
+      selectOption.label = plural;
       selectOptions.push(selectOption);
     });
 
@@ -239,16 +242,14 @@ export default Component.extend({
   isMultiSelect: computed('multiselect', function(){
     return this.get('multiselect') === true;
   }),
-  columns: computed('activeModelType', 'activeListView', function(){
+  columns: computed('activeModelType', 'activeListView', 'intl.locale', function(){
     // This function gets the columns defined on the model, and sets them as the columns of the table
-    const activeModelType = this.get('activeModelType');
+    const { activeModelType, activeListView, queryParams, intl } = this.getProperties('activeModelType', 'activeListView', 'queryParams', 'intl')
     const type = getModelType(activeModelType, this.get('store'));
-    const activeListView = this.get('activeListView');
-    const queryParams = this.get('queryParams');
-    let columns = [];
+    const columns = [];
 
     if(this.get('isMultiSelect')){
-      let column = {};
+      const column = {};
       column['label'] = '';
       column['width'] = '60px';
       column['resizable'] = false;
@@ -271,8 +272,13 @@ export default Component.extend({
       // We handled the ".", and now we can rejoin the column
       const camelizedColumn = splittedColumns.join('.');
 
-      // We get the label from the model configuration
-      let label = getLabel(type, camelizedColumn);
+      // We get the label from the intl service
+      let label = capitalize(camelizedColumn);
+      if(intl.exists(`ember-field-components.${type.modelName}.fields.${camelizedColumn}`)) {
+        label = intl.t(`ember-field-components.${type.modelName}.fields.${camelizedColumn}`);
+      } else if(intl.exists(`ember-field-components.global.fields.${camelizedColumn}`)) {
+        label = intl.t(`ember-field-components.global.fields.${camelizedColumn}`);
+      }
 
       // And finally build the structure for ember-light-table
       let column = {};

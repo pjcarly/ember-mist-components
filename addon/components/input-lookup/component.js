@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import InputComponent from 'ember-field-components/mixins/component-input';
 import QueryCondition from 'ember-mist-components/classes/query-condition';
-import { getModelType, getPlural } from 'ember-field-components/classes/model-utils';
 import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { inject as service } from '@ember/service';
@@ -11,7 +10,7 @@ import { isArray } from '@ember/array';
 export default Component.extend(InputComponent, {
   type: 'lookup',
   noresults: 'No Results',
-  store: service(),
+  intl: service(),
   lookupFilters: computed('filters', function(){
     const filters = this.get('filters');
     const lookupFilters = [];
@@ -41,14 +40,15 @@ export default Component.extend(InputComponent, {
       return this.get('modelType');
     }
   }),
-  modelTitle: computed('activeModelType', function(){
+  modelTitle: computed('activeModelType', 'intl.locale', function(){
     const activeModelTypeName = this.get('activeModelType');
-    if(!isBlank(activeModelTypeName)) {
-      const modelType = getModelType(activeModelTypeName, this.get('store'));
-      return getPlural(modelType);
-    } else {
-      return 'Models';
+    const intl = this.get('intl');
+
+    if(intl.exists(`ember-field-components.${activeModelTypeName}.plural`)) {
+      return intl.t(`ember-field-components.${activeModelTypeName}.plural`);
     }
+
+    return 'Models';
   }),
   computedValue: computed('value', function(){
     if(isBlank(this.get('value'))){
