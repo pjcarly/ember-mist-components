@@ -1,5 +1,7 @@
 {{#if isCountrySelect}}
   {{output-select-country value=value}}
+{{else if selectOptions}}
+  {{output-select value=value selectOptions=selectOptions}}
 {{else if setSelectOptionsRanOnce}}
   {{output-select value=value selectOptions=cachedSelectOptions}}
 {{/if}}
