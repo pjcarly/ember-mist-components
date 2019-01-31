@@ -1,0 +1,4 @@
+ember-attribute-validations:
+  validAddress: '%@ is een ongeldig adres voor het geselecteerde land, vul alle verplichte velden in'
+  requiredAddress: '%@ is verplicht'
+  conditionalRequired: '%@ is verplicht'

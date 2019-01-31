@@ -2,7 +2,6 @@ import Validator from 'ember-attribute-validations/validator';
 import { isBlank } from '@ember/utils';
 
 export default Validator.extend({
-  message: '%@ is required',
   validate(name, value, attribute, model) {
     const requiredField = attribute.options.validation.conditionalRequired;
 
