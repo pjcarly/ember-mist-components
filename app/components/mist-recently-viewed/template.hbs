@@ -8,7 +8,12 @@
     <tbody>
       {{#each recentlyViewedRecords as |recentlyViewedRecord|}}
         <tr>
-          <td><a href="{{href-to (concat recentlyViewedRecord.type '.view') recentlyViewedRecord.id}}">{{recentlyViewedRecord.name}}</a></td>
+          <td>
+            <a href="{{href-to (concat recentlyViewedRecord.type '.view') recentlyViewedRecord.id}}">
+              <span class="name">{{recentlyViewedRecord.name}}</span>
+              <span class="type">{{recentlyViewedRecord.type}}</span>
+            </a>
+          </td>
         </tr>
       {{else}}
         <tr>
