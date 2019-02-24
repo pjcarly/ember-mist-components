@@ -9,10 +9,17 @@
       {{#each recentlyViewedRecords as |recentlyViewedRecord|}}
         <tr>
           <td>
-            <a href="{{href-to (concat recentlyViewedRecord.type '.view') recentlyViewedRecord.id}}">
-              <span class="name">{{recentlyViewedRecord.name}}</span>
-              <span class="type">{{recentlyViewedRecord.type}}</span>
-            </a>
+            {{#if recordSelected}}
+              <div class="recently-viewed-record" {{action recordSelected recentlyViewedRecord select}}>
+                <span class="name">{{recentlyViewedRecord.name}}</span>
+                <span class="type">{{recentlyViewedRecord.type}}</span>
+              </div>
+            {{else}}
+              <a class="recently-viewed-record" href={{href-to (concat recentlyViewedRecord.type '.view') recentlyViewedRecord.id}}>
+                <span class="name">{{recentlyViewedRecord.name}}</span>
+                <span class="type">{{recentlyViewedRecord.type}}</span>
+              </a>
+            {{/if}}
           </td>
         </tr>
       {{else}}
