@@ -440,11 +440,9 @@ export default Component.extend({
 
     if(isBlank(activatedIndex)){
       rows[0].set('activated', true);
-      this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex+1 < rows.length){
       rows.setEach('activated', false);
       rows[activatedIndex+1].set('activated', true);
-      this.rowActivateMapMarker(rows[activatedIndex+1]);
     }
   },
   prevRow(){
@@ -458,11 +456,9 @@ export default Component.extend({
 
     if(isBlank(activatedIndex)){
       rows[0].set('activated', true);
-      this.rowActivateMapMarker(rows[0]);
     } else if(activatedIndex > 0){
       rows.setEach('activated', false);
       rows[activatedIndex-1].set('activated', true);
-      this.rowActivateMapMarker(rows[activatedIndex-1]);
     }
   },
   reSetSelected(){
@@ -516,37 +512,6 @@ export default Component.extend({
       const onRowSelected = this.get('onRowSelected');
       if(onRowSelected){
         onRowSelected(selectedRow);
-      }
-    }
-  },
-  rowActivateMapMarker(rowToActivate){
-    if(this.get('updateMarkersOnRowHover')) {
-      this.get('table.rows').forEach((row) => {
-        if(row !== rowToActivate){
-          this.rowDeactivateMapMarker(row);
-        }
-      });
-
-      let location = rowToActivate.get('content').getLocation('location');
-
-      if(!isBlank(location)){
-        let marker = location.getMarker('company-map');
-        if(!isBlank(marker)){
-          marker.setIcon('assets/images/map-marker-red.png');
-        }
-      }
-
-
-    }
-  },
-  rowDeactivateMapMarker(row){
-    if(this.get('updateMarkersOnRowHover')){
-      let location = row.get('content').getLocation('location');
-      if(!isBlank(location)){
-        let marker = location.getMarker('company-map');
-        if(!isBlank(marker)){
-          marker.setIcon('assets/images/map-marker-purple.png');
-        }
       }
     }
   },
@@ -607,12 +572,10 @@ export default Component.extend({
     onRowClick(row){
       this.rowSelected(row);
     },
-    onRowMouseEnter(row) {
-      this.rowActivateMapMarker(row);
+    onRowMouseEnter(/*row*/) {
       this.deactivateRows();
     },
-    onRowMouseLeave(row) {
-      this.rowDeactivateMapMarker(row);
+    onRowMouseLeave(/*row*/) {
       this.deactivateRows();
     },
     refresh(){

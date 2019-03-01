@@ -77,7 +77,7 @@ export default Component.extend(ComponentDynamicObserverMixin, {
     this.setLatLng(marker.position.lat(), marker.position.lng());
   },
   location: computed('model', 'field', function(){
-    let location = this.get('model').getLocation(this.get('field'));
-    return location;
+    // let location = this.get('model').getLocation(this.get('field'));
+    // return location;
   })
 });

@@ -1,10 +1,10 @@
 /* global google */
 import GMaps from 'ember-cli-g-maps/components/g-maps';
-import { getModelName } from 'ember-field-components/classes/model-utils';
+// import { getModelName } from 'ember-field-components/classes/model-utils';
 import { inject as service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import { observer } from '@ember/object';
-import { guidFor } from '@ember/object/internals';
+// import { guidFor } from '@ember/object/internals';
 
 export default GMaps.extend({
   setBounds: false,
@@ -33,43 +33,43 @@ export default GMaps.extend({
     let oldMistMarkers = this.get('mistMarkers');
     let mistMarkers = {};
 
-    let infowindow = new google.maps.InfoWindow();
+    // let infowindow = new google.maps.InfoWindow();
 
     if(!isBlank(models) && !isBlank(field) && !isBlank(mapName)) {
-      let map = this.get('map.map');
+      // let map = this.get('map.map');
 
-      models.forEach((model) => {
-        let modelGuid = guidFor(model);
-        let modelLocation = model.getLocation(field);
-        if(!isBlank(modelLocation)){
-          let {lat, lng} = modelLocation.getProperties('lat', 'lng');
-          let marker = null;
+      models.forEach((/*model*/) => {
+        // let modelGuid = guidFor(model);
+        // let modelLocation = model.getLocation(field);
+        // if(!isBlank(modelLocation)){
+        //   let {lat, lng} = modelLocation.getProperties('lat', 'lng');
+        //   let marker = null;
 
-          if(!isBlank(lat) && !isBlank(lng)){
-            let latLng = new google.maps.LatLng(lat, lng);
-            if(!isBlank(oldMistMarkers) && oldMistMarkers.hasOwnProperty(modelGuid)){
-              marker = oldMistMarkers[modelGuid];
-              delete oldMistMarkers[modelGuid];
-            } else {
-              marker = new google.maps.Marker({
-                map: map,
-                icon: 'assets/images/map-marker-purple.png'
-              });
+        //   if(!isBlank(lat) && !isBlank(lng)){
+        //     let latLng = new google.maps.LatLng(lat, lng);
+        //     if(!isBlank(oldMistMarkers) && oldMistMarkers.hasOwnProperty(modelGuid)){
+        //       marker = oldMistMarkers[modelGuid];
+        //       delete oldMistMarkers[modelGuid];
+        //     } else {
+        //       marker = new google.maps.Marker({
+        //         map: map,
+        //         icon: 'assets/images/map-marker-purple.png'
+        //       });
 
-              let route = `#/${getModelName(model)}/${model.get('id')}/view`;
+        //       let route = `#/${getModelName(model)}/${model.get('id')}/view`;
 
-              marker.addListener('click', function() {
-                let content = `<h4>${model.get('name')}</h4><div class="infowindow-buttons"><a class="btn btn-default waves-effect" href="${route}"><i class="zmdi zmdi-arrow-forward"></i> View record</a></div>`;
-                infowindow.setContent(content);
-                infowindow.open(map, marker);
-              });
-            }
+        //       marker.addListener('click', function() {
+        //         let content = `<h4>${model.get('name')}</h4><div class="infowindow-buttons"><a class="btn btn-default waves-effect" href="${route}"><i class="zmdi zmdi-arrow-forward"></i> View record</a></div>`;
+        //         infowindow.setContent(content);
+        //         infowindow.open(map, marker);
+        //       });
+        //     }
 
-            modelLocation.addMarker(mapName, marker);
-            marker.setPosition(latLng);
-            mistMarkers[modelGuid] = marker;
-          }
-        }
+        //     modelLocation.addMarker(mapName, marker);
+        //     marker.setPosition(latLng);
+        //     mistMarkers[modelGuid] = marker;
+        //   }
+        // }
       });
     }
 
@@ -84,22 +84,22 @@ export default GMaps.extend({
     this.set('mistMarkers', mistMarkers);
   },
 
-  willDestroyElement() {
-    this._super(...arguments);
+  // willDestroyElement() {
+  //   this._super(...arguments);
 
-    let mapName = this.get('name');
-    let models = this.get('models');
-    let field = this.get('field');
+  //   let mapName = this.get('name');
+  //   let models = this.get('models');
+  //   let field = this.get('field');
 
-    if(!isBlank(models) && !isBlank(field) && !isBlank(mapName)) {
-      models.forEach((model) => {
-        let location = model.getLocation(field);
-        if(!isBlank(location)){
-          location.removeMarker(mapName);
-        }
-      });
-    }
-  },
+  //   if(!isBlank(models) && !isBlank(field) && !isBlank(mapName)) {
+  //     models.forEach((model) => {
+  //       let location = model.getLocation(field);
+  //       if(!isBlank(location)){
+  //         location.removeMarker(mapName);
+  //       }
+  //     });
+  //   }
+  // },
 
   setMapBounds() {
     if(this.get('setBounds')) {
