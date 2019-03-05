@@ -1,11 +1,11 @@
-import EmberUploader from 'ember-uploader';
+import Uploader from 'ember-uploader/uploaders/uploader';
 import Component from '@ember/component';
 import { task } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import { isEmpty } from '@ember/utils';
-import { merge } from '@ember/polyfills';
+import { assign } from '@ember/polyfills';
 import { dasherize } from '@ember/string';
 import { htmlSafe } from '@ember/template';
 
@@ -23,13 +23,13 @@ export default Component.extend({
   uploadFile: task(function * (files){
     if (!isEmpty(files)) {
       const ajax = this.get('ajax');
-      const headers = ajax.get('headers');
+      let headers = ajax.get('headers');
       const fieldHeaderValue = this.get('fieldHeaderValue');
       const componentOptions = this.get('options');
 
       // Merge the headers with the possible
       if(!isBlank(componentOptions) && componentOptions.headers){
-        merge(headers, componentOptions.headers);
+        assign(headers, componentOptions.headers);
       }
 
       if(!isBlank(fieldHeaderValue)) {
@@ -51,7 +51,7 @@ export default Component.extend({
         uploaderOptions['url'] = `${ajax.get('endpoint')}file/files`;
       }
 
-      let uploader = EmberUploader.Uploader.extend(uploaderOptions).create();
+      let uploader = Uploader.extend(uploaderOptions).create();
       let fieldValue = [];
 
       let activeFile = 0;
