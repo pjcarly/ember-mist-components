@@ -19,7 +19,7 @@ export default EmberObject.extend({
   clearConditions(){
     this.set('conditions', []);
   },
-  params: computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'baseConditions', function(){
+  params: computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'baseConditions', 'conditions', function(){
     let queryParams = {};
 
     // The page of the results we want to fetch
@@ -60,10 +60,7 @@ export default EmberObject.extend({
     // Next we add possible conditions added to the query params object
     if(!isBlank(this.get('conditions'))){
       this.get('conditions').forEach((condition) => {
-        const conditionObject = condition.get('object');
-        if(!isBlank(conditionObject)){
-          queryParams.filter[conditionIndex++] = conditionObject;
-        }
+        filterParam[conditionIndex++] = condition.get('object');
       });
     }
 
