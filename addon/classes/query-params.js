@@ -19,7 +19,7 @@ export default EmberObject.extend({
   clearConditions(){
     this.set('conditions', []);
   },
-  params: computed('page', 'limit', 'sort', 'dir', 'filter', 'search', 'include', 'baseConditions', 'conditions', function(){
+  params: computed('page', 'limit', 'sort', 'dir', 'search', 'include', 'baseConditions', 'conditions', function(){
     let queryParams = {};
 
     // The page of the results we want to fetch
