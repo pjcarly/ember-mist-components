@@ -1,3 +1,1 @@
-import Helper from 'ember-mist-components/helpers/array-join';
-
-export default Helper;
+export { default } from 'ember-mist-components/helpers/array-join';

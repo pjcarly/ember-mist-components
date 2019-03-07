@@ -1,3 +1,1 @@
-import Model from 'ember-mist-components/models/address';
-
-export default Model;
+export { default } from 'ember-mist-components/models/address';

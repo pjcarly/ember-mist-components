@@ -1,3 +1,1 @@
-import StringTransform from 'ember-data/transforms/string';
-
-export default StringTransform;
+export { default } from 'ember-data/transforms/string';

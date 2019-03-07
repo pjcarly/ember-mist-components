@@ -1,3 +1,1 @@
-import Helper from 'ember-mist-components/helpers/image-url';
-
-export default Helper;
+export { default } from 'ember-mist-components/helpers/image-url';
