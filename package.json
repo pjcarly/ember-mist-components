@@ -30,7 +30,6 @@
     "@types/rsvp": "^4.0.2",
     "babel-eslint": "^8.0.0",
     "broccoli-asset-rev": "^2.4.5",
-    "ember-ajax": "^4.0.2",
     "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git",
     "ember-cli": "^3.8.1",
     "ember-cli-dependency-checker": "^3.0.0",
@@ -53,7 +52,6 @@
     "ember-load-initializers": "^1.1.0",
     "ember-power-select": "^2.2.2",
     "ember-resolver": "^5.0.1",
-    "ember-simple-auth": "^1.8.1",
     "ember-source": "^3.8.0",
     "ember-toastr": "^1.7.2",
     "ember-try": "^1.1.0",
@@ -68,10 +66,12 @@
   ],
   "dependencies": {
     "@ember-decorators/babel-transforms": "^3.1.0",
+    "ember-ajax": "^4.0.2",
     "ember-cli-babel": "^7.1.2",
     "ember-cli-htmlbars": "^3.0.0",
     "ember-cli-typescript": "^2.0.0-rc.2",
-    "ember-decorators": "^5.1.4"
+    "ember-decorators": "^5.1.4",
+    "ember-simple-auth": "^1.8.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
