@@ -1,9 +1,9 @@
 import Transform from 'ember-data/transform';
 import { isBlank } from '@ember/utils';
 
-export default Transform.extend({
-  deserialize: function(serialized) {
-    let address = {};
+export default class AddressTransform extends Transform {
+  deserialize(serialized: any | null) {
+    const address: any = {};
 
     if(!isBlank(serialized)) {
       address.countryCode = serialized['country-code'];
@@ -26,9 +26,10 @@ export default Transform.extend({
     }
 
     return address;
-  },
-  serialize: function(deserialized) {
-    let serializedAddress = {}
+  }
+
+  serialize(deserialized: any | null) {
+    const serializedAddress: any= {}
 
     if(!isBlank(deserialized)) {
       serializedAddress['country-code'] = deserialized.countryCode;
@@ -43,4 +44,4 @@ export default Transform.extend({
 
     return serializedAddress;
   }
-});
+};

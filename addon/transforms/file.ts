@@ -1,9 +1,9 @@
 import Transform from 'ember-data/transform';
 import { isBlank } from '@ember/utils';
 
-export default Transform.extend({
-  deserialize: function(serialized) {
-    let file = {};
+export default class FileTransform extends Transform {
+  deserialize(serialized: any | null) {
+    let file: any | null = {};
 
     if(!isBlank(serialized)) {
       file.id = serialized.id;
@@ -17,9 +17,10 @@ export default Transform.extend({
     }
 
     return file;
-  },
-  serialize: function(deserialized) {
-    let serializedFile = {};
+  }
+
+  serialize(deserialized: any | null) {
+    let serializedFile: any | null = {};
 
     if(!isBlank(deserialized)) {
       serializedFile['id'] = deserialized.id;
@@ -34,4 +35,4 @@ export default Transform.extend({
 
     return serializedFile;
   }
-});
+};

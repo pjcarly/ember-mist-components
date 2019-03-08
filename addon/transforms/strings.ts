@@ -2,15 +2,16 @@ import Transform from 'ember-data/transform';
 import { A } from '@ember/array';
 import { isBlank } from '@ember/utils';
 
-export default Transform.extend({
-  deserialize: function(serialized) {
+export default class StringsTransform extends Transform {
+  deserialize(serialized: any) {
     serialized = A(serialized);
     return serialized;
-  },
-  serialize: function(deserialized) {
+  }
+
+  serialize(deserialized: any) {
     if(!isBlank(deserialized)){
       deserialized = deserialized.toArray();
     }
     return deserialized;
   }
-});
+};

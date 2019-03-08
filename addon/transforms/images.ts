@@ -1,14 +1,14 @@
 import Transform from 'ember-data/transform';
 import { isBlank } from '@ember/utils';
 
-export default Transform.extend({
-  deserialize: function(serializedFiles) {
-    let deserializedFiles = [];
+export default class ImagesTransform extends Transform {
+  deserialize(serializedFiles: Array<any> | null) {
+    const deserializedFiles = [];
 
     if(!isBlank(serializedFiles)) {
       for(const serializedFile of serializedFiles){
         if(!isBlank(serializedFile) && serializedFile.hasOwnProperty('id') && serializedFile.id > 0) {
-          let deserializedFile = {};
+          const deserializedFile: any = {};
           deserializedFile.id = serializedFile.id;
           deserializedFile.filename = serializedFile.filename;
           deserializedFile.url = serializedFile.url;
@@ -21,14 +21,15 @@ export default Transform.extend({
     }
 
     return deserializedFiles;
-  },
-  serialize: function(deserializedFiles) {
-    let serializedFiles = [];
+  }
+
+  serialize(deserializedFiles: Array<any> | null) {
+    const serializedFiles = [];
 
     if(!isBlank(deserializedFiles)) {
       for(const deserializedFile of deserializedFiles){
         if(!isBlank(deserializedFile) && deserializedFile.hasOwnProperty('id') && deserializedFile.id > 0) {
-          let serializedFile = {};
+          const serializedFile: any = {};
           serializedFile['id'] = deserializedFile.id;
           serializedFile['filename'] = deserializedFile.filename;
           serializedFile['url'] = deserializedFile.url;
@@ -42,4 +43,4 @@ export default Transform.extend({
 
     return serializedFiles;
   }
-});
+};

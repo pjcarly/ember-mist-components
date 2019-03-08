@@ -1,9 +1,9 @@
 import Transform from 'ember-data/transform';
 import { isBlank } from '@ember/utils';
 
-export default Transform.extend({
-  deserialize: function(serialized) {
-    let location = {};
+export default class LocationTransform extends Transform {
+  deserialize(serialized: any | null) {
+    const location: any = {};
 
     if(!isBlank(serialized)) {
       location.lat = serialized.lat;
@@ -11,9 +11,10 @@ export default Transform.extend({
     }
 
     return location;
-  },
-  serialize: function(deserialized) {
-    let serializedLocation = {};
+  }
+
+  serialize(deserialized: any | null) {
+    const serializedLocation: any = {};
 
     if(!isBlank(deserialized)) {
       serializedLocation['lat'] = deserialized.lat;
@@ -22,4 +23,4 @@ export default Transform.extend({
 
     return serializedLocation;
   }
-});
+};
