@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import { dasherize } from '@ember/string';
 import { camelize } from '@ember/string';
+import { assert } from '@ember/debug';
 
 export default Mixin.create({
   store: service(),
@@ -17,11 +18,14 @@ export default Mixin.create({
     }
 
     let cachedSelectOptions;
-    let store = this.get('store');
+    const store = this.get('store');
     const field = this.get('field');
     const model = this.get('model');
     const modelName = getModelName(model);
     const id = `${modelName}.${dasherize(field)}`;
+
+    const fieldAdapter = store.adapterFor('field');
+    assert(`Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`, isBlank(fieldAdapter));
 
     // first we check if the local storage has the values cached
     const localKey = camelize(`selectoptions_${id}`);
@@ -30,7 +34,7 @@ export default Mixin.create({
       cachedSelectOptions = localSelectOptions;
     } else if(store.hasRecordForId('field', id)){
       // next we check if we haven't already loaded the selectOptions
-      let fieldModel = store.peekRecord('field', id);
+      const fieldModel = store.peekRecord('field', id);
       cachedSelectOptions = transformFieldSelectOptionsToSelectOptions(fieldModel);
     } else {
       // not yet loaded, let's do a callout

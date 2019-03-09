@@ -6,8 +6,13 @@ import { inject as service } from '@ember-decorators/service';
 import { alias } from '@ember-decorators/object/computed';
 import { isBlank } from '@ember/utils';
 
+interface SessionService {
+  invalidate() : void;
+  get(key: string) : any;
+}
+
 export default class LoggedInUserService extends Service {
-  @service session!: Service;
+  @service session!: SessionService;
   @service store!: Store;
 
   /**
