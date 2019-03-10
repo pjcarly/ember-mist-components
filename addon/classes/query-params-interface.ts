@@ -40,4 +40,21 @@ export default interface QueryParamsInterface {
    * The conditions that will be applied to the query. Query Logic is applied here.
    */
   conditions: Array<QueryConditionInterface>;
+
+  /**
+   * Adds a Condition to the regular conditions
+   * @param condition The condition to add
+   */
+  addCondition(condition: QueryConditionInterface) : this;
+
+  /**
+   * Adds a Condition to the base conditions
+   * @param condition The condition to add
+   */
+  addBaseCondition(condition: QueryConditionInterface) : this;
+  /**
+   * Sets the include string on the query
+   * @param includes
+   */
+  setInclude(includes: string): this;
 }

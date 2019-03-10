@@ -19,6 +19,17 @@ export default EmberObject.extend({
   clearConditions(){
     this.set('conditions', []);
   },
+  addCondition(condition){
+    this.get('conditions').push(condition);
+    return this;
+  },
+  addBaseCondition(condition){
+    this.get('baseConditions').push(condition);
+    return this;
+  },
+  setInclude(include){
+    this.set('include', include);
+  },
   params: computed('page', 'limit', 'sort', 'dir', 'search', 'include', 'baseConditions', 'conditions', function(){
     let queryParams = {};
 
