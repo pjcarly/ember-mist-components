@@ -11,11 +11,6 @@ export default EmberObject.extend({
     this.set('conditions', []);
     this.set('baseConditions', []);
   },
-  addCondition(condition){
-    const conditions = this.get('conditions');
-    conditions.push(condition);
-    this.set('conditions', conditions);
-  },
   clearConditions(){
     this.set('conditions', []);
   },
