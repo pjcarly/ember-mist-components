@@ -25,7 +25,7 @@ export default Mixin.create({
     const id = `${modelName}.${dasherize(field)}`;
 
     const fieldAdapter = store.adapterFor('field');
-    assert(`Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`, isBlank(fieldAdapter));
+    assert(`Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`, !isBlank(fieldAdapter));
 
     // first we check if the local storage has the values cached
     const localKey = camelize(`selectoptions_${id}`);
