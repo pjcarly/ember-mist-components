@@ -1,32 +1,33 @@
 import Component from '@ember/component';
 import Store from 'ember-data/store';
 import Model from 'ember-data/model';
-import QueryParams from 'ember-mist-components/classes/query-params';
-import QueryCondition from 'ember-mist-components/classes/query-condition';
 import { restartableTask } from 'ember-concurrency-decorators';
 import { inject as service } from '@ember-decorators/service';
 import { computed, action } from '@ember-decorators/object';
 import { add, isBefore, startOf, endOf, weekday } from 'ember-power-calendar-utils';
-import { getModelType, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
 import { dasherize } from '@ember/string';
 import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
+import Query from 'ember-mist-components/query/Query';
+import Condition from 'ember-mist-components/query/Condition';
 
 export default class ModelCalendarComponent extends Component {
   @service store!: Store;
+  @service storage !: any;
+  @service router !: any;
 
   modelType = '';
   dateField = '';
   extraClassesField = '';
+  listViewGrouping = '';
+  listViewKey = '';
   loadedModels = [];
-  queryParams = new QueryParams();
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   center = new Date();
 
   didReceiveAttrs(){
     this._super(...arguments);
-    this.setDefaultQueryParams();
     this.loadModels.perform();
   }
 
@@ -35,7 +36,7 @@ export default class ModelCalendarComponent extends Component {
    */
   @restartableTask
   * loadModels(this: ModelCalendarComponent) {
-    const models = yield this.store.query(this.modelType, this.queryParams.get('params'));
+    const models = yield this.query.fetch(this.store);
     this.set('loadedModels', models);
   }
 
@@ -165,41 +166,44 @@ export default class ModelCalendarComponent extends Component {
   /**
    * Sets the default Query Params
    */
-  setDefaultQueryParams(){
-    const type = getModelType(this.modelType, this.store);
-    const defaultIncludes = getDefaultIncludes(type);
-    this.queryParams.set('page', 1);
-    this.queryParams.set('limit', 2000);
-    this.queryParams.set('page', 1);
-    this.queryParams.set('include', defaultIncludes.join(','));
-    this.setQueryParamConditions();
-  }
+  @computed('modelType', 'center', 'selectedListView')
+  get query() : Query {
+    const query = new Query(this.modelType);
+    query.setLimit(2000);
 
-  /**
-   * Sets the Query Param conditions based on the value of the current center of the calendar
-   */
-  setQueryParamConditions(){
     const center = this.center;
-    const dateField = this.dateField;
-
     const startOfMonth = new Date(center.getFullYear(), center.getMonth(), 1);
     const endOfMonth = new Date(center.getFullYear(), center.getMonth() + 1, 0);
 
-    this.queryParams.clearConditions();
+    query.addCondition(new Condition(dasherize(this.dateField), '>=', moment(startOfMonth).format(this.dateFormat)));
+    query.addCondition(new Condition(dasherize(this.dateField), '<=', moment(endOfMonth).format(this.dateFormat)));
 
-    const fromCondition = new QueryCondition();
-    fromCondition.set('field', dasherize(dateField));
-    fromCondition.set('operator', '>=');
-    fromCondition.set('value', moment(startOfMonth).format(this.dateFormat));
+    if(this.selectedListView) {
+      query.setListView(this.selectedListView);
+    }
 
-    this.queryParams.addCondition(fromCondition);
+    return query;
+  }
 
-    const toCondition = new QueryCondition();
-    toCondition.set('field', dasherize(dateField));
-    toCondition.set('operator', '<=');
-    toCondition.set('value', moment(endOfMonth).format(this.dateFormat));
+  /**
+   * This will return the key of the current selected list view value
+   */
+  @computed('router.currentRouteName', 'modelType', 'listViewKey')
+  get selectedListView() : number | undefined {
+    const currentRoute = this.router.currentRouteName;
+    const modelType = this.modelType;
 
-    this.queryParams.addCondition(toCondition);
+    const listViewSelections = this.storage.get('listViewSelections');
+    let selection = undefined;
+    if(!isBlank(listViewSelections) && listViewSelections.hasOwnProperty(currentRoute) && listViewSelections[currentRoute].hasOwnProperty(modelType)) {
+      selection = listViewSelections[currentRoute][modelType];
+    }
+
+    if(selection === 'All') {
+      return;
+    }
+
+    return selection;
   }
 
   /**
@@ -208,7 +212,6 @@ export default class ModelCalendarComponent extends Component {
    */
   centerCalendarOn(this: ModelCalendarComponent, date: Date){
     this.set('center', date);
-    this.setQueryParamConditions();
     this.loadModels.perform();
   }
 
@@ -249,7 +252,13 @@ export default class ModelCalendarComponent extends Component {
    * @param date The date you want to center on
    */
   @action
-  setCenter(this: ModelCalendarComponent, date: Date){
+  setCenter(this: ModelCalendarComponent, date: Date) {
     this.centerCalendarOn(date);
+  }
+
+  @action
+  listViewChanged(listViewKey: string) {
+    this.set('listViewKey', listViewKey);
+    this.loadModels.perform();
   }
 }

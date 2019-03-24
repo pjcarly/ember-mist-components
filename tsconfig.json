@@ -33,6 +33,12 @@
       "ember-mist-components/*": [
         "addon/*"
       ],
+      "ember-field-components": [
+        "node_modules/ember-field-components/addon"
+      ],
+      "ember-field-components/*": [
+        "node_modules/ember-field-components/addon/*"
+      ],
       "ember-mist-components/test-support": [
         "addon-test-support"
       ],
@@ -51,6 +57,8 @@
     "tests/**/*",
     "types/**/*",
     "test-support/**/*",
-    "addon-test-support/**/*"
+    "addon-test-support/**/*",
+    "node_modules/ember-field-components/app",
+    "node_modules/ember-field-components/addon"
   ]
 }

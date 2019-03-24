@@ -1,12 +1,15 @@
 {{#power-calendar class=(concat 'modeltype-' @modelType) center=this.center onCenterChange=(action 'setCenter' value='date') as |calendar|}}
   <nav class="ember-power-calendar-nav">
     {{#if (not isCurrentMonth)}}
-      <button type="button" class="btn bgm-pink waves-effect" onclick={{action 'resetToToday'}}>Today</button>
+      <button type="button" class="btn bgm-pink waves-effect today-button" onclick={{action 'resetToToday'}}>Today</button>
     {{/if}}
+
+    {{#if listViewGrouping}}
+      <ListViewSelect @modelName={{@modelType}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+    {{/if}}
+
     {{!-- <button type="button" class="ember-power-calendar-nav-control" onclick={{action calendar.actions.moveCenter -12 'month'}}>«</button> --}}
     <div class="ember-power-calendar-nav-title">
-      {{!-- {{format-date calendar.center 'MMMM YYYY'}} --}}
-
       <select onchange={{action 'changeCenter' 'month' calendar}}>
         {{#each this.months as |month index|}}
           <option value={{index}} selected={{eq index this.currentMonth}}>{{month}}</option>
