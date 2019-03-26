@@ -1,8 +1,7 @@
-/* global moment */
-import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
-import { padStart, replaceAll } from 'ember-field-components/classes/utils';
-
 import Component from '@ember/component';
+import FieldInputComponent from 'ember-field-components/mixins/component-field-input-super';
+import moment from 'moment';
+import { padStart, replaceAll } from 'ember-field-components/classes/utils';
 import { computed } from '@ember/object';
 
 
