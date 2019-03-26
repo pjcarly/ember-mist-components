@@ -1,10 +1,9 @@
 import Service from '@ember/service';
 import Store from 'ember-data/store';
 import Model from 'ember-data/model';
-import QueryParamsInterface from 'ember-mist-components/classes/query-params-interface';
+import Query from 'ember-mist-components/query/Query';
 import { inject as service } from '@ember-decorators/service';
 import { alias } from '@ember-decorators/object/computed';
-import { isBlank } from '@ember/utils';
 
 interface SessionService {
   invalidate() : void;
@@ -20,18 +19,18 @@ export default class LoggedInUserService extends Service {
    */
   user ?: Model;
 
-  @alias('session.isAuthenticated') isAuthenticated : boolean;
+  @alias('session.isAuthenticated') isAuthenticated !: boolean;
 
   /**
    * Loads the current user from the store, based on the user_id in the OAuth response
    * @param query Query Params where possible include query parameter will be taken from
    */
-  loadCurrentUser(query?: QueryParamsInterface){
+  loadCurrentUser(query?: Query){
     const userId = this.session.get('data.authenticated.user_id');
-    const options = {};
+    let options : any = {};
 
-    if(!isBlank(query) && !isBlank(query.include)){
-      options['include'] = query.include;
+    if(query) {
+      options = query.queryParams;
     }
 
     return this.store.loadRecord('user', userId, options)

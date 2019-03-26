@@ -84,6 +84,7 @@ export default class ListViewSelectComponent extends Component {
   selectionChanged(selectOptionValue : any) {
     this.listView.setListViewSelectionForCurrentRoute(this.modelName, selectOptionValue);
 
+    this.notifyPropertyChange('selectedValue');
     this.valueChanged(selectOptionValue);
   }
 }

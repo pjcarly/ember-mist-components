@@ -58,6 +58,17 @@ export default class ModelTableComponent extends Component {
   title ?: string;
   multiselect : boolean = false;
   listViewKey : string = '';
+
+  /**
+   * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
+   */
+  listViewsAsTabs : boolean = false;
+
+  /**
+   * The default class the wrapper will get
+   */
+  class : string = 'model-table';
+
   /**
    * The flag to indicate whether the amount of selected models in the table should be displayed
    */

@@ -1,4 +1,8 @@
-<div class="model-table">
+<div class={{this.class}}>
+
+  {{#if (and @listViewGrouping this.listViewsAsTabs)}}
+    <ListViewTabs @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+  {{/if}}
   <div class={{concat 'card-header ch-alt mist-model-table-header' (if this.searchVisible ' search-toggled')}}>
     <div class="table-header-title-wrapper">
       <h2>{{this.titleComputed}}</h2>
@@ -8,7 +12,7 @@
         <span style="width: 10px;height:10px;display:inline-block;"></span>
       {{/if}}
 
-      {{#if @listViewGrouping}}
+      {{#if (and @listViewGrouping (not this.listViewsAsTabs))}}
         <ListViewSelect @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
       {{/if}}
     </div>
