@@ -16,7 +16,7 @@ export default class Order {
    * Returns a jsonapi.org compliant order string for this sort order
    */
   get orderParam() : string {
-    if(this.direction = Direction.ASC) {
+    if(this.direction === Direction.ASC) {
       return this.field;
     } else {
       return `-${this.field}`;

@@ -1,6 +1,7 @@
 import Store from 'ember-data/store';
 import Condition, { QueryFilter } from './Condition';
 import Order from './Order';
+import EmberObject from '@ember/object';
 
 export interface QueryParams {
   page: number;
@@ -10,23 +11,16 @@ export interface QueryParams {
   filter: { [key:number] : QueryFilter };
 }
 
-export default class Query {
+export default class Query extends EmberObject {
   modelName !: string;
   conditions : Condition[] = [];
   orders : Order[] = [];
   includes : string[] = [];
   limit : number | undefined;
-  page : number | undefined;
+  page : number = 1;
   search : string | undefined;
   searchField : string | undefined;
   listView : number | undefined;
-
-  /**
-   * @param modelName The name of the model you want to query
-   */
-  constructor(modelName : string) {
-    this.modelName = modelName;
-  }
 
   /**
    * Adds a condition to the Query
@@ -41,7 +35,7 @@ export default class Query {
    * Removes all the conditions that were already added to the Query
    */
   clearConditions() : Query {
-    this.conditions = [];
+    this.set('conditions', []);
     return this;
   }
 
@@ -58,7 +52,7 @@ export default class Query {
    * Removes the orders that were already added to the Query
    */
   clearOrders() : Query {
-    this.orders = [];
+    this.set('orders', []);
     return this;
   }
 
@@ -76,7 +70,7 @@ export default class Query {
    * @param id The ID of the list view
    */
   setListView(id : number) : Query {
-    this.listView = id;
+    this.set('listView', id);
     return this;
   }
 
@@ -84,7 +78,7 @@ export default class Query {
    * Removes the list view
    */
   clearListView() : Query {
-    this.listView = undefined;
+    this.set('listView', undefined);
     return this;
   }
 
@@ -92,7 +86,7 @@ export default class Query {
    * Removes all the includes
    */
   clearIncludes() : Query {
-    this.includes = [];
+    this.set('includes', []);
     return this;
   }
 
@@ -101,7 +95,7 @@ export default class Query {
    * @param limit the limit
    */
   setLimit(limit : number) : Query {
-    this.limit = limit;
+    this.set('limit', limit);
     return this;
   }
 
@@ -109,7 +103,7 @@ export default class Query {
    * Removes the limit
    */
   clearLimit() : Query {
-    this.limit = undefined;
+    this.set('limit', undefined);
     return this;
   }
 
@@ -118,7 +112,7 @@ export default class Query {
    * @param page The page you want returned
    */
   setPage(page : number) : Query {
-    this.page = page;
+    this.set('page', page);
     return this;
   }
 
@@ -126,7 +120,7 @@ export default class Query {
    * Clears the page
    */
   clearPage() : Query {
-    this.page = undefined;
+    this.set('page', undefined);
     return this;
   }
 
@@ -136,8 +130,8 @@ export default class Query {
    * @param searchField The field you want to apply te search to, if this is not provided the first Sort field will be used, if that is undefined 'name' will be used
    */
   setSearch(search : string, searchField : string | undefined = undefined) : Query {
-    this.search = search;
-    this.searchField = searchField;
+    this.set('search', search);
+    this.set('searchField', searchField);
     return this;
   }
 
@@ -145,11 +139,14 @@ export default class Query {
    * Clears the search and the searchfield
    */
   clearSearch() : Query {
-    this.search = undefined;
-    this.searchField = undefined;
+    this.set('search', undefined);
+    this.set('searchField', undefined);
     return this;
   }
 
+  /**
+   * Returns the field where the search should be performed on
+   */
   get searchFieldComputed() : string {
     if(this.searchField) {
       return this.searchField;
@@ -157,6 +154,22 @@ export default class Query {
       return this.orders[0].field;
     } else {
       return 'name';
+    }
+  }
+
+  /**
+   * Increments the page by 1
+   */
+  nextPage(){
+    this.incrementProperty('page');
+  }
+
+  /**
+   * Reduces page by 1
+   */
+  prevPage(){
+    if(this.page > 1) {
+      this.decrementProperty('page');
     }
   }
 
@@ -195,7 +208,7 @@ export default class Query {
   get queryParams() : QueryParams {
     const queryParams : QueryParams = {};
 
-    if(this.page) {
+    if(this.page > 1) {
       queryParams.page = this.page;
     }
 
