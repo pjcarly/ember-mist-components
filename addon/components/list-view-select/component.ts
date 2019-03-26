@@ -4,6 +4,7 @@ import Model from 'ember-data/model';
 import Query from 'ember-mist-components/query/Query';
 import Condition from 'ember-mist-components/query/Condition';
 import SelectOption from 'ember-field-components/interfaces/SelectOption';
+import ListViewService from 'ember-mist-components/services/list-view';
 import { dropTask } from 'ember-concurrency-decorators';
 import { inject as service } from '@ember-decorators/service';
 import { computed, action } from '@ember-decorators/object';
@@ -14,32 +15,27 @@ import { tagName } from '@ember-decorators/component';
 @tagName('')
 export default class ListViewSelectComponent extends Component {
   @service store !: Store;
-  @service storage !: any;
   @service router !: any;
   @service intl !: any;
+  @service listView !: ListViewService;
 
   modelName !: string;
   grouping !: string;
   listViewSelectOptions : SelectOption[] = [];
 
+  valueChanged!: (selectOptionValue : any) => void;
+
   didReceiveAttrs(){
     super.didReceiveAttrs();
 
     assert('Grouping cannot be blank', !isBlank(this.grouping));
-
     this.setListViews.perform();
   }
 
   @computed('router.currentRouteName', 'modelName', 'listViewSelectOptions')
-  get selectedValue() : string {
-    const currentRoute = this.router.currentRouteName;
+  get selectedValue() : string | number {
     const modelName = this.modelName;
-
-    const listViewSelections = this.storage.get('listViewSelections');
-    let selection = 'All';
-    if(!isBlank(listViewSelections) && listViewSelections.hasOwnProperty(currentRoute) && listViewSelections[currentRoute].hasOwnProperty(modelName)) {
-      selection = listViewSelections[currentRoute][modelName];
-    }
+    let selection = this.listView.getActiveListViewKeyForCurrentRoute(modelName);
 
     const foundSelectOption = this.listViewSelectOptions.findBy('value', selection);
     if(isBlank(foundSelectOption)) {
@@ -56,10 +52,7 @@ export default class ListViewSelectComponent extends Component {
 
   @computed('modelClass')
   get defaultListView() : any {
-    const modelClass = this.modelClass;
-
-    assert(`No default list view defined on the modelclass ${this.modelName}`, modelClass.hasOwnProperty('settings') && modelClass.settings.hasOwnProperty('listViews') && modelClass.settings.listViews.hasOwnProperty('default'));
-    return modelClass.settings.listViews.default;
+    return this.listView.getDefaultListView(this.modelName);
   }
 
   @dropTask
@@ -72,7 +65,7 @@ export default class ListViewSelectComponent extends Component {
       value: 'All'
     });
 
-    const query = new Query('list-view');
+    const query = Query.create({ modelName: 'list-view' });
     query.addCondition(new Condition('grouping', '=', this.grouping));
 
     yield query.fetch(this.store).then((listViews) => {
@@ -87,27 +80,9 @@ export default class ListViewSelectComponent extends Component {
     this.listViewSelectOptions = foundListViews;
   }
 
-  valueChanged(selectOptionValue : any) {
-    return selectOptionValue;
-  }
-
   @action
   selectionChanged(selectOptionValue : any) {
-    const currentRoute = this.router.currentRouteName;
-    const modelName = this.modelName;
-
-    let listViewSelections = this.storage.get('listViewSelections');
-
-    if(isBlank(listViewSelections)){
-      listViewSelections = {};
-    }
-
-    if(!listViewSelections.hasOwnProperty(currentRoute)){
-      listViewSelections[currentRoute] = {};
-    }
-
-    listViewSelections[currentRoute][modelName] = selectOptionValue;
-    this.storage.set('listViewSelections', listViewSelections);
+    this.listView.setListViewSelectionForCurrentRoute(this.modelName, selectOptionValue);
 
     this.valueChanged(selectOptionValue);
   }

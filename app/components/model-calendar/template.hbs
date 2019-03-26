@@ -1,11 +1,11 @@
-{{#power-calendar class=(concat 'modeltype-' @modelType) center=this.center onCenterChange=(action 'setCenter' value='date') as |calendar|}}
+{{#power-calendar class=(concat 'modelName-' @modelName) center=this.center onCenterChange=(action 'setCenter' value='date') as |calendar|}}
   <nav class="ember-power-calendar-nav">
     {{#if (not isCurrentMonth)}}
       <button type="button" class="btn bgm-pink waves-effect today-button" onclick={{action 'resetToToday'}}>Today</button>
     {{/if}}
 
     {{#if listViewGrouping}}
-      <ListViewSelect @modelName={{@modelType}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+      <ListViewSelect @modelName={{@modelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
     {{/if}}
 
     {{!-- <button type="button" class="ember-power-calendar-nav-control" onclick={{action calendar.actions.moveCenter -12 'month'}}>«</button> --}}
@@ -49,7 +49,7 @@
           {{#let (get this.modelsPerDate (moment-format day.date 'YYYY-MM-DD')) as |models|}}
             {{#if models}}
               {{#each models as |model|}}
-                <a href={{href-to (concat @modelType '.view') model.id}} class="calendar-day__item {{if @extraClassesField (join ' ' (get model @extraClassesField))}}">
+                <a href={{href-to (concat @modelName '.view') model.id}} class="calendar-day__item {{if @extraClassesField (join ' ' (get model @extraClassesField))}}">
                   {{model.name}}
                 </a>
               {{/each}}

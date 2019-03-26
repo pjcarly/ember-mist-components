@@ -1,6 +1,10 @@
 import Component from '@ember/component';
 import Store from 'ember-data/store';
 import Model from 'ember-data/model';
+import ListViewService from 'ember-mist-components/services/list-view';
+import Query from 'ember-mist-components/query/Query';
+import Condition from 'ember-mist-components/query/Condition';
+import moment from 'moment';
 import { restartableTask } from 'ember-concurrency-decorators';
 import { inject as service } from '@ember-decorators/service';
 import { computed, action } from '@ember-decorators/object';
@@ -8,15 +12,13 @@ import { add, isBefore, startOf, endOf, weekday } from 'ember-power-calendar-uti
 import { dasherize } from '@ember/string';
 import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
-import Query from 'ember-mist-components/query/Query';
-import Condition from 'ember-mist-components/query/Condition';
 
 export default class ModelCalendarComponent extends Component {
   @service store!: Store;
-  @service storage !: any;
   @service router !: any;
+  @service listView !: ListViewService;
 
-  modelType = '';
+  modelName = '';
   dateField = '';
   extraClassesField = '';
   listViewGrouping = '';
@@ -80,13 +82,13 @@ export default class ModelCalendarComponent extends Component {
   /**
    * Returns the field type of the datefield (this returns either date or datetime)
    */
-  @computed('modelType', 'dateField')
+  @computed('modelName', 'dateField')
   get fieldType(): string {
-    const model = this.store.modelFor(this.modelType);
-    assert(`ModelType ${this.modelType} not found.`, !isBlank(model));
+    const model = this.store.modelFor(this.modelName);
+    assert(`Model ${this.modelName} not found.`, !isBlank(model));
 
     const attributes = model.attributes;
-    assert(`Attribute ${this.dateField} not found on ${this.modelType}`, attributes.has(this.dateField));
+    assert(`Attribute ${this.dateField} not found on ${this.modelName}`, attributes.has(this.dateField));
 
     const fieldType = attributes.get(this.dateField).type;
     assert(`Type ${fieldType} not supported, only date or datetime allowed`, (fieldType === 'date' || fieldType === 'datetime'));
@@ -166,9 +168,9 @@ export default class ModelCalendarComponent extends Component {
   /**
    * Sets the default Query Params
    */
-  @computed('modelType', 'center', 'selectedListView')
+  @computed('modelName', 'center', 'selectedListView')
   get query() : Query {
-    const query = new Query(this.modelType);
+    const query = Query.create({ modelName: this.modelName });
     query.setLimit(2000);
 
     const center = this.center;
@@ -188,16 +190,9 @@ export default class ModelCalendarComponent extends Component {
   /**
    * This will return the key of the current selected list view value
    */
-  @computed('router.currentRouteName', 'modelType', 'listViewKey')
+  @computed('router.currentRouteName', 'modelName', 'listViewKey')
   get selectedListView() : number | undefined {
-    const currentRoute = this.router.currentRouteName;
-    const modelType = this.modelType;
-
-    const listViewSelections = this.storage.get('listViewSelections');
-    let selection = undefined;
-    if(!isBlank(listViewSelections) && listViewSelections.hasOwnProperty(currentRoute) && listViewSelections[currentRoute].hasOwnProperty(modelType)) {
-      selection = listViewSelections[currentRoute][modelType];
-    }
+    const selection = this.listView.getActiveListViewKeyForCurrentRoute(this.modelName);
 
     if(selection === 'All') {
       return;

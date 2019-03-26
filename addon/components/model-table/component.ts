@@ -1,644 +1,651 @@
 import Component from '@ember/component';
 import Store from 'ember-data/store';
 import Model from 'ember-data/model';
+import Table from 'ember-light-table';
+import Query from 'ember-mist-components/query/Query';
+import FieldInformationService from 'ember-field-components/services/field-information';
+import ListViewService, { ModelListView } from 'ember-mist-components/services/list-view';
+import SelectOption from 'ember-field-components/addon/interfaces/SelectOption';
+import Order, { Direction } from 'ember-mist-components/query/Order';
 import { inject as service } from '@ember-decorators/service';
 import { tagName } from '@ember-decorators/component';
-
-import Table from 'ember-light-table';
-import QueryParams from '../../classes/query-params';
-import StringUtils from 'ember-field-components/classes/utils';
-import { getModelType, getModelListView, getDefaultIncludes } from 'ember-field-components/classes/model-utils';
-import { task } from 'ember-concurrency';
-//import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
-
-import { computed } from '@ember/object';
-import { get } from '@ember/object';
+import { computed, action } from '@ember-decorators/object';
+import { isArray } from '@ember/array';
+import { dropTask, task } from 'ember-concurrency-decorators';
 import { guidFor } from '@ember/object/internals';
+import { A } from '@ember/array';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
+import { camelize, dasherize } from '@ember/string';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
-import { getOwner } from '@ember/application';
-import { camelize, dasherize, capitalize } from '@ember/string';
-import { isArray } from '@ember/array';
+
+export interface Column {
+  label ?: string;
+  modelType ?: string;
+  valuePath ?: string;
+  transitionToModel ?: boolean;
+  width ?: string | undefined;
+  resizable ?: boolean;
+  cellComponent ?: string;
+  cellClassNames ?: string;
+  component ?: string;
+  classNames ?: string;
+  sorted ?: boolean;
+  ascending ?: boolean;
+  selectAll ?: boolean;
+}
 
 @tagName('')
-export default class ModelTable extends Component {
+export default class ModelTableComponent extends Component {
   @service store !: Store;
-  @service storage !: any;
   @service intl !: any;
+  @service router !: any;
+  @service fieldInformation !: FieldInformationService;
+  @service listView !: ListViewService;
 
+  /**
+   * The ember-light-table instance
+   */
   table : Table = new Table([]);
   lastPage : number = 0;
   resultRowFirst : number = 0;
   resultRowLast : number = 0;
   resultTotalCount : number = 0;
-  selectedModels : Model[] = [];
+  selectedModels : any = A();
+  modelName !: string | string[];
+  activeModelName !: string;
+  title ?: string;
+  multiselect : boolean = false;
+  listViewKey : string = '';
+  /**
+   * The flag to indicate whether the amount of selected models in the table should be displayed
+   */
+  displaySelected : boolean = false;
+
+  /**
+   * Closure actions
+   */
+  onRowSelected?: (selectedRow: any) => void;
+  onRowMouseEnter?: (selectedRow: any) => void;
+  onRowMouseLeave?: (selectedRow: any) => void;
 
 
-  // init() {
-  //   this._super(...arguments);
+  didReceiveAttrs() {
+    super.didReceiveAttrs();
+    this.setActiveModelType();
+    this.initializeTable.perform();
+  }
+
+  @task
+  * initializeTable() {
+    yield this.fetchRecords.perform();
+
+    if(this.searchFixed) {
+      this.set('searchVisible', true);
+      this.focusSearch();
+    }
+  }
+
+  /**
+   * Indicates whether the search bar on top of the table should always be visible
+   */
+  searchFixed : boolean = false;
+
+  /**
+   * Indicates whether the search bar should be visible or not
+   */
+  searchVisible : boolean = false;
+
+  /**
+   * Returns a Query instance based on the active model name.
+   */
+  @computed('activeModelName')
+  get query() : Query {
+    const query = Query.create({
+      modelName: this.activeModelName
+    });
+
+    query.setLimit(10);
+    return query;
+  }
+
+  /**
+   * Returns true if there are multiple modelnames passed (for example with polymorphic relationships)
+   */
+  @computed('modelName')
+  get isMultiModelNames() : boolean {
+    return isArray(this.modelName);
+  }
+
+  /**
+   * The inputId that will be used for the search input element
+   */
+  @computed
+  get searchInputId() : string {
+    return `${this.guid}-search`;
+  }
+
+  /**
+   * Checks whether multiselect should be enabled on this table
+   */
+  @computed('multiselect')
+  get isMultiSelect() : boolean {
+    return this.multiselect === true;
+  }
+
+  /**
+   * Returns the config for this application
+   */
+  @computed
+  get config() : any {
+    return getOwner(this).resolveRegistration('config:environment');
+  }
+
+  /**
+   * Returns the bootstrap version defined in the config, depending on this value the colums will be rendered differently
+   */
+  @computed('config')
+  get bootstrapVersion() : number | undefined {
+    const config = this.config;
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
+      return config['ember-mist-components'].bootstrapVersion;
+    }
+
+    return;
+  }
+
+  @computed('title', 'activeModelName')
+  get titleComputed() : string {
+    if(this.title) {
+      return this.title;
+    } else {
+      return this.fieldInformation.getTranslatedPlural(this.activeModelName);
+    }
+  }
+
+  /**
+   * This will return the key of the current selected list view value
+   */
+  @computed('router.currentRouteName', 'activeModelName', 'listViewKey')
+  get selectedListView() : Model | ModelListView {
+    return this.listView.getActiveListViewForCurrentRoute(this.activeModelName);
+  }
+
+  /**
+   * This will return the columns that need to be displayed in the table (based on the list view)
+   */
+  @computed('activeModelName', 'selectedListView', 'intl.locale')
+  get columns() : Column[] {
+    // This function gets the columns defined on the model, and sets them as the columns of the table
+    const columns = [];
+
+    if(this.isMultiSelect) {
+      const column : Column = {
+        label: '',
+        width: '60px',
+        resizable: false,
+        cellComponent: 'mist-model-table-selector',
+        cellClassNames: 'selector',
+        component: 'mist-model-table-all-selector',
+        classNames: 'selector',
+        selectAll: true
+      };
+
+      columns.push(column);
+    }
+
+    // here we loop over every column in the listview, ans format it for ember light table
+    get(<any> this.selectedListView, 'columns').forEach((modelColumn: any) => {
+      // First we split the columns by a ".", this is so we dont loose the dot when camelizing, as it indicates a value path
+      // This only has effect for subobjects, like location, and address
+      const splittedColumns = modelColumn.toString().split('.');
+      splittedColumns.forEach((splittedColumn: string, index: number) => {
+        splittedColumns[index] = camelize(splittedColumn);
+      });
+
+      // We handled the ".", and now we can rejoin the column
+      const camelizedColumn = splittedColumns.join('.');
+      const sortedOnColumn = (this.query.orders.length > 0 && this.query.orders[0].field === dasherize(modelColumn));
 
 
-  //   this.setActiveModelType();
-  //   this.set('table', new Table([]));
-  // }
+      // And finally build the structure for ember-light-table
+      const column : Column = {
+        label: this.fieldInformation.getTranslatedFieldlabel(this.activeModelName, camelizedColumn),
+        modelType: this.activeModelName,
+        valuePath: camelizedColumn,
+        transitionToModel: (!this.onRowSelected && !this.isMultiSelect), // When no row selected action or multiselect is provided, we will route to the model being displaye
+        width: (modelColumn === 'id') ? '60px' : undefined,
+        resizable: (modelColumn !== 'id'),
+        cellComponent: 'mist-model-table-cell',
+        sorted: sortedOnColumn,
+        ascending: (sortedOnColumn && this.query.orders[0].direction  === Direction.ASC)
+      };
 
-  // didReceiveAttrs(){
-  //   this._super(...arguments);
+      columns.push(column);
+    });
 
-  //   this.get('initializeTable').perform();
-  // },
-  // initializeTable: task(function * (){
-  //   yield this.get('fetchRecords').perform();
+    return columns;
+  }
 
-  //   if(this.get('fixedSearch')){
-  //     this.set('searchToggled', true);
-  //   }
+  @computed('selectedModels.[]')
+  get amountSelected() : number {
+    return this.selectedModels.length;
+  }
 
-  //   if(this.get('fixedSearch')){
-  //     this.$('input[type="search"]').focus();
-  //   }
-  // }),
-  // setActiveModelType(){
-  //   // This function is needed for Polymorphic cases, where a choice of model type is passed
-  //   if(isBlank(this.get('activeModelType'))){
-  //     if(this.get('isMultipleModelTypes')){
-  //       this.set('activeModelType', this.get('modelType')[0]);
-  //     } else {
-  //       this.set('activeModelType', this.get('modelType'));
-  //     }
-  //   }
-  // },
-  // config: computed(function(){
-  //   return getOwner(this).resolveRegistration('config:environment');
-  // }),
-  // bootstrapVersion: computed('config', function(){
-  //   const config = this.get('config');
-  //   if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('bootstrapVersion')) {
-  //     return config['ember-mist-components'].bootstrapVersion;
-  //   }
-  // }),
-  // displayListViewLinks: computed('config', function(){
-  //   const config = this.get('config');
-  //   if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('displayListViewLinks')) {
-  //     return config['ember-mist-components'].displayListViewLinks;
-  //   }
-  // }),
-  // setListViews: task(function * (){
-  //   let activeListView = this.get('activeListView');
-  //   let defaultListViewKey = this.get('defaultListView');
-  //   let savedListViewSelection = this.getSavedListViewSelection();
+  /**
+   * Returns a unique id for this component
+   */
+  @computed
+  get guid() : string {
+    return guidFor(this);
+  }
 
-  //   if(isBlank(this.get('availableListViews'))){
-  //     let availableListViews = [];
-  //     if(!isBlank(this.get('defaultModelListView'))){
-  //       let availableListView = {};
-  //       availableListView.value = 'All';
-  //       availableListView.label = 'All'
-  //       availableListViews.push(availableListView);
-  //     }
+  @computed('modelName', 'intl.locale')
+  get modelNameSelectOptions() : SelectOption[] {
+    const modelNames = <string[]> this.modelName;
+    const selectOptions : SelectOption[] = [];
 
-  //     const grouping = this.get('listViewGrouping');
-  //     if(!isBlank(grouping)) { // Only if a grouping was provided, will we fetch them
-  //       let defaultListView;
-  //       let savedSelectedListView;
+    modelNames.forEach((modelName: string) => {
+      const plural = this.fieldInformation.getTranslatedPlural(modelName);
 
-  //       yield this.get('store').query('list-view', {filter: {1: { field: 'grouping', value: grouping}}}).then((listViews) => {
-  //         listViews.forEach((listView) => {
-  //           let availableListView = {}
-  //           availableListView.value = listView.get('id');
-  //           availableListView.label = listView.get('name');
-  //           availableListViews.push(availableListView);
+      const selectOption : SelectOption = {
+        value: modelName,
+        label: plural
+      };
 
-  //           if(listView.get('id') === savedListViewSelection){
-  //             savedSelectedListView = listView;
-  //           }
+      selectOptions.push(selectOption);
+    });
 
-  //           if(listView.get('key') === defaultListViewKey){
-  //             defaultListView = listView;
-  //           }
-  //         });
-  //       });
+    return selectOptions;
+  }
 
-  //       // Here we check if we have a saved list view selection from a previous page visit
-  //       // In case we have nothing, we also check if there is a default provided
-  //       if(!isBlank(savedSelectedListView)){
-  //         activeListView = savedSelectedListView;
-  //         this.set('activeListViewKey', activeListView.get('id'));
-  //         this.set('activeListView', activeListView);
-  //         this.setQueryParamsBasedOnActiveListView();
-  //       } else if (!isBlank(defaultListView) && savedListViewSelection !== 'All') {
-  //         activeListView = defaultListView;
-  //         this.set('activeListViewKey', activeListView.get('id'));
-  //         this.set('activeListView', activeListView);
-  //         this.setQueryParamsBasedOnActiveListView();
-  //       }
-  //     }
+  /**
+   * Returns true if the list view edit links should be displayed
+   */
+  @computed('config')
+  get displayListViewLinks() : boolean {
+    const config = this.get('config');
+    if(config.hasOwnProperty('ember-mist-components') && config['ember-mist-components'].hasOwnProperty('displayListViewLinks')) {
+      return config['ember-mist-components'].displayListViewLinks;
+    }
 
-  //     this.set('availableListViews', availableListViews);
-  //     this.set('displayListViewSelector', availableListViews.get('length') > 1);
-  //   }
+    return false;
+  }
 
-  //   if(isBlank(activeListView)){
-  //     this.set('activeListViewKey', 'All');
-  //     this.set('activeListView', this.get('defaultModelListView'));
-  //     this.setQueryParamsBasedOnActiveListView();
-  //   }
-  // }),
-  // setQueryParamsBasedOnActiveListView(){
-  //   const activeListView = this.get('activeListView');
-  //   assert(`Listview not found`, !isBlank(activeListView));
-  //   const listViewLimit = get(activeListView, 'rows');
-  //   const listViewSort = get(activeListView, 'sortOrder');
-  //   let queryParams = this.get('queryParams');
+  /**
+   * Sets the activated state of all rows to false.
+   * The activated state is the indication which row is 'active' (for example the one you are hovering, or the one your are navigating on with the keyboard)
+   */
+  deactivateRows(){
+    this.table.get('rows').setEach('activated', false);
+  }
 
-  //   queryParams.set('limit', isBlank(listViewLimit) ? 10 : listViewLimit);
-  //   queryParams.set('sortOrder', isBlank(listViewSort) ? '' : dasherize(listViewSort.field));
-  //   queryParams.set('dir', isBlank(listViewSort) ? 'asc' : listViewSort.dir.toLowerCase());
-  // },
-  // isMultipleModelTypes: computed('modelType', function(){
-  //   return isArray(this.get('modelType'));
-  // }),
-  // multipleModelTypeSelectOptions: computed('modelType', 'intl.locale', function(){
-  //   const modelTypeNames = this.get('modelType');
-  //   const intl = this.get('intl');
+  /**
+   * Initializes the activeModelName, this is an alias of modelName when only 1 is passed, in case multiple are passed the first one is used
+   */
+  setActiveModelType() : void {
+    if(!this.activeModelName) {
+      if(this.isMultiModelNames){
+        this.set('activeModelName', this.modelName[0]);
+      } else {
+        this.set('activeModelName', this.modelName);
+      }
+    }
+  }
 
-  //   let selectOptions = [];
+  /**
+   * Focusses the search input element
+   */
+  focusSearch() {
+    const domElement = document.getElementById(this.searchInputId);
+    if(domElement) {
+      domElement.focus();
+    }
+  }
 
-  //   modelTypeNames.forEach((modelTypeName) => {
-  //     const plural = intl.exists(`ember-field-components.${modelTypeName}.plural`) ? intl.t(`ember-field-components.${modelTypeName}.plural`) : modelTypeName;
+  /**
+   * This function makes sure, that when we change limits, pages, refresh, ...
+   * we set the selected attribute to the correct rows
+   */
+  reSetSelected() {
+    if(this.isMultiSelect) {
 
-  //     let selectOption = {};
-  //     selectOption.value = modelTypeName;
-  //     selectOption.label = plural;
-  //     selectOptions.push(selectOption);
-  //   });
+      for(const row of this.table.get('rows')) {
+        const model : Model = row.get('content');
+        row.set('rowSelected', this.selectedModels.includes(model));
+      }
 
-  //   return selectOptions;
-  // }),
-  // // keyboardFind: on(keyUp('KeyF'), function(){
-  // //   if(!this.get('searchToggled')){
-  // //     this.toggleSearch();
-  // //     this.$('input[type="search"]').focus();
-  // //   } else if(this.get('fixedSearch')) {
-  // //     this.$('input[type="search"]').focus();
-  // //   }
-  // // }),
-  // // keyboardRefresh: on(keyUp('KeyR'), function(){
-  // //   this.get('fetchRecords').perform();
-  // // }),
-  // // keyboardNext: on(keyUp('ArrowRight'), function(){
-  // //   this.nextPage();
-  // // }),
-  // // keyboardPrev: on(keyUp('ArrowLeft'), function(){
-  // //   this.prevPage();
-  // // }),
-  // // keyboardDown: on(keyDown('ArrowDown'), function(event){
-  // //   event.preventDefault();
-  // //   this.nextRow();
-  // // }),
-  // // keyboardUp: on(keyDown('ArrowUp'), function(event){
-  // //   event.preventDefault();
-  // //   this.prevRow();
-  // // }),
-  // // keyboardEnter: on(keyDown('Enter'), function(){
-  // //   // this only has meaning when the table isn't multiSelect
-  // //   if(!this.get('isMultiSelect')){
-  // //     const activeRows = this.get('table.rows').filterBy('activated');
-  // //     if(activeRows.length > 0){
-  // //       this.rowSelected(activeRows[0]);
-  // //     }
-  // //   }
-  // // }),
-  // // keyboardSpace: on(keyDown('Space'), function(){
-  // //   // this only has meaning when the table is multiSelect
-  // //   if(this.get('isMultiSelect')){
-  // //     const activeRows = this.get('table.rows').filterBy('activated');
-  // //     if(activeRows.length > 0){
-  // //       this.rowSelected(activeRows[0]);
-  // //     }
-  // //   }
-  // // }),
+      this.setSelectAllColumn();
+    }
+  }
 
-  // filters: computed({
-  //   get(){
-  //     return this.get('queryParams.filter');
-  //   },
-  //   set(key, value){
-  //     this.set('queryParams.baseConditions', value);
-  //     return this.get('queryParams.baseConditions');
-  //   }
-  // }),
-  // amountSelected: computed('selectedModels.[]', function(){
-  //   return this.get('selectedModels.length');
-  // }),
-  // queryParams: computed(function(){
-  //   let queryParams = this.get('_queryParams');
-  //   if(isBlank(queryParams)){
-  //     this.set('_queryParams', QueryParams.create());
-  //   }
-  //   return this.get('_queryParams');
-  // }),
-  // guid: computed(function(){
-  //   return guidFor(this);
-  // }),
-  // defaultModelListView: computed('activeModelType', function(){
-  //   let type = getModelType(this.get('activeModelType'), this.get('store'));
-  //   const modelListView = this.get('modelListView');
-  //   return getModelListView(type, modelListView);
-  // }),
-  // isMultiSelect: computed('multiselect', function(){
-  //   return this.get('multiselect') === true;
-  // }),
-  // columns: computed('activeModelType', 'activeListView', 'intl.locale', function(){
-  //   // This function gets the columns defined on the model, and sets them as the columns of the table
-  //   const { activeModelType, activeListView, queryParams, intl } = this.getProperties('activeModelType', 'activeListView', 'queryParams', 'intl')
-  //   const type = getModelType(activeModelType, this.get('store'));
-  //   const columns = [];
+  /**
+   * Sets the colums on the table based on the active list view
+   */
+  setColumns() {
+    this.table.setColumns(this.columns);
+  }
 
-  //   if(this.get('isMultiSelect')){
-  //     const column = {};
-  //     column['label'] = '';
-  //     column['width'] = '60px';
-  //     column['resizable'] = false;
-  //     column['cellComponent'] = 'mist-model-table-selector';
-  //     column['cellClassNames'] = 'selector';
-  //     column['component'] = 'mist-model-table-all-selector';
-  //     column['classNames'] = 'selector';
-  //     column['selectAll'] = true;
-  //     columns.push(column);
-  //   }
+  /**
+   * Activates the previous row
+   */
+  activatePreviousRow() {
+    const rows : any = this.table.get('rows');
 
-  //   // here we loop over every column in the listview, ans format it for ember light table
-  //   get(activeListView, 'columns').forEach((modelColumn) => {
-  //     // First we split the columns by a ".", this is so we dont loose the dot when camelizing, as it indicates a value path
-  //     // This only has effect for subobjects, like location, and address
-  //     let splittedColumns = modelColumn.toString().split('.');
-  //     splittedColumns.forEach((splittedColumn, index) => {
-  //       splittedColumns[index] = camelize(splittedColumn);
-  //     });
-  //     // We handled the ".", and now we can rejoin the column
-  //     const camelizedColumn = splittedColumns.join('.');
+    let activatedIndex : number | undefined;
+    rows.forEach((row : any, index : number) => {
+      if(row.get('activated')){
+        activatedIndex = index;
+      }
+    });
 
-  //     // We get the label from the intl service
-  //     let label = capitalize(camelizedColumn);
-  //     if(intl.exists(`ember-field-components.${type.modelName}.fields.${camelizedColumn}`)) {
-  //       label = intl.t(`ember-field-components.${type.modelName}.fields.${camelizedColumn}`);
-  //     } else if(intl.exists(`ember-field-components.global.fields.${camelizedColumn}`)) {
-  //       label = intl.t(`ember-field-components.global.fields.${camelizedColumn}`);
-  //     }
+    if(!activatedIndex){
+      rows[0].set('activated', true);
+    } else if(activatedIndex > 0){
+      rows.setEach('activated', false);
+      rows[activatedIndex-1].set('activated', true);
+    }
+  }
 
-  //     // And finally build the structure for ember-light-table
-  //     let column = {};
-  //     column['label'] = label;
-  //     column['modelType'] = activeModelType;
-  //     column['valuePath'] = camelizedColumn;
-  //     column['transitionToModel'] = (isBlank(this.get('onRowSelected')) && !this.get('isMultiSelect')); // When no row selected action or multiselect is provided, we will route to the model being displayed
-  //     column['width'] = (modelColumn === 'id') ? '60px' : undefined;
-  //     column['resizable'] = (modelColumn !== 'id');
-  //     column['cellComponent'] = 'mist-model-table-cell';
-  //     column['sorted'] = queryParams.get('sort') === dasherize(modelColumn);
-  //     column['ascending'] = queryParams.get('dir') === 'asc';
+  /**
+   * Activate the next row in the table
+   */
+  activateNextRow() {
+    const rows = this.table.get('rows');
+    let activatedIndex : number | undefined;
+    rows.forEach((row : any, index : number) => {
+      if(row.get('activated')){
+        activatedIndex = index;
+      }
+    });
 
-  //     columns.push(column);
-  //   });
+    if(!activatedIndex){
+      rows[0].set('activated', true);
+    } else if(activatedIndex+1 < rows.length){
+      rows.setEach('activated', false);
+      rows[activatedIndex+1].set('activated', true);
+    }
+  }
 
-  //   return columns;
-  // }),
-  // isArrayTable: computed('models', function(){
-  //   return this.get('arrayTable');
-  // }),
-  // fixed: computed('tableHeight', function(){
-  //   // when a height of the table is passed, we set the column headers fixed
-  //   return !isBlank(this.get('tableHeight'));
-  // }),
+  /**
+   * This function will set the select all boolean, based on the selected rows
+   */
+  setSelectAllColumn(){
+    const selectAllColumn = this.table.columns.get('firstObject');
+    selectAllColumn.set('valuePath', this.table.get('rows').isEvery('rowSelected', true));
 
-  // fetchRecords: task(function * (){
-  //   yield this.get('setListViews').perform();
-  //   const modelType = this.get('activeModelType');
-  //   if(this.get('isArrayTable') || this.get('displaySelected')){
-  //     // this table is an array table, we don't query the store for records
-  //     let models = this.get('displaySelected') ? this.get('selectedModels') : this.get('models');
-  //     let records = [];
+    if(this.selectedModels.get('length') === 0 && this.displaySelected) {
+      this.toggleProperty('displaySelected');
+      this.fetchRecords.perform();
+    }
+  }
 
-  //     let queryParams = this.get('queryParams');
+  /**
+   * Sets the Query Parameters from the selected list view
+   */
+  setQueryParamsBasedOnActiveListView(){
+    assert(`Listview not found`, !isBlank(this.selectedListView));
+    const listViewLimit = get(this.selectedListView, 'rows');
+    const listViewSort = get(this.selectedListView, 'sortOrder');
 
-  //     // First we filter by Search keyword
-  //     if(!isBlank(queryParams.search)){
-  //       models = models.filter((model) => {
-  //         const modelValueToCompare = model.get(camelize(queryParams.get('searchField')));
-  //         return !isBlank(modelValueToCompare) && StringUtils.wildcardMatch(modelValueToCompare.toUpperCase(), queryParams.search.toUpperCase());
-  //       });
-  //     }
+    this.query.setLimit(isBlank(listViewLimit) ? 10 : listViewLimit);
 
-  //     // Next we sort
-  //     if(!isBlank(queryParams.sort)){
-  //       const sortBy = camelize(queryParams.sort);
-  //       models = models.sortBy(sortBy);
-  //       if(queryParams.dir === 'desc'){
-  //         models = models.reverse();
-  //       }
-  //     }
+    if(!isBlank(listViewSort)) {
+      this.query.clearOrders();
+      this.query.addOrder(new Order(listViewSort.field, listViewSort.dir && listViewSort.dir.toLowerCase() == 'desc' ? Direction.DESC : Direction.ASC));
+    }
+  }
 
-  //     // then we page and limit
-  //     models.forEach((model, index) => {
-  //       if((index+1 <= queryParams.limit * queryParams.page) && (index+1 > queryParams.limit * (queryParams.page-1))) {
-  //         records.push(model);
-  //       }
-  //     });
+  /**
+   * Fetches the records from the back-end
+   */
+  @dropTask
+  * fetchRecords() {
+    // Lets check if a listview is selected. And pass if to the query if needed
+    const activeListViewKey = this.listView.getActiveListViewKeyForCurrentRoute(this.activeModelName);
 
-  //     // finally we set helper variables
-  //     this.set('lastPage', Math.ceil(models.get('length')/queryParams.limit));
-  //     this.set('resultRowFirst', parseInt(((queryParams.page-1) * queryParams.limit) +1));
-  //     this.set('resultRowLast', parseInt(models.get('length') < queryParams.limit ? (((queryParams.page-1) * queryParams.limit) + models.get('length')) : (queryParams.page * queryParams.limit)));
-  //     this.set('resultTotalCount', models.get('length'));
+    if(activeListViewKey !== 'All') {
+      this.query.setListView(<number> activeListViewKey);
+    } else {
+      this.query.clearListView();
+    }
 
-  //     this.table.setRows(records);
-  //     this.set('mapModels', records);
-  //     this.reSetSelected();
-  //   } else {
-  //     // we query the records from the store instead
-  //     this.setDefaultIncludes();
-  //     let queryParams = this.get('queryParams.params');
+    // Now we can query the store
+    yield this.query.fetch(this.store).then(records => {
+      this.table.setRows(records);
 
-  //     // Lets also check if a listview is selected. And pass if to the query if needed
-  //     const activeListView = this.get('activeListView');
-  //     if(this.get('activeListViewKey') !== 'All' && !isBlank(activeListView)){
-  //       if(!queryParams.filter){
-  //         queryParams.filter = {};
-  //       }
-  //       queryParams.filter['_listview'] = activeListView.get('id');
-  //     } else if(queryParams.filter) {
-  //       delete queryParams.filter['_listview'];
-  //     }
+      const meta = records.get('meta');
+      this.query.setPage(isBlank(meta['page-current']) ? 1 : meta['page-current']);
+      this.set('lastPage', isBlank(meta['page-count']) ? 1 : meta['page-count']);
+      this.set('resultRowFirst', isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
+      this.set('resultRowLast', isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
+      this.set('resultTotalCount', isBlank(meta['total-count']) ? 0 : meta['total-count']);
+      this.reSetSelected();
+    });
 
-  //     // Now we can query the store
-  //     yield this.get('store').query(modelType, queryParams).then(records => {
-  //       this.table.setRows(records);
-  //       this.set('mapModels', records);
-  //       let meta = records.get('meta');
-  //       this.set('queryParams.page', isBlank(meta['page-current']) ? 1 : meta['page-current']);
-  //       this.set('lastPage', isBlank(meta['page-count']) ? 1 : meta['page-count']);
-  //       this.set('resultRowFirst', isBlank(meta['result-row-first']) ? 0 : meta['result-row-first']);
-  //       this.set('resultRowLast', isBlank(meta['result-row-last']) ? 0 : meta['result-row-last']);
-  //       this.set('resultTotalCount', isBlank(meta['total-count']) ? 0 : meta['total-count']);
-  //       this.reSetSelected();
-  //     });
-  //   }
-  //   if(isBlank(this.get('table.columns'))){
-  //     this.setColumns();
-  //   }
-  // }).drop(),
+    // If no colums are found, lets also set them
+    if(isBlank(this.table.get('columns'))){
+      this.setColumns();
+    }
+  }
 
-  // fetchRecordsAndRefreshColumns: task(function * (){
-  //   yield this.get('fetchRecords').perform();
-  //   // Needed for polymorphic tables
-  //   this.setColumns();
-  // }).drop(),
+  @dropTask
+  * fetchRecordsAndRefreshColumns() {
+    yield this.get('fetchRecords').perform();
+    // Needed for polymorphic tables
+    this.setColumns();
+  }
 
-  // setColumns(){
-  //   const columns = this.get('columns');
-  //   this.get('table').setColumns(columns);
-  // },
+  /**
+   * This function sets the search string on the query, and resets the page
+   * @param value The search string
+   */
+  @action
+  searchValueChanged(value : string) {
+    this.query.setPage(1);
+    this.query.setSearch(value);
+  }
 
-  // setDefaultIncludes(){
-  //   // This method adds the default includes defined on the modeltype, to the queryParams object
-  //   let type = getModelType(this.get('activeModelType'), this.get('store'));
-  //   let defaultIncludes = getDefaultIncludes(type);
-  //   this.set('queryParams.include', defaultIncludes.join(','));
-  // },
+  /**
+   * Toggles the Search bar, if it was invisible, it'll become visible and focused
+   * If it was visible, it will be hidden and the search term in the query will be removed
+   */
+  @action
+  toggleSearch() {
+    if(!this.searchFixed){
+      this.toggleProperty('searchVisible');
 
-  // toggleSearch(){
-  //   if(!this.get('fixedSearch')){
-  //     this.toggleProperty('searchToggled');
-  //     if(this.get('searchToggled')){
-  //       this.$('input[type="search"]').focus();
-  //     } else {
-  //       // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
-  //       this.set('queryParams.search', '');
-  //       this.get('fetchRecords').perform();
-  //     }
-  //   }
-  // },
-  // nextPage(){
-  //   const queryParams = this.get('queryParams');
-  //   const lastPage = this.get('lastPage');
+      if(this.searchVisible) {
+        this.focusSearch();
+      } else {
+        // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
+        this.query.clearSearch();
+        this.fetchRecords.perform();
+      }
+    }
+  }
 
-  //   if(queryParams.get('page') < lastPage){
-  //     queryParams.nextPage();
-  //     this.get('fetchRecords').perform();
-  //   }
-  // },
-  // prevPage(){
-  //   const queryParams = this.get('queryParams');
+  /**
+   * Executes the search or displays the search innput, depending on if the search was visible or not
+   */
+  @action
+  search(){
+    if(this.searchVisible) {
+      this.fetchRecords.perform();
+    } else {
+      this.toggleSearch();
+    }
+  }
 
-  //   if(queryParams.get('page') > 1){
-  //     queryParams.prevPage();
-  //     this.get('fetchRecords').perform();
-  //   }
-  // },
-  // nextRow(){
-  //   let rows = this.get('table.rows');
-  //   let activatedIndex;
-  //   rows.forEach((row, index) => {
-  //     if(row.get('activated')){
-  //       activatedIndex = index;
-  //     }
-  //   });
+  /**
+   * Performs a new fetch and refreshes the displayed records
+   */
+  @action
+  refresh() {
+    this.fetchRecords.perform();
+  }
 
-  //   if(isBlank(activatedIndex)){
-  //     rows[0].set('activated', true);
-  //   } else if(activatedIndex+1 < rows.length){
-  //     rows.setEach('activated', false);
-  //     rows[activatedIndex+1].set('activated', true);
-  //   }
-  // },
-  // prevRow(){
-  //   let rows = this.get('table.rows');
-  //   let activatedIndex;
-  //   rows.forEach((row, index) => {
-  //     if(row.get('activated')){
-  //       activatedIndex = index;
-  //     }
-  //   });
+  /**
+   * Goes to the next page in the table and performs a fetch for the new records
+   */
+  @action
+  nextPage(){
+    if(this.query.page < this.lastPage) {
+      this.query.nextPage();
+      this.fetchRecords.perform();
+    }
+  }
 
-  //   if(isBlank(activatedIndex)){
-  //     rows[0].set('activated', true);
-  //   } else if(activatedIndex > 0){
-  //     rows.setEach('activated', false);
-  //     rows[activatedIndex-1].set('activated', true);
-  //   }
-  // },
-  // reSetSelected(){
-  //   if(this.get('isMultiSelect')){
-  //     // this function makes sure, that when we change limits, pages, refresh, ...
-  //     // we set the selected attribute to the correct rows
-  //     let selectedModels = this.get('selectedModels');
-  //     this.get('table.rows').forEach((row) => {
-  //       const model = row.get('content');
-  //       row.set('rowSelected', selectedModels.includes(model));
-  //     });
+  /**
+   * Goes to the previous page and performs a fetch
+   */
+  @action
+  prevPage(){
+    if(this.query.page > 1) {
+      this.query.prevPage();
+      this.fetchRecords.perform();
+    }
+  }
 
-  //     this.setSelectAllColumn();
-  //   }
-  // },
-  // setSelectAllColumn(){
-  //   let selectAllColumn = this.table.columns.get('firstObject');
-  //   selectAllColumn.set('valuePath', this.get('table.rows').isEvery('rowSelected', true));
+  /**
+   * Jumps to a specific page and refreshes the records
+   * @param page The page number to jump to
+   */
+  @action
+  pageSelected(page : number) {
+    this.query.setPage(page);
+    this.fetchRecords.perform();
+  }
 
-  //   if(this.get('selectedModels.length') === 0 && this.get('displaySelected')){
-  //     this.toggleProperty('displaySelected');
-  //     this.get('fetchRecords').perform();
-  //   }
-  // },
-  // rowSelected(selectedRow){
-  //   if(isBlank(this.get('onRowSelected'))){
-  //     if(this.get('isMultiSelect')){
-  //       selectedRow.toggleProperty('rowSelected');
+  /**
+   * Changes the amount of results to display in the table
+   * @param limit The new limit
+   */
+  @action
+  limitChanged(limit : number) {
+    this.query.setPage(1);
+    this.query.setLimit(limit);
+    this.fetchRecords.perform();
+  }
 
-  //       let selectedModels = this.get('selectedModels');
-  //       const model = selectedRow.get('content');
-  //       if(selectedRow.get('rowSelected')){
-  //         if(!selectedModels.includes(model)){
-  //           // model not yet in the array, so we add it
-  //           selectedModels.pushObject(model);
-  //         }
-  //       } else {
-  //         if(selectedModels.includes(model)){
-  //           // model in the array, while it shouldn't be, remove it
-  //           selectedModels.removeObject(model);
-  //         }
-  //       }
+  /**
+   * Depending on where the click happens either sorting will take place, or all rows will be selected in case of multiselect and selectAll column
+   * @param column The column that was clicked
+   */
+  @action
+  onColumnClick(column : any) {
+    if(this.isMultiSelect && column.get('selectAll')){
+      column.set('sorted', false);
+      column.toggleProperty('valuePath');
 
-  //       if(this.get('displaySelected')){
-  //         this.get('fetchRecords').perform();
-  //       } else {
-  //         this.setSelectAllColumn();
-  //       }
-  //     }
-  //   } else {
-  //     const onRowSelected = this.get('onRowSelected');
-  //     if(onRowSelected){
-  //       onRowSelected(selectedRow);
-  //     }
-  //   }
-  // },
-  // deactivateRows(){
-  //   this.get('table.rows').setEach('activated', false);
-  // },
-  // getSavedListViewSelection(){
-  //   const listViewGrouping = this.get('listViewGrouping');
-  //   if(!isBlank(listViewGrouping)){
-  //     let listViewSelections = this.get('storage.listViewSelections');
-  //     if(!isBlank(listViewSelections) && listViewSelections.hasOwnProperty(listViewGrouping)){
-  //       return listViewSelections[listViewGrouping];
-  //     }
-  //   }
-  // },
-  // saveListViewSelection(){
-  //   const listViewGrouping = this.get('listViewGrouping');
-  //   if(!isBlank(listViewGrouping)){
-  //     let listViewSelections = this.get('storage.listViewSelections');
-  //     if(isBlank(listViewSelections)){
-  //       listViewSelections = {};
-  //     }
+      for(const row of this.table.get('rows')) {
+        row.set('rowSelected', column.get('valuePath'));
+        const model : Model = row.get('content');
 
-  //     listViewSelections[listViewGrouping] = this.get('activeListViewKey');
-  //     this.set('storage.listViewSelections', listViewSelections);
-  //   }
-  // },
-  // actions: {
-  //   onColumnClick(column) {
-  //     if(this.get('isMultiSelect') && column.get('selectAll')){
-  //       column.set('sorted', false);
-  //       column.toggleProperty('valuePath');
+        if(row.get('rowSelected')){
+          if(!this.selectedModels.includes(model)){
+            // model not yet in the array, so we add it
+            this.selectedModels.pushObject(model);
+          }
+        } else {
+          if(this.selectedModels.includes(model)){
+            // model in the array, while it shouldn't be, remove it
+            this.selectedModels.removeObject(model);
+          }
+        }
+      }
+    } else if (column.sorted) {
+      this.query.clearOrders();
+      this.query.addOrder(new Order(dasherize(column.get('valuePath')), column.ascending ? Direction.ASC : Direction.DESC));
+      this.query.setPage(1);
 
-  //       let selectedModels = this.get('selectedModels');
-  //       this.get('table.rows').forEach((row) => {
-  //         row.set('rowSelected', column.get('valuePath'));
-  //         const model = row.get('content');
-  //         if(row.get('rowSelected')){
-  //           if(!selectedModels.includes(model)){
-  //             // model not yet in the array, so we add it
-  //             selectedModels.pushObject(model);
-  //           }
-  //         } else {
-  //           if(selectedModels.includes(model)){
-  //             // model in the array, while it shouldn't be, remove it
-  //             selectedModels.removeObject(model);
-  //           }
-  //         }
-  //       });
+      this.fetchRecords.perform();
+    }
+  }
 
-  //     } else if (column.sorted) {
-  //       this.set('queryParams.dir', column.ascending ? 'asc' : 'desc');
-  //       this.set('queryParams.sort', dasherize(column.get('valuePath')));
-  //       this.set('queryParams.page', 1);
-  //       this.get('fetchRecords').perform();
-  //     }
-  //   },
-  //   onRowClick(row){
-  //     this.rowSelected(row);
-  //   },
-  //   onRowMouseEnter(/*row*/) {
-  //     this.deactivateRows();
-  //   },
-  //   onRowMouseLeave(/*row*/) {
-  //     this.deactivateRows();
-  //   },
-  //   refresh(){
-  //     this.get('fetchRecords').perform();
-  //   },
-  //   nextPage(){
-  //     this.nextPage();
-  //   },
-  //   prevPage(){
-  //     this.prevPage();
-  //   },
-  //   pageSelected(page){
-  //     this.set('queryParams.page', page);
-  //     this.get('fetchRecords').perform();
-  //   },
-  //   limitChanged(limit){
-  //     this.set('queryParams.page', 1);
-  //     this.set('queryParams.limit', limit);
-  //     this.get('fetchRecords').perform();
-  //   },
-  //   toggleSearch(){
-  //     this.toggleSearch();
-  //   },
-  //   searchValueChanged(value){
-  //     this.set('queryParams.page', 1);
-  //     this.set('queryParams.search', value);
-  //   },
-  //   search(){
-  //     if(this.get('searchToggled')){
-  //       this.get('fetchRecords').perform();
-  //     } else {
-  //       this.toggleSearch();
-  //     }
-  //   },
-  //   toggleDisplaySelected(){
-  //     this.set('queryParams.page', 1);
-  //     this.toggleProperty('displaySelected');
-  //     this.get('fetchRecords').perform();
-  //   },
-  //   activeModelTypeChanged(activeModelType){
-  //     this.set('activeModelType', activeModelType);
-  //     this.set('activeListView', null);
-  //     this.set('activeListViewKey', 'All');
-  //     this.get('fetchRecordsAndRefreshColumns').perform();
-  //   },
-  //   listViewChanged(newListView){
-  //     this.set('activeListViewKey', newListView);
-  //     if(newListView === 'All'){
-  //       // Default List view
-  //       this.set('activeListView', this.get('defaultModelListView'));
-  //     } else {
-  //       this.set('activeListView', this.get('store').peekRecord('list-view', newListView))
-  //     }
-  //     this.saveListViewSelection();
-  //     this.setQueryParamsBasedOnActiveListView();
-  //     this.get('fetchRecordsAndRefreshColumns').perform();
-  //   }
-  // }
+  /**
+   * What must happen when a row was clicked in the table
+   *  - In case an action was passed in, we delegate the selected row to the action
+   *  - In case multi select is enabled and no action was passed, we select the row
+   * @param selectedRow The row that was selected
+   */
+  @action
+  rowSelected(selectedRow : any){
+    if(!this.onRowSelected) {
+      if(this.isMultiSelect) {
+        selectedRow.toggleProperty('rowSelected');
+
+        const selectedModels = this.get('selectedModels');
+        const model = selectedRow.get('content');
+
+        if(selectedRow.get('rowSelected')) {
+          if(!selectedModels.includes(model)) {
+            // model not yet in the array, so we add it
+            selectedModels.pushObject(model);
+          }
+        } else {
+          if(selectedModels.includes(model)) {
+            // model in the array, while it shouldn't be, remove it
+            selectedModels.removeObject(model);
+          }
+        }
+
+        if(this.displaySelected) {
+          this.fetchRecords.perform();
+        } else {
+          this.setSelectAllColumn();
+        }
+      }
+    } else {
+      if(this.onRowSelected){
+        this.onRowSelected(selectedRow);
+      }
+    }
+  }
+
+  /**
+   * Deactivate other rows
+   * @param row The row which is being hovered
+   */
+  @action
+  rowMouseEnter(row : any) {
+    this.deactivateRows();
+    if(this.onRowMouseEnter) {
+      this.onRowMouseEnter(row);
+    }
+  }
+
+  @action
+  rowMouseLeave(row : any) {
+    this.deactivateRows();
+    if(this.onRowMouseLeave) {
+      this.onRowMouseLeave(row);
+    }
+  }
+
+  @action
+  toggleDisplaySelected() {
+    this.query.setPage(1);
+    this.toggleProperty('displaySelected');
+    this.fetchRecords.perform();
+  }
+
+  @action
+  activeModelNameChanged(activeModelName: string) {
+    this.set('activeModelName', activeModelName);
+
+    // We trigger the property change for the list view key, this way the list views will be reloaded
+    this.notifyPropertyChange('listViewKey');
+
+    // Now we can refetch the records and reset the columns
+    this.fetchRecordsAndRefreshColumns.perform();
+  }
+
+  @action
+  listViewChanged(_: string) {
+    this.notifyPropertyChange('listViewKey');
+    this.setQueryParamsBasedOnActiveListView();
+    this.fetchRecordsAndRefreshColumns.perform();
+  }
 }

@@ -1,70 +1,60 @@
 <div class="model-table">
-  {{#if fetchRecords.last}}
-    {{#if (and displayListViewSelector listViewsAsTabs)}}
-      <ul class="list-view-tabs{{if (eq bootstrapVersion 4) ' nav nav-tabs' ' tab-nav'}}" role="tablist">
-        {{#each availableListViews as |listView|}}
-          <li class="{{if (eq listView.value activeListViewKey) 'active'}}{{if (eq bootstrapVersion 4) ' nav-item'}}">
-            <a class="{{if (eq listView.value activeListViewKey) 'active'}}{{if (eq bootstrapVersion 4) ' nav-link'}}" role="tab" {{action 'listViewChanged' listView.value}}>{{listView.label}}</a>
-          </li>
-        {{/each}}
-      </ul>
-    {{/if}}
+  <div class={{concat 'card-header ch-alt mist-model-table-header' (if this.searchVisible ' search-toggled')}}>
+    <div class="table-header-title-wrapper">
+      <h2>{{this.titleComputed}}</h2>
+      {{#if this.fetchRecords.isRunning}}
+        {{mist-spinner size="10px" tagName="span"}}
+      {{else}}
+        <span style="width: 10px;height:10px;display:inline-block;"></span>
+      {{/if}}
 
-    <div class={{concat 'card-header ch-alt mist-model-table-header' (if searchToggled ' search-toggled')}}>
-      <div class="table-header-title-wrapper">
-        <h2>{{title}}</h2>
-        {{#if fetchRecords.isRunning}}
-          {{mist-spinner size="10px" tagName="span"}}
-        {{else}}
-          <span style="width: 10px;height:10px;display:inline-block;"></span>
+      {{#if @listViewGrouping}}
+        <ListViewSelect @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+      {{/if}}
+    </div>
+
+    <div class="h-search-wrap">
+      <div class="hsw-inner">
+        {{#if (not @searchFixed)}}
+          <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
         {{/if}}
 
-        {{#if (and displayListViewSelector (not listViewsAsTabs))}}
-          {{input-select class="list-view-selector plain-select" value=activeListViewKey selectOptions=availableListViews isRequired=true valueChanged=(action 'listViewChanged')}}
-        {{/if}}
+        <form {{action "search" on="submit"}}>
+          <InputSearch @inputId={{this.searchInputId}} @value={{this.query.search}} @placeholder="Search..." @valueChanged={{action 'searchValueChanged'}} />
+        </form>
       </div>
+    </div>
 
-      <div class="h-search-wrap">
-        <div class="hsw-inner">
-          {{#if (not fixedSearch)}}
-            <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
-          {{/if}}
-          <form {{action "search" on="submit"}}>
-            {{input-search value=queryParams.search placeholder="Search..." valueChanged=(action 'searchValueChanged')}}
-          </form>
-        </div>
-      </div>
+    <div id={{concat guid '-new'}}></div>
 
-      <div id={{concat guid '-new'}}></div>
-
-      {{#mist-menu id=(concat guid '-actions') class="actions"}}
-        {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
-        {{#mist-menu-dropdown-item className="waves-circle"}}
-          {{#if (and listViewGrouping displayListViewLinks)}}
-            {{#if (and activeListViewKey (is-numeric activeListViewKey))}}
-              {{#mist-menu-item}}
-                <a href="{{href-to 'list-view.edit' activeListViewKey}}">
-                  <i class="zmdi zmdi-menu"></i> Edit List View
-                </a>
-              {{/mist-menu-item}}
-            {{/if}}
+    {{#mist-menu id=(concat guid '-actions') class="actions"}}
+      {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
+      {{#mist-menu-dropdown-item className="waves-circle"}}
+        {{#if (and listViewGrouping displayListViewLinks)}}
+          {{#if (and activeListViewKey (is-numeric activeListViewKey))}}
             {{#mist-menu-item}}
-              <a href="{{href-to 'list-view.new'}}">
-                <i class="zmdi zmdi-playlist-plus"></i> New List View
+              <a href="{{href-to 'list-view.edit' activeListViewKey}}">
+                <i class="zmdi zmdi-menu"></i> Edit List View
               </a>
             {{/mist-menu-item}}
           {{/if}}
-          {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
-        {{/mist-menu-dropdown-item}}
-      {{/mist-menu}}
-    </div>
+          {{#mist-menu-item}}
+            <a href="{{href-to 'list-view.new'}}">
+              <i class="zmdi zmdi-playlist-plus"></i> New List View
+            </a>
+          {{/mist-menu-item}}
+        {{/if}}
+        {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
+      {{/mist-menu-dropdown-item}}
+    {{/mist-menu}}
+  </div>
 
-    <div id={{concat guid '-map'}}></div>
-    {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) map=(component 'ember-wormhole' to=(concat guid '-map')) new=(component 'ember-wormhole' to=(concat guid '-new')) models=mapModels)}}
+  {{#if fetchRecords.last}}
+    {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) new=(component 'ember-wormhole' to=(concat guid '-new')))}}
 
-    {{#if isMultipleModelTypes}}
+    {{#if isMultiModelNames}}
       <div class="model-type-selector">
-        {{input-select class="plain-select" selectOptions=multipleModelTypeSelectOptions value=activeModelType isRequired=true valueChanged=(action 'activeModelTypeChanged')}}
+        {{input-select class="plain-select" selectOptions=modelNameSelectOptions value=activeModelName isRequired=true valueChanged=(action 'activeModelNameChanged')}}
       </div>
     {{/if}}
 
@@ -73,7 +63,7 @@
         {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
       {{/if}}
 
-      {{#t.body onRowClick=(action 'onRowClick') onRowMouseEnter=(action 'onRowMouseEnter') onRowMouseLeave=(action 'onRowMouseLeave') as |body|}}
+      {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
         {{#if table.isEmpty}}
           {{#body.no-data}}
             No data found
@@ -83,7 +73,7 @@
     {{/light-table}}
 
     <div class="table-footer">
-      {{mist-model-table-controls toggleDisplaySelected=(action 'toggleDisplaySelected') amountSelected=amountSelected isBusy=fetchRecords.isRunning currentPage=queryParams.page lastPage=lastPage rows=queryParams.limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
+      {{mist-model-table-controls toggleDisplaySelected=(action 'toggleDisplaySelected') amountSelected=amountSelected isBusy=fetchRecords.isRunning currentPage=query.page lastPage=lastPage rows=query.limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
     </div>
   {{/if}}
 </div>
