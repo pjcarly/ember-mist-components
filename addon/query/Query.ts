@@ -4,11 +4,11 @@ import Order from './Order';
 import EmberObject from '@ember/object';
 
 export interface QueryParams {
-  page: number;
-  include: string;
-  sort: string;
-  limit: number;
-  filter: { [key:number] : QueryFilter };
+  page?: number;
+  include?: string;
+  sort?: string;
+  limit?: number;
+  filter?: { [key:number] : QueryFilter };
 }
 
 export default class Query extends EmberObject {

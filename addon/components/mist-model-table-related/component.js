@@ -1,4 +1,3 @@
-import ModelTasksMixin from 'ember-mist-components/mixins/model-tasks';
 import QueryCondition from 'ember-mist-components/classes/query-condition';
 import Component from '@ember/component';
 import { getChildModelTypeName, getRelationshipInverse } from 'ember-field-components/classes/model-utils';
@@ -7,9 +6,10 @@ import { inject as service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import { dasherize } from '@ember/string';
 
-export default Component.extend(ModelTasksMixin, {
+export default Component.extend({
   tagName: '',
   entityCache: service(),
+  entityRouter: service(),
   store: service(),
 
   modelType: computed('model', 'field', function(){
@@ -42,7 +42,7 @@ export default Component.extend(ModelTasksMixin, {
       this.preProcessNew(cachedModel);
       this.set('entityCache.cachedModel', cachedModel);
       this.set('entityCache.returnToModel', model);
-      this.get('new').perform(modelType);
+      this.get('entityRouter').transitionToCreate(modelType);
     }
   }
 });

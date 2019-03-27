@@ -19,6 +19,7 @@ import { getOwner } from '@ember/application';
 import { camelize, dasherize } from '@ember/string';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
+import Condition from 'ember-mist-components/query/Condition';
 
 export interface Column {
   label ?: string;
@@ -58,6 +59,7 @@ export default class ModelTableComponent extends Component {
   title ?: string;
   multiselect : boolean = false;
   listViewKey : string = '';
+  conditions : Condition[] = [];
 
   /**
    * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
@@ -111,11 +113,15 @@ export default class ModelTableComponent extends Component {
   /**
    * Returns a Query instance based on the active model name.
    */
-  @computed('activeModelName')
+  @computed('activeModelName', 'conditions.[]')
   get query() : Query {
     const query = Query.create({
       modelName: this.activeModelName
     });
+
+    for(const condition of this.conditions) {
+      query.addCondition(condition);
+    }
 
     query.setLimit(10);
     return query;

@@ -34,17 +34,17 @@ export default class EntityRouterService extends Service {
   }
 
   /**
-   * @param modelTypeName The modelname to transition to the create route
+   * @param modelName The modelname to transition to the create route
    */
-  transitionToCreate(modelTypeName: string){
-    this.router.transitionTo(`${modelTypeName}.new`);
+  transitionToCreate(modelName: string){
+    this.router.transitionTo(`${modelName}.new`);
   }
 
   /**
-   * @param modelTypeName The modelname to transition to the index route
+   * @param modelName The modelname to transition to the index route
    */
-  transitionToList(modelTypeName: string){
-    this.router.transitionTo(`${modelTypeName}`);
+  transitionToList(modelName: string){
+    this.router.transitionTo(`${modelName}`);
   }
 
   /**
