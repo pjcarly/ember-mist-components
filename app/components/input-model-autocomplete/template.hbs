@@ -1,3 +1,12 @@
-{{#power-select class='form-control' triggerId=inputId placeholder=placeholder search=(perform searchTask) selected=value onchange=(action 'valueChanged') onfocus=(action 'handleFocus') allowClear=(not hideClear) renderInPlace=shouldRenderInPlace as |model|}}
+<PowerSelect @class="form-control"
+  @triggerId={{@inputId}}
+  @placeholder={{@placeholder}}
+  @search={{perform searchTask}}
+  @selected={{@value}}
+  @onchange={{action 'formValueChanged'}}
+  @onfocus={{action 'handleFocus'}}
+  @allowClear={{not this.hideClear}}
+  @renderInPlace={{this.shouldRenderInPlace}}
+  as |model| >
   {{model.name}}
-{{/power-select}}
+</PowerSelect>

@@ -2,13 +2,14 @@ import Store from 'ember-data/store';
 import Condition, { QueryFilter } from './Condition';
 import Order from './Order';
 import EmberObject from '@ember/object';
+import { replaceAll } from 'ember-field-components/classes/utils';
 
 export interface QueryParams {
   page?: number;
   include?: string;
   sort?: string;
   limit?: number;
-  filter?: { [key:number] : QueryFilter };
+  filter?: { [key:string] : QueryFilter|number|string };
 }
 
 export default class Query extends EmberObject {
@@ -20,6 +21,7 @@ export default class Query extends EmberObject {
   page : number = 1;
   search : string | undefined;
   searchField : string | undefined;
+  searchQuery : string | undefined | null;
   listView : number | undefined;
 
   /**
@@ -145,6 +147,24 @@ export default class Query extends EmberObject {
   }
 
   /**
+   * Sets a Search Query, this is unrelated to the `setSearch  function (search and searchField attributes)
+   * This will result in a extra filter param _query, that must be handled by the back-end
+   * @param searchQuery The search query
+   */
+  setSearchQuery(searchQuery : string | undefined | null) : Query {
+    this.set('searchQuery', searchQuery);
+    return this;
+  }
+
+  /**
+   * Removes the search query
+   */
+  clearSearchQuery() : Query {
+    this.set('searchQuery', undefined);
+    return this;
+  }
+
+  /**
    * Returns the field where the search should be performed on
    */
   get searchFieldComputed() : string {
@@ -233,7 +253,7 @@ export default class Query extends EmberObject {
     }
 
     // Now the filters
-    const filterParam : { [key:number] : QueryFilter } = {};
+    const filterParam : { [key:string] : QueryFilter|number|string } = {};
     let conditionIndex = 1; // we keep an index over all filters, as each filter will be passed in the query string with as key the index
 
     // Next we add possible conditions added to the query params object
@@ -245,12 +265,17 @@ export default class Query extends EmberObject {
 
     // We must also check if a search query was passed, and add a condition for it as well
     if(this.search) {
-      const searchCondition = new Condition(this.searchFieldComputed, 'like', this.search);
+      const searchCondition = new Condition(this.searchFieldComputed, 'like', replaceAll(this.search, '*', '%'));
       filterParam[conditionIndex++] = searchCondition.conditionParam;
     }
 
     if(this.listView) {
       filterParam['_listview'] = this.listView;
+      conditionIndex++;
+    }
+
+    if(this.searchQuery) {
+      filterParam['_query'] = this.searchQuery;
       conditionIndex++;
     }
 
