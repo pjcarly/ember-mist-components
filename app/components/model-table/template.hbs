@@ -62,7 +62,7 @@
       </div>
     {{/if}}
 
-    {{#light-table table height=tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if fetchRecords.isRunning ' is-busy')) as |t|}}
+    {{#light-table table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if fetchRecords.isRunning ' is-busy')) as |t|}}
       {{#if (not hideColumnHeadings)}}
         {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-down' iconDescending='zmdi zmdi-chevron-up'}}
       {{/if}}
