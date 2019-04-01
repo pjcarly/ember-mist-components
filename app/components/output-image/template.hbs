@@ -1,5 +1,5 @@
-{{#if value.url}}
-  <img src={{image-url value style}} alt={{value.alt}} title={{value.title}} class={{styleClass}} {{action 'imageClicked'}}/>
+{{#if (and @value @value.url)}}
+  <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class={{@class}} {{action 'didClickImage' @value}}/>
 {{else}}
   <div class="output image">
     <span class='value empty'></span>

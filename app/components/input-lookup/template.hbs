@@ -2,13 +2,13 @@
   {{!-- {{input-model-autocomplete modelType=modelType filters=lookupFilters value=value triggerId=inputId placeholder=placeholder hideClear=true valueChanged=(action 'typeaheadSelected')}} --}}
 
   <InputModelAutocomplete
-    @modelName={{@modelType}}
+    @modelName={{@modelName}}
     @value={{value}}
     @inputId={{@inputId}}
     @placeholder={{@placeholder}}
-    @valueChanged={{action 'typeaheadSelected'}}
+    @valueChanged={{action 'doChangeValue'}}
     @options={{hash hideClear=true}}
-  />
+    @conditions={{@conditions}} />
 
   {{#if computedValue}}
     <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>
@@ -16,5 +16,10 @@
     </button>
   {{/if}}
 
-  {{input-lookup-window title=modelTitle modelType=modelType filters=lookupFilters activeModelType=activeModelType valueChanged=(action 'typeaheadSelected')}}
+  <InputLookupWindow
+    @title={{this.modelTitle}}
+    @conditions={{@conditions}}
+    @modelName={{@modelName}}
+    @activeModelName={{this.activeModelName}}
+    @valueChanged={{action 'doChangeValue'}} />
 </div>

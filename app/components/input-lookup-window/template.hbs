@@ -1,19 +1,29 @@
-<!-- Modal -->
-<div class="modal fade" tabindex="-1">
+<div id={{this.modalId}} class="modal fade" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-body">
         {{#if modalVisible}}
-          {{#mist-model-table title=title modelType=modelType activeModelType=activeModelType filters=filters tableHeight="65vh" keyboardActivated=true fixedSearch=true onRowSelected=(action 'rowSelected') as |table|}}
+          <ModelTable
+            @title={{@title}}
+            @modelName={{@modelName}}
+            @activeModelName={{@activeModelName}}
+            @conditions={{@conditions}}
+            @class={{@class}}
+            @searchFixed=true
+            @listViewGrouping={{@listViewGrouping}}
+            @onRowSelected={{action 'didSelectRow'}}
+            as |table| >
+
             {{#table.actions}}
               {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
             {{/table.actions}}
-          {{/mist-model-table}}
+          </ModelTable>
         {{/if}}
       </div>
     </div>
   </div>
 </div>
+
 
 {{#if hasBlock}}
   {{yield (action 'showModal')}}

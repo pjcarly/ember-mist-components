@@ -1,1 +1,5 @@
-{{output-image value=value style=options.style styleClass=styleClass imageClicked=(action 'imageClicked')}}
+<OutputImage
+  @value={{this.value}}
+  @style={{this.style}}
+  @class={{@outputClass}}
+  @imageClicked={{action 'didClickImage'}}  />

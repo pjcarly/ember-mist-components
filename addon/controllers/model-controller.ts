@@ -6,7 +6,7 @@ import Store from 'ember-data/store';
 import DrupalModel from "ember-mist-components/models/drupal-model";
 import EntityCacheService from "dummy/services/entity-cache";
 import EntityRouterService from "dummy/services/entity-router";
-import FieldInformationService from "ember-field-components/app/services/field-information";
+import FieldInformationService from "ember-field-components/services/field-information";
 import RecentlyViewedService from "dummy/services/recently-viewed";
 import { inject as service } from '@ember-decorators/service';
 import { isBlank } from '@ember/utils';
