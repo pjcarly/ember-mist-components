@@ -1,8 +1,7 @@
 import Store from 'ember-data/store';
-import Condition, { QueryFilter } from './Condition';
+import Condition, { QueryFilter, Operator } from './Condition';
 import Order from './Order';
 import EmberObject from '@ember/object';
-import { replaceAll } from 'ember-field-components/classes/utils';
 
 export interface QueryParams {
   page?: number;
@@ -21,6 +20,7 @@ export default class Query extends EmberObject {
   page : number = 1;
   search : string | undefined;
   searchField : string | undefined;
+  searchOperator : Operator = Operator.LIKE;
   searchQuery : string | undefined | null;
   listView : number | undefined;
 
@@ -131,9 +131,10 @@ export default class Query extends EmberObject {
    * @param search The search query
    * @param searchField The field you want to apply te search to, if this is not provided the first Sort field will be used, if that is undefined 'name' will be used
    */
-  setSearch(search : string, searchField : string | undefined = undefined) : Query {
+  setSearch(search : string, searchOperator : Operator = Operator.LIKE, searchField : string | undefined = undefined, ) : Query {
     this.set('search', search);
     this.set('searchField', searchField);
+    this.set('searchOperator', searchOperator);
     return this;
   }
 
@@ -143,6 +144,7 @@ export default class Query extends EmberObject {
   clearSearch() : Query {
     this.set('search', undefined);
     this.set('searchField', undefined);
+    this.set('searchOperator', Operator.LIKE)
     return this;
   }
 
@@ -265,7 +267,7 @@ export default class Query extends EmberObject {
 
     // We must also check if a search query was passed, and add a condition for it as well
     if(this.search) {
-      const searchCondition = new Condition(this.searchFieldComputed, 'like', replaceAll(this.search, '*', '%'));
+      const searchCondition = new Condition(this.searchFieldComputed, this.searchOperator, this.search);
       filterParam[conditionIndex++] = searchCondition.conditionParam;
     }
 

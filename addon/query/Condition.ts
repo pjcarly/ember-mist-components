@@ -7,6 +7,22 @@ export interface QueryFilter {
   id: string | number | undefined;
 }
 
+export enum Operator {
+  EQUALS = '=',
+  NOT = '<>',
+  LARGER = '>',
+  LARGER_OR_EQUALS = '>=',
+  SMALLER = '<',
+  SMALLER_OR_EQUALS = '<=',
+  LIKE = 'LIKE',
+  CONTAINS = 'CONTAINS',
+  STARTS_WITH = 'STARTS_WITH',
+  ENDS_WITH = 'ENDS_WITH',
+  IN = 'IN',
+  NOT_IN = 'NOT IN',
+  BETWEEN = 'BETWEEN'
+}
+
 export default class Condition {
   field !: string;
   operator : string = '=';
@@ -30,14 +46,14 @@ export default class Condition {
 
     if(this.id) {
       // an ID was passed, we use it over value
-      if(this.operator || this.operator === '=') {
+      if(this.operator || this.operator === Operator.EQUALS) {
         // equals is the default operator, and doesnt need to be explicitly passed
         filter.id = this.id;
       } else {
         // A different operator was provided, lets pass it in the filter
         filter.operator = this.operator;
 
-        if(this.operator === 'like') {
+        if(this.operator === Operator.LIKE) {
           // When the operator is "like", we change the wildard from * to %
           filter.id = replaceAll(this.id, '*', '%');
         } else {
@@ -46,14 +62,14 @@ export default class Condition {
       }
     } else {
       // ID is blank, we can just use the value logic
-      if(!this.operator || this.operator === '='){
+      if(!this.operator || this.operator === Operator.EQUALS){
         // equals is the default operator, and doesnt need to be explicitly passed
         filter.value = this.value;
       } else {
         // A different operator was provided, lets pass it in the filter
         filter.operator = this.operator;
 
-        if(this.operator === 'like'){
+        if(this.operator === Operator.LIKE){
           // When the operator is "like", we change the wildard from * to %
           filter.value = replaceAll(this.value, '*', '%');
         } else {

@@ -1,5 +1,14 @@
 <div class="field-wrapper">
-  {{input-model-autocomplete modelType=modelType filters=lookupFilters value=value triggerId=inputId placeholder=placeholder hideClear=true valueChanged=(action 'typeaheadSelected')}}
+  {{!-- {{input-model-autocomplete modelType=modelType filters=lookupFilters value=value triggerId=inputId placeholder=placeholder hideClear=true valueChanged=(action 'typeaheadSelected')}} --}}
+
+  <InputModelAutocomplete
+    @modelName={{@modelType}}
+    @value={{value}}
+    @inputId={{@inputId}}
+    @placeholder={{@placeholder}}
+    @valueChanged={{action 'typeaheadSelected'}}
+    @options={{hash hideClear=true}}
+  />
 
   {{#if computedValue}}
     <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'clearLookup'}}>

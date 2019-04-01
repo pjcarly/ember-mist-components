@@ -5,7 +5,7 @@
   @selected={{@value}}
   @onchange={{action 'formValueChanged'}}
   @onfocus={{action 'handleFocus'}}
-  @allowClear={{not this.hideClear}}
+  @allowClear={{not this.shouldHideClear}}
   @renderInPlace={{this.shouldRenderInPlace}}
   as |model| >
   {{model.name}}

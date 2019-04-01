@@ -8,7 +8,7 @@ import { timeout } from 'ember-concurrency';
 import { tagName } from '@ember-decorators/component';
 import Store from 'ember-data/store';
 import DrupalModel from 'ember-mist-components/models/drupal-model';
-import Condition from 'ember-mist-components/query/Condition';
+import Condition, { Operator } from 'ember-mist-components/query/Condition';
 import Query from 'ember-mist-components/query/Query';
 
 @tagName('')
@@ -59,10 +59,13 @@ export default class InputModelAutocompleteComponent extends Component {
     yield timeout(500); // Lets debounce the typing by 500ms
     const query = this.query;
 
+    query.clearSearch();
+    query.clearSearchQuery();
+
     if(this.shouldUseSearchQuery) {
       query.setSearchQuery(searchQuery);
     } else {
-      query.addCondition(new Condition('name', 'STARTS_WITH', searchQuery));
+      query.setSearch(searchQuery, Operator.STARTS_WITH, 'name');
     }
 
     return query.fetch(this.store)
@@ -99,7 +102,7 @@ export default class InputModelAutocompleteComponent extends Component {
 
   @computed('conditions')
   get query() : Query {
-    const query = Query.create({ modelName: this.modelName});
+    const query = Query.create({ modelName: this.modelName });
 
     for(const condition of this.conditions) {
       query.addCondition(condition);

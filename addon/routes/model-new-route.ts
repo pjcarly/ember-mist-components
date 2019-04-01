@@ -18,7 +18,7 @@ export default abstract class ModelNewRoute extends ResetModelRoute.extend(Authe
     if(isBlank(cachedModel)) {
       return this.store.createRecord(this.modelName);
     } else {
-      this.cache.clearCachedModel();
+      this.entityCache.clearCachedModel();
       return cachedModel;
     }
   }
