@@ -7,6 +7,8 @@ export default class ArrayJoinHelper extends Helper {
   @service entityRouter !: EntityRouterService;
 
   compute([model, route] : [DrupalModel, string]) {
-    this.entityRouter.transitionToModelRoute(model, route);
+    return () => {
+      this.entityRouter.transitionToModelRoute(model, route);
+    }
   }
 }
