@@ -1,0 +1,13 @@
+{{#if @prefix}}
+  {{@prefix}}
+{{/if}}
+
+{{#if value.id}}
+  <a class="output file" href={{value.url}} target="_blank">{{value.filename}} <span class="glyphicon glyphicon-new-window"></span></a>
+{{else}}
+  <span class="value empty"></span>
+{{/if}}
+
+{{#if @suffix}}
+  {{@suffix}}
+{{/if}}

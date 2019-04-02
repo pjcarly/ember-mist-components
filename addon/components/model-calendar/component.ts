@@ -175,7 +175,7 @@ export default class ModelCalendarComponent extends Component {
 
     const center = this.center;
     const startOfMonth = new Date(center.getFullYear(), center.getMonth(), 1);
-    const endOfMonth = new Date(center.getFullYear(), center.getMonth() + 1, 0);
+    const endOfMonth = new Date(center.getFullYear(), center.getMonth() + 1, 0, 23, 59, 59);
 
     query.addCondition(new Condition(dasherize(this.dateField), '>=', moment(startOfMonth).format(this.dateFormat)));
     query.addCondition(new Condition(dasherize(this.dateField), '<=', moment(endOfMonth).format(this.dateFormat)));

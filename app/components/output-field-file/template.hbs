@@ -1,5 +1,6 @@
-{{#if value.id}}
-  <a href={{value.url}} target="_blank">{{value.filename}} <span class="glyphicon glyphicon-new-window"></span></a>
-{{else}}
-  <span class="value empty"></span>
-{{/if}}
+<OutputFile
+  @value={{this.value}}
+  @prefix={{@prefix}}
+  @suffix={{@suffix}}
+  @class={{@outputClass}}
+  @options={{this.outputOptions}} />
