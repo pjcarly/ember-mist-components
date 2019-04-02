@@ -2,7 +2,7 @@ import OutputFieldComponent from "ember-field-components/components/output-field
 import Image from "ember-mist-components/interfaces/image";
 import { computed, action } from "@ember-decorators/object";
 
-export default class OutputFieldDateComponent extends OutputFieldComponent {
+export default class OutputFieldImageComponent extends OutputFieldComponent {
   imageClicked(_ : Image) {}
 
   @computed('options', 'options.style')

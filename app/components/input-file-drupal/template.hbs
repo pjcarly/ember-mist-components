@@ -5,17 +5,16 @@
     <i class="zmdi zmdi-cloud-download"></i> {{value.filename}}
   {{/if}}
 
-  {{#if deleteFile.isIdle}}
-    {{#mist-button class="btn-xs btn-default m-l-5" click=(perform deleteFile)}}Remove{{/mist-button}}
-  {{else}}
-    {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
-  {{/if}}
+  {{#mist-button class="btn-xs btn-default m-l-5" click=(action 'deleteFile')}}Remove{{/mist-button}}
 {{else}}
   {{#if uploadFile.isRunning}}
     <button class="btn btn-default waves-effect" disabled="disabled">
-      Uploading {{activeFile}}/{{totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+      Uploading {{this.activeFile}}/{{this.totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
     </button>
   {{else}}
-    {{input-file valueChanged=(action 'valueChanged') multiple=multiple inputId=inputId}}
+    <InputFile
+      @multiple={{this.multiple}}
+      @inputId={{this.inputId}}
+      @valueChanged={{action 'filesSelected'}} />
   {{/if}}
 {{/if}}

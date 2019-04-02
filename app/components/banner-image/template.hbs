@@ -2,7 +2,10 @@
   {{#if editmode}}
     {{#input-field-image model=model field=field as |showModal|}}
       {{#if value.url}}
-        {{output-image value=value styleClass="cursor-pointer" style="mist_banner_image" imageClicked=(action showModal)}}
+        <OutputImage
+          @value={{this.value}}
+          @class="cursor-pointer mist_banner_image"
+          @imageClicked={{action showModal}} />
       {{else}}
         <div class="field-wrapper" {{action showModal}}>
           <span class="zmdi zmdi-hc-2x zmdi-camera"></span>
@@ -10,6 +13,9 @@
       {{/if}}
     {{/input-field-image}}
   {{else}}
-    {{output-field-image model=model field=field options=(hash style='mist_banner_image')}}
+    <OutputFieldImage
+      @model={{@model}}
+      @field={{@field}}
+      @options={{hash style='mist_banner_image'}} />
   {{/if}}
 </div>

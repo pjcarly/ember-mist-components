@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1">
+<div id={{this.modalId}} class="modal fade" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -6,10 +6,16 @@
       </div>
       <div class="modal-body text-center">
         {{#if modalVisible}}
-          {{input-file-drupal value=value field=field modelName=modelName options=modifiedOptions valueChanged=(action 'valueChanged')}}
-
+          <InputFileDrupal
+            @value={{this.value}}
+            @field={{@field}}
+            @modelName={{this.modelName}}
+            @options={{this.modifiedOptions}}
+            @valueChanged={{action (mut this.value)}} />
           {{#if value.id}}
-            {{output-image value=value styleClass="image-preview"}}
+            <OutputImage
+              @value={{this.value}}
+              @class='image-preview' />
           {{/if}}
         {{/if}}
       </div>
@@ -25,7 +31,9 @@
     {{yield (action 'showModal') value}}
   {{else}}
     {{#if value.id}}
-      {{output-image-link value=value}}
+      <OutputImageLink
+        @value={{this.value}} />
+
       {{#mist-button class="btn-xs" click=(action 'showModal')}}Edit Image{{/mist-button}}
     {{else}}
       {{#mist-button class="btn-xs" click=(action 'showModal')}}Upload Image{{/mist-button}}
