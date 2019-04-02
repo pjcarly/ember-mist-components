@@ -9,7 +9,7 @@ import { computed, action } from '@ember-decorators/object';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
-
+import { BelongsToFieldOptions } from '../output-field-belongsto/component';
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent {
   selectOptions: SelectOption[] = [];
@@ -30,13 +30,13 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
   @computed('fieldOptions')
   get isPolymorphic() : boolean {
-    const options = this.get('fieldOptions');
+    const options = <BelongsToFieldOptions> this.fieldOptions;
     return !isBlank(options) && options.hasOwnProperty('polymorphic') && options.polymorphic;
   }
 
   @dropTask
   * setSelectOptions() {
-    if(this.get('isSelect')){
+    if(this.isSelect) {
       assert('Select widget is not supported for polymorphic relationships', !this.isPolymorphic);
 
       // loadAll is provided by the ember-data-storefront addon, and does magic to not load data twice
@@ -45,7 +45,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       const selectOptions : SelectOption[] = [];
       const models = yield this.store.loadAll(this.relationshipModelName);
 
-      for(const model of models) {
+      for(const model of models.toArray()) {
         const selectOption : SelectOption = {
           value: model.id,
           label: model.name

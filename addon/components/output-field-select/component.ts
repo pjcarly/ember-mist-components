@@ -1,5 +1,5 @@
 import OutputFieldSelectComponent from 'ember-field-components/components/output-field-select/component';
-import SelectOption from 'ember-field-components/addon/interfaces/SelectOption';
+import SelectOption from 'ember-field-components/interfaces/SelectOption';
 import DynamicSelectOptionService from 'ember-mist-components/services/dynamic-select-options';
 import { inject as service } from "@ember-decorators/service";
 import { task } from 'ember-concurrency-decorators';

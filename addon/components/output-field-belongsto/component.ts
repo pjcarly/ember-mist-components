@@ -3,6 +3,12 @@ import { isBlank } from '@ember/utils';
 import OutputFieldComponent from 'ember-field-components/components/output-field/component';
 import { inject as service } from '@ember-decorators/service';
 import FieldInformationService from 'ember-field-components/services/field-information';
+import { FieldOptionsInterface } from 'ember-field-components/services/field-information';
+
+export interface BelongsToFieldOptions extends FieldOptionsInterface {
+  polymorphic: boolean;
+  filters: any[];
+}
 
 export default class OutputFieldBelongstoComponent extends OutputFieldComponent {
   @service fieldInformation !: FieldInformationService;
@@ -18,14 +24,12 @@ export default class OutputFieldBelongstoComponent extends OutputFieldComponent 
 
   @computed('fieldOptions')
   get isPolymorphic() : boolean {
-    const options = this.get('fieldOptions');
+    const options = <BelongsToFieldOptions> this.fieldOptions;
     return !isBlank(options) && options.hasOwnProperty('polymorphic') && options.polymorphic;
   }
 
-
   @computed('value')
   get relationshipId() : string | undefined {
-
     if(this.value) {
       return this.value.id;
     }

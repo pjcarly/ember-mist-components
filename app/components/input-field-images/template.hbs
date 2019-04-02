@@ -9,8 +9,18 @@
     <div class="carousel-inner" role="listbox">
       {{#each value as |imageValue index|}}
         <div class="item{{if (eq index 0) " active" }}">
-          {{input-file-drupal value=imageValue field=field modelName=modelName options=modifiedOptions valueChanged=(action 'valueChanged' index)}}
-          {{output-image style=options.style value=imageValue}}
+          <InputFileDrupal
+            @value={{imageValue}}
+            @field={{@field}}
+            @multiple=true
+            @modelName={{this.modelName}}
+            @options={{this.modifiedOptions}}
+            @valueChanged={{action 'didChangeValue' index}} />
+
+          <OutputImage
+            @value={{imageValue}}
+            @style={{this.style}}
+            @class={{this.options.style}} />
         </div>
       {{/each}}
     </div>
@@ -27,5 +37,11 @@
 {{/if}}
 
 <div class="input-field-images-browse">
-  Add Images: {{input-file-drupal field=field modelName=modelName options=modifiedOptions multiple=true valueChanged=(action 'valueChanged' null)}}
+  Add Images:
+  <InputFileDrupal
+    @field={{@field}}
+    @multiple=true
+    @modelName={{this.modelName}}
+    @options={{this.modifiedOptions}}
+    @valueChanged={{action 'didChangeValue' null}} />
 </div>
