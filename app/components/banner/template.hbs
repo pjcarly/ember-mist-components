@@ -1,0 +1,20 @@
+<div class="banner-content">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="banner-content-inner">
+        <h4 class="title">
+          {{model.name}}<br/>
+          {{#if model.created}}
+            <small>Created:  <OutputDatetime @value={{@model.created}} /></small><br/>
+          {{/if}}
+          {{#if model.changed}}
+            <small>Modified: <OutputDatetime @value={{@model.changed}} /></small>
+          {{/if}}
+        </h4>
+        {{#if showSpinner}}
+          {{mist-spinner size="20px"}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>

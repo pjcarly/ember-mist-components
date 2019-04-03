@@ -1,7 +1,15 @@
-<div class="output html">
-  {{#if html}}
-    <span class="value">{{html}}</span>
-  {{else}}
-    <span class='value empty'></span>
+<span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
   {{/if}}
-</div>
+  <span class={{if this.html 'value' 'value empty'}}>
+    {{this.html}}
+  </span>
+  {{#if @suffix}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
+</span>

@@ -1,13 +1,17 @@
-{{#if @prefix}}
-  {{@prefix}}
-{{/if}}
-
-{{#if value.id}}
-  <a class="output file" href={{value.url}} target="_blank">{{value.filename}} <span class="glyphicon glyphicon-new-window"></span></a>
-{{else}}
-  <span class="value empty"></span>
-{{/if}}
-
-{{#if @suffix}}
-  {{@suffix}}
-{{/if}}
+<span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
+  {{/if}}
+  {{#if value.id}}
+    <a class="value" href={{value.url}} target="_blank">{{value.filename}} <span class="glyphicon glyphicon-new-window"></span></a>
+  {{else}}
+    <span class="value empty"></span>
+  {{/if}}
+  {{#if @suffix}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
+</span>

@@ -17,6 +17,7 @@ export default class InputLookup extends BaseInput {
    */
   modelName !: string | string[];
   modalVisible : boolean = false;
+  inputGroup : boolean = true;
 
   @computed('value', 'modelName')
   get activeModelName() : string {

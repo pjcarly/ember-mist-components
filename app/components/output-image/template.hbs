@@ -1,7 +1,17 @@
-{{#if (and @value @value.url)}}
-  <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class={{@class}} {{action 'didClickImage' @value}}/>
-{{else}}
-  <div class="output image">
+<span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
+  {{/if}}
+  {{#if (and @value @value.url)}}
+    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{action 'didClickImage' @value}}/>
+  {{else}}
     <span class='value empty'></span>
-  </div>
-{{/if}}
+  {{/if}}
+  {{#if @suffix}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
+</span>

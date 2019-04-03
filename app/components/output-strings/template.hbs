@@ -1,11 +1,17 @@
-{{#if hasPrefix}}
- {{prefix}}
-{{/if}}
-<span class={{if value 'value' 'value empty'}}>
-  {{#each value as |singleValue|}}
-    {{singleValue}}<br/>
-  {{/each}}
+<span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
+  {{/if}}
+  <span class={{if @value 'value' 'value empty'}}>
+    {{#each value as |singleValue|}}
+      {{singleValue}}<br/>
+    {{/each}}
+  </span>
+  {{#if @suffix}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
 </span>
-{{#if hasSuffix}}
-  {{suffix}}
-{{/if}}
