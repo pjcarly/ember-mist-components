@@ -1,3 +1,11 @@
-{{#if countrySelectOptions}}
-  {{output-select value=value selectOptions=countrySelectOptions none="-- Country (none) --"}}
+{{#if setCountrySelectOptions.isIdle}}
+  <OutputSelect
+    @value={{@value}}
+    @selectOptions={{this.selectOptions}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@class}}
+    @options={{@options}} />
+{{else}}
+  {{mist-spinner size="20px"}}
 {{/if}}

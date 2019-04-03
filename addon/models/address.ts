@@ -1,8 +1,8 @@
 import Fragment from 'ember-data-model-fragments/fragment';
+import Store from 'ember-data/store';
 import { attr } from '@ember-decorators/data';
 import { computed } from '@ember-decorators/object';
 import { isBlank } from '@ember/utils';
-import Store from 'ember-data/store';
 import { inject as service } from '@ember-decorators/service';
 
 export default class Address extends Fragment {
