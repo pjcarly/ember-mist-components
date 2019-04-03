@@ -5,3 +5,4 @@ ember-attribute-validations:
 ember-mist-components:
   labels:
     automatically_generated: 'Automatically generated'
+    country_none: '-- Country (none) --'
