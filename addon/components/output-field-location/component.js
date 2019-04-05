@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 
 export default InputFieldLocation.extend({
-  key: computed(function(){
+  key: computed(function() {
     let config = getOwner(this).resolveRegistration('config:environment');
     return config.googleMap.apiKey;
   })

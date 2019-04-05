@@ -8,14 +8,16 @@
             @modelName={{@modelName}}
             @activeModelName={{@activeModelName}}
             @conditions={{@conditions}}
-            @class={{@class}}
+            @class="model-table model-table__lookup-window"
             @searchFixed=true
             @listViewGrouping={{@listViewGrouping}}
             @onRowSelected={{action 'didSelectRow'}}
             as |table| >
 
             {{#table.actions}}
-              {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}<i class="zmdi zmdi-close"></i>{{/mist-menu-item}}
+              {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}
+                <IconClose />
+              {{/mist-menu-item}}
             {{/table.actions}}
           </ModelTable>
         {{/if}}
@@ -28,7 +30,7 @@
 {{#if hasBlock}}
   {{yield (action 'showModal')}}
 {{else}}
-  <button type="button" class="btn btn-default waves-effect waves-circle" {{action 'showModal'}}>
-    <span class="glyphicon glyphicon-search"></span>
+  <button type="button" class="btn btn-default waves-effect btn-link" {{action 'showModal'}}>
+    <IconSearch />
   </button>
 {{/if}}

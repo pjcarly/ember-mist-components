@@ -52,7 +52,7 @@ export default class Address extends Fragment {
     return newAddress;
   }
 
-  clear(){
+  clear() {
     this.set('countryCode', null);
     this.set('administrativeArea', null);
     this.set('locality', null);
@@ -66,7 +66,7 @@ export default class Address extends Fragment {
   /**
    * Returns a plain old javascript object with the attributes filled in as keys, and the values as values
    */
-  getPOJO(){
+  getPOJO() {
     const pojo = {
       countryCode: this.countryCode,
       administrativeArea: this.administrativeArea,
@@ -81,7 +81,7 @@ export default class Address extends Fragment {
     return pojo;
   }
 
-  clearExceptAddressLines(){
+  clearExceptAddressLines() {
     this.set('countryCode', null);
     this.set('administrativeArea', null);
     this.set('locality', null);
@@ -110,7 +110,7 @@ export default class Address extends Fragment {
     if(!isBlank(this.format)) {
       const requiredFields = this.format.data.attributes['required-fields'];
       requiredFields.some((requiredField) => {
-        if(!ignoreFields.includes(requiredField)){
+        if(!ignoreFields.includes(requiredField)) {
           if(isBlank(this.get(requiredField))) {
             returnValue = false;
             return !returnValue;

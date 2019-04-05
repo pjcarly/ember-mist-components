@@ -5,6 +5,7 @@ import { inject as service } from '@ember-decorators/service';
 import { isArray } from '@ember/array';
 import { action } from '@ember-decorators/object';
 import DrupalModel from 'ember-mist-components/models/drupal-model';
+import Condition from 'ember-mist-components/query/Condition';
 
 export default class InputLookup extends BaseInput {
   @service intl !: any;
@@ -18,6 +19,7 @@ export default class InputLookup extends BaseInput {
   modelName !: string | string[];
   modalVisible : boolean = false;
   inputGroup : boolean = true;
+  conditions : Condition[] = [];
 
   @computed('value', 'modelName')
   get activeModelName() : string {

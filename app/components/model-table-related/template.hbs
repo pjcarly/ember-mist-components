@@ -3,4 +3,12 @@
   @modelName={{this.hasManyModelName}}
   @conditions={{this.conditions}}
   @class={{@class}}
-  @listViewGrouping={{@listViewGrouping}} />
+  @listViewGrouping={{@listViewGrouping}} as |Table| >
+  {{#if (not this.hideNew)}}
+    <Table.new>
+      <button class="btn bgm-pink btn-float waves-effect" onclick={{action 'newFromRelated'}}>
+        <IconPlus />
+      </button>
+    </Table.new>
+  {{/if}}
+</ModelTable>

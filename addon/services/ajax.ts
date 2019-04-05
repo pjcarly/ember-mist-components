@@ -34,7 +34,7 @@ export default class AjaxService extends BaseService {
     const headers: any = {};
     const access_token = this.get('session.data.authenticated.access_token');
 
-    if(!isBlank(access_token)){
+    if(!isBlank(access_token)) {
       headers['Authorization'] = `Bearer ${access_token}`;
     }
 

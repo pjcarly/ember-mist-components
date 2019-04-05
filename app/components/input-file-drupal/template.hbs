@@ -1,8 +1,10 @@
-{{#if value.id}}
+{{#if (and value.id value.url)}}
   {{#if value.url}}
-    <a href={{value.url}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
+    <a href={{value.url}} target="_blank">
+      <IconDownload /> {{value.filename}}
+    </a>
   {{else}}
-    <i class="zmdi zmdi-cloud-download"></i> {{value.filename}}
+    {{value.filename}}
   {{/if}}
 
   {{#mist-button class="btn-xs btn-default m-l-5" click=(action 'deleteFile')}}Remove{{/mist-button}}

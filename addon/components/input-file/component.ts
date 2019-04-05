@@ -8,7 +8,7 @@ export default class InputFileComponent extends BaseInput {
   multiple : boolean = false;
 
   @action
-  filesSelected(event: any){
+  filesSelected(event: any) {
     const input = event.target;
     if (!isEmpty(input.files)) {
       this.set('computedValue', input.files);

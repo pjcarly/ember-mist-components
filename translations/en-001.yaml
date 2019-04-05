@@ -6,3 +6,14 @@ ember-mist-components:
   labels:
     automatically_generated: 'Automatically generated'
     country_none: '-- Country (none) --'
+    browse: 'Browse'
+    search: 'Search'
+    refresh: 'Refresh'
+    of: 'of'
+  table:
+    rows: 'Rows'
+    selected: 'Selected'
+    no_data: 'No data found'
+  list-view:
+    new: 'New List View'
+    edit: Edit List View

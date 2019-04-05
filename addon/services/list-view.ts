@@ -41,10 +41,18 @@ export default class ListViewService extends Service {
    * @param modelName For the model
    */
   getDefaultListView(modelName: string) : ModelListView {
+    return this.getModelListView(modelName, 'default');
+  }
+
+  /**
+   * Returns a  model list view by name
+   * @param modelName For the model
+   */
+  getModelListView(modelName: string, listViewName: string) : ModelListView {
     const modelClass = this.fieldInformation.getModelClass(modelName);
 
-    assert(`No default list view defined on the modelclass ${modelName}`, modelClass.hasOwnProperty('settings') && modelClass.settings.hasOwnProperty('listViews') && modelClass.settings.listViews.hasOwnProperty('default'));
-    return modelClass.settings.listViews.default;
+    assert(`No list view (${listViewName}) defined on the modelclass ${modelName}`, modelClass.hasOwnProperty('settings') && modelClass.settings.hasOwnProperty('listViews') && modelClass.settings.listViews.hasOwnProperty(listViewName));
+    return modelClass.settings.listViews[listViewName];
   }
 
   /**
@@ -96,11 +104,11 @@ export default class ListViewService extends Service {
   setListViewSelectionForRoute(modelName: string, selection: number | string, route : string) : void {
     let listViewSelections = this.storage.get('listViewSelections');
 
-    if(isBlank(listViewSelections)){
+    if(isBlank(listViewSelections)) {
       listViewSelections = {};
     }
 
-    if(!listViewSelections.hasOwnProperty(route)){
+    if(!listViewSelections.hasOwnProperty(route)) {
       listViewSelections[route] = {};
     }
 

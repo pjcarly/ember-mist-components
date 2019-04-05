@@ -10,7 +10,7 @@
       <div class="b-0 sort-handle">&varr;</div>
       {{input-text value=item valueChanged=(action 'setArrayValue' index)}}
       <a {{action 'removeIndexFromValue' index}} class="btn btn-default icon-button">
-        <span class="glyphicon glyphicon-remove"></span>
+        <IconRemove />
       </a>
     {{/sortable-item}}
   {{/each}}

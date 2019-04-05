@@ -13,7 +13,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
     const model = get(snapshot, 'record');
 
     // No need to do anything when there is no id (in a POST) or no embedded relationships defined
-    if(!isBlank(attrs) && !isBlank(model.get('id'))){
+    if(!isBlank(attrs) && !isBlank(model.get('id'))) {
       const relationshipsToCheck = [];
 
       // We read the serializer for embedded relationships
@@ -27,7 +27,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
       // We check if they are dirty or not
       // If they arent dirty, we delete the key from the json, it shouldnt be transmitted in the PATCH
       relationshipsToCheck.forEach((relationshipToCheck) => {
-        if(!model.hasDirtyEmbeddedRelationship(relationshipToCheck)){
+        if(!model.hasDirtyEmbeddedRelationship(relationshipToCheck)) {
           // This relationship is clean, we delete the dasherized name from the payload.
           const dasherizedRelationshipName = dasherize(relationshipToCheck);
           delete json.data[dasherizedRelationshipName];
@@ -43,7 +43,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
     // Only if this serializer has attrs (needed by EmbeddedRecordsMixin)
     // If the payload doesn't include anything, we ignore this (just the model was returned, no includes)
     // And only if the id not is blank, for new models this has no meaning, as the record don't exist in the back-end yet
-    if(!isBlank(attrs) && !isBlank(id)){
+    if(!isBlank(attrs) && !isBlank(id)) {
       // We check the relationships that should be embedded, when they are of type hasMany
       // We will check the response, and unload all missing models in the response from the store
       // Models who aren't present are considered deleted in the backend, and should be removed locally
@@ -62,9 +62,9 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
 
       // Now we'll get the ids included per type from the response
       let idsPerType = {};
-      if(payload.hasOwnProperty('included')){
+      if(payload.hasOwnProperty('included')) {
         payload.included.forEach((includedPayload) => {
-          if(relationshipsToCheck.hasOwnProperty(includedPayload.type)){
+          if(relationshipsToCheck.hasOwnProperty(includedPayload.type)) {
             if(!idsPerType.hasOwnProperty(includedPayload.type)) {
               idsPerType[includedPayload.type] = [];
             }
@@ -78,7 +78,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
       // we can check the localModel's local children for each relationship
       // see if the ids are present in the response we got from the payload
       // and unload them if needed
-      if(store.hasRecordForId(primaryModelClass.modelName, id)){
+      if(store.hasRecordForId(primaryModelClass.modelName, id)) {
         const localModel = store.peekRecord(primaryModelClass.modelName, id);
         for(const relationshipType in relationshipsToCheck) {
           const relationship = relationshipsToCheck[relationshipType];
@@ -106,13 +106,13 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
 
     return this._super(...arguments);
   },
-  normalizeDeleteRecordResponse(store, primaryModelClass, payload, id){
+  normalizeDeleteRecordResponse(store, primaryModelClass, payload, id) {
     const attrs = this.get('attrs');
 
     // Only if this serializer has attrs (needed by EmbeddedRecordsMixin)
     // And only if the id not is blank, for new models this has no meaning, as the record doesn't exist in the back-end yet
     // and will just be unloaded locally by the reset controller mixin
-    if(!isBlank(attrs) && !isBlank(id)){
+    if(!isBlank(attrs) && !isBlank(id)) {
       // We check the relationships that should be embedded, when they are of type hasMany
       let relationshipsToCheck = {};
       const relationshipsByName = get(primaryModelClass, 'relationshipsByName');
@@ -129,7 +129,7 @@ export default JSONAPISerializer.extend(EmbeddedRecordsMixin, {
 
       // Now that we have the relationships we need to check
       // we can check the localModel's local children for each relationship and unload them
-      if(store.hasRecordForId(primaryModelClass.modelName, id)){
+      if(store.hasRecordForId(primaryModelClass.modelName, id)) {
         const localModel = store.peekRecord(primaryModelClass.modelName, id);
         for(const relationshipType in relationshipsToCheck) {
           const relationship = relationshipsToCheck[relationshipType];

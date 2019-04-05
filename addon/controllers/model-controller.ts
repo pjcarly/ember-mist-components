@@ -110,8 +110,8 @@ export default class ModelController extends Controller {
   }
 
   @task({ group: 'modelTasks' })
-  * new(modelType: string) {
-    this.entityRouter.transitionToCreate(modelType);
+  * new(modelName: string) {
+    this.entityRouter.transitionToCreate(modelName);
   }
 
   @task({ group: 'modelTasks' })

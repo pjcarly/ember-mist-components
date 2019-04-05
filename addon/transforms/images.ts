@@ -6,7 +6,7 @@ export default class ImagesTransform extends Transform {
     const deserializedFiles = [];
 
     if(!isBlank(serializedFiles)) {
-      for(const serializedFile of serializedFiles){
+      for(const serializedFile of serializedFiles) {
         if(!isBlank(serializedFile) && serializedFile.hasOwnProperty('id') && serializedFile.id > 0) {
           const deserializedFile: any = {};
           deserializedFile.id = serializedFile.id;
@@ -27,7 +27,7 @@ export default class ImagesTransform extends Transform {
     const serializedFiles = [];
 
     if(!isBlank(deserializedFiles)) {
-      for(const deserializedFile of deserializedFiles){
+      for(const deserializedFile of deserializedFiles) {
         if(!isBlank(deserializedFile) && deserializedFile.hasOwnProperty('id') && deserializedFile.id > 0) {
           const serializedFile: any = {};
           serializedFile['id'] = deserializedFile.id;

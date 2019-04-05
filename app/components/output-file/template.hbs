@@ -5,7 +5,9 @@
     </span>
   {{/if}}
   {{#if value.id}}
-    <a class="value" href={{value.url}} target="_blank">{{value.filename}} <span class="glyphicon glyphicon-new-window"></span></a>
+    <a class="value" href={{value.url}} target="_blank">
+      {{value.filename}} <IconDownload />
+    </a>
   {{else}}
     <span class="value empty"></span>
   {{/if}}

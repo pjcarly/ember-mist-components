@@ -11,7 +11,7 @@ export default class InputFieldImagesComponent extends InputFieldImageComponent 
   }
 
   @action
-  didChangeValue(changedIndex: number, changedValue: any){
+  didChangeValue(changedIndex: number, changedValue: any) {
     const oldValues = <Image[]> this.value;
     const newValues : Image[] = [];
 

@@ -19,6 +19,7 @@ export default class ModelTableRelatedComponent extends Component {
 
   model !: Model;
   field !: string;
+  hideNew : boolean = false;
 
   //  hook that can be passed in
   preProcessNewHook(newModel: Model) : Model {

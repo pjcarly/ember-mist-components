@@ -1,9 +1,8 @@
 <div class={{this.class}}>
-
   {{#if (and @listViewGrouping this.listViewsAsTabs)}}
     <ListViewTabs @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
   {{/if}}
-  <div class={{concat 'card-header ch-alt mist-model-table-header' (if this.searchVisible ' search-toggled')}}>
+  <div class={{concat 'card-header ch-alt model-table-header' (if this.searchVisible ' search-toggled')}}>
     <div class="table-header-title-wrapper">
       <h2>{{this.titleComputed}}</h2>
       {{#if this.fetchRecords.isRunning}}
@@ -19,8 +18,10 @@
 
     <div class="h-search-wrap">
       <div class="hsw-inner">
-        {{#if (not @searchFixed)}}
-          <i class="hsw-close zmdi zmdi-close" {{action "toggleSearch"}}></i>
+        {{#if (not this.searchFixed)}}
+          <button class="btn btn-link" onclick={{action 'toggleSearch'}}>
+            <IconClose />
+          </button>
         {{/if}}
 
         <form {{action "search" on="submit"}}>
@@ -32,23 +33,27 @@
     <div id={{concat guid '-new'}}></div>
 
     {{#mist-menu id=(concat guid '-actions') class="actions"}}
-      {{#mist-menu-item action=(action "search") className="waves-circle"}}<i class="zmdi zmdi-search"></i>{{/mist-menu-item}}
+      {{#mist-menu-item action=(action "search") className="waves-circle"}}
+        <IconSearch />
+      {{/mist-menu-item}}
       {{#mist-menu-dropdown-item className="waves-circle"}}
         {{#if (and listViewGrouping displayListViewLinks)}}
           {{#if (and activeListViewKey (is-numeric activeListViewKey))}}
             {{#mist-menu-item}}
               <a href="{{href-to 'list-view.edit' activeListViewKey}}">
-                <i class="zmdi zmdi-menu"></i> Edit List View
+                <IconListViewEdit /> {{t 'ember-mist-components.list-view.edit'}}
               </a>
             {{/mist-menu-item}}
           {{/if}}
           {{#mist-menu-item}}
             <a href="{{href-to 'list-view.new'}}">
-              <i class="zmdi zmdi-playlist-plus"></i> New List View
+              <IconListViewNew /> {{t 'ember-mist-components.list-view.new'}}
             </a>
           {{/mist-menu-item}}
         {{/if}}
-        {{#mist-menu-item action=(action "refresh")}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
+        {{#mist-menu-item action=(action "refresh")}}
+          <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
+        {{/mist-menu-item}}
       {{/mist-menu-dropdown-item}}
     {{/mist-menu}}
   </div>
@@ -58,7 +63,12 @@
 
     {{#if isMultiModelNames}}
       <div class="model-type-selector">
-        {{input-select class="plain-select" selectOptions=modelNameSelectOptions value=activeModelName isRequired=true valueChanged=(action 'activeModelNameChanged')}}
+        <InputSelect
+          @class="plain-select"
+          @selectOptions={{this.modelNameSelectOptions}}
+          @value={{this.activeModelName}}
+          @required=true
+          @valueChanged={{action 'activeModelNameChanged'}} />
       </div>
     {{/if}}
 
@@ -77,7 +87,20 @@
     {{/light-table}}
 
     <div class="table-footer">
-      {{mist-model-table-controls toggleDisplaySelected=(action 'toggleDisplaySelected') amountSelected=amountSelected isBusy=fetchRecords.isRunning currentPage=query.page lastPage=lastPage rows=query.limit firstRow=resultRowFirst lastRow=resultRowLast totalCount=resultTotalCount nextPage=(action 'nextPage') prevPage=(action 'prevPage') pageSelected=(action 'pageSelected') rowsSelected=(action 'limitChanged')}}
+      <ModelTableControls
+        @toggleDisplaySelected={{action 'toggleDisplaySelected'}}
+        @amountSelected={{this.amountSelected}}
+        @isBusy={{this.fetchRecords.isRunning}}
+        @currentPage={{this.query.page}}
+        @lastPage={{this.lastPage}}
+        @rows={{this.query.limit}}
+        @firstRow={{this.resultRowFirst}}
+        @lastRow={{this.resultRowLast}}
+        @totalCount={{this.resultTotalCount}}
+        @nextPage={{action 'nextPage'}}
+        @prevPage={{action 'prevPage'}}
+        @pageSelected={{action 'pageSelected'}}
+        @rowsSelected={{action 'limitChanged'}} />
     </div>
   {{/if}}
 </div>

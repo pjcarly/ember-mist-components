@@ -68,6 +68,7 @@ export default class ModelTableComponent extends Component {
   multiselect : boolean = false;
   listViewKey : string = '';
   conditions : Condition[] = [];
+  listViewGrouping ?: string;
 
   /**
    * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
@@ -212,9 +213,9 @@ export default class ModelTableComponent extends Component {
         label: '',
         width: '60px',
         resizable: false,
-        cellComponent: 'mist-model-table-selector',
+        cellComponent: 'model-table-selector',
         cellClassNames: 'selector',
-        component: 'mist-model-table-all-selector',
+        component: 'model-table-all-selector',
         classNames: 'selector',
         selectAll: true
       };
@@ -244,7 +245,7 @@ export default class ModelTableComponent extends Component {
         transitionToModel: (!this.onRowSelected && !this.isMultiSelect), // When no row selected action or multiselect is provided, we will route to the model being displaye
         width: (modelColumn === 'id') ? '60px' : undefined,
         resizable: (modelColumn !== 'id'),
-        cellComponent: 'mist-model-table-cell',
+        cellComponent: 'model-table-cell',
         sorted: sortedOnColumn,
         ascending: (sortedOnColumn && this.query.orders[0].direction  === Direction.ASC)
       };
