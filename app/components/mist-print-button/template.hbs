@@ -15,7 +15,7 @@
                 <InputSelect
                   @selectOptions={{this.selectOptions}}
                   @value={{this.value}}
-                  @required=true
+                  @required={{true}}
                   @valueChanged={{action 'templateValueChanged'}} />
               {{else}}
                 <span>No templates found</span>

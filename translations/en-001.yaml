@@ -10,6 +10,7 @@ ember-mist-components:
     search: 'Search'
     refresh: 'Refresh'
     of: 'of'
+    uploading: 'Uploading'
   table:
     rows: 'Rows'
     selected: 'Selected'

@@ -1,6 +1,6 @@
 import Service from "@ember/service";
 import Store from 'ember-data/store';
-import { task } from 'ember-concurrency-decorators';
+import { enqueueTask } from 'ember-concurrency-decorators';
 import { inject as service } from "@ember-decorators/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
@@ -13,6 +13,12 @@ export default class DynamicSelectOptionService extends Service {
   @service store !: Store;
 
   /**
+   * This array contains a list of modelnames that were already loaded as selectoptions.
+   * And should then be present in the store, without having to do a new query
+   */
+  loadedModelNames : string[] = [];
+
+  /**
    * Returns the SelectOptions for the provided model and field.
    *  - First we check the local cache, and see if the selectOptions are present
    *  - Then we check the store, perhaps the meta model was already loaded
@@ -20,7 +26,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The name of the model
    * @param field The name of the field
    */
-  @task
+  @enqueueTask
   * getSelectOptions(modelName: string, field: string) {
     let cachedSelectOptions : SelectOption[] = [];
 
@@ -51,6 +57,36 @@ export default class DynamicSelectOptionService extends Service {
     }
 
     return cachedSelectOptions;
+  }
+
+  /**
+   * This function returns Models as select options. All the models of a type will be loaded in the store
+   * The return options will be key: id of the model, and value: name of the model
+   * @param modelName The modelname you want to load select options for
+   */
+  @enqueueTask
+  * getModelSelectOptions(modelName: string) : SelectOption[] {
+    let models;
+
+    if(this.loadedModelNames.includes(modelName)) {
+      models = this.store.peekAll(modelName);
+    } else {
+      models = yield this.store.loadAll(modelName);
+      this.loadedModelNames.push(modelName);
+    }
+
+    const selectOptions : SelectOption[] = [];
+
+    for(const model of models.toArray()) {
+      const selectOption : SelectOption = {
+        value: model.id,
+        label: model.name
+      }
+
+      selectOptions.push(selectOption);
+    }
+
+    return selectOptions;
   }
 
   /**

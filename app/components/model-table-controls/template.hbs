@@ -24,7 +24,7 @@
           @selectOptions={{this.rowSelectOptions}}
           @value={{this.rowsValue}}
           @valueChanged={{action 'didSelectRows'}}
-          @required=true />
+          @required={{true}} />
       </li>
       <li>
         <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToPrevPage"}}>
@@ -36,7 +36,7 @@
           @selectOptions={{this.pageSelectOptions}}
           @value={{this.currentPage}}
           @valueChanged={{action 'didSelectPage'}}
-          @required=true />
+          @required={{true}} />
 
         <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToNextPage"}}>
           <IconChevronRight />

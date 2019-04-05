@@ -6,4 +6,9 @@ export default class ResetModelRoute extends Route {
     this._super(...arguments);
     controller.model.rollback();
   }
+
+  activate() {
+    super.activate();
+    window.scrollTo(0,0);
+  }
 }

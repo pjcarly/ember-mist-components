@@ -1,9 +1,19 @@
-<label class="btn btn-default btn-info btn-icon-text waves-effect">
-  <IconPaperclip /> {{t 'ember-mist-components.labels.browse'}}
-  <div class="hidden">
-    <FileField
-      @id={{this.inputId}}
-      @multiple={{this.multiple}}
-      @change={{action 'filesSelected'}} />
-  </div>
-</label>
+<span class={{this.computedClass}}>
+  {{#if prefix}}
+    <span class="input-group-addon prefix">{{@prefix}}</span>
+  {{/if}}
+
+  <label class="btn btn-default btn-xs btn-info btn-icon-text waves-effect browse">
+    <IconPaperclip /> {{t 'ember-mist-components.labels.browse'}}
+    <div class="hidden">
+      <FileField
+        @id={{this.inputId}}
+        @multiple={{this.multiple}}
+        @change={{action 'filesSelected'}} />
+    </div>
+  </label>
+
+  {{#if suffix}}
+    <span class="input-group-addon suffix">{{@suffix}}</span>
+  {{/if}}
+</span>

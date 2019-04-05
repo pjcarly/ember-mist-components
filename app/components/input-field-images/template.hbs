@@ -12,7 +12,7 @@
           <InputFileDrupal
             @value={{imageValue}}
             @field={{@field}}
-            @multiple=true
+            @multiple={{true}}
             @modelName={{this.modelName}}
             @options={{this.modifiedOptions}}
             @valueChanged={{action 'didChangeValue' index}} />
@@ -40,7 +40,7 @@
   Add Images:
   <InputFileDrupal
     @field={{@field}}
-    @multiple=true
+    @multiple={{true}}
     @modelName={{this.modelName}}
     @options={{this.modifiedOptions}}
     @valueChanged={{action 'didChangeValue' null}} />

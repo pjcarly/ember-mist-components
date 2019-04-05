@@ -9,9 +9,13 @@ import { computed, action } from '@ember-decorators/object';
 import { isBlank } from '@ember/utils';
 import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
+import { inject as service } from "@ember-decorators/service";
 import { BelongsToFieldOptions } from '../output-field-belongsto/component';
+import DynamicSelectOptionService from 'ember-mist-components/services/dynamic-select-options';
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent {
+  @service dynamicSelectOptions !: DynamicSelectOptionService;
+
   selectOptions: SelectOption[] = [];
 
   didReceiveAttrs() {
@@ -42,18 +46,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       // loadAll is provided by the ember-data-storefront addon, and does magic to not load data twice
       // This is really helpful in case there are multiple components referencing to the same type in the template
       // The query will only be done once
-      const selectOptions : SelectOption[] = [];
-      const models = yield this.store.loadAll(this.relationshipModelName);
-
-      for(const model of models.toArray()) {
-        const selectOption : SelectOption = {
-          value: model.id,
-          label: model.name
-        }
-
-        selectOptions.push(selectOption);
-      }
-
+      const selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(this.relationshipModelName);
       this.set('selectOptions', selectOptions);
     }
   }
