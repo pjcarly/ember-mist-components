@@ -1,6 +1,6 @@
 import OutputFieldComponent from 'ember-field-components/components/output-field/component';
 import Image from 'ember-mist-components/interfaces/image';
-import { computed } from '@ember-decorators/object';
+import { computed, action } from '@ember-decorators/object';
 import { guidFor } from '@ember/object/internals';
 
 export default class OutputFieldImagesComponent extends OutputFieldComponent {
@@ -11,6 +11,7 @@ export default class OutputFieldImagesComponent extends OutputFieldComponent {
     return guidFor(this) + '-carousel';
   }
 
+  @action
   didClickImage(image : Image) {
     this.imageClicked(image);
   }
