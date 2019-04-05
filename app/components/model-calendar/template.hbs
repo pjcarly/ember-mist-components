@@ -24,15 +24,17 @@
     </div>
 
     <button type="button" class="btn btn-warning btn-icon waves-effect waves-circle waves-float" onclick={{action calendar.actions.moveCenter -1 'month'}}>
-      <i class="zmdi zmdi-arrow-back"></i>
+      <IconArrowLeft />
     </button>
     <button type="button" class="btn btn-warning btn-icon waves-effect waves-circle waves-float" onclick={{action calendar.actions.moveCenter 1 'month'}}>
-      <i class="zmdi zmdi-arrow-forward"></i>
+      <IconArrowRight />
     </button>
 
     {{#mist-menu id=(concat guid '-actions') class="actions"}}
       {{#mist-menu-dropdown-item className="waves-circle"}}
-        {{#mist-menu-item action=(perform loadModels)}}<i class="zmdi zmdi-refresh zmdi-hc-lg"></i> Refresh{{/mist-menu-item}}
+        {{#mist-menu-item action=(perform loadModels)}}
+          <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
+        {{/mist-menu-item}}
       {{/mist-menu-dropdown-item}}
     {{/mist-menu}}
     {{!-- <button class="ember-power-calendar-nav-control" onclick={{action calendar.actions.moveCenter 12 'month'}}>»</button> --}}

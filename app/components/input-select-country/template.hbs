@@ -1,3 +1,13 @@
-{{#if countrySelectOptions}}
-  {{input-select inputId=inputId value=value selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
+{{#if setCountrySelectOptions.isIdle}}
+  <InputSelect
+    @selectOptions={{this.selectOptions}}
+    @value={{@value}}
+    @valueChanged={{@valueChanged}}
+    @class={{@class}}
+    @inputId={{@inputId}}
+    @required={{@required}}
+    @options={{@options}}
+    @noneLabel={{t 'ember-mist-components.labels.country_none'}} />
+{{else}}
+  {{mist-spinner size="20px"}}
 {{/if}}

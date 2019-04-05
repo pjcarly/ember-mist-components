@@ -1,6 +1,6 @@
 import Service from "@ember/service";
 import DrupalModel from "ember-mist-components/models/drupal-model";
-import FieldInformationService from "ember-field-components/app/services/field-information";
+import FieldInformationService from "ember-field-components/services/field-information";
 import { inject as service } from '@ember-decorators/service';
 import { isBlank } from '@ember/utils';
 import { computed } from "@ember-decorators/object";
@@ -25,8 +25,8 @@ export default class RecentlyViewedService extends Service {
 
     let newRecentlyViewedRecords : RecentlyViewedRecord[] = [];
     let index = 1;
-    for(let oldRecentlyViewedRecord of oldRecentlyViewedRecords){
-      if(!(oldRecentlyViewedRecord.id === id && oldRecentlyViewedRecord.type === type)){
+    for(let oldRecentlyViewedRecord of oldRecentlyViewedRecords) {
+      if(!(oldRecentlyViewedRecord.id === id && oldRecentlyViewedRecord.type === type)) {
         newRecentlyViewedRecords.push(oldRecentlyViewedRecord);
         index++;
 
@@ -57,8 +57,8 @@ export default class RecentlyViewedService extends Service {
       newRecentlyViewedRecords.push(newRecentlyViewedRecord);
 
       let index = 1;
-      for(let oldRecentlyViewedRecord of oldRecentlyViewedRecords){
-        if(!(oldRecentlyViewedRecord.id === newRecentlyViewedRecord.id && oldRecentlyViewedRecord.type === newRecentlyViewedRecord.type)){
+      for(let oldRecentlyViewedRecord of oldRecentlyViewedRecords) {
+        if(!(oldRecentlyViewedRecord.id === newRecentlyViewedRecord.id && oldRecentlyViewedRecord.type === newRecentlyViewedRecord.type)) {
           newRecentlyViewedRecords.push(oldRecentlyViewedRecord);
           index++;
 
@@ -78,7 +78,7 @@ export default class RecentlyViewedService extends Service {
   @computed('storage.recentlyViewedRecords.[]')
   get records() : RecentlyViewedRecord[] {
     let oldRecentlyViewedRecords : RecentlyViewedRecord[] = this.storage.get('recentlyViewedRecords');
-    if(isBlank(oldRecentlyViewedRecords)){
+    if(isBlank(oldRecentlyViewedRecords)) {
       oldRecentlyViewedRecords = [];
     }
 

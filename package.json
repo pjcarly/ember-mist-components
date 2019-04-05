@@ -71,6 +71,7 @@
     "ember-intl": "^3.5.2",
     "ember-light-table": "^1.13.2",
     "ember-simple-auth": "^1.8.1",
+    "ember-storage": "^2.0.0",
     "ember-toastr": "^1.7.2",
     "ember-uploader": "^2.0.0"
   },

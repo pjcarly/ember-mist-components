@@ -9,7 +9,7 @@ export default class StringsTransform extends Transform {
   }
 
   serialize(deserialized: any) {
-    if(!isBlank(deserialized)){
+    if(!isBlank(deserialized)) {
       deserialized = deserialized.toArray();
     }
     return deserialized;

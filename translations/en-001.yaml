@@ -2,3 +2,19 @@ ember-attribute-validations:
   validAddress: '%@ is an invalid address for the selected country, fill in the required fields'
   requiredAddress: '%@ is required'
   conditionalRequired: '%@ is required'
+ember-mist-components:
+  labels:
+    automatically_generated: 'Automatically generated'
+    country_none: '-- Country (none) --'
+    browse: 'Browse'
+    search: 'Search'
+    refresh: 'Refresh'
+    of: 'of'
+    uploading: 'Uploading'
+  table:
+    rows: 'Rows'
+    selected: 'Selected'
+    no_data: 'No data found'
+  list-view:
+    new: 'New List View'
+    edit: Edit List View

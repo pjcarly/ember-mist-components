@@ -50,7 +50,7 @@ export default class InputModelAutocompleteComponent extends Component {
   value ?: any;
 
   /* Closure Actions */
-  valueChanged(_: DrupalModel){}
+  valueChanged(_: DrupalModel) {}
 
   @task
   * searchTask(searchQuery: string) {
@@ -136,7 +136,7 @@ export default class InputModelAutocompleteComponent extends Component {
   }
 
   @action
-  formValueChanged(value: any){
+  formValueChanged(value: any) {
     this.valueChanged(value);
   }
 }

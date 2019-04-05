@@ -5,7 +5,13 @@
         <div class="row">
           <div class="{{if applyXS 'col-xs-12' 'col-12'}}">
             {{#each row.columns as |column|}}
-              {{component column.component value=(get address column.field) valueChanged=(action 'addressFieldChanged' column.field) placeholder=column.label none=column.none selectOptions=column.selectOptions disabled=column.disabled}}
+              {{component column.component
+                value=(get address column.field)
+                valueChanged=(action 'addressFieldChanged' column.field)
+                placeholder=column.label
+                none=column.none
+                selectOptions=column.selectOptions
+                disabled=column.disabled}}
             {{/each}}
           </div>
         </div>
@@ -14,14 +20,12 @@
   {{/if}}
 
   <div class="row">
-    <div class="{{if applyXS 'col-xs-12' 'col-12'}}">
-      {{#if countrySelectOptions}}
-        {{output-select value=address.countryCode selectOptions=countrySelectOptions}}
-      {{else}}
-        {{mist-spinner size="20px" class="text-center"}}
-      {{/if}}
+    <div class={{if applyXS 'col-xs-12' 'col-12'}}>
+      <OutputSelectCountry @value={{this.address.countryCode}} />
     </div>
   </div>
 {{else}}
-  <span class="value empty"></span>
+  <span class="output address">
+    <span class="value empty"></span>
+  </span>
 {{/if}}

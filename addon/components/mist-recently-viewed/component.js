@@ -6,9 +6,9 @@ import { inject as service } from '@ember/service';
 export default Component.extend({
   classNames: ['card recently-viewed'],
   storage: service(),
-  recentlyViewedRecords: computed('storage.recentlyViewedRecords', function(){
+  recentlyViewedRecords: computed('storage.recentlyViewedRecords', function() {
     const recentlyViewedRecords = this.get('storage.recentlyViewedRecords');
-    if(isBlank(recentlyViewedRecords)){
+    if(isBlank(recentlyViewedRecords)) {
       return [];
     } else {
       return recentlyViewedRecords;

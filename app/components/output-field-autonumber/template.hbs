@@ -1,5 +1,15 @@
 {{#if (or model.isNew (not value))}}
-  {{output-text value="Automatically generated" placeholder=placeholder prefix=prefix suffix=suffix styleClass=styleClass inputId=inputId}}
+  <OutputText
+    @value={{t 'ember-mist-components.labels.automatically_generated'}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}} />
 {{else}}
-  {{output-text value=computedValue placeholder=placeholder prefix=prefix suffix=suffix styleClass=styleClass inputId=inputId}}
+  <OutputText
+    @value={{this.computedValue}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}} />
 {{/if}}

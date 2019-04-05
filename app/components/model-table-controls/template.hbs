@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-6 controls left">
+    <ul>
+      <li class={{if @amountSelected 'infos'}}>
+        {{#if @amountSelected}}
+          <a {{action "didToggleDisplaySelected"}}>{{t 'ember-mist-components.table.rows'}}: {{@amountSelected}}</a>
+        {{/if}}
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-12 col-sm-6 controls right">
+    <ul>
+      <li class="infos">
+        {{#if @isBusy}}
+          {{mist-spinner size="10px" tagName="span"}}
+        {{else}}
+          {{@firstRow}} - {{@lastRow}} {{t 'ember-mist-components.labels.of'}} {{@totalCount}}
+        {{/if}}
+      </li>
+      <li>
+        {{t 'ember-mist-components.table.rows'}}:
+        <InputSelect
+          @class="plain-select"
+          @selectOptions={{this.rowSelectOptions}}
+          @value={{this.rowsValue}}
+          @valueChanged={{action 'didSelectRows'}}
+          @required={{true}} />
+      </li>
+      <li>
+        <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToPrevPage"}}>
+          <IconChevronLeft />
+        </button>
+
+        <InputSelect
+          @class="plain-select"
+          @selectOptions={{this.pageSelectOptions}}
+          @value={{this.currentPage}}
+          @valueChanged={{action 'didSelectPage'}}
+          @required={{true}} />
+
+        <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToNextPage"}}>
+          <IconChevronRight />
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

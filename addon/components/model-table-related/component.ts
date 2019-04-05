@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import EntityCacheService from 'ember-mist-components/services/entity-cache';
 import EntityRouterService from 'ember-mist-components/services/entity-router';
-import FieldInformationService from 'ember-field-components/app/services/field-information';
+import FieldInformationService from 'ember-field-components/services/field-information';
 import Store from 'ember-data/store';
 import Model from 'ember-data/model';
 import Condition from 'ember-mist-components/query/Condition';
@@ -19,6 +19,7 @@ export default class ModelTableRelatedComponent extends Component {
 
   model !: Model;
   field !: string;
+  hideNew : boolean = false;
 
   //  hook that can be passed in
   preProcessNewHook(newModel: Model) : Model {

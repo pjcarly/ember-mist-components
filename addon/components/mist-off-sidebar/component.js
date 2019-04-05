@@ -4,7 +4,7 @@ export default Component.extend({
   actions: {
     toggleSidebar() {
       const toggleSidebar = this.get('toggleSidebar');
-      if(toggleSidebar){
+      if(toggleSidebar) {
         toggleSidebar();
       }
     }

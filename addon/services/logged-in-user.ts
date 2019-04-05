@@ -25,7 +25,7 @@ export default class LoggedInUserService extends Service {
    * Loads the current user from the store, based on the user_id in the OAuth response
    * @param query Query Params where possible include query parameter will be taken from
    */
-  loadCurrentUser(query?: Query){
+  loadCurrentUser(query?: Query) {
     const userId = this.session.get('data.authenticated.user_id');
     let options : any = {};
 
@@ -42,7 +42,7 @@ export default class LoggedInUserService extends Service {
   /**
    * Invalidates the session, and unsets the user
    */
-  logOut(){
+  logOut() {
     this.set('user', null);
     this.session.invalidate();
   }

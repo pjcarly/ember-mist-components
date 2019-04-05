@@ -1,21 +1,24 @@
-{{#if value.id}}
-  {{#if value.url}}
-    <a href={{value.url}} target="_blank"><i class="zmdi zmdi-cloud-download"></i> {{value.filename}}</a>
-  {{else}}
-    <i class="zmdi zmdi-cloud-download"></i> {{value.filename}}
-  {{/if}}
+<span class="input file-drupal">
+  {{#if (and value.id value.url)}}
+    {{#if value.url}}
+      <a href={{value.url}} target="_blank">
+        <IconDownload /> {{value.filename}}
+      </a>
+    {{else}}
+      {{value.filename}}
+    {{/if}}
 
-  {{#if deleteFile.isIdle}}
-    {{#mist-button class="btn-xs btn-default m-l-5" click=(perform deleteFile)}}Remove{{/mist-button}}
+    {{#mist-button class="btn-xs btn-default remove" click=(action 'deleteFile')}}Remove{{/mist-button}}
   {{else}}
-    {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+    {{#if uploadFile.isRunning}}
+      <button class="btn btn-xs btn-default waves-effect uploading" disabled="disabled">
+        {{t 'ember-mist-components.labels.uploading'}} {{this.activeFile}}/{{this.totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+      </button>
+    {{else}}
+      <InputFile
+        @multiple={{this.multiple}}
+        @inputId={{this.inputId}}
+        @valueChanged={{action 'filesSelected'}} />
+    {{/if}}
   {{/if}}
-{{else}}
-  {{#if uploadFile.isRunning}}
-    <button class="btn btn-default waves-effect" disabled="disabled">
-      Uploading {{activeFile}}/{{totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
-    </button>
-  {{else}}
-    {{input-file valueChanged=(action 'valueChanged') multiple=multiple inputId=inputId}}
-  {{/if}}
-{{/if}}
+</span>

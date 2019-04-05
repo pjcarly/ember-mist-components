@@ -1,7 +1,37 @@
-{{#if isCountrySelect}}
-  {{output-select-country value=value}}
-{{else if selectOptions}}
-  {{output-select value=value selectOptions=selectOptions}}
-{{else if setSelectOptionsRanOnce}}
-  {{output-select value=value selectOptions=cachedSelectOptions}}
+{{#if this.selectOptions}}
+  {{#if (eq this.widgetName 'country-select')}}
+    <OutputSelectCountry
+      @value={{this.value}}
+      @prefix={{@prefix}}
+      @suffix={{@suffix}}
+      @class={{@outputClass}}
+      @options={{this.outputOptions}} />
+  {{else}}
+    <OutputSelect
+      @value={{this.value}}
+      @selectOptions={{this.selectOptions}}
+      @prefix={{@prefix}}
+      @suffix={{@suffix}}
+      @class={{@outputClass}}
+      @options={{this.outputOptions}} />
+  {{/if}}
+{{else if loadSelectOptions.isIdle}}
+  {{#if (eq this.widgetName 'country-select')}}
+    <OutputSelectCountry
+      @value={{this.value}}
+      @prefix={{@prefix}}
+      @suffix={{@suffix}}
+      @class={{@outputClass}}
+      @options={{this.outputOptions}} />
+  {{else}}
+    <OutputSelect
+      @value={{this.value}}
+      @selectOptions={{this.cachedSelectOptions}}
+      @prefix={{@prefix}}
+      @suffix={{@suffix}}
+      @class={{@outputClass}}
+      @options={{this.outputOptions}} />
+  {{/if}}
+{{else}}
+  {{mist-spinner size="20px"}}
 {{/if}}

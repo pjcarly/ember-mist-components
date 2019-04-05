@@ -1,3 +1,23 @@
-{{#if setSelectOptionsRanOnce}}
-  {{input-multi-select selectOptions=cachedSelectOptions value=value isRequired=isRequired valueChanged=(action 'valueChanged') styleClass=styleClass none=none inputId=inputId}}
+{{#if this.selectOptions}}
+  <InputMultiSelect
+    @selectOptions={{this.selectOptions}}
+    @value={{this.value}}
+    @valueChanged={{action (mut this.value)}}
+    @class={{@inputClass}}
+    @inputId={{this.inputId}}
+    @noneLabel={{this.noneLabel}}
+    @required={{this.isRequired}}
+    @options={{this.inputOptions}} />
+{{else if loadSelectOptions.isIdle}}
+  <InputMultiSelect
+    @selectOptions={{this.cachedSelectOptions}}
+    @value={{this.value}}
+    @valueChanged={{action (mut this.value)}}
+    @class={{@inputClass}}
+    @inputId={{this.inputId}}
+    @noneLabel={{this.noneLabel}}
+    @required={{this.isRequired}}
+    @options={{this.inputOptions}} />
+{{else}}
+  {{mist-spinner size="20px"}}
 {{/if}}

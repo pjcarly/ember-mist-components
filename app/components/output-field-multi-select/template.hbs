@@ -1,3 +1,19 @@
-{{#if setSelectOptionsRanOnce}}
-  {{output-multi-select value=value selectOptions=cachedSelectOptions}}
+{{#if this.selectOptions}}
+  <OutputMultiSelect
+    @value={{this.value}}
+    @selectOptions={{this.selectOptions}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}} />
+{{else if loadSelectOptions.isIdle}}
+  <OutputMultiSelect
+    @value={{this.value}}
+    @selectOptions={{this.cachedSelectOptions}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}} />
+{{else}}
+  {{mist-spinner size="20px"}}
 {{/if}}

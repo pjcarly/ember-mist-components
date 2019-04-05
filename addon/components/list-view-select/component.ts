@@ -25,7 +25,7 @@ export default class ListViewSelectComponent extends Component {
 
   valueChanged!: (selectOptionValue : any) => void;
 
-  didReceiveAttrs(){
+  didReceiveAttrs() {
     super.didReceiveAttrs();
 
     assert('Grouping cannot be blank', !isBlank(this.grouping));

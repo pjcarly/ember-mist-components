@@ -8,22 +8,22 @@ import { getOwner } from '@ember/application';
 
 export default Component.extend({
   store: service(),
-  config: computed(function(){
+  config: computed(function() {
     return getOwner(this).resolveRegistration('config:environment');
   }),
-  apiEndpoint: computed(function(){
+  apiEndpoint: computed(function() {
     const config = this.get('config');
     return config.apiEndpoint;
   }),
-  template: computed('value', function(){
+  template: computed('value', function() {
     const store = this.get('store');
     return store.peekRecord('pdf', this.get('value'));
   }),
-  showModal(){
+  showModal() {
     this.$('.modal').modal('show');
     this.get('fetchTemplates').perform();
   },
-  generatePdf: task(function * (){
+  generatePdf: task(function * () {
     const template = this.get('template');
     const model = this.get('model');
     let digest = null;
@@ -35,7 +35,7 @@ export default Component.extend({
 
     window.open(`${this.get('apiEndpoint')}template/generate/${this.get('template.key')}?id=${this.get('model.id')}&digest=${digest}${!isBlank(this.get('language')) ? `&lang=${this.get('language')}` : ''}`, '_blank');
   }),
-  fetchTemplates: task(function * (){
+  fetchTemplates: task(function * () {
     const grouping = this.get('grouping');
 
     let pdfResults = [];
@@ -53,7 +53,7 @@ export default Component.extend({
     let selectOptions = [];
     let value = null;
     pdfResults.forEach((pdfResult) => {
-      if(isBlank(value)){
+      if(isBlank(value)) {
         value = pdfResult.get('id');
       }
 
@@ -71,11 +71,11 @@ export default Component.extend({
       this.showModal();
       this.set('modalVisible', true);
     },
-    closeModal(){
+    closeModal() {
       this.$('.modal').modal('hide');
       this.set('modalVisible', false);
     },
-    templateValueChanged(value){
+    templateValueChanged(value) {
       this.set('value', value);
     }
   }

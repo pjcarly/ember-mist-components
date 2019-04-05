@@ -182,14 +182,14 @@ export default class Query extends EmberObject {
   /**
    * Increments the page by 1
    */
-  nextPage(){
+  nextPage() {
     this.incrementProperty('page');
   }
 
   /**
    * Reduces page by 1
    */
-  prevPage(){
+  prevPage() {
     if(this.page > 1) {
       this.decrementProperty('page');
     }
@@ -247,7 +247,7 @@ export default class Query extends EmberObject {
     // The sort order of the results
     if(this.orders && this.orders.length > 0) {
       const orders : string[] = [];
-      for(const order of this.orders){
+      for(const order of this.orders) {
         orders.push(order.orderParam);
       }
 

@@ -1,8 +1,10 @@
 <div class="row">
   <div class="{{if applyXS 'col-xs-12' 'col-12'}} country-select">
-    {{#if countrySelectOptions}}
-      {{input-select value=address.countryCode selectOptions=countrySelectOptions valueChanged=(action 'countryCodeChanged') none="-- Country (none) --"}}
-    {{/if}}
+    <InputSelectCountry
+      @value={{this.address.countryCode}}
+      @valueChanged={{action 'countryCodeChanged'}}
+      @inputId={{this.inputId}}
+      @required={{this.isRequired}} />
   </div>
 </div>
 
@@ -11,7 +13,13 @@
     <div class="row">
       {{#each row.columns as |column|}}
         <div class={{row.columnClassName}}>
-          {{component column.component value=(get address column.field) valueChanged=(action 'addressFieldChanged' column.field) placeholder=column.label none=column.none selectOptions=column.selectOptions disabled=column.disabled}}
+          {{component column.component
+            value=(get address column.field)
+            valueChanged=(action 'addressFieldChanged' column.field)
+            placeholder=column.label
+            none=column.none
+            selectOptions=column.selectOptions
+            disabled=column.disabled }}
         </div>
       {{/each}}
     </div>

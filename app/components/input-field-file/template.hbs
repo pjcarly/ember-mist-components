@@ -1,1 +1,7 @@
-{{input-file-drupal value=value field=field modelName=modelName options=options valueChanged=(action 'valueChanged')}}
+<InputFileDrupal
+  @value={{this.value}}
+  @field={{@field}}
+  @multiple={{false}}
+  @modelName={{this.modelName}}
+  @options={{this.inputOptions}}
+  @valueChanged={{action (mut this.value)}} />

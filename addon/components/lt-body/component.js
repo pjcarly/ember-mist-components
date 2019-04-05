@@ -4,13 +4,13 @@ export default Body.extend({
   actions: {
     onRowMouseEnter(/*row*/) {
       const onRowMouseEnter = this.get('onRowMouseEnter');
-      if(onRowMouseEnter){
+      if(onRowMouseEnter) {
         onRowMouseEnter(...arguments);
       }
     },
     onRowMouseLeave(/*row*/) {
       const onRowMouseLeave = this.get('onRowMouseLeave');
-      if(onRowMouseLeave){
+      if(onRowMouseLeave) {
         onRowMouseLeave(...arguments);
       }
     }

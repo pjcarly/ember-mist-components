@@ -28,7 +28,7 @@ export default class ModelCalendarComponent extends Component {
   weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   center = new Date();
 
-  didReceiveAttrs(){
+  didReceiveAttrs() {
     this._super(...arguments);
     this.loadModels.perform();
   }
@@ -53,7 +53,7 @@ export default class ModelCalendarComponent extends Component {
     loadedModels.forEach((model: Model) => {
       const dateValue = model.get(this.dateField);
       const key = moment(dateValue).format('YYYY-MM-DD');
-      if(!models.hasOwnProperty(key)){
+      if(!models.hasOwnProperty(key)) {
         models[key] = [];
       }
 
@@ -70,7 +70,7 @@ export default class ModelCalendarComponent extends Component {
   get dateFormat(): string {
     let format = '';
 
-    if(this.fieldType === 'date'){
+    if(this.fieldType === 'date') {
       format = 'YYYY-MM-DD';
     } else {
       format = 'YYYY-MM-DD\THH:mm:ss';
@@ -120,7 +120,7 @@ export default class ModelCalendarComponent extends Component {
     const currentYear = this.currentYear;
     let i = currentYear - 2;
 
-    while(i < currentYear + 5){
+    while(i < currentYear + 5) {
       years.push(i++);
     }
 
@@ -175,7 +175,7 @@ export default class ModelCalendarComponent extends Component {
 
     const center = this.center;
     const startOfMonth = new Date(center.getFullYear(), center.getMonth(), 1);
-    const endOfMonth = new Date(center.getFullYear(), center.getMonth() + 1, 0);
+    const endOfMonth = new Date(center.getFullYear(), center.getMonth() + 1, 0, 23, 59, 59);
 
     query.addCondition(new Condition(dasherize(this.dateField), '>=', moment(startOfMonth).format(this.dateFormat)));
     query.addCondition(new Condition(dasherize(this.dateField), '<=', moment(endOfMonth).format(this.dateFormat)));
@@ -205,7 +205,7 @@ export default class ModelCalendarComponent extends Component {
    * Centers the Calendar on the provided date
    * @param date The Date you want to center the calendar on
    */
-  centerCalendarOn(this: ModelCalendarComponent, date: Date){
+  centerCalendarOn(this: ModelCalendarComponent, date: Date) {
     this.set('center', date);
     this.loadModels.perform();
   }
@@ -214,7 +214,7 @@ export default class ModelCalendarComponent extends Component {
    * Centers the calendar on the current date
    */
   @action
-  resetToToday(this: ModelCalendarComponent){
+  resetToToday(this: ModelCalendarComponent) {
     this.centerCalendarOn(new Date());
   }
 

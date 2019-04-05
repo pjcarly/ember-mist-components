@@ -1,3 +1,8 @@
 {{#if setListViews.isIdle}}
-  <InputSelect @value={{this.selectedValue}} @selectOptions={{this.listViewSelectOptions}} @isRequired=true @valueChanged={{action 'selectionChanged'}} />
+  <InputSelect
+    @value={{this.selectedValue}}
+    @selectOptions={{this.listViewSelectOptions}}
+    @required={{true}}
+    @class="list-view"
+    @valueChanged={{action 'selectionChanged'}} />
 {{/if}}

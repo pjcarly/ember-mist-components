@@ -62,14 +62,14 @@ export default class Condition {
       }
     } else {
       // ID is blank, we can just use the value logic
-      if(!this.operator || this.operator === Operator.EQUALS){
+      if(!this.operator || this.operator === Operator.EQUALS) {
         // equals is the default operator, and doesnt need to be explicitly passed
         filter.value = this.value;
       } else {
         // A different operator was provided, lets pass it in the filter
         filter.operator = this.operator;
 
-        if(this.operator === Operator.LIKE){
+        if(this.operator === Operator.LIKE) {
           // When the operator is "like", we change the wildard from * to %
           filter.value = replaceAll(this.value, '*', '%');
         } else {
