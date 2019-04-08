@@ -69,6 +69,7 @@ export default class ModelTableComponent extends Component {
   listViewKey : string = '';
   conditions : Condition[] = [];
   listViewGrouping ?: string;
+  modelListView ?: string;
 
   /**
    * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
@@ -195,9 +196,15 @@ export default class ModelTableComponent extends Component {
   /**
    * This will return the key of the current selected list view value
    */
-  @computed('router.currentRouteName', 'activeModelName', 'listViewKey')
+  @computed('router.currentRouteName', 'activeModelName', 'listViewKey', 'modelListView', 'listViewGrouping')
   get selectedListView() : Model | ModelListView {
-    return this.listView.getActiveListViewForCurrentRoute(this.activeModelName);
+    if(this.listViewGrouping) {
+      return this.listView.getActiveListViewForCurrentRoute(this.activeModelName);
+    } else if(this.modelListView) {
+      return this.listView.getModelListView(this.activeModelName, this.modelListView);
+    }
+
+    return this.listView.getDefaultListView(this.activeModelName);
   }
 
   /**

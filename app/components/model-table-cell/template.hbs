@@ -1,5 +1,5 @@
 {{#if column.transitionToModel}}
-  <a class="cell__field-wrapper" href="{{href-to (concat column.modelName '.view') row.content.id}}">
+  <a class="cell__field-wrapper" href={{href-to (concat column.modelName '.view') row.content.id}}>
     <OutputField @model={{this.row.content}} @field={{this.column.valuePath}} @inline={{true}} />
   </a>
 {{else}}
