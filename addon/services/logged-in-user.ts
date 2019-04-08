@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import Store from 'ember-data/store';
-import Model from 'ember-data/model';
 import Query from 'ember-mist-components/query/Query';
+import UserModel from 'ember-mist-components/models/user';
 import { inject as service } from '@ember-decorators/service';
 import { alias } from '@ember-decorators/object/computed';
 
@@ -17,7 +17,7 @@ export default class LoggedInUserService extends Service {
   /**
    * A reference to the logged in user model
    */
-  user ?: Model;
+  user ?: UserModel;
 
   @alias('session.isAuthenticated') isAuthenticated !: boolean;
 
@@ -34,7 +34,7 @@ export default class LoggedInUserService extends Service {
     }
 
     return this.store.loadRecord('user', userId, options)
-    .then((user : Model) => {
+    .then((user : UserModel) => {
       this.set('user', user);
     });
   }
