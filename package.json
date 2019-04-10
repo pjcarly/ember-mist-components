@@ -73,7 +73,8 @@
     "ember-simple-auth": "^1.8.1",
     "ember-storage": "^2.0.0",
     "ember-toastr": "^1.7.2",
-    "ember-uploader": "^2.0.0"
+    "ember-uploader": "^2.0.0",
+    "ember-websockets": "^7.2.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

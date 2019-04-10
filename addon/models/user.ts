@@ -23,7 +23,10 @@ export default class UserModel extends DrupalModel {
   userPicture ?: Image;
 
   @field('number', { precision: 10, decimals: 0 })
-  unreadNotifications !: number;
+  unseenNotifications !: number;
+
+  @field('datetime')
+  notificationsViewed ?: Date;
 
 
   setNotificationsViewed() {

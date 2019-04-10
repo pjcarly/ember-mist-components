@@ -33,6 +33,10 @@ export default class LoggedInUserService extends Service {
       options = query.queryParams;
     }
 
+    if(this.user) {
+      this.user.rollback();
+    }
+
     return this.store.loadRecord('user', userId, options)
     .then((user : UserModel) => {
       this.set('user', user);
