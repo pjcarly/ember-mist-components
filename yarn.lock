@@ -957,7 +957,7 @@
   dependencies:
     "@types/estree" "*"
 
-"@types/ember-data@^3.1.4":
+"@types/ember-data@^3.1.7":
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/@types/ember-data/-/ember-data-3.1.7.tgz#7e5cc5236b97c1ff2457d0776dd020f96542e343"
   integrity sha512-gLesMVU8WExce3r4cO+VDOlSGqi94EfUfOqxf+9FniDPn2EUg3Kej1On9uZyRA2VailCWy2Z9zL2uBtrprVcKQ==
@@ -966,7 +966,7 @@
     "@types/ember__object" "*"
     "@types/rsvp" "*"
 
-"@types/ember-qunit@^3.4.5":
+"@types/ember-qunit@^3.4.6":
   version "3.4.6"
   resolved "https://registry.yarnpkg.com/@types/ember-qunit/-/ember-qunit-3.4.6.tgz#b09ae84192c16fbd1da0d1be26fa02b67691250d"
   integrity sha512-ARB2JDNV3qzrZ94fC+YdV9jT9hYAXP8pXcqAVzVEYVL5/upSxKcYZjiCSScpKzXikN8yieIGNqSGArhQrcdzFA==
@@ -974,7 +974,7 @@
     "@types/ember" "*"
     "@types/ember-test-helpers" "*"
 
-"@types/ember-test-helpers@*", "@types/ember-test-helpers@^1.0.4":
+"@types/ember-test-helpers@*", "@types/ember-test-helpers@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/ember-test-helpers/-/ember-test-helpers-1.0.5.tgz#b0a8a3b9386ddf372eef11ba95487be806674ca2"
   integrity sha512-LewaqxBqUDxT40Lb8M7r0pDlF78b5O87mQRK+8GqrreK/s3MSX/BXgxi5hbWF3TPJ57iX3G4S2TNO8z8soXYdA==
@@ -992,7 +992,7 @@
     "@types/jquery" "*"
     "@types/rsvp" "*"
 
-"@types/ember@*", "@types/ember@^3.0.27":
+"@types/ember@*", "@types/ember@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@types/ember/-/ember-3.1.0.tgz#3c44b846c41a1340bc823910f9222746585b3314"
   integrity sha512-RHP/N7k81XIS16DLF/yTfnWEKdFFftRAUgjWO1oKNJ5ho3+iTH3vVq8u11PrhaHd+FHXNB1XKV20d5o1KEOnUQ==
@@ -1115,7 +1115,7 @@
   resolved "https://registry.yarnpkg.com/@types/ember__string/-/ember__string-3.0.6.tgz#79b10b0fc0136a9c86536bc55cbd18cae9a9bd3b"
   integrity sha512-VBKH8nR/uK2tlr9eob8Nl+0cKP62GNtFWqq4PVGusnBMPFktGley1gsUhqNYJ9G3y2mvVfikicxM2/bE5AMYLA==
 
-"@types/ember__test-helpers@^0.7.7":
+"@types/ember__test-helpers@^0.7.8":
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/@types/ember__test-helpers/-/ember__test-helpers-0.7.8.tgz#16d6e060ec88e5510756d00e8f191fa48d9e0362"
   integrity sha512-23YMSoKqiqJHeg6uWusAqLdYb4He2U9gZZYy9JUslzHrQV9eSWmQDFHVRXfy9zWj0Rbh+ssKEWlMGwckZyKgRA==
@@ -4275,7 +4275,7 @@ ember-cli-typescript-blueprints@^2.0.0-beta.1:
     inflection "^1.12.0"
     silent-error "^1.1.0"
 
-ember-cli-typescript@^2.0.0, ember-cli-typescript@^2.0.0-rc.2:
+ember-cli-typescript@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-2.0.1.tgz#9c46729213b9e1d13f5c3ff8421d772134aa889e"
   integrity sha512-xwSEQOUNM621Wt+XJWpbLhBIeqC/dM1lDS+oZQ2nSjxp4MLZkpKuiVBqdbBWcURbvv8ghoVQPfy8wYU4JIFkLA==
@@ -4290,6 +4290,24 @@ ember-cli-typescript@^2.0.0, ember-cli-typescript@^2.0.0-rc.2:
     resolve "^1.5.0"
     rsvp "^4.8.1"
     semver "^6.0.0"
+    stagehand "^1.0.0"
+    walk-sync "^1.0.0"
+
+ember-cli-typescript@^2.0.0-rc.2:
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-2.0.0-rc.2.tgz#d8253097279ed292c20e739ee72f8fb994dbb6b7"
+  integrity sha512-u4mhdt/R0ip5s1H93aXtGJ/tnZ/3LsIOhKmaPylvlAVW/HtgPk+j/9sFHT4YmFUKMWPP2gXExtDkYNbz81XWzw==
+  dependencies:
+    "@babel/plugin-proposal-class-properties" "^7.1.0"
+    "@babel/plugin-transform-typescript" "^7.1.0"
+    ansi-to-html "^0.6.6"
+    debug "^4.0.0"
+    ember-cli-babel-plugin-helpers "^1.0.0"
+    execa "^1.0.0"
+    fs-extra "^7.0.0"
+    resolve "^1.5.0"
+    rsvp "^4.8.1"
+    semver "^5.5.1"
     stagehand "^1.0.0"
     walk-sync "^1.0.0"
 
@@ -4443,21 +4461,22 @@ ember-composable-helpers@^2.1.0:
     broccoli-funnel "^1.0.1"
     ember-cli-babel "^7.1.0"
 
-ember-concurrency-decorators@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/ember-concurrency-decorators/-/ember-concurrency-decorators-0.5.5.tgz#cf9175119a4891d6d0cb1c9134d777c07ed9e1a8"
-  integrity sha512-tRLcoK9sgQV6QWzNj4SnU8gH/X17/w8HoQTNYWoh+v9Dwyn2xZoJCatJ5LweQw+23Hf7JA9WB7/r8KrD0kdWkw==
+ember-concurrency-decorators@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/ember-concurrency-decorators/-/ember-concurrency-decorators-0.6.0.tgz#999045cbb91c02a8904703dbb5d6948617f73f74"
+  integrity sha512-kZ2TR07ZxYw7IXvtCp98NRJDq22hb/VDoyhpCA0sWgbR8YQ1C0RaRcCc+QrYKQIpuxHh+nByb9n+dPm5142T0g==
   dependencies:
     "@ember-decorators/utils" "^5.1.4 || 5.1.2 || ^4.0.0 || ^3.0.0"
     ember-cli-babel "^7.5.0"
 
-ember-concurrency@^0.8.27:
-  version "0.8.27"
-  resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-0.8.27.tgz#6dd1b9928cf5d13d5ae9c8cd3d5869f6ff81a9a9"
-  integrity sha512-2IujJ0Y79a+sHvEOPhUtZ7Ga8HDrwjbQqO7aZ88b0KCsXPro7birQFB508njQSQ0mxrsR9qzDv/KS5V67Cy5dA==
+ember-concurrency@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-0.10.0.tgz#9c7c79dca411e01466119f02d7197c0a4ff0df08"
+  integrity sha512-KhNNkUqnAN0isuAwSHaTJtmY/MdHJogSSAj7lCigzfJn2+21yafQcwzoVqf5LdMOn2+owWYURr1YiwzuOvlGyQ==
   dependencies:
     babel-core "^6.24.1"
     ember-cli-babel "^6.8.2"
+    ember-compatibility-helpers "^1.2.0"
     ember-maybe-import-regenerator "^0.1.5"
 
 "ember-concurrency@^0.8.27 || ^0.9.0":
@@ -4539,7 +4558,7 @@ ember-data@^3.8.0:
     resolve "^1.8.1"
     silent-error "^1.1.1"
 
-ember-decorators@^5.1.4:
+ember-decorators@5.2.0, ember-decorators@^5.1.4:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ember-decorators/-/ember-decorators-5.2.0.tgz#6f8640765d30b5b3d1fb9b29ead1552427e25943"
   integrity sha512-V0nSC/P0SRDfuv8zsB/UrV5nfp7Em2LBbfyS5nWIGteynPowxSUcFZtds4a/gW1anwzZT2VQgCftjmjcRMoDcw==
@@ -9499,7 +9518,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.3.3333:
+typescript@^3.4.3:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.3.tgz#0eb320e4ace9b10eadf5bc6103286b0f8b7c224f"
   integrity sha512-FFgHdPt4T/duxx6Ndf7hwgMZZjZpB+U0nMNGVCYPq0rEzWKjEDobm4J6yb3CS7naZ0yURFqdw9Gwc7UOh/P9oQ==
