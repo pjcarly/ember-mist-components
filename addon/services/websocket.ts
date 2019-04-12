@@ -38,11 +38,13 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   @dropTask
   * startConnecting() {
+    this.set('manuallyClosed', false);
+
     if(this.endpoint) {
-      while(!this.socket || !this.websockets.isWebSocketOpen(this.socket.socket)) {
+      while(!this.manuallyClosed && (!this.socket || !this.websockets.isWebSocketOpen(this.socket.socket))) {
         if(this.reconnectAttempts > 0) {
-          const base = this.reconnectAttempts < 4 ? this.reconnectAttempts : 4;
-          let waitFor = Math.pow(4, base) * 1000;
+          const exponent = this.reconnectAttempts < 6 ? this.reconnectAttempts : 6;
+          let waitFor = Math.pow(2, exponent) * 1000;
 
           debug(`Attempting to reconnect (${this.reconnectAttempts}) in ${waitFor/1000}s`);
 
@@ -81,9 +83,11 @@ export default class WebsocketService extends Service.extend(Evented) {
    * Closes the connection to the websocket endpoint
    */
   closeConnection() {
-    this.set('manuallyClosed', true);
-    this.set('status', Status.CONNECTING);
-    this.socket.close();
+    if(this.endpoint && this.socket) {
+      this.set('manuallyClosed', true);
+      this.set('status', Status.CONNECTING);
+      this.socket.close();
+    }
   }
 
   connectionOpened(_: any) {

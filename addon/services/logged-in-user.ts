@@ -4,6 +4,8 @@ import Query from 'ember-mist-components/query/Query';
 import UserModel from 'ember-mist-components/models/user';
 import { inject as service } from '@ember-decorators/service';
 import { alias } from '@ember-decorators/object/computed';
+import { dropTask } from 'ember-concurrency-decorators';
+import WebsocketService from './websocket';
 
 interface SessionService {
   invalidate() : void;
@@ -11,8 +13,9 @@ interface SessionService {
 }
 
 export default class LoggedInUserService extends Service {
-  @service session!: SessionService;
-  @service store!: Store;
+  @service session !: SessionService;
+  @service store !: Store;
+  @service websocket !: WebsocketService;
 
   /**
    * A reference to the logged in user model
@@ -25,7 +28,8 @@ export default class LoggedInUserService extends Service {
    * Loads the current user from the store, based on the user_id in the OAuth response
    * @param query Query Params where possible include query parameter will be taken from
    */
-  loadCurrentUser(query?: Query) {
+  @dropTask
+  * loadCurrentUser(query?: Query) {
     const userId = this.session.get('data.authenticated.user_id');
     let options : any = {};
 
@@ -37,9 +41,13 @@ export default class LoggedInUserService extends Service {
       this.user.rollback();
     }
 
-    return this.store.loadRecord('user', userId, options)
+    yield this.store.loadRecord('user', userId, options)
     .then((user : UserModel) => {
       this.set('user', user);
+      this.websocket.startConnecting.perform();
+    })
+    .catch((_: any) => {
+      this.logOut();
     });
   }
 
@@ -49,5 +57,6 @@ export default class LoggedInUserService extends Service {
   logOut() {
     this.set('user', null);
     this.session.invalidate();
+    this.websocket.closeConnection();
   }
 }
