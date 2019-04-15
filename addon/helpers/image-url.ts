@@ -1,5 +1,6 @@
 import Helper from '@ember/component/helper';
 import Image from 'ember-mist-components/interfaces/image';
+import { htmlSafe } from '@ember/template';
 
 export default class ImageURLHelper extends Helper {
   compute([value, style]: [Image|undefined, string]) : string | undefined {
@@ -11,14 +12,18 @@ export default class ImageURLHelper extends Helper {
       return;
     }
 
+    let returnValue = '';
+
     if(style) {
       if(value.url.includes('?')) {
-        return `${value.url}&style=${style}`;
+        returnValue = `${value.url}&style=${style}`;
       } else {
-        return `${value.url}?style=${style}`;
+        returnValue = `${value.url}?style=${style}`;
       }
     } else {
-      return value.url;
+      returnValue = value.url;
     }
+
+    return htmlSafe(returnValue);
   }
 }
