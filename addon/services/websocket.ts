@@ -31,9 +31,9 @@ export default class WebsocketService extends Service.extend(Evented) {
     return getOwner(this).resolveRegistration('config:environment');
   }
 
-  @computed
-  get endpoint() : string {
-    return `${this.config.websocketHost}`;
+  @computed('config')
+  get endpoint() : string | undefined | null {
+    return this.config.websocketHost;
   }
 
   @dropTask

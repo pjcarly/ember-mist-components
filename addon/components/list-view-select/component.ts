@@ -5,12 +5,14 @@ import Query from 'ember-mist-components/query/Query';
 import Condition from 'ember-mist-components/query/Condition';
 import SelectOption from 'ember-field-components/interfaces/SelectOption';
 import ListViewService from 'ember-mist-components/services/list-view';
+import MutableArray from '@ember/array/mutable';
 import { dropTask } from 'ember-concurrency-decorators';
 import { inject as service } from '@ember-decorators/service';
 import { computed, action } from '@ember-decorators/object';
 import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
 import { tagName } from '@ember-decorators/component';
+import { A } from '@ember/array';
 
 @tagName('')
 export default class ListViewSelectComponent extends Component {
@@ -32,12 +34,17 @@ export default class ListViewSelectComponent extends Component {
     this.setListViews.perform();
   }
 
+  @computed('selectOptions')
+  get listViewSelectOptionsComputed() : MutableArray {
+    return A(this.listViewSelectOptions);
+  }
+
   @computed('router.currentRouteName', 'modelName', 'listViewSelectOptions')
   get selectedValue() : string | number {
     const modelName = this.modelName;
     let selection = this.listView.getActiveListViewKeyForCurrentRoute(modelName);
 
-    const foundSelectOption = this.listViewSelectOptions.findBy('value', selection);
+    const foundSelectOption = this.listViewSelectOptionsComputed.findBy('value', selection);
     if(isBlank(foundSelectOption)) {
       selection = 'All';
     }
