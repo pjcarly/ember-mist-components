@@ -1,7 +1,7 @@
 import Transform from 'ember-data/transform';
 import { isBlank } from '@ember/utils';
 
-export default class LocationTransform extends Transform {
+export default class GeolocationTransform extends Transform {
   deserialize(serialized: any | null) {
     const location: any = {};
 
