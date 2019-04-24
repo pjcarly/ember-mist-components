@@ -24,6 +24,7 @@ export default class ModelCalendarComponent extends Component {
   listViewGrouping = '';
   listViewKey = '';
   loadedModels = [];
+  conditions : Condition[] = [];
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   center = new Date();
@@ -179,6 +180,12 @@ export default class ModelCalendarComponent extends Component {
 
     query.addCondition(new Condition(dasherize(this.dateField), '>=', moment(startOfMonth).format(this.dateFormat)));
     query.addCondition(new Condition(dasherize(this.dateField), '<=', moment(endOfMonth).format(this.dateFormat)));
+
+    if(this.conditions) {
+      for(const condition of this.conditions) {
+        query.addCondition(condition);
+      }
+    }
 
     if(this.selectedListView) {
       query.setListView(this.selectedListView);
