@@ -1,18 +1,11 @@
 <span class="input file-drupal">
-  {{#if (and value.id value.url)}}
-    {{#if value.url}}
-      <a href={{value.url}} target="_blank">
-        <IconDownload /> {{value.filename}}
-      </a>
-    {{else}}
-      {{value.filename}}
-    {{/if}}
-
-    {{#mist-button class="btn-xs btn-default remove" click=(action 'deleteFile')}}Remove{{/mist-button}}
+  {{#if (and this.computedValue.id this.computedValue.url)}}
+    <OutputImageLink @value={{this.computedValue}} />
+    <button class="btn btn-xs btn-default remove waves-effect" onclick={{action 'deleteFile'}}>{{t 'ember-mist-components.labels.remove'}}</button>
   {{else}}
-    {{#if uploadFile.isRunning}}
+    {{#if this.uploadFile.isRunning}}
       <button class="btn btn-xs btn-default waves-effect uploading" disabled="disabled">
-        {{t 'ember-mist-components.labels.uploading'}} {{this.activeFile}}/{{this.totalFiles}} {{mist-spinner size="10px" tagName="span" class="m-l-10"}}
+        {{t 'ember-mist-components.labels.uploading'}} {{this.activeFile}}/{{this.totalFiles}} <span class="m-l-10"><Loading @size="10px" /></span>
       </button>
     {{else}}
       <InputFile

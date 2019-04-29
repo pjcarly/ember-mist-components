@@ -1,13 +1,13 @@
-{{#if value}}
-  <div id={{carouselName}} class="carousel slide" data-ride="carousel">
+{{#if this.value}}
+  <div id={{this.carouselName}} class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
-      {{#each value as |imageValue index|}}
-        <li data-target={{concat '#' carouselName}} data-slide-to={{index}} class={{if (eq index 0) " active" }}></li>
+      {{#each this.value as |imageValue index|}}
+        <li data-target={{concat '#' this.carouselName}} data-slide-to={{index}} class={{if (eq index 0) " active" }}></li>
       {{/each}}
     </ol>
 
     <div class="carousel-inner" role="listbox">
-      {{#each value as |imageValue index|}}
+      {{#each this.value as |imageValue index|}}
         <div class="item{{if (eq index 0) " active" }}">
           <InputFileDrupal
             @value={{imageValue}}
@@ -16,7 +16,6 @@
             @modelName={{this.modelName}}
             @options={{this.modifiedOptions}}
             @valueChanged={{action 'didChangeValue' index}} />
-
           <OutputImage
             @value={{imageValue}}
             @style={{this.style}}
@@ -25,19 +24,19 @@
       {{/each}}
     </div>
 
-    <a class="left carousel-control" href={{concat '#' carouselName}} role="button" data-slide="prev">
+    <a class="left carousel-control" href={{concat '#' this.carouselName}} role="button" data-slide="prev">
       <IconArrowLeft />
-      <span class="sr-only">Previous</span>
+      <span class="sr-only">{{t 'ember-mist-components.labels.previous'}}</span>
     </a>
-    <a class="right carousel-control" href={{concat '#' carouselName}} role="button" data-slide="next">
+    <a class="right carousel-control" href={{concat '#' this.carouselName}} role="button" data-slide="next">
       <IconArrowRight />
-      <span class="sr-only">Next</span>
+      <span class="sr-only">{{t 'ember-mist-components.labels.next'}}</span>
     </a>
   </div>
 {{/if}}
 
 <div class="input-field-images-browse">
-  Add Images:
+  {{t 'ember-mist-components.labels.add_images'}}:
   <InputFileDrupal
     @field={{@field}}
     @multiple={{true}}

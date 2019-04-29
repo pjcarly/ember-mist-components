@@ -11,6 +11,10 @@ ember-mist-components:
     refresh: 'Refresh'
     of: 'of'
     uploading: 'Uploading'
+    remove: Remove
+    add_images: Add Images
+    previous: Previous
+    next: Next
   table:
     rows: 'Rows'
     selected: 'Selected'
