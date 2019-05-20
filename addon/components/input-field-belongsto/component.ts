@@ -7,11 +7,12 @@ import Model from 'ember-data/model';
 import { dropTask } from 'ember-concurrency-decorators';
 import { computed, action } from '@ember-decorators/object';
 import { isBlank } from '@ember/utils';
-import { assert } from '@ember/debug';
+import { assert, debug } from '@ember/debug';
 import { dasherize } from '@ember/string';
 import { inject as service } from "@ember-decorators/service";
 import { BelongsToFieldOptions } from '../output-field-belongsto/component';
 import DynamicSelectOptionService from 'ember-mist-components/services/dynamic-select-options';
+import Query from 'ember-mist-components/query/Query';
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent {
   @service dynamicSelectOptions !: DynamicSelectOptionService;
@@ -46,7 +47,21 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       // loadAll is provided by the ember-data-storefront addon, and does magic to not load data twice
       // This is really helpful in case there are multiple components referencing to the same type in the template
       // The query will only be done once
-      const selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(this.relationshipModelName);
+
+      let selectOptions = [];
+
+      if(this.conditions) {
+        const query = Query.create({ modelName: this.relationshipModelName });
+
+        this.conditions.forEach((condition) => {
+          query.addCondition(condition);
+        });
+
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(this.relationshipModelName, query, this.nameField);
+      } else {
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(this.relationshipModelName, undefined, this.nameField);
+      }
+
       this.set('selectOptions', selectOptions);
     }
   }
@@ -66,10 +81,33 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
     return;
   }
 
-  @computed('fieldOptions.filters')
+  @computed('options.nameField')
+  get nameField() : string {
+    let nameField = 'name';
+
+    if(this.options && this.options.nameField) {
+      nameField = this.options.nameField;
+    }
+
+    return nameField;
+  }
+
+  @computed('fieldOptions.filters', 'options.conditions')
   get conditions() : Condition[] {
     const conditions = [];
 
+    // Lets first check for passed in conditions
+    if(this.options && this.options.conditions) {
+      for(const condition of this.options.conditions) {
+        if(condition instanceof Condition) {
+          conditions.push(condition);
+        } else {
+          debug(`(${this.modelName}.${this.field}) Passed in conditions must be of type ember-mist-components/query/Condition `);
+        }
+      }
+    }
+
+    // And also add conditions defined on the field options
     if(this.fieldOptions && this.fieldOptions.filters) {
       const fieldFilters = <BelongsToFilterInterface[]> this.fieldOptions.filters;
 

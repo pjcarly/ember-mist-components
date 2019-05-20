@@ -7,6 +7,7 @@ import { dasherize, camelize } from "@ember/string";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
 import FieldModel from "ember-mist-components/models/field";
 import { isBlank } from "@ember/utils";
+import Query from "ember-mist-components/query/Query";
 
 export default class DynamicSelectOptionService extends Service {
   @service storage !: any;
@@ -63,12 +64,19 @@ export default class DynamicSelectOptionService extends Service {
    * This function returns Models as select options. All the models of a type will be loaded in the store
    * The return options will be key: id of the model, and value: name of the model
    * @param modelName The modelname you want to load select options for
+   * @param nameField The nameField to be used when populating the label part of the selectOption
    */
   @enqueueTask
-  * getModelSelectOptions(modelName: string) : SelectOption[] {
+  * getModelSelectOptions(modelName: string, query: Query | undefined, nameField: string | undefined) : SelectOption[] {
     let models;
 
-    if(this.loadedModelNames.includes(modelName)) {
+    if(!nameField) {
+      nameField = 'name';
+    }
+
+    if(query) {
+      models = yield query.fetch(this.store);
+    } else if(this.loadedModelNames.includes(modelName)) {
       models = this.store.peekAll(modelName);
     } else {
       models = yield this.store.loadAll(modelName);
@@ -80,7 +88,7 @@ export default class DynamicSelectOptionService extends Service {
     for(const model of models.toArray()) {
       const selectOption : SelectOption = {
         value: model.id,
-        label: model.name
+        label: model.get(nameField)
       }
 
       selectOptions.push(selectOption);

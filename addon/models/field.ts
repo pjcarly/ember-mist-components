@@ -1,24 +1,30 @@
 import Model from 'ember-data/model';
 import { attr } from '@ember-decorators/data';
+import { belongsTo } from '@ember-decorators/data';
+import MetaModelModel from './meta-model';
 
 export default class FieldModel extends Model {
   @attr('string')
-  name ?: string;
+  name !: string;
 
   @attr('string')
-  apiName ?: string;
+  label !: string;
 
   @attr('string')
-  model ?: string;
+  apiName !: string;
 
   @attr('number')
-  cardinality ?: number;
+  cardinality !: number;
 
   @attr('string')
   defaultValue ?: string;
 
   @attr()
   selectOptions ?: any;
+
+  /* Relationships */
+  @belongsTo('meta-model', { inverse: 'fields', async: false })
+  model !: MetaModelModel;
 }
 
 declare module 'ember-data/types/registries/model' {
