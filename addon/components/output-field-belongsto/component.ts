@@ -22,6 +22,14 @@ export default class OutputFieldBelongstoComponent extends OutputFieldComponent 
     return this.fieldInformation.getBelongsToModelName(this.modelName, this.field);
   }
 
+  /**
+   * Returns a component name for a dynamic component based on the type of relationship (for example you might want to customize all input fields of users differently than normal)
+   */
+  @computed('relationshipModelName')
+  get dynamicComponentName() : string {
+    return `output-belongsto-${this.relationshipModelName}`;
+  }
+
   @computed('fieldOptions')
   get isPolymorphic() : boolean {
     const options = <BelongsToFieldOptions> this.fieldOptions;
