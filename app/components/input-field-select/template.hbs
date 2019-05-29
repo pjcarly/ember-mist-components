@@ -1,9 +1,9 @@
-{{#if this.selectOptions}}
+{{#if loadSelectOptions.isIdle}}
   {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
   {{#if (eq this.widgetName 'button-group')}}
     <InputButtonGroup
-      @selectOptions={{this.selectOptions}}
-      @value={{this.value}}
+      @selectOptions={{this.selectOptionsComputed}}
+      @value={{this.computedValue}}
       @valueChanged={{action (mut this.value)}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
@@ -12,8 +12,8 @@
       @options={{this.inputOptions}} />
   {{else if (eq this.widgetName 'radio-buttons')}}
     <InputRadioButtonList
-      @selectOptions={{this.selectOptions}}
-      @value={{this.value}}
+      @selectOptions={{this.selectOptionsComputed}}
+      @value={{this.computedValue}}
       @valueChanged={{action (mut this.value)}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
@@ -22,7 +22,7 @@
       @options={{this.inputOptions}} />
   {{else if (eq this.widgetName 'country-select')}}
     <InputSelectCountry
-      @value={{this.value}}
+      @value={{this.computedValue}}
       @valueChanged={{action (mut this.value)}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
@@ -31,49 +31,8 @@
       @options={{this.inputOptions}} />
   {{else}}
     <InputSelect
-      @selectOptions={{this.selectOptions}}
-      @value={{this.value}}
-      @valueChanged={{action (mut this.value)}}
-      @class={{@inputClass}}
-      @inputId={{this.inputId}}
-      @noneLabel={{this.noneLabel}}
-      @required={{this.isRequired}}
-      @options={{this.inputOptions}} />
-  {{/if}}
-{{else if loadSelectOptions.isIdle}}
-  {{#if (eq this.widgetName 'button-group')}}
-    <InputButtonGroup
-      @selectOptions={{this.cachedSelectOptions}}
-      @value={{this.value}}
-      @valueChanged={{action (mut this.value)}}
-      @class={{@inputClass}}
-      @inputId={{this.inputId}}
-      @noneLabel={{this.noneLabel}}
-      @required={{this.isRequired}}
-      @options={{this.inputOptions}} />
-  {{else if (eq this.widgetName 'radio-buttons')}}
-    <InputRadioButtonList
-      @selectOptions={{this.cachedSelectOptions}}
-      @value={{this.value}}
-      @valueChanged={{action (mut this.value)}}
-      @class={{@inputClass}}
-      @inputId={{this.inputId}}
-      @noneLabel={{this.noneLabel}}
-      @required={{this.isRequired}}
-      @options={{this.inputOptions}} />
-  {{else if (eq this.widgetName 'country-select')}}
-    <InputSelectCountry
-      @value={{this.value}}
-      @valueChanged={{action (mut this.value)}}
-      @class={{@inputClass}}
-      @inputId={{this.inputId}}
-      @noneLabel={{this.noneLabel}}
-      @required={{this.isRequired}}
-      @options={{this.inputOptions}} />
-  {{else}}
-    <InputSelect
-      @selectOptions={{this.cachedSelectOptions}}
-      @value={{this.value}}
+      @selectOptions={{this.selectOptionsComputed}}
+      @value={{this.computedValue}}
       @valueChanged={{action (mut this.value)}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}

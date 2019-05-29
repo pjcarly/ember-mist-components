@@ -17,10 +17,10 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
   @task
   * loadSelectOptions() {
     // If selectOptions were defined, we dont load anything
-    if((!this.selectOptions || this.selectOptions.length === 0) && this.widgetName !== 'country-select') {
+    if(!this.selectOptions && this.widgetName !== 'country-select' && !(this.fieldOptions && this.fieldOptions.selectOptions)) {
       const selectOptions = yield this.dynamicSelectOptions.getSelectOptions.perform(this.modelName, this.field);
 
-      this.set('cachedSelectOptions', selectOptions);
+      this.set('selectOptions', this.getAllowedSelectOptions(selectOptions));
     }
   }
 }

@@ -1,17 +1,7 @@
-{{#if this.selectOptions}}
+{{#if loadSelectOptions.isIdle}}
   <InputMultiSelect
-    @selectOptions={{this.selectOptions}}
-    @value={{this.value}}
-    @valueChanged={{action (mut this.value)}}
-    @class={{@inputClass}}
-    @inputId={{this.inputId}}
-    @noneLabel={{this.noneLabel}}
-    @required={{this.isRequired}}
-    @options={{this.inputOptions}} />
-{{else if loadSelectOptions.isIdle}}
-  <InputMultiSelect
-    @selectOptions={{this.cachedSelectOptions}}
-    @value={{this.value}}
+    @selectOptions={{this.selectOptionsComputed}}
+    @value={{this.computedValue}}
     @valueChanged={{action (mut this.value)}}
     @class={{@inputClass}}
     @inputId={{this.inputId}}
