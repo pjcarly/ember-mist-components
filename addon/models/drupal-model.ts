@@ -1,7 +1,8 @@
-import BaseModel from 'ember-field-components/model/base-model';
+import MistModel from './mist-model';
 import { field } from 'ember-field-components/model/attribute';
 
-export default abstract class DrupalModel extends BaseModel {
+export default abstract class DrupalModel extends MistModel {
+
   @field('datetime', { readOnly: true })
   created ?: Date;
 

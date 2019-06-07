@@ -39,6 +39,18 @@
       "ember-field-components/*": [
         "node_modules/ember-field-components/addon/*"
       ],
+      "ember-attribute-validations": [
+        "node_modules/ember-attribute-validations/addon"
+      ],
+      "ember-attribute-validations/*": [
+        "node_modules/ember-attribute-validations/addon/*"
+      ],
+      "ember-data-storefront": [
+        "node_modules/ember-data-storefront/addon"
+      ],
+      "ember-data-storefront/*": [
+        "node_modules/ember-data-storefront/addon/*"
+      ],
       "ember-mist-components/test-support": [
         "addon-test-support"
       ],
@@ -58,7 +70,11 @@
     "types/**/*",
     "test-support/**/*",
     "addon-test-support/**/*",
+    "node_modules/ember-data-storefront/app",
+    "node_modules/ember-data-storefront/addon",
     "node_modules/ember-field-components/app",
-    "node_modules/ember-field-components/addon"
+    "node_modules/ember-field-components/addon",
+    "node_modules/ember-attribute-validations/app",
+    "node_modules/ember-attribute-validations/addon"
   ]
 }
