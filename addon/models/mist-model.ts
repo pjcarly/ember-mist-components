@@ -51,6 +51,10 @@ export default abstract class MistModel extends Model {
         }
       }
     });
+
+    // Now we call the super, which does the rollback on the current model
+    // @ts-ignore ()
+    super.rollback();
   }
 
   /**
