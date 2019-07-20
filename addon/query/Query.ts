@@ -9,6 +9,7 @@ export interface QueryParams {
   sort?: string;
   limit?: number;
   filter?: { [key:string] : QueryFilter|number|string };
+  _single ?: boolean;
 }
 
 export default class Query extends EmberObject {
@@ -208,6 +209,24 @@ export default class Query extends EmberObject {
     }
 
     return store.query(this.modelName, this.queryParams);
+  }
+
+  /**
+   * Executes the query for a single record, and returns a Promise. Native Ember Data store is used, all fetched models will be loaded in the store
+   */
+  fetchSingle(store: Store) : Promise<any> {
+
+    // First we lookup the default includes and add them to the query
+    const defaultIncludes = this.getDefaultIncludes(store);
+
+    for(const defaultInclude of defaultIncludes) {
+      this.addInclude(defaultInclude);
+    }
+
+    const queryParams = this.queryParams;
+    queryParams._single = true;
+
+    return store.queryRecord(this.modelName, queryParams);
   }
 
   /**
