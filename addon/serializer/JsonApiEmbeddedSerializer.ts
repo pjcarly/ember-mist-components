@@ -69,7 +69,10 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
         let relationshipsToCheck: any = {};
         const relationshipsByName = get(primaryModelClass, 'relationshipsByName');
         for(const relationshipName in attrs) {
-          if(attrs.hasOwnProperty('embedded') && attrs[relationshipName].embedded === 'always' && relationshipsByName.has(relationshipName)) {
+          if(attrs.hasOwnProperty(relationshipName) && 
+              attrs[relationshipName].hasOwnProperty('embedded') &&
+              attrs[relationshipName].embedded === 'always' && 
+              relationshipsByName.has(relationshipName)) {
             const relationship = relationshipsByName.get(relationshipName);
 
             // Only hasMany are checked, this has no meaning for belongsTo
