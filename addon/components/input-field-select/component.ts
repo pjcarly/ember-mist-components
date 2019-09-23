@@ -1,13 +1,13 @@
-import InputFieldSelectComponent from 'ember-field-components/components/input-field-select/component';
-import DynamicSelectOptionService from 'ember-mist-components/services/dynamic-select-options';
-import SelectOption from 'ember-field-components/interfaces/SelectOption';
-import { inject as service } from "@ember-decorators/service";
-import { task } from 'ember-concurrency-decorators';
+import InputFieldSelectComponent from "ember-field-components/components/input-field-select/component";
+import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
+import SelectOption from "ember-field-components/interfaces/SelectOption";
+import { inject as service } from "@ember/service";
+import { task } from "ember-concurrency-decorators";
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
-  @service dynamicSelectOptions !: DynamicSelectOptionService;
+  @service dynamicSelectOptions!: DynamicSelectOptionService;
 
-  cachedSelectOptions ?: SelectOption[] = [];
+  cachedSelectOptions?: SelectOption[] = [];
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
@@ -15,12 +15,19 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
   }
 
   @task
-  * loadSelectOptions() {
+  *loadSelectOptions() {
     // If selectOptions were defined, we dont load anything
-    if(!this.selectOptions && this.widgetName !== 'country-select' && !(this.fieldOptions && this.fieldOptions.selectOptions)) {
-      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions.perform(this.modelName, this.field);
+    if (
+      !this.selectOptions &&
+      this.widgetName !== "country-select" &&
+      !(this.fieldOptions && this.fieldOptions.selectOptions)
+    ) {
+      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions.perform(
+        this.modelName,
+        this.field
+      );
 
-      this.set('selectOptions', this.getAllowedSelectOptions(selectOptions));
+      this.set("selectOptions", this.getAllowedSelectOptions(selectOptions));
     }
   }
 }

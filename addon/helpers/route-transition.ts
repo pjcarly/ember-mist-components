@@ -1,16 +1,16 @@
-import Helper from '@ember/component/helper';
-import { inject as service } from '@ember-decorators/service';
+import Helper from "@ember/component/helper";
+import { inject as service } from "@ember/service";
 
 interface RouterService {
-  transitionTo(route: string, id?: string) : void;
+  transitionTo(route: string, id?: string): void;
 }
 
 export default class ArrayJoinHelper extends Helper {
   @service router!: RouterService;
 
-  compute([route] : [string]) {
+  compute([route]: [string]) {
     return () => {
       this.router.transitionTo(route);
-    }
+    };
   }
 }

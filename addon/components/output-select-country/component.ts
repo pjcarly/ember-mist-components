@@ -1,12 +1,13 @@
-import AddressService from 'ember-mist-components/services/address';
-import BaseOutput from 'ember-field-components/components/BaseOutput';
-import { task } from 'ember-concurrency-decorators';
-import { inject as service } from '@ember-decorators/service';
+import AddressService from "ember-mist-components/services/address";
+import BaseOutput from "ember-field-components/components/BaseOutput";
+import { task } from "ember-concurrency-decorators";
+import { inject as service } from "@ember/service";
+import SelectOption from "ember-field-components/interfaces/SelectOption";
 
 export default class OutputSelectCountryComponent extends BaseOutput {
-  @service address !: AddressService;
+  @service address!: AddressService;
 
-  selectOptions ?: SelectOption[];
+  selectOptions?: SelectOption[];
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
@@ -14,13 +15,13 @@ export default class OutputSelectCountryComponent extends BaseOutput {
   }
 
   @task
-  * setCountrySelectOptions() : SelectOption[] {
+  *setCountrySelectOptions(): SelectOption[] {
     const selectOptions = yield this.address.getCountrySelectOptions.perform();
 
-    if(selectOptions) {
-      this.set('selectOptions', selectOptions);
+    if (selectOptions) {
+      this.set("selectOptions", selectOptions);
     } else {
-      this.set('selectOptions', []);
+      this.set("selectOptions", []);
     }
   }
 }
