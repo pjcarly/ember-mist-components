@@ -1,7 +1,7 @@
 import Service from "@ember/service";
-import Store from 'ember-data/store';
-import { enqueueTask } from 'ember-concurrency-decorators';
-import { inject as service } from "@ember-decorators/service";
+import Store from "ember-data/store";
+import { enqueueTask } from "ember-concurrency-decorators";
+import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
@@ -10,14 +10,14 @@ import { isBlank } from "@ember/utils";
 import Query from "ember-mist-components/query/Query";
 
 export default class DynamicSelectOptionService extends Service {
-  @service storage !: any;
-  @service store !: Store;
+  @service storage!: any;
+  @service store!: Store;
 
   /**
    * This array contains a list of modelnames that were already loaded as selectoptions.
    * And should then be present in the store, without having to do a new query
    */
-  loadedModelNames : string[] = [];
+  loadedModelNames: string[] = [];
 
   /**
    * Returns the SelectOptions for the provided model and field.
@@ -28,32 +28,41 @@ export default class DynamicSelectOptionService extends Service {
    * @param field The name of the field
    */
   @enqueueTask
-  * getSelectOptions(modelName: string, field: string) {
-    let cachedSelectOptions : SelectOption[] = [];
+  *getSelectOptions(modelName: string, field: string) {
+    let cachedSelectOptions: SelectOption[] = [];
 
     const id = `${modelName}.${dasherize(field)}`;
 
-    const fieldAdapter = this.store.adapterFor('field');
-    assert(`Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`, !isBlank(fieldAdapter));
+    const fieldAdapter = this.store.adapterFor("field");
+    assert(
+      `Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`,
+      !isBlank(fieldAdapter)
+    );
 
     // first we check if the local storage has the values cached
     const localKey = camelize(`selectoptions_${id}`);
-    const localSelectOptions = <SelectOption[]> this.storage.get(localKey);
+    const localSelectOptions = <SelectOption[]>this.storage.get(localKey);
 
-    if(!isBlank(localSelectOptions)) {
+    if (!isBlank(localSelectOptions)) {
       cachedSelectOptions = localSelectOptions;
-    } else if(this.store.hasRecordForId('field', id)) {
+    } else if (this.store.hasRecordForId("field", id)) {
       // next we check if we haven't already loaded the selectOptions
-      const fieldModel = <FieldModel> this.store.peekRecord('field', id);
-      cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(fieldModel);
+      const fieldModel = <FieldModel>this.store.peekRecord("field", id);
+      cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
+        fieldModel
+      );
     } else {
       // not yet loaded, let's do a callout
-      yield this.store.loadRecord('field', id).then((fieldModel: FieldModel) => {
-        cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(fieldModel);
-      });
+      yield this.store
+        .loadRecord("field", id)
+        .then((fieldModel: FieldModel) => {
+          cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
+            fieldModel
+          );
+        });
     }
 
-    if(!isBlank(cachedSelectOptions) && isBlank(localSelectOptions)) {
+    if (!isBlank(cachedSelectOptions) && isBlank(localSelectOptions)) {
       this.storage.set(localKey, cachedSelectOptions);
     }
 
@@ -67,29 +76,33 @@ export default class DynamicSelectOptionService extends Service {
    * @param nameField The nameField to be used when populating the label part of the selectOption
    */
   @enqueueTask
-  * getModelSelectOptions(modelName: string, query: Query | undefined, nameField: string | undefined) : SelectOption[] {
+  *getModelSelectOptions(
+    modelName: string,
+    query: Query | undefined,
+    nameField: string | undefined
+  ): SelectOption[] {
     let models;
 
-    if(!nameField) {
-      nameField = 'name';
+    if (!nameField) {
+      nameField = "name";
     }
 
-    if(query) {
+    if (query) {
       models = yield query.fetch(this.store);
-    } else if(this.loadedModelNames.includes(modelName)) {
+    } else if (this.loadedModelNames.includes(modelName)) {
       models = this.store.peekAll(modelName);
     } else {
       models = yield this.store.loadAll(modelName);
       this.loadedModelNames.push(modelName);
     }
 
-    const selectOptions : SelectOption[] = [];
+    const selectOptions: SelectOption[] = [];
 
-    for(const model of models.toArray()) {
-      const selectOption : SelectOption = {
+    for (const model of models.toArray()) {
+      const selectOption: SelectOption = {
         value: model.id,
         label: model.get(nameField)
-      }
+      };
 
       selectOptions.push(selectOption);
     }
@@ -101,15 +114,17 @@ export default class DynamicSelectOptionService extends Service {
    * This transforms the meta FieldModel to the SelectOptions that can be used in ember-field-components select components
    * @param fieldModel The field model
    */
-  transformFieldSelectOptionsToSelectOptions(fieldModel: FieldModel) : SelectOption[] {
-    const transformedSelectOptions : SelectOption[] = [];
+  transformFieldSelectOptionsToSelectOptions(
+    fieldModel: FieldModel
+  ): SelectOption[] {
+    const transformedSelectOptions: SelectOption[] = [];
 
-    if(fieldModel.selectOptions) {
+    if (fieldModel.selectOptions) {
       for (const key in fieldModel.selectOptions) {
-        const selectOption : SelectOption = {
+        const selectOption: SelectOption = {
           value: key,
           label: fieldModel.selectOptions[key]
-        }
+        };
 
         transformedSelectOptions.push(selectOption);
       }

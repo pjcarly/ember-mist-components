@@ -1,11 +1,11 @@
-import Service from '@ember/service';
-import Store from 'ember-data/store';
-import Model from 'ember-data/model';
-import { inject as service } from '@ember-decorators/service';
-import FieldInformationService from 'ember-field-components/services/field-information';
+import Service from "@ember/service";
+import Store from "ember-data/store";
+import Model from "ember-data/model";
+import { inject as service } from "@ember/service";
+import FieldInformationService from "ember-field-components/services/field-information";
 
 interface RouterService {
-  transitionTo(route: string, id?: string) : void;
+  transitionTo(route: string, id?: string): void;
 }
 
 export default class EntityRouterService extends Service {
@@ -17,21 +17,21 @@ export default class EntityRouterService extends Service {
    * @param model Transition to the view route for the provided model
    */
   transitionToView(model: Model) {
-    this.transitionToModelRoute(model, 'view');
+    this.transitionToModelRoute(model, "view");
   }
 
   /**
    * @param model Transition to the edit route for the provided model
    */
   transitionToEdit(model: Model) {
-    this.transitionToModelRoute(model, 'edit');
+    this.transitionToModelRoute(model, "edit");
   }
 
   /**
    * @param model Transition to the delete route for the provided model
    */
   transitionToDelete(model: Model) {
-    this.transitionToModelRoute(model, 'delete');
+    this.transitionToModelRoute(model, "delete");
   }
 
   /**
@@ -55,6 +55,6 @@ export default class EntityRouterService extends Service {
    */
   transitionToModelRoute(model: Model, route: string) {
     const modelName = this.fieldInformation.getModelName(model);
-    this.router.transitionTo(`${modelName}.${route}`, model.get('id'));
+    this.router.transitionTo(`${modelName}.${route}`, model.get("id"));
   }
-};
+}

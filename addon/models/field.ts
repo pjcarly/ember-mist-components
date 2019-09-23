@@ -1,34 +1,34 @@
-import Model from 'ember-data/model';
-import { attr } from '@ember-decorators/data';
-import { belongsTo } from '@ember-decorators/data';
-import MetaModelModel from './meta-model';
+import Model from "ember-data/model";
+import attr from "ember-data/attr";
+import { belongsTo } from "ember-data/relationships";
+import MetaModelModel from "./meta-model";
 
 export default class FieldModel extends Model {
-  @attr('string')
-  name !: string;
+  @attr("string")
+  name!: string;
 
-  @attr('string')
-  label !: string;
+  @attr("string")
+  label!: string;
 
-  @attr('string')
-  apiName !: string;
+  @attr("string")
+  apiName!: string;
 
-  @attr('number')
-  cardinality !: number;
+  @attr("number")
+  cardinality!: number;
 
-  @attr('string')
-  defaultValue ?: string;
+  @attr("string")
+  defaultValue?: string;
 
   @attr()
-  selectOptions ?: any;
+  selectOptions?: any;
 
   /* Relationships */
-  @belongsTo('meta-model', { inverse: 'fields', async: false })
-  model !: MetaModelModel;
+  @belongsTo("meta-model", { inverse: "fields", async: false })
+  model!: MetaModelModel;
 }
 
-declare module 'ember-data/types/registries/model' {
+declare module "ember-data/types/registries/model" {
   export default interface ModelRegistry {
-    'field' : FieldModel
+    field: FieldModel;
   }
 }
