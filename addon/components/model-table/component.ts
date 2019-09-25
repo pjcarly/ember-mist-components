@@ -58,7 +58,7 @@ export default class ModelTableComponent extends Component {
   /**
    * The ember-light-table instance
    */
-  table: Table = new Table([]);
+  table: Table = Table.create();
   lastPage: number = 0;
   resultRowFirst: number = 0;
   resultRowLast: number = 0;

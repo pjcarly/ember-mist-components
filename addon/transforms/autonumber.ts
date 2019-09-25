@@ -1,1 +1,1 @@
-export { default } from 'ember-data/transforms/string';
+export { default } from "ember-data/transforms/string";
