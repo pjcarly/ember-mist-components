@@ -1,12 +1,5 @@
-<PowerSelect @class="form-control"
-  @triggerId={{@inputId}}
-  @placeholder={{@placeholder}}
-  @search={{perform searchTask}}
-  @selected={{@value}}
-  @onchange={{action 'formValueChanged'}}
-  @onfocus={{action 'handleFocus'}}
-  @allowClear={{not this.shouldHideClear}}
-  @renderInPlace={{this.shouldRenderInPlace}}
-  as |model| >
+<PowerSelect @class="form-control" @triggerId={{@inputId}} @placeholder={{@placeholder}} @search={{perform searchTask}}
+  @selected={{@value}} @onChange={{action 'formValueChanged'}} @onFocus={{action 'handleFocus'}} @searchEnabled={{true}}
+  @allowClear={{not this.shouldHideClear}} @renderInPlace={{this.shouldRenderInPlace}} as |model|>
   {{model.name}}
 </PowerSelect>
