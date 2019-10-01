@@ -1,13 +1,10 @@
 import OutputFieldMultiSelectComponent from "ember-field-components/components/output-field-multi-select/component";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 
 export default class DynamicOutputFieldMultiSelectComponent extends OutputFieldMultiSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
-
-  cachedSelectOptions?: SelectOption[] = [];
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
@@ -26,7 +23,7 @@ export default class DynamicOutputFieldMultiSelectComponent extends OutputFieldM
         this.field
       );
 
-      this.set("cachedSelectOptions", selectOptions);
+      this.set("selectOptions", selectOptions);
     }
   }
 }

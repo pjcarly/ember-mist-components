@@ -1,24 +1,24 @@
 ember-attribute-validations:
-  validAddress: '%@ is an invalid address for the selected country, fill in the required fields'
-  requiredAddress: '%@ is required'
-  conditionalRequired: '%@ is required'
+  validAddress: "{label} is an invalid address for the selected country, fill in the required fields"
+  requiredAddress: "{label} is required"
+  conditionalRequired: "{label} is required"
 ember-mist-components:
   labels:
-    automatically_generated: 'Automatically generated'
-    country_none: '-- Country (none) --'
-    browse: 'Browse'
-    search: 'Search'
-    refresh: 'Refresh'
-    of: 'of'
-    uploading: 'Uploading'
+    automatically_generated: "Automatically generated"
+    country_none: "-- Country (none) --"
+    browse: "Browse"
+    search: "Search"
+    refresh: "Refresh"
+    of: "of"
+    uploading: "Uploading"
     remove: Remove
     add_images: Add Images
     previous: Previous
     next: Next
   table:
-    rows: 'Rows'
-    selected: 'Selected'
-    no_data: 'No data found'
+    rows: "Rows"
+    selected: "Selected"
+    no_data: "No data found"
   list-view:
-    new: 'New List View'
+    new: "New List View"
     edit: Edit List View

@@ -1,13 +1,10 @@
 import InputFieldSelectComponent from "ember-field-components/components/input-field-select/component";
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
-
-  cachedSelectOptions?: SelectOption[] = [];
 
   didReceiveAttrs() {
     super.didReceiveAttrs();

@@ -4,8 +4,6 @@ import { computed, action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 
 export default class InputFieldImageComponent extends InputFieldFileComponent {
-  type = "image";
-
   modalVisible: boolean = false;
 
   @computed("options.endpoint")
@@ -23,7 +21,7 @@ export default class InputFieldImageComponent extends InputFieldFileComponent {
     return options;
   }
 
-  @computed
+  @computed()
   get modalId(): string {
     return `${guidFor(this)}-modal`;
   }

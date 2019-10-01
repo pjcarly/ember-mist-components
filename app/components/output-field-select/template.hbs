@@ -1,32 +1,16 @@
-{{#if this.selectOptions}}
+{{#if loadSelectOptions.isIdle}}
+  {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
   {{#if (eq this.widgetName 'country-select')}}
     <OutputSelectCountry
-      @value={{this.value}}
+      @value={{this.computedValue}}
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}
       @options={{this.outputOptions}} />
   {{else}}
     <OutputSelect
-      @value={{this.value}}
-      @selectOptions={{this.selectOptions}}
-      @prefix={{@prefix}}
-      @suffix={{@suffix}}
-      @class={{@outputClass}}
-      @options={{this.outputOptions}} />
-  {{/if}}
-{{else if loadSelectOptions.isIdle}}
-  {{#if (eq this.widgetName 'country-select')}}
-    <OutputSelectCountry
-      @value={{this.value}}
-      @prefix={{@prefix}}
-      @suffix={{@suffix}}
-      @class={{@outputClass}}
-      @options={{this.outputOptions}} />
-  {{else}}
-    <OutputSelect
-      @value={{this.value}}
-      @selectOptions={{this.cachedSelectOptions}}
+      @value={{this.computedValue}}
+      @selectOptions={{this.selectOptionsComputed}}
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}

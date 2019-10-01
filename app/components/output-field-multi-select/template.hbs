@@ -1,15 +1,7 @@
-{{#if this.selectOptions}}
+{{#if loadSelectOptions.isIdle}}
   <OutputMultiSelect
     @value={{this.value}}
-    @selectOptions={{this.selectOptions}}
-    @prefix={{@prefix}}
-    @suffix={{@suffix}}
-    @class={{@outputClass}}
-    @options={{this.outputOptions}} />
-{{else if loadSelectOptions.isIdle}}
-  <OutputMultiSelect
-    @value={{this.value}}
-    @selectOptions={{this.cachedSelectOptions}}
+    @selectOptions={{this.selectOptionsComputed}}
     @prefix={{@prefix}}
     @suffix={{@suffix}}
     @class={{@outputClass}}
