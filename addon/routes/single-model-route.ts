@@ -4,6 +4,7 @@ import FieldInformationService from "ember-field-components/services/field-infor
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { action } from "@ember/object";
+import Transition from "@ember/routing/-private/transition";
 
 export interface SingleModelRouteModelParams {
   id: string;
@@ -54,16 +55,16 @@ export default class SingleModelRoute extends ResetModelRoute {
    * If an error is triggered on the transition, we remove the Model from the Recently viewed
    */
   @action
-  error(_: any, transition: any) {
+  error(_: any, transition: Transition) {
     if (!isBlank(this.modelName)) {
-      const routeName = transition.targetName;
-
       if (
-        transition.params.hasOwnProperty(routeName) &&
-        transition.params[routeName].hasOwnProperty(`id`)
+        transition.to &&
+        transition.to.params &&
+        transition.to.params.hasOwnProperty("id")
       ) {
-        const id = transition.params[routeName][`id`];
-        if (!isBlank(id)) {
+        const id = transition.to.params.id;
+
+        if (id) {
           this.recentlyViewed.removeRecentlyViewed(this.modelName, id);
         }
       }
