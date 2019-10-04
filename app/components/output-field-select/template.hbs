@@ -2,15 +2,15 @@
   {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
   {{#if (eq this.widgetName 'country-select')}}
     <OutputSelectCountry
-      @value={{this.computedValue}}
+      @value={{this.value}}
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}
       @options={{this.outputOptions}} />
   {{else}}
     <OutputSelect
-      @value={{this.computedValue}}
-      @selectOptions={{this.selectOptionsComputed}}
+      @value={{this.value}}
+      @selectOptions={{this.selectOptions}}
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}

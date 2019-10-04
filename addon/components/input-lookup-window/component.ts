@@ -30,7 +30,7 @@ export default class InputLookupWindowComponent extends BaseInput {
     }
   }
 
-  @computed
+  @computed()
   get modalId(): string {
     return `${guidFor(this)}-modal`;
   }
