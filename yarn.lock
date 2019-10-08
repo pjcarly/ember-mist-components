@@ -3413,10 +3413,15 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000989:
+caniuse-lite@^1.0.0:
   version "1.0.30000997"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000997.tgz#ba44a606804f8680894b7042612c2c7f65685b7e"
   integrity sha512-BQLFPIdj2ntgBNWp9Q64LGUIEmvhKkzzHhUHR3CD5A9Lb7ZKF20/+sgadhFap69lk5XmK1fTUleDclaRFvgVUA==
+
+caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000989:
+  version "1.0.30000999"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000999.tgz#427253a69ad7bea4aa8d8345687b8eec51ca0e43"
+  integrity sha512-1CUyKyecPeksKwXZvYw0tEoaMCo/RwBlXmEtN5vVnabvO0KPd9RQLcaAuR9/1F+KDMv6esmOFWlsXuzDk+8rxg==
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -4274,9 +4279,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.247, electron-to-chromium@^1.3.47:
-  version "1.3.267"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.267.tgz#7745ff9d447fd2a9802e1c6dfa518631e0cf5357"
-  integrity sha512-9Q2ixAJC+oHjWNtJV0MQ4vJMCWSowIrC6V6vcr+bwPddTDHj2ddv9xxXCzf4jT/fy6HP7maPoW0gifXkRxCttQ==
+  version "1.3.277"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.277.tgz#38b7b297f9b3f67ea900a965c1b11a555de526ec"
+  integrity sha512-Czmsrgng89DOgJlIknnw9bn5431QdtnUwGp5YYiPwU1DbZQUxCLF+rc1ZC09VNAdalOPcvH6AE8BaA0H5HjI/w==
 
 element-resize-detector@^1.1.4:
   version "1.1.15"
@@ -4878,9 +4883,9 @@ ember-copy@1.0.0:
     ember-cli-babel "^6.6.0"
 
 ember-data-change-tracker@~0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/ember-data-change-tracker/-/ember-data-change-tracker-0.9.1.tgz#6b62424be2f0b2597a872d40c3d852579d789ccd"
-  integrity sha512-YAwT+12QWPWfJn6uA4Kbg6ZnU+iMWkUl2WeRfixjrlIS6k2E2hoI/eIjPIUwQbUJE3LKtTkec5h75khAazwm5w==
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/ember-data-change-tracker/-/ember-data-change-tracker-0.9.2.tgz#0820521184f3b20058835fc6d907991da5b2b871"
+  integrity sha512-LmDh/amdUyOHUX1xDbitD+JfTgnznowjVoHXJwrZgyaFMZ7/GWsMQxxro4WBLHnJ0O74PPSOrqYgmReNXWrayw==
   dependencies:
     ember-cli-babel "^7.4.0"
 
@@ -4994,7 +4999,7 @@ ember-factory-for-polyfill@^1.3.1:
 
 "ember-field-components@git+ssh://git@gitlab.com:getflights/ember-field-components.git":
   version "0.0.0"
-  resolved "git+ssh://git@gitlab.com:getflights/ember-field-components.git#86e1e7d428855c82e799226659150e922d1f5b59"
+  resolved "git+ssh://git@gitlab.com:getflights/ember-field-components.git#5b3c2e4c10378ddea3a5e99a6fca6432aaa4e5af"
   dependencies:
     "@ember/jquery" "~0.6.1"
     autosize "~4.0.2"
@@ -7283,9 +7288,9 @@ json5@^1.0.1:
     minimist "^1.2.0"
 
 json5@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.0.tgz#e7a0c62c48285c628d20a10b85c89bb807c32850"
-  integrity sha512-8Mh9h6xViijj36g7Dxi+Y4S6hNGV96vcJZr/SrlHh1LR/pEn/8j/+qIBbs44YKl69Lrfctp4QD+AdWLTMqEZAQ==
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.1.tgz#81b6cb04e9ba496f1c7005d07b4368a2638f90b6"
+  integrity sha512-l+3HXD0GEI3huGq1njuqtzYK8OYJyXMkOLtQ53pjWh89tvWS2h6l+1zMkYWqlb57+SiQodKZyvMEFb2X+KrFhQ==
   dependencies:
     minimist "^1.2.0"
 
@@ -8192,11 +8197,11 @@ node-pre-gyp@^0.12.0:
     tar "^4"
 
 node-releases@^1.1.29:
-  version "1.1.32"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.32.tgz#485b35c1bf9b4d8baa105d782f8ca731e518276e"
-  integrity sha512-VhVknkitq8dqtWoluagsGPn3dxTvN9fwgR59fV3D7sLBHe0JfDramsMI8n8mY//ccq/Kkrf8ZRHRpsyVZ3qw1A==
+  version "1.1.34"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.34.tgz#ced4655ee1ba9c3a2c5dcbac385e19434155fd40"
+  integrity sha512-fNn12JTEfniTuCqo0r9jXgl44+KxRH/huV7zM/KAGOKxDKrHr6EbT7SSs4B+DNxyBE2mks28AD+Jw6PkfY5uwA==
   dependencies:
-    semver "^5.3.0"
+    semver "^6.3.0"
 
 nopt@^3.0.6:
   version "3.0.6"
