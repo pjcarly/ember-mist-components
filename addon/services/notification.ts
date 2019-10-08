@@ -10,6 +10,7 @@ export default abstract class NotificationService extends Service.extend(
   @service websocket!: WebsocketService;
 
   init() {
+    super.init(...arguments);
     this.websocket.on("message", this, this.triggerNotification);
   }
 
