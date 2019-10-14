@@ -1,5 +1,5 @@
-import Service from '@ember/service';
-import Model from 'ember-data/model';
+import Service from "@ember/service";
+import Model from "ember-data/model";
 
 export default class EntityCacheService extends Service {
   returnToModel: Model | null = null;
@@ -9,14 +9,14 @@ export default class EntityCacheService extends Service {
    * Clears the return to model
    */
   clearReturnToModel() {
-    this.returnToModel = null;
+    this.set("returnToModel", null);
   }
 
   /**
    * Clear the cached model
    */
   clearCachedModel() {
-    this.cachedModel = null;
+    this.set("cachedModel", null);
   }
 
   /**
@@ -28,4 +28,4 @@ export default class EntityCacheService extends Service {
 
     return returnToModel;
   }
-};
+}
