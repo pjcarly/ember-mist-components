@@ -1,6 +1,5 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
-import Model from "ember-data/model";
 import Query from "ember-mist-components/query/Query";
 import Condition from "ember-mist-components/query/Condition";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
@@ -31,11 +30,12 @@ export default class ListViewSelectComponent extends Component {
     super.didReceiveAttrs();
 
     assert("Grouping cannot be blank", !isBlank(this.grouping));
+    // @ts-ignore
     this.setListViews.perform();
   }
 
   @computed("selectOptions")
-  get listViewSelectOptionsComputed(): MutableArray {
+  get listViewSelectOptionsComputed(): MutableArray<SelectOption> {
     return A(this.listViewSelectOptions);
   }
 
@@ -81,7 +81,7 @@ export default class ListViewSelectComponent extends Component {
     query.addCondition(new Condition("grouping", "=", this.grouping));
 
     yield query.fetch(this.store).then(listViews => {
-      listViews.forEach((listView: Model) => {
+      listViews.forEach((listView: any) => {
         const selectOption: any = {};
         selectOption.value = listView.get("id");
         selectOption.label = listView.get("name");
