@@ -1,6 +1,7 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
 import Model from "ember-data/model";
+// @ts-ignore
 import Table from "ember-light-table";
 import Query from "ember-mist-components/query/Query";
 import FieldInformationService from "ember-field-components/services/field-information";
@@ -98,11 +99,14 @@ export default class ModelTableComponent extends Component {
   didReceiveAttrs() {
     super.didReceiveAttrs();
     this.setActiveModelName();
+    this.setQueryParamsBasedOnActiveListView();
+    // @ts-ignore
     this.initializeTable.perform();
   }
 
   @task
   *initializeTable() {
+    // @ts-ignore
     yield this.fetchRecords.perform();
 
     if (this.searchFixed) {
@@ -151,7 +155,7 @@ export default class ModelTableComponent extends Component {
   /**
    * The inputId that will be used for the search input element
    */
-  @computed
+  @computed()
   get searchInputId(): string {
     return `${this.guid}-search`;
   }
@@ -167,7 +171,7 @@ export default class ModelTableComponent extends Component {
   /**
    * Returns the config for this application
    */
-  @computed
+  @computed()
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
@@ -291,7 +295,7 @@ export default class ModelTableComponent extends Component {
   /**
    * Returns a unique id for this component
    */
-  @computed
+  @computed()
   get guid(): string {
     return guidFor(this);
   }
@@ -370,7 +374,7 @@ export default class ModelTableComponent extends Component {
     if (this.isMultiSelect) {
       const rows: MutableArray<Row> = this.table.rows;
 
-      for (const row of rows) {
+      for (const row of rows.toArray()) {
         const model = <Model>row.content;
         row.set("rowSelected", this.selectedModels.includes(model));
       }
@@ -387,53 +391,6 @@ export default class ModelTableComponent extends Component {
   }
 
   /**
-   * Activates the previous row
-   */
-  activatePreviousRow() {
-    const rows: MutableArray<Row> = this.table.rows;
-
-    let activatedIndex: number | undefined;
-    rows.forEach((row: any, index: number) => {
-      if (row.activated) {
-        activatedIndex = index;
-      }
-    });
-
-    if (!activatedIndex) {
-      const firstRow = <Row>rows.firstObject;
-      firstRow.set("activated", true);
-    } else if (activatedIndex > 0) {
-      rows.setEach("activated", false);
-
-      const activatedRow = <Row>rows.objectAt(activatedIndex - 1);
-      activatedRow.set("activated", true);
-    }
-  }
-
-  /**
-   * Activate the next row in the table
-   */
-  activateNextRow() {
-    const rows: MutableArray<Row> = this.table.rows;
-    let activatedIndex: number | undefined;
-    rows.forEach((row: any, index: number) => {
-      if (row.activated) {
-        activatedIndex = index;
-      }
-    });
-
-    if (!activatedIndex) {
-      const firstRow = <Row>rows.firstObject;
-      firstRow.set("activated", true);
-    } else if (activatedIndex + 1 < rows.length) {
-      rows.setEach("activated", false);
-
-      const activatedRow = <Row>rows.objectAt(activatedIndex + 1);
-      activatedRow.set("activated", true);
-    }
-  }
-
-  /**
    * This function will set the select all boolean, based on the selected rows
    */
   setSelectAllColumn() {
@@ -445,6 +402,7 @@ export default class ModelTableComponent extends Component {
 
     if (this.selectedModels.length === 0 && this.displaySelected) {
       this.toggleProperty("displaySelected");
+      // @ts-ignore
       this.fetchRecords.perform();
     }
   }
@@ -454,7 +412,9 @@ export default class ModelTableComponent extends Component {
    */
   setQueryParamsBasedOnActiveListView() {
     assert(`Listview not found`, !isBlank(this.selectedListView));
+    // @ts-ignore
     const listViewLimit = get(this.selectedListView, "rows");
+    // @ts-ignore
     const listViewSort = get(this.selectedListView, "sortOrder");
 
     this.query.setLimit(isBlank(listViewLimit) ? 10 : listViewLimit);
@@ -523,6 +483,7 @@ export default class ModelTableComponent extends Component {
 
   @dropTask
   *fetchRecordsAndRefreshColumns() {
+    // @ts-ignore
     yield this.get("fetchRecords").perform();
     // Needed for polymorphic tables
     this.setColumns();
@@ -552,6 +513,7 @@ export default class ModelTableComponent extends Component {
       } else {
         // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
         this.query.clearSearch();
+        // @ts-ignore
         this.fetchRecords.perform();
       }
     }
@@ -563,6 +525,7 @@ export default class ModelTableComponent extends Component {
   @action
   search() {
     if (this.searchVisible) {
+      // @ts-ignore
       this.fetchRecords.perform();
     } else {
       this.toggleSearch();
@@ -574,6 +537,7 @@ export default class ModelTableComponent extends Component {
    */
   @action
   refresh() {
+    // @ts-ignore
     this.fetchRecords.perform();
   }
 
@@ -584,6 +548,7 @@ export default class ModelTableComponent extends Component {
   nextPage() {
     if (this.query.page < this.lastPage) {
       this.query.nextPage();
+      // @ts-ignore
       this.fetchRecords.perform();
     }
   }
@@ -595,6 +560,7 @@ export default class ModelTableComponent extends Component {
   prevPage() {
     if (this.query.page > 1) {
       this.query.prevPage();
+      // @ts-ignore
       this.fetchRecords.perform();
     }
   }
@@ -606,6 +572,7 @@ export default class ModelTableComponent extends Component {
   @action
   pageSelected(page: number) {
     this.query.setPage(page);
+    // @ts-ignore
     this.fetchRecords.perform();
   }
 
@@ -617,6 +584,7 @@ export default class ModelTableComponent extends Component {
   limitChanged(limit: number) {
     this.query.setPage(1);
     this.query.setLimit(limit);
+    // @ts-ignore
     this.fetchRecords.perform();
   }
 
@@ -632,7 +600,7 @@ export default class ModelTableComponent extends Component {
 
       const rows: MutableArray<Row> = this.table.rows;
 
-      for (const row of rows) {
+      for (const row of rows.toArray()) {
         row.set("rowSelected", column.get("valuePath"));
         const model = <Model>row.content;
 
@@ -657,7 +625,7 @@ export default class ModelTableComponent extends Component {
         )
       );
       this.query.setPage(1);
-
+      // @ts-ignore
       this.fetchRecords.perform();
     }
   }
@@ -690,6 +658,7 @@ export default class ModelTableComponent extends Component {
         }
 
         if (this.displaySelected) {
+          // @ts-ignore
           this.fetchRecords.perform();
         } else {
           this.setSelectAllColumn();
@@ -726,6 +695,7 @@ export default class ModelTableComponent extends Component {
   toggleDisplaySelected() {
     this.query.setPage(1);
     this.toggleProperty("displaySelected");
+    // @ts-ignore
     this.fetchRecords.perform();
   }
 
@@ -737,6 +707,7 @@ export default class ModelTableComponent extends Component {
     this.notifyPropertyChange("listViewKey");
 
     // Now we can refetch the records and reset the columns
+    // @ts-ignore
     this.fetchRecordsAndRefreshColumns.perform();
   }
 
@@ -744,6 +715,7 @@ export default class ModelTableComponent extends Component {
   listViewChanged(_: string) {
     this.notifyPropertyChange("listViewKey");
     this.setQueryParamsBasedOnActiveListView();
+    // @ts-ignore
     this.fetchRecordsAndRefreshColumns.perform();
   }
 }
