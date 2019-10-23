@@ -126,7 +126,7 @@ export default class ModelController extends Controller {
     this.entityRouter.transitionToCreate(modelName);
   }
 
-  @task({ group: "modelTasks" })
+  @task
   *refresh(model: DrupalModel) {
     model.rollback(); // To clear any potential dirty state (else the reload won't work)
     const modelName = this.fieldInformation.getModelName(model);
@@ -160,7 +160,7 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
-    yield model.reload();
+    yield this.refresh.perform(model);
   }
 
   @task({ group: "modelTasks" })
