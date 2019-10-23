@@ -51,7 +51,8 @@ export default class ModelController extends Controller {
         confirmButtonText: "Yes, delete it!",
         allowOutsideClick: true
       },
-      function() {
+      function(this: ModelController) {
+        // @ts-ignore
         this.deleteWithoutConfirm.perform(model);
       }.bind(this)
     );
@@ -67,7 +68,8 @@ export default class ModelController extends Controller {
         this.successToast(`Success`, `Record deleted`);
         this.entityRouter.transitionToList(modelName);
 
-        this.recentlyViewed.removeRecentlyViewed(model, model.id);
+        const modelClass = this.fieldInformation.getModelClassForModel(model);
+        this.recentlyViewed.removeRecentlyViewed(modelClass, model.id);
       })
       .catch((reason: any) => {
         this.logErrorMessage(
@@ -140,6 +142,7 @@ export default class ModelController extends Controller {
     }
 
     yield this.store
+      // @ts-ignore
       .loadRecord(modelName, model.get("id"), options)
       .then(() => {
         this.infoToast(`Success`, `Record Refreshed`);
@@ -151,6 +154,7 @@ export default class ModelController extends Controller {
 
   @task({ group: "modelTasks" })
   *invokeModelActionAndRefresh(model: DrupalModel, action: string) {
+    // @ts-ignore
     const actionToInvoke = model.get(action).bind(model);
     yield actionToInvoke()
       .then(() => {
@@ -160,11 +164,13 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
+    // @ts-ignore
     yield this.refresh.perform(model);
   }
 
   @task({ group: "modelTasks" })
   *invokeModelAction(model: DrupalModel, action: string) {
+    // @ts-ignore
     const actionToInvoke = model.get(action).bind(model);
     yield actionToInvoke()
       .then(() => {
