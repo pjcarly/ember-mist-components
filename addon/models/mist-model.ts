@@ -25,8 +25,28 @@ export default abstract class MistModel extends Model {
 
   @computed("errors.[]")
   get hasErrors() {
-    //return this.errors.get('length') > 0;
-    return this.get("errors.length") > 0;
+    // @ts-ignore
+    return this.errors.get("length") > 0;
+  }
+
+  @computed()
+  get embeddedRelationships(): string[] {
+    const embeddedRelationships: string[] = [];
+
+    const modelName = this.fieldInformation.getModelName(this);
+    // @ts-ignore
+    const serializer = this.store.serializerFor(modelName);
+    const attrs = serializer.attrs;
+
+    if (isBlank(attrs)) {
+      return embeddedRelationships;
+    }
+
+    for (const relationshipName in attrs) {
+      embeddedRelationships.push(relationshipName);
+    }
+
+    return embeddedRelationships;
   }
 
   @or("isDirty", "isDeleted")
@@ -111,24 +131,46 @@ export default abstract class MistModel extends Model {
    * (which are being saved in 1 call with the main model) are dirty or deleted.
    */
   hasDirtyEmbeddedRelationships(): boolean {
-    const modelName = this.fieldInformation.getModelName(this);
-    const serializer = this.store.serializerFor(modelName);
-    const attrs = serializer.attrs;
+    return !this.embeddedRelationships.some(relationshipName => {
+      return !this.hasDirtyEmbeddedRelationship(relationshipName);
+    });
+  }
 
-    if (isBlank(attrs)) {
-      return false;
-    }
+  /**
+   * Validate all the embedded relationships
+   */
+  validateEmbeddedRelationships(): boolean {
+    return !this.embeddedRelationships.some(relationshipName => {
+      return !this.validateEmbeddedRelationship(relationshipName);
+    });
+  }
 
-    let returnValue = false;
-    for (const relationshipName in attrs) {
-      returnValue = this.hasDirtyEmbeddedRelationship(relationshipName);
+  /**
+   * Validate a provided relationship on this model
+   * @param relationshipName The name of the relationship you want to validate
+   */
+  validateEmbeddedRelationship(relationshipNameToValidate: string): boolean {
+    let isValid = true;
 
-      if (returnValue) {
-        break;
+    this.eachRelationship((relationshipName: string, meta: any) => {
+      if (relationshipName === relationshipNameToValidate) {
+        if (meta.kind === "belongsTo") {
+          const relatedModel = this.get(relationshipName);
+          isValid = relatedModel ? relatedModel.validate() : true;
+        } else if (meta.kind === "hasMany") {
+          const relatedModels = this.get(relationshipName);
+          if (relatedModels) {
+            isValid = !relatedModels
+              .toArray()
+              .some((relatedModel: MistModel) => !relatedModel.validate());
+          } else {
+            isValid = true;
+          }
+        }
       }
-    }
+    });
 
-    return returnValue;
+    return isValid;
   }
 
   /**
@@ -136,6 +178,7 @@ export default abstract class MistModel extends Model {
    * @param relationshipName The relationship you want to check
    */
   hasDirtyEmbeddedRelationship(relationshipName: string): boolean {
+    // @ts-ignore
     return this.get(relationshipName)
       .toArray()
       .some((relatedModel: MistModel) => {

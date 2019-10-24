@@ -106,6 +106,14 @@ export default class ModelController extends Controller {
       model.get("isDirtyOrDeleted") ||
       model.hasDirtyEmbeddedRelationships()
     ) {
+      const validModel = model.validate();
+      const validEmbeddedModels = model.validateEmbeddedRelationships();
+
+      if (!validModel || !validEmbeddedModels) {
+        this.errorToast("Error", "You have validation errors");
+        return;
+      }
+
       yield model
         .save()
         .then(() => {
