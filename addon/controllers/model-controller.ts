@@ -107,7 +107,9 @@ export default class ModelController extends Controller {
       model.hasDirtyEmbeddedRelationships()
     ) {
       const validModel = model.validate();
-      const validEmbeddedModels = model.validateEmbeddedRelationships();
+      // TODO: Fix issue #8 first
+      //const validEmbeddedModels = model.validateEmbeddedRelationships();
+      const validEmbeddedModels = true;
 
       if (!validModel || !validEmbeddedModels) {
         this.errorToast("Error", "You have validation errors");
