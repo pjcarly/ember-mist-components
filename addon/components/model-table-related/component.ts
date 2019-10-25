@@ -66,6 +66,6 @@ export default class ModelTableRelatedComponent extends Component {
     this.entityCache.set("cachedModel", cachedModel);
     this.entityCache.set("returnToModel", this.model);
 
-    this.get("entityRouter").transitionToCreate(this.hasManyModelName);
+    this.entityRouter.transitionToCreate(this.hasManyModelName);
   }
 }
