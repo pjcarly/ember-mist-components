@@ -1,6 +1,6 @@
 {{#if (component-exists this.dynamicComponentName)}}
   {{component dynamicComponentName
-      conditions=this.conditions
+      baseQuery=this.baseQuery
       value=this.value
       modelName=relationshipModelName
       valueChanged=(action 'doChangeValue')
@@ -26,7 +26,7 @@
   {{/if}}
 {{else}}
   <InputLookup
-    @conditions={{this.conditions}}
+    @baseQuery={{this.baseQuery}}
     @value={{this.value}}
     @modelName={{this.relationshipModelName}}
     @valueChanged={{action 'doChangeValue'}}

@@ -197,19 +197,19 @@ export default class ModelController extends Controller {
   }
 
   successToast(subject: string, message: string) {
-    this.get("toast").success(message, subject);
+    this.toast.success(message, subject);
   }
 
   infoToast(subject: string, message: string) {
-    this.get("toast").info(message, subject);
+    this.toast.info(message, subject);
   }
 
   warningToast(subject: string, message: string) {
-    this.get("toast").warning(message, subject);
+    this.toast.warning(message, subject);
   }
 
   errorToast(subject: string, message: string) {
-    this.get("toast").error(message, subject);
+    this.toast.error(message, subject);
   }
 
   @action

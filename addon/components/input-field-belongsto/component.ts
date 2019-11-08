@@ -7,12 +7,13 @@ import Model from "ember-data/model";
 import { dropTask } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
 import { isBlank } from "@ember/utils";
-import { assert, debug } from "@ember/debug";
+import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import { inject as service } from "@ember/service";
 import { BelongsToFieldOptions } from "../output-field-belongsto/component";
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
 import Query from "ember-mist-components/query/Query";
+import { isArray } from "@ember/array";
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
@@ -63,16 +64,10 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
       let selectOptions = [];
 
-      if (this.conditions) {
-        const query = Query.create({ modelName: this.relationshipModelName });
-
-        this.conditions.forEach(condition => {
-          query.addCondition(condition);
-        });
-
+      if (this.baseQuery.conditions || this.baseQuery.conditionLogic) {
         selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(
           this.relationshipModelName,
-          query,
+          this.baseQuery,
           this.nameField
         );
       } else {
@@ -112,21 +107,21 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
     return nameField;
   }
 
-  @computed("fieldOptions.filters", "options.conditions")
-  get conditions(): Condition[] {
-    const conditions = [];
+  @computed("fieldOptions.filters", "options.baseQuery")
+  get baseQuery(): Query {
+    // Lets first check for passed in query
+    const modelName = isArray(this.relationshipModelName)
+      ? this.relationshipModelName[0]
+      : this.relationshipModelName;
+    const query = Query.create({ modelName: modelName });
 
-    // Lets first check for passed in conditions
-    if (this.options && this.options.conditions) {
-      for (const condition of this.options.conditions) {
-        if (condition instanceof Condition) {
-          conditions.push(condition);
-        } else {
-          debug(
-            `(${this.modelName}.${this.field}) Passed in conditions must be of type ember-mist-components/query/Condition `
-          );
-        }
-      }
+    if (this.options && this.options.baseQuery) {
+      assert(
+        "baseQuery option  must be of type: ember-mist-components/query/Query",
+        this.options.baseQuery instanceof Query
+      );
+
+      query.copyFrom(this.options.baseQuery);
     }
 
     // And also add conditions defined on the field options
@@ -137,7 +132,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
       for (const fieldFilter of fieldFilters) {
         if (fieldFilter.operator) {
-          conditions.push(
+          query.addCondition(
             new Condition(
               dasherize(fieldFilter.field),
               fieldFilter.operator,
@@ -145,7 +140,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
             )
           );
         } else {
-          conditions.push(
+          query.addCondition(
             new Condition(
               dasherize(fieldFilter.field),
               Operator.EQUALS,
@@ -156,7 +151,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       }
     }
 
-    return conditions;
+    return query;
   }
 
   /**

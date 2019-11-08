@@ -6,7 +6,7 @@
     @placeholder={{@placeholder}}
     @valueChanged={{action 'doChangeValue'}}
     @options={{hash hideClear=true}}
-    @conditions={{@conditions}} />
+    @baseQuery={{@baseQuery}} />
 
   {{#if this.computedValue}}
     <button type="button" class="btn btn-default waves-effect btn-link" {{action 'clearLookup'}}>
@@ -16,7 +16,7 @@
 
   <InputLookupWindow
     @title={{this.modelTitle}}
-    @conditions={{@conditions}}
+    @baseQuery={{@baseQuery}}
     @modelName={{@modelName}}
     @activeModelName={{this.activeModelName}}
     @valueChanged={{action 'doChangeValue'}} />

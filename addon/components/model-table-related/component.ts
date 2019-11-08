@@ -9,6 +9,7 @@ import { computed, action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { tagName } from "@ember-decorators/component";
+import Query from "ember-mist-components/query/Query";
 
 @tagName("")
 export default class ModelTableRelatedComponent extends Component {
@@ -42,10 +43,10 @@ export default class ModelTableRelatedComponent extends Component {
     );
   }
 
-  @computed("model", "inverseRelationship")
-  get conditions(): Condition[] {
-    const conditions: Condition[] = [];
-    conditions.push(
+  @computed("model", "inverseRelationship", "hasManyModelName")
+  get baseQuery(): Query {
+    const query = Query.create({ modelName: this.hasManyModelName });
+    query.addCondition(
       new Condition(
         dasherize(this.inverseRelationship),
         "=",
@@ -54,7 +55,7 @@ export default class ModelTableRelatedComponent extends Component {
       )
     );
 
-    return conditions;
+    return query;
   }
 
   @action

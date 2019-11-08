@@ -8,7 +8,7 @@ import { timeout } from "ember-concurrency";
 import { tagName } from "@ember-decorators/component";
 import Store from "ember-data/store";
 import DrupalModel from "ember-mist-components/models/drupal-model";
-import Condition, { Operator } from "ember-mist-components/query/Condition";
+import { Operator } from "ember-mist-components/query/Condition";
 import Query from "ember-mist-components/query/Query";
 
 @tagName("")
@@ -17,9 +17,9 @@ export default class InputModelAutocompleteComponent extends Component {
   @service store!: Store;
 
   /**
-   * Conditions that can be passed in to limit the results to
+   * Query that can be passed in to limit the results to
    */
-  conditions: Condition[] = [];
+  baseQuery?: Query;
 
   /**
    * The passed in name of the model
@@ -113,12 +113,13 @@ export default class InputModelAutocompleteComponent extends Component {
     return !isBlank(this.options) && this.options.hideClear;
   }
 
-  @computed("conditions")
+  @computed("baseQuery")
   get query(): Query {
     const query = Query.create({ modelName: this.modelName });
 
-    for (const condition of this.conditions) {
-      query.addCondition(condition);
+    if (this.baseQuery) {
+      query.copyFrom(this.baseQuery);
+      query.setModelName(this.modelName);
     }
 
     return query;

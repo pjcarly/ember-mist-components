@@ -5,7 +5,7 @@ import { isArray } from "@ember/array";
 import BaseInput from "ember-field-components/components/BaseInput";
 import { Row } from "../model-table/component";
 import { guidFor } from "@ember/object/internals";
-import Condition from "ember-mist-components/query/Condition";
+import Query from "ember-mist-components/query/Query";
 
 export default class InputLookupWindowComponent extends BaseInput {
   @service intl!: any;
@@ -14,7 +14,7 @@ export default class InputLookupWindowComponent extends BaseInput {
   type = "lookup-window";
   modelName!: string | string[];
   modalVisible: boolean = false;
-  conditions: Condition[] = [];
+  baseQuery?: Query;
 
   @computed("value", "modelName")
   get activeModelName(): string {

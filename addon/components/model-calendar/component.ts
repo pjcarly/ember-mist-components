@@ -30,7 +30,7 @@ export default class ModelCalendarComponent extends Component {
   listViewGrouping = "";
   listViewKey = "";
   loadedModels = [];
-  conditions: Condition[] = [];
+  baseQuery?: Query;
   months = [
     "January",
     "February",
@@ -205,6 +205,12 @@ export default class ModelCalendarComponent extends Component {
   @computed("modelName", "center", "selectedListView")
   get query(): Query {
     const query = Query.create({ modelName: this.modelName });
+
+    if (this.baseQuery) {
+      query.copyFrom(this.baseQuery);
+      query.setModelName(this.modelName);
+    }
+
     query.setLimit(2000);
 
     const center = this.center;
@@ -232,12 +238,6 @@ export default class ModelCalendarComponent extends Component {
         moment(endOfMonth).format(this.dateFormat)
       )
     );
-
-    if (this.conditions) {
-      for (const condition of this.conditions) {
-        query.addCondition(condition);
-      }
-    }
 
     if (this.selectedListView) {
       query.setListView(this.selectedListView);

@@ -58,10 +58,10 @@
     {{/mist-menu}}
   </div>
 
-  {{#if fetchRecords.last}}
+  {{#if this.fetchRecords.last}}
     {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) new=(component 'ember-wormhole' to=(concat guid '-new')))}}
 
-    {{#if isMultiModelNames}}
+    {{#if this.isMultiModelNames}}
       <div class="model-type-selector">
         <InputSelect
           @class="plain-select"
@@ -72,13 +72,11 @@
       </div>
     {{/if}}
 
-    {{#light-table table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if fetchRecords.isRunning ' is-busy')) as |t|}}
-      {{#if (not hideColumnHeadings)}}
-        {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
-      {{/if}}
+    {{#light-table this.table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if this.fetchRecords.isRunning ' is-busy')) as |t|}}
+      {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
 
       {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
-        {{#if table.isEmpty}}
+        {{#if this.table.isEmpty}}
           {{#body.no-data}}
             No data found
           {{/body.no-data}}
