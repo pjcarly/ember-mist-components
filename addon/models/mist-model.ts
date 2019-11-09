@@ -14,17 +14,22 @@ export default abstract class MistModel extends Model {
   @service fieldInformation!: FieldInformationService;
 
   @computed()
-  get hasViewRoute() {
+  get hasViewRoute(): boolean {
     return this.hasRoute("view");
   }
 
+  @computed()
+  get viewRouteName(): string {
+    return this.getRouteName("view");
+  }
+
   @computed("isNew")
-  get isExisting() {
+  get isExisting(): boolean {
     return !this.get("isNew");
   }
 
   @computed("errors.[]")
-  get hasErrors() {
+  get hasErrors(): boolean {
     // @ts-ignore
     return this.errors.get("length") > 0;
   }
@@ -197,5 +202,13 @@ export default abstract class MistModel extends Model {
         `route:${this.fieldInformation.getModelName(this)}.${routeName}`
       )
     );
+  }
+
+  /**
+   *
+   * @param routeName
+   */
+  getRouteName(routeName: string): string {
+    return `${this.fieldInformation.getModelName(this)}.${routeName}`;
   }
 }

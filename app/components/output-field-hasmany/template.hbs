@@ -1,0 +1,32 @@
+{{#if this.value}}
+  <ul>
+    {{#each this.value as |relatedModel|}}
+      <li>
+        {{#let (concat "output-model-" (model-class-name relatedModel)) as |dynamicComponentName|}}
+          {{#if (component-exists dynamicComponentName)}}
+            {{component dynamicComponentName
+              value=relatedModel
+              prefix=@prefix
+              suffix=@suffix
+              class=@outputClass
+              options=this.outputOptions}}
+          {{else}}
+            <OutputModel
+              @value={{relatedModel}}
+              @prefix={{@prefix}}
+              @suffix={{@suffix}}
+              @class={{@outputClass}}
+              @options={{this.outputOptions}} />
+          {{/if}}
+        {{/let}}
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <OutputModel
+    @value={{null}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}} />
+{{/if}}

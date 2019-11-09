@@ -1,0 +1,31 @@
+<span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
+  {{/if}}
+  <span class={{if @value 'value' 'value empty'}}>
+    {{#if (not @value)}}
+     {{!-- Show nothing --}}
+    {{else if (or @inline (not @value.hasViewRoute))}}
+      {{#if hasBlock}}
+        {{yield @value}}
+      {{else}}
+        {{@value.name}}
+      {{/if}}
+    {{else}}
+      <a href={{href-to @value.viewRouteName @value}}>
+        {{#if hasBlock}}
+          {{yield @value}}
+        {{else}}
+          {{@value.name}}
+        {{/if}}
+      </a>
+    {{/if}}
+  </span>
+  {{#if @suffix}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
+</span>
