@@ -68,6 +68,7 @@
         "ember-intl": "~3.5.2",
         "ember-light-table": "~2.0.0-beta.4",
         "ember-simple-auth": "~1.8.1",
+        "ember-sortable": "^2.0.2",
         "ember-storage": "~2.0.0",
         "ember-toastr": "~1.7.2",
         "ember-uploader": "~2.0.0",
