@@ -8,5 +8,10 @@
   @searchEnabled={{true}}
   @allowClear={{not this.shouldHideClear}}
   @renderInPlace={{this.shouldRenderInPlace}} as |model|>
-  {{model.name}}
+  <span class="name">
+    {{model.name}}
+  </span>
+  <span class="id">
+    ({{model.id}})
+  </span>
 </PowerSelect>
