@@ -1,24 +1,29 @@
-{{#if (component-exists this.dynamicComponentName)}}
-  {{component dynamicComponentName
-      value=this.value
-      prefix=@prefix
-      suffix=@suffix
-      class=@outputClass
-      options=this.outputOptions }}
-{{else}}
-  <span class="output belongsto">
-    {{#if value}}
-      <span class="value">
-        {{#if (or inline (not value.hasViewRoute))}}
-          {{value.name}}
-        {{else}}
-          <a href={{href-to route value}}>
-            {{value.name}}
-          </a>
-        {{/if}}
-      </span>
+{{#if this.value}}
+  {{#let (concat "output-model-" (model-class-name this.value)) as |dynamicComponentName|}}
+    {{#if (component-exists dynamicComponentName)}}
+      {{component dynamicComponentName
+        value=this.value
+        prefix=@prefix
+        suffix=@suffix
+        class=@outputClass
+        inline=@inline
+        options=this.outputOptions}}
     {{else}}
-      <span class="value empty"></span>
+      <OutputModel
+        @value={{this.value}}
+        @prefix={{@prefix}}
+        @suffix={{@suffix}}
+        @class={{@outputClass}}
+        @inline={{@inline}}
+        @options={{this.outputOptions}} />
     {{/if}}
-  </span>
+  {{/let}}
+{{else}}
+  <OutputModel
+    @value={{null}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @inline={{@inline}}
+    @options={{this.outputOptions}} />
 {{/if}}

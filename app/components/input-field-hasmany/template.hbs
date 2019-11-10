@@ -1,0 +1,34 @@
+{{#if this.value}}
+  {{#sortable-group tagName="ul" model=this.value onChange=(action "reorderedValues") as |group|}}
+    {{#each group.model as |model index|}}
+      {{#group.item tagName="li" model=model class=(if readOnly "read-only" "read-write") as |sortableItem|}}
+        <span class="input-hasmany-item">
+          {{#sortableItem.handle tagName="span"}}
+            <div class="b-0 sort-handle" sort={{condition.sort}}>
+              <i class="zmdi zmdi-unfold-more"></i>
+            </div>
+          {{/sortableItem.handle}}
+
+          <InputLookup
+            @baseQuery={{this.baseQuery}}
+            @value={{model}}
+            @modelName={{model-class-name model}}
+            @valueChanged={{action 'doChangeValue' index}}
+            @placeholder={{@placeholder}}
+            @class={{this.inputClass}} />
+        </span>
+      {{/group.item}}
+    {{/each}}
+  {{/sortable-group}}
+{{/if}}
+<ul>
+  <li>
+    <InputLookup
+      @baseQuery={{this.baseQuery}}
+      @modelName={{this.relationshipModelName}}
+      @valueChanged={{action 'newValue'}}
+      @placeholder={{@placeholder}}
+      @class={{this.inputClass}}
+      @inputId={{this.caluclatedInputId}} />
+  </li>
+</ul>

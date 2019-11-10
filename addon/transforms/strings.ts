@@ -1,17 +1,17 @@
-import Transform from 'ember-data/transform';
-import { A } from '@ember/array';
-import { isBlank } from '@ember/utils';
+import Transform from "ember-data/transform";
+import { A, isArray } from "@ember/array";
+import { isBlank } from "@ember/utils";
 
 export default class StringsTransform extends Transform {
-  deserialize(serialized: any) {
-    serialized = A(serialized);
-    return serialized;
+  deserialize(serialized: string[] | undefined | null) {
+    return serialized ? serialized : [];
   }
 
-  serialize(deserialized: any) {
-    if(!isBlank(deserialized)) {
-      deserialized = deserialized.toArray();
+  serialize(deserialized: string[] | undefined | null) {
+    if (!isBlank(deserialized) && isArray(deserialized)) {
+      return deserialized;
+    } else {
+      return [];
     }
-    return deserialized;
   }
-};
+}
