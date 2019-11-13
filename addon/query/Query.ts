@@ -25,6 +25,7 @@ export default class Query extends EmberObject {
   searchOperator: Operator = Operator.LIKE; // The search operator you want to use
   searchQuery?: string | null; // The search query you want to search with
   listView?: number; // Which list view was selected
+  includeDefaultIncludes = true;
 
   /**
    * Adds a condition to the Query
@@ -78,6 +79,15 @@ export default class Query extends EmberObject {
    */
   setListView(id: number): Query {
     this.set("listView", id);
+    return this;
+  }
+
+  /**
+   * Should the query include the default includes defined on the model (defaults to true)
+   * @param value Whether or not to include the default model includes
+   */
+  setIncludeDefaultIncludes(value: boolean): Query {
+    this.set("includeDefaultIncludes", value);
     return this;
   }
 
@@ -236,10 +246,12 @@ export default class Query extends EmberObject {
    */
   fetch(store: Store): Promise<any> {
     // First we lookup the default includes and add them to the query
-    const defaultIncludes = this.getDefaultIncludes(store);
+    if (this.includeDefaultIncludes) {
+      const defaultIncludes = this.getDefaultIncludes(store);
 
-    for (const defaultInclude of defaultIncludes) {
-      this.addInclude(defaultInclude);
+      for (const defaultInclude of defaultIncludes) {
+        this.addInclude(defaultInclude);
+      }
     }
 
     return store.query(this.modelName, this.queryParams);
