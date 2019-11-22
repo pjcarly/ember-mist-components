@@ -1,0 +1,11 @@
+<button type="button" class="btn bgm-pink waves-effect" onclick={{perform this.generatePdf}}>
+  {{#if hasBlock}}
+    {{yield this.generatePdf}}
+  {{else}}
+    {{#if generatePdf.isIdle}}
+      Generate
+    {{else}}
+      Generating {{mist-spinner size="10px" tagName="span"}}
+    {{/if}}
+  {{/if}}
+</button>
