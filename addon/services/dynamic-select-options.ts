@@ -1,6 +1,6 @@
 import Service from "@ember/service";
 import Store from "ember-data/store";
-import { enqueueTask } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
@@ -27,7 +27,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The name of the model
    * @param field The name of the field
    */
-  @enqueueTask
+  @task({ maxConcurrency: 4 })
   *getSelectOptions(modelName: string, field: string) {
     let cachedSelectOptions: SelectOption[] = [];
 
@@ -75,7 +75,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The modelname you want to load select options for
    * @param nameField The nameField to be used when populating the label part of the selectOption
    */
-  @enqueueTask
+  @task({ maxConcurrency: 4 })
   *getModelSelectOptions(
     modelName: string,
     query: Query | undefined,
