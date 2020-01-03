@@ -5,8 +5,12 @@
     </span>
   {{/if}}
   {{#if value.id}}
-    <a class="value" href={{value.url}} target="_blank">
-      {{value.filename}} <IconDownload />
+    <a class="value" href={{if @options.filename (concat value.url '&filename=' @options.filename) value.url}} target="_blank">
+      {{#if @options.filename}}
+        {{@options.filename}} <IconDownload />
+      {{else}}
+        {{value.filename}} <IconDownload />
+      {{/if}}
     </a>
   {{else}}
     <span class="value empty"></span>
