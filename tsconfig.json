@@ -20,22 +20,11 @@
     "baseUrl": ".",
     "module": "es6",
     "paths": {
-      "dummy/tests/*": [
-        "tests/*"
-      ],
-      "dummy/*": [
-        "tests/dummy/app/*",
-        "app/*"
-      ],
-      "ember-mist-components": [
-        "addon"
-      ],
-      "ember-mist-components/*": [
-        "addon/*"
-      ],
-      "ember-field-components": [
-        "node_modules/ember-field-components/addon"
-      ],
+      "dummy/tests/*": ["tests/*"],
+      "dummy/*": ["tests/dummy/app/*", "app/*"],
+      "ember-mist-components": ["addon"],
+      "ember-mist-components/*": ["addon/*"],
+      "ember-field-components": ["node_modules/ember-field-components/addon"],
       "ember-field-components/*": [
         "node_modules/ember-field-components/addon/*"
       ],
@@ -45,21 +34,12 @@
       "ember-attribute-validations/*": [
         "node_modules/ember-attribute-validations/addon/*"
       ],
-      "ember-data-storefront": [
-        "node_modules/ember-data-storefront/addon"
-      ],
-      "ember-data-storefront/*": [
-        "node_modules/ember-data-storefront/addon/*"
-      ],
-      "ember-mist-components/test-support": [
-        "addon-test-support"
-      ],
-      "ember-mist-components/test-support/*": [
-        "addon-test-support/*"
-      ],
-      "*": [
-        "types/*"
-      ]
+      "ember-data-storefront": ["node_modules/ember-data-storefront/addon"],
+      "ember-data-storefront/*": ["node_modules/ember-data-storefront/addon/*"],
+      "ember-mist-components/test-support": ["addon-test-support"],
+      "ember-mist-components/test-support/*": ["addon-test-support/*"],
+      "fetch": ["node_modules/ember-fetch"],
+      "*": ["types/*"]
     },
     "experimentalDecorators": true
   },
