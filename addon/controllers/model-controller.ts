@@ -191,6 +191,31 @@ export default class ModelController extends Controller {
       });
   }
 
+  @task({ group: "modelTasks" })
+  *invokeDownloadAction(model: DrupalModel, action: string, filename: string) {
+    // @ts-ignore
+    const actionToInvoke = model.get(action).bind(model);
+
+    let blob = null;
+
+    yield actionToInvoke().then((response: Response) => {
+      return response.blob().then(data => {
+        blob = new Blob([data], { type: "octet/stream" });
+      });
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.body.appendChild(document.createElement("a"));
+    a.download = filename;
+    // @ts-ignore
+    a.style = "display: none";
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
   logErrorMessage(subject: string, message: string) {
     this.errorToast(subject, message);
     debug(message);
