@@ -52,8 +52,10 @@ export default class MistPrintButtonComponent extends Component {
 
     yield this.template
       .generateDigest({ id: model.get("id") })
-      .then((results: any) => {
-        digest = results.digest;
+      .then((result: Response) => {
+        return result.json().then(jsonBody => {
+          digest = jsonBody.digest;
+        });
       });
 
     window.open(

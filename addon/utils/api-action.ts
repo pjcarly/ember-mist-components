@@ -31,6 +31,10 @@ export default function apiAction(path: string) {
       }
     }
 
+    if (payload) {
+      payload = JSON.stringify(payload);
+    }
+
     return http.fetch(url, "POST", payload);
   };
 }
