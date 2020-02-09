@@ -100,6 +100,8 @@ export default class ModelController extends Controller {
 
   @task({ group: "modelTasks" })
   *save(model: DrupalModel) {
+    const afterSaveModel = this.entityCache.getAfterSaveModelAndClear();
+
     model.hasDirtyEmbeddedRelationships();
 
     if (
@@ -120,7 +122,12 @@ export default class ModelController extends Controller {
         .save()
         .then(() => {
           this.successToast(`Success`, `Record saved`);
-          this.entityRouter.transitionToView(model);
+
+          if (afterSaveModel) {
+            this.entityRouter.transitionToView(afterSaveModel);
+          } else {
+            this.entityRouter.transitionToView(model);
+          }
         })
         .catch((reason: any) => {
           this.logErrorMessage(
@@ -129,7 +136,11 @@ export default class ModelController extends Controller {
           );
         });
     } else {
-      this.entityRouter.transitionToView(model);
+      if (afterSaveModel) {
+        this.entityRouter.transitionToView(afterSaveModel);
+      } else {
+        this.entityRouter.transitionToView(model);
+      }
     }
   }
 

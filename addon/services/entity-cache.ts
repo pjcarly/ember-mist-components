@@ -3,6 +3,7 @@ import Model from "ember-data/model";
 
 export default class EntityCacheService extends Service {
   returnToModel: Model | null = null;
+  afterSaveModel: Model | null = null;
   cachedModel: Model | null = null;
 
   /**
@@ -10,6 +11,13 @@ export default class EntityCacheService extends Service {
    */
   clearReturnToModel() {
     this.set("returnToModel", null);
+  }
+
+  /**
+   * Clears the after save Model
+   */
+  clearAfterSaveModel() {
+    this.set("afterSaveModel", null);
   }
 
   /**
@@ -27,5 +35,15 @@ export default class EntityCacheService extends Service {
     this.clearReturnToModel();
 
     return returnToModel;
+  }
+
+  /**
+   * Returns the After Save Model and clear it on the Service
+   */
+  getAfterSaveModelAndClear(): Model | null {
+    const afterSaveModel = this.afterSaveModel;
+    this.clearAfterSaveModel();
+
+    return afterSaveModel;
   }
 }
