@@ -1,9 +1,16 @@
 {{#if column.transitionToModel}}
   <a class="cell__field-wrapper" href={{href-to (concat column.modelName '.view') row.content.id}}>
-    <OutputField @model={{this.row.content}} @field={{this.column.valuePath}} @inline={{true}} />
+    <OutputField
+      @model={{this.row.content}}
+      @field={{this.column.valuePath}}
+      @inline={{true}} />
   </a>
 {{else}}
   <div class="cell__field-wrapper">
-    <OutputField @model={{this.row.content}} @field={{this.column.valuePath}} @inline={{true}} />
+    <OutputField
+      @model={{this.row.content}}
+      @field={{this.column.valuePath}}
+      @inline={{true}}
+      @options={{hash outputOptions=(hash positiveINFValue=99999999.99 negativeINFValue=-99999999.99)}} />
   </div>
 {{/if}}
