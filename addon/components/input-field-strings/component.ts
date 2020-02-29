@@ -1,5 +1,7 @@
 import { computed, action } from "@ember/object";
 import InputFieldComponent from "ember-field-components/components/input-field/component";
+import { A } from "@ember/array";
+import MutableArray from "@ember/array/mutable";
 
 // TODO: fix bug, when pushing new object on the array, for some reason the object in the template isnt pushed to the end of the array, but instead to the end-1 position
 /**
@@ -17,8 +19,12 @@ import InputFieldComponent from "ember-field-components/components/input-field/c
  */
 export default class InputFieldStringsComponent extends InputFieldComponent {
   @computed("value.@each")
-  get items(): string[] {
-    return this.value ? this.value : [];
+  get items(): MutableArray<string> {
+    return A(this.value);
+  }
+
+  syncValue() {
+    this.set("value", this.items.toArray());
   }
 
   @action
@@ -29,25 +35,19 @@ export default class InputFieldStringsComponent extends InputFieldComponent {
 
   @action
   setArrayValue(index: number, newValue: string) {
-    const items = this.items;
-    items[index] = newValue;
-
-    this.set("value", items);
+    this.items.replace(index, 1, A([newValue]));
+    this.syncValue();
   }
 
   @action
   removeIndexFromValue(indexToRemove: number) {
-    const items = this.items;
-    items.splice(indexToRemove, 1);
-
-    this.set("value", items);
+    this.items.removeAt(indexToRemove);
+    this.syncValue();
   }
 
   @action
   addNewValue() {
-    const items = this.items;
-    items.push("");
-
-    this.set("value", items);
+    this.items.pushObject("");
+    this.syncValue();
   }
 }

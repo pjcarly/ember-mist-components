@@ -27,7 +27,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The name of the model
    * @param field The name of the field
    */
-  @task({ maxConcurrency: 4 })
+  @task({ enqueue: true, maxConcurrency: 4 })
   *getSelectOptions(modelName: string, field: string) {
     let cachedSelectOptions: SelectOption[] = [];
 
@@ -75,7 +75,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The modelname you want to load select options for
    * @param nameField The nameField to be used when populating the label part of the selectOption
    */
-  @task({ maxConcurrency: 4 })
+  @task({ enqueue: true, maxConcurrency: 4 })
   *getModelSelectOptions(
     modelName: string,
     query: Query | undefined,
