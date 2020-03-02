@@ -1,0 +1,42 @@
+<div class="conditions-edit">
+  <div class="button-bar">
+    <a role="button" {{action "addNewCondition"}} class="btn btn-default btn-xs waves-effect">
+      Add
+    </a>
+  </div>
+
+  {{#if @model.conditions}}
+    {{#sortable-group model=@model.conditions onChange=(action "reorderConditions") class=(if isOdd "is-odd" "is-even") as |group|}}
+      {{#each (sort-by "sort" group.model) as |condition|}}
+        {{#if (not condition.isDeleted)}}
+          {{#group.item model=condition class=(if readOnly "read-only" "read-write") as |sortableItem|}}
+            {{#sortableItem.handle}}
+              <div class="b-0 sort-handle" sort={{condition.sort}}>
+                <i class="zmdi zmdi-unfold-more"></i>
+              </div>
+            {{/sortableItem.handle}}
+
+            <div class="sort-col">
+              <InputField @model={{condition}} @field="field" @inline={{true}} @placeholder="Field" @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
+            </div>
+            <div class="sort-col">
+              <InputField @model={{condition}} @field="operator" @inline={{true}} />
+            </div>
+            <div class="sort-col">
+              <InputField @model={{condition}} @field="value" @inline={{true}} @placeholder="Value" />
+            </div>
+            <div class="b-0 action-column">
+              <ul class="actions">
+                <MenuDropdown>
+                  <MenuItem @itemClicked={{action "deleteCondition" condition}}><i class="zmdi zmdi-delete zmdi-hc-lg"></i> Delete</MenuItem>
+                </MenuDropdown>
+              </ul>
+            </div>
+          {{/group.item}}
+        {{/if}}
+      {{/each}}
+    {{/sortable-group}}
+  {{/if}}
+</div>
+
+<InputField @model={{this.model}} @field="conditionLogic" />

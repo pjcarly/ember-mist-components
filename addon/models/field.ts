@@ -25,10 +25,17 @@ export default class FieldModel extends Model {
   /* Relationships */
   @belongsTo("meta-model", { inverse: "fields", async: false })
   model!: MetaModelModel;
-}
 
-declare module "ember-data/types/registries/model" {
-  export default interface ModelRegistry {
-    field: FieldModel;
-  }
+  static settings = {
+    listViews: {
+      default: {
+        columns: ["label"],
+        rows: 10,
+        sortOrder: {
+          field: "created",
+          dir: "desc"
+        }
+      }
+    }
+  };
 }
