@@ -35,7 +35,12 @@ export default class ListViewModel extends QueryModel {
   })
   model!: MetaModelModel;
 
-  @hasMany("field", { async: false, widget: "select", validation: { required: true } })
+  @hasMany("field", {
+    async: false,
+    widget: "select",
+    rollback: true,
+    validation: { required: true }
+  })
   columns!: MutableArray<FieldModel>;
 
   /* Functions */
@@ -44,7 +49,7 @@ export default class ListViewModel extends QueryModel {
 
     if (!isBlank(this.conditions)) {
       this.conditions.toArray().forEach(condition => {
-        condition.setName();
+        // @ts-ignore
         conditionsValid = condition.validate();
       });
     }
@@ -57,7 +62,7 @@ export default class ListViewModel extends QueryModel {
 
     if (!isBlank(this.orders)) {
       this.orders.toArray().forEach(order => {
-        order.setName();
+        // @ts-ignore
         ordersValid = order.validate();
       });
     }

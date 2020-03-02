@@ -5,7 +5,7 @@ import QueryModel from "./query";
 import FieldModel from "./field";
 
 export default class SortOrderModel extends DrupalModel {
-  @field("string", { validation: { required: true } })
+  @field("string")
   name!: string;
 
   @field("select", { validation: { required: true } })
@@ -26,14 +26,6 @@ export default class SortOrderModel extends DrupalModel {
   parent!: QueryModel;
 
   /* Functions */
-  setName() {
-    const name: string[] = [];
-    name.push(this.field.id);
-    name.push(this.direction);
-
-    this.set("name", name.join(" "));
-  }
-
   static settings = {
     listViews: {
       default: {

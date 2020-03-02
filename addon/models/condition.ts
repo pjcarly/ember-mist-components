@@ -5,7 +5,7 @@ import QueryModel from "./query";
 import FieldModel from "ember-mist-components/addon/models/field";
 
 export default class ConditionModel extends DrupalModel {
-  @field("string", { validation: { required: true } })
+  @field("string")
   name!: string;
 
   @field("select", { validation: { required: true } })
@@ -18,20 +18,15 @@ export default class ConditionModel extends DrupalModel {
   sort?: number;
 
   /* Relationships */
-  @belongsTo("field", { widget: "select", async: false, validation: { required: true } })
+  @belongsTo("field", {
+    widget: "select",
+    async: false,
+    validation: { required: true }
+  })
   field!: FieldModel;
 
   @belongsTo("query", { validation: { required: true }, async: false })
   parent!: QueryModel;
-
-  setName() {
-    const name: string[] = [];
-    name.push(this.field);
-    name.push(this.operator);
-    name.push(this.value);
-
-    this.set("name", name.join(" "));
-  }
 
   static settings = {
     listViews: {

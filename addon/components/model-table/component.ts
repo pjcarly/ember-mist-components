@@ -23,6 +23,7 @@ import { camelize, dasherize } from "@ember/string";
 import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
 import MutableArray from "@ember/array/mutable";
+import ListViewModel from "ember-mist-components/models/list-view";
 
 export interface Column {
   label?: string;
@@ -209,7 +210,7 @@ export default class ModelTableComponent extends Component {
     "modelListView",
     "listViewGrouping"
   )
-  get selectedListView(): Model | ModelListView {
+  get selectedListView(): ListViewModel | ModelListView {
     if (this.listViewGrouping) {
       return this.listView.getActiveListViewForCurrentRoute(
         this.activeModelName
@@ -248,7 +249,21 @@ export default class ModelTableComponent extends Component {
     }
 
     // here we loop over every column in the listview, ans format it for ember light table
-    get(<any>this.selectedListView, "columns").forEach((modelColumn: any) => {
+    let listViewColumns: string[] = [];
+    if (this.selectedListView instanceof ListViewModel) {
+      this.selectedListView
+        .hasMany("columns")
+        .ids()
+        .forEach(fieldId => {
+          const fieldArray = fieldId.toString().split(".");
+          fieldArray.shift();
+          listViewColumns.push(fieldArray.join("."));
+        });
+    } else {
+      listViewColumns = this.selectedListView.columns;
+    }
+
+    listViewColumns.forEach((modelColumn: any) => {
       // First we split the columns by a ".", this is so we dont loose the dot when camelizing, as it indicates a value path
       // This only has effect for subobjects, like location, and address
       const splittedColumns = modelColumn.toString().split(".");
