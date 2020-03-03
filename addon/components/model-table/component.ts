@@ -25,6 +25,10 @@ import { assert } from "@ember/debug";
 import MutableArray from "@ember/array/mutable";
 import ListViewModel from "ember-mist-components/models/list-view";
 
+export interface ModelClassInterface {
+  fields: Map<string, string>;
+}
+
 export interface Column {
   label?: string;
   modelName?: string;
@@ -225,6 +229,11 @@ export default class ModelTableComponent extends Component {
     return this.listView.getDefaultListView(this.activeModelName);
   }
 
+  @computed("activeModelName")
+  get activeModelClass(): ModelClassInterface {
+    return this.store.modelFor(this.activeModelName);
+  }
+
   /**
    * This will return the columns that need to be displayed in the table (based on the list view)
    */
@@ -277,24 +286,27 @@ export default class ModelTableComponent extends Component {
         this.query.orders.length > 0 &&
         this.query.orders[0].field === dasherize(modelColumn);
 
-      // And finally build the structure for ember-light-table
-      const column: Column = {
-        label: this.fieldInformation.getTranslatedFieldlabel(
-          this.activeModelName,
-          camelizedColumn
-        ),
-        modelName: this.activeModelName,
-        valuePath: camelizedColumn,
-        transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displaye
-        width: modelColumn === "id" ? "60px" : undefined,
-        resizable: modelColumn !== "id",
-        cellComponent: "model-table-cell",
-        sorted: sortedOnColumn,
-        ascending:
-          sortedOnColumn && this.query.orders[0].direction === Direction.ASC
-      };
+      // Now that we know the column, lets see if it actually exists as a field on the modelclass
+      if (this.activeModelClass.fields.has(camelizedColumn)) {
+        // And finally build the structure for ember-light-table
+        const column: Column = {
+          label: this.fieldInformation.getTranslatedFieldlabel(
+            this.activeModelName,
+            camelizedColumn
+          ),
+          modelName: this.activeModelName,
+          valuePath: camelizedColumn,
+          transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displaye
+          width: modelColumn === "id" ? "60px" : undefined,
+          resizable: modelColumn !== "id",
+          cellComponent: "model-table-cell",
+          sorted: sortedOnColumn,
+          ascending:
+            sortedOnColumn && this.query.orders[0].direction === Direction.ASC
+        };
 
-      columns.push(column);
+        columns.push(column);
+      }
     });
 
     return columns;
@@ -330,6 +342,13 @@ export default class ModelTableComponent extends Component {
     });
 
     return selectOptions;
+  }
+
+  @computed("listView.router.currentRouteName", "activeModelName")
+  get activeListViewKey(): string | number {
+    return this.listView.getActiveListViewKeyForCurrentRoute(
+      this.activeModelName
+    );
   }
 
   /**
@@ -451,12 +470,8 @@ export default class ModelTableComponent extends Component {
   @dropTask
   *fetchRecords() {
     // Lets check if a listview is selected. And pass if to the query if needed
-    const activeListViewKey = this.listView.getActiveListViewKeyForCurrentRoute(
-      this.activeModelName
-    );
-
-    if (activeListViewKey !== "All") {
-      this.query.setListView(<number>activeListViewKey);
+    if (this.activeListViewKey !== "All") {
+      this.query.setListView(<number>this.activeListViewKey);
     } else {
       this.query.clearListView();
     }
