@@ -26,7 +26,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   @alias("session.data.authenticated.access_token") accessToken!: string;
 
-  @computed
+  @computed()
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
