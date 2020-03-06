@@ -14,7 +14,7 @@ import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import { computed, action } from "@ember/object";
 import { isArray } from "@ember/array";
-import { dropTask, task } from "ember-concurrency-decorators";
+import { task, restartableTask } from "ember-concurrency-decorators";
 import { guidFor } from "@ember/object/internals";
 import { A } from "@ember/array";
 import { get } from "@ember/object";
@@ -27,6 +27,7 @@ import ListViewModel from "ember-mist-components/models/list-view";
 
 export interface ModelClassInterface {
   fields: Map<string, string>;
+  eachComputedProperty: any;
 }
 
 export interface Column {
@@ -234,6 +235,19 @@ export default class ModelTableComponent extends Component {
     return this.store.modelFor(this.activeModelName);
   }
 
+  @computed("activeModelName")
+  get allActiveModelClassColums(): Map<string, any> {
+    const returnValue = new Map<string, any>();
+
+    this.activeModelClass.eachComputedProperty(
+      (field: string, options: any) => {
+        returnValue.set(field, options);
+      }
+    );
+
+    return returnValue;
+  }
+
   /**
    * This will return the columns that need to be displayed in the table (based on the list view)
    */
@@ -287,7 +301,7 @@ export default class ModelTableComponent extends Component {
         this.query.orders[0].field === dasherize(modelColumn);
 
       // Now that we know the column, lets see if it actually exists as a field on the modelclass
-      if (this.activeModelClass.fields.has(camelizedColumn)) {
+      if (this.allActiveModelClassColums.has(camelizedColumn)) {
         // And finally build the structure for ember-light-table
         const column: Column = {
           label: this.fieldInformation.getTranslatedFieldlabel(
@@ -344,7 +358,6 @@ export default class ModelTableComponent extends Component {
     return selectOptions;
   }
 
-  @computed("listView.router.currentRouteName", "activeModelName")
   get activeListViewKey(): string | number {
     return this.listView.getActiveListViewKeyForCurrentRoute(
       this.activeModelName
@@ -467,7 +480,7 @@ export default class ModelTableComponent extends Component {
   /**
    * Fetches the records from the back-end
    */
-  @dropTask
+  @restartableTask
   *fetchRecords() {
     // Lets check if a listview is selected. And pass if to the query if needed
     if (this.activeListViewKey !== "All") {
@@ -509,7 +522,7 @@ export default class ModelTableComponent extends Component {
     }
   }
 
-  @dropTask
+  @restartableTask
   *fetchRecordsAndRefreshColumns() {
     // @ts-ignore
     yield this.get("fetchRecords").perform();
