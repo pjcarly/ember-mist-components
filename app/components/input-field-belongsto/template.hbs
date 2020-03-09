@@ -7,7 +7,8 @@
       placeholder=@placeholder
       class=this.inputClass
       inputId=this.caluclatedInputId
-      options=this.inputOptions }}
+      required=this.isRequired
+      options=this.inputOptions}}
 {{else if this.isSelect}}
   {{#if setSelectOptions.isRunning}}
     {{mist-spinner size="20px"}}
