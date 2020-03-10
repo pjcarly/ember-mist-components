@@ -42,10 +42,13 @@ export default class LoggedInUserService extends Service {
     }
 
     yield this.store
+      // @ts-ignore
       .loadRecord("user", userId, options)
       .then((user: UserModel) => {
         this.set("user", user);
-        this.websocket.startConnecting.perform();
+        this.websocket.startConnecting
+          //@ts-ignore
+          .perform();
       })
       .catch((_: any) => {
         this.logOut();

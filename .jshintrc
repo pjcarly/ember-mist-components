@@ -1,13 +1,5 @@
 {
-  "predef": [
-    "document",
-    "window",
-    "-Promise",
-    "moment",
-    "numeral",
-    "Decimal",
-    "Pen"
-  ],
+  "predef": ["document", "window", "-Promise", "moment", "Decimal", "Pen"],
   "browser": true,
   "boss": true,
   "curly": true,
