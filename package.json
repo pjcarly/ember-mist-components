@@ -26,6 +26,7 @@
     "@types/ember-test-helpers": "~1.0.5",
     "@types/ember-testing-helpers": "~0.0.3",
     "@types/ember__test-helpers": "~0.7.8",
+    "@types/qs": "^6.9.1",
     "@types/qunit": "~2.9.0",
     "@types/rsvp": "~4.0.3",
     "babel-eslint": "~8.0.0",
@@ -58,6 +59,7 @@
   ],
   "dependencies": {
     "ember-ajax": "~5.0.0",
+    "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
     "ember-cli-moment-shim": "~3.7.1",
@@ -74,6 +76,7 @@
     "ember-toastr": "~1.7.2",
     "ember-uploader": "~2.0.0",
     "ember-websockets": "~7.2.0",
+    "qs": "^6.9.1",
     "toastr": "~2.1.4"
   },
   "ember-addon": {

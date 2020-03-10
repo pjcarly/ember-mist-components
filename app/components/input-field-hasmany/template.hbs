@@ -47,7 +47,7 @@
       {{else}}
         <InputLookup
           @baseQuery={{this.baseQuery}}
-          @modelName={{model-class-name model}}
+          @modelName={{this.relationshipModelName}}
           @valueChanged={{action 'doChangeValue' index}}
           @placeholder={{@placeholder}}
           @class={{this.inputClass}}
