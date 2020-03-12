@@ -57,6 +57,7 @@
     "ember-mist-components"
   ],
   "dependencies": {
+    "debug": "^4.1.1",
     "ember-ajax": "~5.0.0",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
@@ -74,6 +75,7 @@
     "ember-toastr": "~1.7.2",
     "ember-uploader": "~2.0.0",
     "ember-websockets": "~7.2.0",
+    "query": "^0.2.0",
     "toastr": "~2.1.4"
   },
   "ember-addon": {

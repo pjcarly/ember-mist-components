@@ -100,22 +100,19 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   connectionOpened(_: any) {
+    console.info("WS connection opened");
     this.set("status", Status.ONLINE);
     this.reconnectAttempts = 0;
   }
 
   messageReceived(event: any) {
-    if (event.data) {
-      const payload = JSON.parse(event.data);
-      if (payload.data && !isArray(payload.data)) {
-        if (payload.data.type) {
-          this.trigger("message", payload);
-        }
-      }
+    if (event.data !== null) {
+      this.trigger("message", event);
     }
   }
 
   connectionClosed(_: any) {
+    console.log("WS connection closed");
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
       this.startConnecting.perform();
@@ -123,6 +120,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   connectionErrored(_: any) {
+    console.error("WS connection error");
     this.set("status", Status.OFFLINE);
     this.startConnecting.perform();
   }
