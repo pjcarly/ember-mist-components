@@ -55,12 +55,19 @@ export default class LoggedInUserService extends Service {
       });
   }
 
+  @dropTask
+  *signOut() {
+    this.websocket.closeConnection();
+    yield this.session.invalidate();
+    this.set("user", null);
+  }
+
   /**
    * Invalidates the session, and unsets the user
    */
   logOut() {
-    this.set("user", null);
-    this.session.invalidate();
-    this.websocket.closeConnection();
+    this.signOut
+      //@ts-ignore
+      .perform();
   }
 }
