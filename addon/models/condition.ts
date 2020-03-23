@@ -2,7 +2,7 @@ import { belongsTo } from "ember-data/relationships";
 import DrupalModel from "ember-mist-components/models/drupal-model";
 import { field } from "ember-field-components/model/attribute";
 import QueryModel from "./query";
-import FieldModel from "ember-mist-components/addon/models/field";
+import FieldModel from "ember-mist-components/models/field";
 
 export default class ConditionModel extends DrupalModel {
   @field("string")
@@ -18,6 +18,7 @@ export default class ConditionModel extends DrupalModel {
   sort?: number;
 
   /* Relationships */
+  // @ts-ignore
   @belongsTo("field", {
     widget: "select",
     async: false,
@@ -25,6 +26,7 @@ export default class ConditionModel extends DrupalModel {
   })
   field!: FieldModel;
 
+  // @ts-ignore
   @belongsTo("query", { validation: { required: true }, async: false })
   parent!: QueryModel;
 

@@ -29,6 +29,7 @@ export default class ModelTableRelatedComponent extends Component {
 
   @computed("model", "field")
   get hasManyModelName(): string {
+    // @ts-ignore
     return this.fieldInformation.getHasManyModelName(
       this.fieldInformation.getModelName(this.model),
       this.field
@@ -37,6 +38,7 @@ export default class ModelTableRelatedComponent extends Component {
 
   @computed("model", "field")
   get inverseRelationship(): string {
+    // @ts-ignore
     return this.fieldInformation.getInverseRelationshipName(
       this.fieldInformation.getModelName(this.model),
       this.field

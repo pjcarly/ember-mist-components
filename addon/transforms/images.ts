@@ -1,13 +1,17 @@
-import Transform from 'ember-data/transform';
-import { isBlank } from '@ember/utils';
+import Transform from "ember-data/transform";
+import { isBlank } from "@ember/utils";
 
 export default class ImagesTransform extends Transform {
   deserialize(serializedFiles: Array<any> | null) {
     const deserializedFiles = [];
 
-    if(!isBlank(serializedFiles)) {
-      for(const serializedFile of serializedFiles) {
-        if(!isBlank(serializedFile) && serializedFile.hasOwnProperty('id') && serializedFile.id > 0) {
+    if (serializedFiles) {
+      for (const serializedFile of serializedFiles) {
+        if (
+          !isBlank(serializedFile) &&
+          serializedFile.hasOwnProperty("id") &&
+          serializedFile.id > 0
+        ) {
           const deserializedFile: any = {};
           deserializedFile.id = serializedFile.id;
           deserializedFile.filename = serializedFile.filename;
@@ -26,16 +30,20 @@ export default class ImagesTransform extends Transform {
   serialize(deserializedFiles: Array<any> | null) {
     const serializedFiles = [];
 
-    if(!isBlank(deserializedFiles)) {
-      for(const deserializedFile of deserializedFiles) {
-        if(!isBlank(deserializedFile) && deserializedFile.hasOwnProperty('id') && deserializedFile.id > 0) {
+    if (deserializedFiles) {
+      for (const deserializedFile of deserializedFiles) {
+        if (
+          !isBlank(deserializedFile) &&
+          deserializedFile.hasOwnProperty("id") &&
+          deserializedFile.id > 0
+        ) {
           const serializedFile: any = {};
-          serializedFile['id'] = deserializedFile.id;
-          serializedFile['filename'] = deserializedFile.filename;
-          serializedFile['url'] = deserializedFile.url;
-          serializedFile['filemime'] = deserializedFile.filemimie;
-          serializedFile['filesize'] = deserializedFile.filesize;
-          serializedFile['hash'] = deserializedFile.hash;
+          serializedFile["id"] = deserializedFile.id;
+          serializedFile["filename"] = deserializedFile.filename;
+          serializedFile["url"] = deserializedFile.url;
+          serializedFile["filemime"] = deserializedFile.filemimie;
+          serializedFile["filesize"] = deserializedFile.filesize;
+          serializedFile["hash"] = deserializedFile.hash;
           serializedFiles.push(serializedFile);
         }
       }
@@ -43,4 +51,4 @@ export default class ImagesTransform extends Transform {
 
     return serializedFiles;
   }
-};
+}

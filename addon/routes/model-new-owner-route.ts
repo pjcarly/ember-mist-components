@@ -7,6 +7,7 @@ export default abstract class ModelNewWithOwnerRoute extends NewModelRoute {
   @service loggedInUser!: LoggedInUserService;
 
   afterModel(model: DrupalModel) {
+    // @ts-ignore
     model.set("owner", this.loggedInUser.user);
   }
 }

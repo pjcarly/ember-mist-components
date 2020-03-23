@@ -1,6 +1,8 @@
-import SingleModelRoute from './single-model-route';
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import SingleModelRoute from "./single-model-route";
+// @ts-ignore
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 
-export default abstract class ModelEditRoute extends SingleModelRoute.extend(AuthenticatedRouteMixin) {
-
-}
+// @ts-ignore
+export default abstract class ModelEditRoute extends SingleModelRoute.extend(
+  AuthenticatedRouteMixin
+) {}

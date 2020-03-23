@@ -129,6 +129,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
               dasherize(fieldFilter.field),
               fieldFilter.operator,
               fieldFilter.value,
+              // @ts-ignore
               fieldFilter.id
             )
           );
@@ -138,6 +139,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
               dasherize(fieldFilter.field),
               Operator.EQUALS,
               fieldFilter.value,
+              // @ts-ignore
               fieldFilter.id
             )
           );

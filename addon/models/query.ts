@@ -5,9 +5,11 @@ import ConditionModel from "./condition";
 import SortOrderModel from "./order";
 
 export default class QueryModel extends DrupalModel {
+  // @ts-ignore
   @hasMany("condition", { inverse: "parent", rollback: true, async: false })
   conditions!: MutableArray<ConditionModel>;
 
+  // @ts-ignore
   @hasMany("order", { inverse: "parent", rollback: true, async: false })
   orders!: MutableArray<SortOrderModel>;
 }

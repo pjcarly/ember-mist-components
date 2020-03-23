@@ -52,6 +52,7 @@ export default class RecentlyViewedService extends Service {
     if (!isBlank(model)) {
       let newRecentlyViewedRecord = {
         type: this.fieldInformation.getModelName(model),
+        // @ts-ignore
         name: model.name,
         id: model.id
       };

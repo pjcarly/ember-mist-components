@@ -8,7 +8,9 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    this.loadSelectOptions.perform();
+    this.loadSelectOptions
+      // @ts-ignore
+      .perform();
   }
 
   @task
@@ -19,10 +21,9 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
       this.widgetName !== "country-select" &&
       !(this.fieldOptions && this.fieldOptions.selectOptions)
     ) {
-      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions.perform(
-        this.modelName,
-        this.field
-      );
+      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions
+        // @ts-ignore
+        .perform(this.modelName, this.field);
 
       this.set("selectOptions", this.getAllowedSelectOptions(selectOptions));
     }

@@ -11,12 +11,17 @@ export default class OutputSelectCountryComponent extends BaseOutput {
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    this.setCountrySelectOptions.perform();
+    this.setCountrySelectOptions
+      // @ts-ignore
+      .perform();
   }
 
   @task
+  // @ts-ignore
   *setCountrySelectOptions(): SelectOption[] {
-    const selectOptions = yield this.address.getCountrySelectOptions.perform();
+    const selectOptions = yield this.address.getCountrySelectOptions
+      // @ts-ignore
+      .perform();
 
     if (selectOptions) {
       this.set("selectOptions", selectOptions);

@@ -48,6 +48,7 @@ export default class SingleModelRoute extends ResetModelRoute {
       options["include"] = uniqueIncludes.join(",");
     }
 
+    // @ts-ignore
     return this.store.loadRecord(this.modelName, params[`id`], options);
   }
 

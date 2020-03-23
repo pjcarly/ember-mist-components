@@ -3,6 +3,7 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import { dropTask } from "ember-concurrency-decorators";
+// @ts-ignore
 import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
@@ -26,7 +27,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   @alias("session.data.authenticated.access_token") accessToken!: string;
 
-  @computed
+  @computed()
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
@@ -118,12 +119,16 @@ export default class WebsocketService extends Service.extend(Evented) {
   connectionClosed(_: any) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
-      this.startConnecting.perform();
+      this.startConnecting
+        // @ts-ignore
+        .perform();
     }
   }
 
   connectionErrored(_: any) {
     this.set("status", Status.OFFLINE);
-    this.startConnecting.perform();
+    this.startConnecting
+      // @ts-ignore
+      .perform();
   }
 }

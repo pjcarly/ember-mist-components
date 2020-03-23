@@ -15,6 +15,7 @@ export default class SortOrderModel extends DrupalModel {
   sort?: number;
 
   /* Relationships */
+  // @ts-ignore
   @belongsTo("field", {
     widget: "select",
     async: false,
@@ -22,6 +23,7 @@ export default class SortOrderModel extends DrupalModel {
   })
   field!: FieldModel;
 
+  // @ts-ignore
   @belongsTo("query", { validation: { required: true }, async: false })
   parent!: QueryModel;
 

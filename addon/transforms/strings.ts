@@ -1,5 +1,5 @@
 import Transform from "ember-data/transform";
-import { A, isArray } from "@ember/array";
+import { isArray } from "@ember/array";
 import { isBlank } from "@ember/utils";
 
 export default class StringsTransform extends Transform {

@@ -1,3 +1,4 @@
+// @ts-ignore
 import Uploader from "ember-uploader/uploaders/uploader";
 import { dropTask } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
@@ -117,6 +118,7 @@ export default class InputFileDrupalComponent extends BaseInput {
               };
 
               if (this.multiple) {
+                // @ts-ignore
                 fieldValue.push(fileObject);
               } else {
                 fieldValue = fileObject;
@@ -151,6 +153,8 @@ export default class InputFileDrupalComponent extends BaseInput {
 
   @action
   filesSelected(files: any) {
-    this.uploadFile.perform(files);
+    this.uploadFile
+      // @ts-ignore
+      .perform(files);
   }
 }

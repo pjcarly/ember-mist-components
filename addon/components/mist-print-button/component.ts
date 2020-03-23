@@ -93,6 +93,7 @@ export default class MistPrintButtonComponent extends Component {
 
       let selectOption: SelectOption = {
         value: pdfResult.id,
+        // @ts-ignore
         label: pdfResult.name
       };
 

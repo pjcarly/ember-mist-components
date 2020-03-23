@@ -38,12 +38,16 @@ export default class InputLookupWindowComponent extends BaseInput {
   @action
   showModal() {
     this.set("modalVisible", true);
+    // TODO: Remove jQuery dependency
+    // @ts-ignore
     $(`#${this.modalId}`).modal("show");
   }
 
   @action
   closeModal() {
     this.set("modalVisible", false);
+    // TODO: Remove jQuery dependency
+    // @ts-ignore
     $(`#${this.modalId}`).modal("hide");
   }
 

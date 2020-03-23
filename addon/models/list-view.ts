@@ -28,6 +28,7 @@ export default class ListViewModel extends QueryModel {
   @attr()
   sortOrder: any; // pseudo attribute which will contain an object with the sort order. This is only serialized by the back-end. And cant be updated. Use the hasMany relationship sortOrders instead
 
+  // @ts-ignore
   @belongsTo("meta-model", {
     widget: "select",
     async: false,
@@ -35,6 +36,7 @@ export default class ListViewModel extends QueryModel {
   })
   model!: MetaModelModel;
 
+  // @ts-ignore
   @hasMany("field", {
     async: false,
     widget: "select",

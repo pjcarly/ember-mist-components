@@ -14,6 +14,7 @@ import {
   startOf,
   endOf,
   weekday
+  // @ts-ignore
 } from "ember-power-calendar-utils";
 import { dasherize } from "@ember/string";
 import { assert } from "@ember/debug";
@@ -50,7 +51,9 @@ export default class ModelCalendarComponent extends Component {
 
   didReceiveAttrs() {
     this._super(...arguments);
-    this.loadModels.perform();
+    this.loadModels
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -71,6 +74,7 @@ export default class ModelCalendarComponent extends Component {
     const models: { [key: string]: Array<Model> } = {};
 
     loadedModels.forEach((model: Model) => {
+      // @ts-ignore
       const dateValue = model.get(this.dateField);
       const key = moment(dateValue).format("YYYY-MM-DD");
       if (!models.hasOwnProperty(key)) {
@@ -259,6 +263,7 @@ export default class ModelCalendarComponent extends Component {
       return;
     }
 
+    // @ts-ignore
     return selection;
   }
 
@@ -268,7 +273,9 @@ export default class ModelCalendarComponent extends Component {
    */
   centerCalendarOn(this: ModelCalendarComponent, date: Date) {
     this.set("center", date);
-    this.loadModels.perform();
+    this.loadModels
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -292,6 +299,10 @@ export default class ModelCalendarComponent extends Component {
     calendar: Object,
     e: Event
   ) {
+    if (!e.target) {
+      return;
+    }
+
     const oldCenter = this.center;
     const newCenter = new Date();
 
@@ -299,8 +310,10 @@ export default class ModelCalendarComponent extends Component {
 
     if (unit === "year") {
       newCenter.setMonth(oldCenter.getMonth());
+      // @ts-ignore
       newCenter.setFullYear(e.target.value);
     } else if (unit === "month") {
+      // @ts-ignore
       newCenter.setMonth(e.target.value);
       newCenter.setFullYear(oldCenter.getFullYear());
     }
@@ -320,6 +333,8 @@ export default class ModelCalendarComponent extends Component {
   @action
   listViewChanged(listViewKey: string) {
     this.set("listViewKey", listViewKey);
-    this.loadModels.perform();
+    this.loadModels
+      // @ts-ignore
+      .perform();
   }
 }
