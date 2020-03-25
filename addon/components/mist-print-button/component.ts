@@ -7,7 +7,7 @@ import { getOwner } from "@ember/application";
 import Store from "ember-data/store";
 import { dropTask } from "ember-concurrency-decorators";
 import DrupalModel from "ember-mist-components/models/drupal-model";
-import SelectOption from "ember-field-components/addon/interfaces/SelectOption";
+import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { tagName } from "@ember-decorators/component";
 import { guidFor } from "@ember/object/internals";
 import $ from "jquery";
