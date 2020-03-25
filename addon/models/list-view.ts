@@ -29,20 +29,11 @@ export default class ListViewModel extends QueryModel {
   sortOrder: any; // pseudo attribute which will contain an object with the sort order. This is only serialized by the back-end. And cant be updated. Use the hasMany relationship sortOrders instead
 
   // @ts-ignore
-  @belongsTo("meta-model", {
-    widget: "select",
-    async: false,
-    validation: { required: true }
-  })
+  @belongsTo("meta-model", { widget: "select", async: false, validation: { required: true }})
   model!: MetaModelModel;
 
   // @ts-ignore
-  @hasMany("field", {
-    async: false,
-    widget: "select",
-    rollback: true,
-    validation: { required: true }
-  })
+  @hasMany("field", { async: false, widget: "select", rollback: true, validation: { required: true }})
   columns!: MutableArray<FieldModel>;
 
   /* Functions */

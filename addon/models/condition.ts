@@ -19,11 +19,7 @@ export default class ConditionModel extends DrupalModel {
 
   /* Relationships */
   // @ts-ignore
-  @belongsTo("field", {
-    widget: "select",
-    async: false,
-    validation: { required: true }
-  })
+  @belongsTo("field", { widget: "select", async: false, validation: { required: true }})
   field!: FieldModel;
 
   // @ts-ignore
