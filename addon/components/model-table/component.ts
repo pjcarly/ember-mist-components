@@ -105,14 +105,16 @@ export default class ModelTableComponent extends Component {
     super.didReceiveAttrs();
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
-    // @ts-ignore
-    this.initializeTable.perform();
+    this.initializeTable
+      // @ts-ignore
+      .perform();
   }
 
   @task
   *initializeTable() {
-    // @ts-ignore
-    yield this.fetchRecords.perform();
+    yield this.fetchRecords
+      // @ts-ignore
+      .perform();
 
     if (this.searchFixed) {
       this.set("searchVisible", true);
@@ -369,7 +371,7 @@ export default class ModelTableComponent extends Component {
    */
   @computed("config")
   get displayListViewLinks(): boolean {
-    const config = this.get("config");
+    const config = this.config;
     if (
       config.hasOwnProperty("ember-mist-components") &&
       config["ember-mist-components"].hasOwnProperty("displayListViewLinks")
@@ -447,8 +449,9 @@ export default class ModelTableComponent extends Component {
 
     if (this.selectedModels.length === 0 && this.displaySelected) {
       this.toggleProperty("displaySelected");
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -524,8 +527,9 @@ export default class ModelTableComponent extends Component {
 
   @restartableTask
   *fetchRecordsAndRefreshColumns() {
-    // @ts-ignore
-    yield this.get("fetchRecords").perform();
+    yield this.fetchRecords
+      // @ts-ignore
+      .perform();
     // Needed for polymorphic tables
     this.setColumns();
   }
@@ -554,8 +558,9 @@ export default class ModelTableComponent extends Component {
       } else {
         // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
         this.query.clearSearch();
-        // @ts-ignore
-        this.fetchRecords.perform();
+        this.fetchRecords
+          // @ts-ignore
+          .perform();
       }
     }
   }
@@ -566,8 +571,9 @@ export default class ModelTableComponent extends Component {
   @action
   search() {
     if (this.searchVisible) {
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     } else {
       this.toggleSearch();
     }
@@ -578,8 +584,9 @@ export default class ModelTableComponent extends Component {
    */
   @action
   refresh() {
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -589,8 +596,9 @@ export default class ModelTableComponent extends Component {
   nextPage() {
     if (this.query.page < this.lastPage) {
       this.query.nextPage();
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -601,8 +609,9 @@ export default class ModelTableComponent extends Component {
   prevPage() {
     if (this.query.page > 1) {
       this.query.prevPage();
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -613,8 +622,9 @@ export default class ModelTableComponent extends Component {
   @action
   pageSelected(page: number) {
     this.query.setPage(page);
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -625,8 +635,9 @@ export default class ModelTableComponent extends Component {
   limitChanged(limit: number) {
     this.query.setPage(1);
     this.query.setLimit(limit);
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -666,8 +677,9 @@ export default class ModelTableComponent extends Component {
         )
       );
       this.query.setPage(1);
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -699,8 +711,9 @@ export default class ModelTableComponent extends Component {
         }
 
         if (this.displaySelected) {
-          // @ts-ignore
-          this.fetchRecords.perform();
+          this.fetchRecords
+            // @ts-ignore
+            .perform();
         } else {
           this.setSelectAllColumn();
         }
@@ -736,8 +749,9 @@ export default class ModelTableComponent extends Component {
   toggleDisplaySelected() {
     this.query.setPage(1);
     this.toggleProperty("displaySelected");
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   @action
@@ -748,15 +762,17 @@ export default class ModelTableComponent extends Component {
     this.notifyPropertyChange("listViewKey");
 
     // Now we can refetch the records and reset the columns
-    // @ts-ignore
-    this.fetchRecordsAndRefreshColumns.perform();
+    this.fetchRecordsAndRefreshColumns
+      // @ts-ignore
+      .perform();
   }
 
   @action
   listViewChanged(_: string) {
     this.notifyPropertyChange("listViewKey");
     this.setQueryParamsBasedOnActiveListView();
-    // @ts-ignore
-    this.fetchRecordsAndRefreshColumns.perform();
+    this.fetchRecordsAndRefreshColumns
+      // @ts-ignore
+      .perform();
   }
 }

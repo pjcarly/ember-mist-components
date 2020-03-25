@@ -296,7 +296,7 @@ export default class ModelCalendarComponent extends Component {
   changeCenter(
     this: ModelCalendarComponent,
     unit: string,
-    calendar: Object,
+    _: Object,
     e: Event
   ) {
     if (!e.target) {

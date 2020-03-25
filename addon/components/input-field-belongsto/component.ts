@@ -27,8 +27,9 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    // @ts-ignore
-    this.setSelectOptions.perform();
+    this.setSelectOptions
+      // @ts-ignore
+      .perform();
   }
 
   @computed("model", "field")
@@ -78,18 +79,14 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
         this.baseQuery.orders
       ) {
         // @ts-ignore
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(
-          this.relationshipModelName,
-          this.baseQuery,
-          this.nameField
-        );
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
+          // @ts-ignore
+          .perform(this.relationshipModelName, this.baseQuery, this.nameField);
       } else {
         // @ts-ignore
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(
-          this.relationshipModelName,
-          undefined,
-          this.nameField
-        );
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
+          // @ts-ignore
+          .perform(this.relationshipModelName, undefined, this.nameField);
       }
 
       this.set("selectOptions", selectOptions);

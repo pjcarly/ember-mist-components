@@ -51,8 +51,9 @@ export default class ModelController extends Controller {
         allowOutsideClick: true
       },
       function(this: ModelController) {
-        // @ts-ignore
-        this.deleteWithoutConfirm.perform(model);
+        this.deleteWithoutConfirm
+          // @ts-ignore
+          .perform(model);
       }.bind(this)
     );
   }
@@ -185,8 +186,9 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
-    // @ts-ignore
-    yield this.refresh.perform(model);
+    yield this.refresh
+      // @ts-ignore
+      .perform(model);
   }
 
   @task({ group: "modelTasks" })
