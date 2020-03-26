@@ -26,7 +26,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   @alias("session.data.authenticated.access_token") accessToken!: string;
 
-  @computed()
+  @computed
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
@@ -69,14 +69,16 @@ export default class WebsocketService extends Service.extend(Evented) {
    */
   openConnection() {
     this.set("status", Status.CONNECTING);
-
     let socket = this.socket;
 
     if (!socket) {
-      socket = this.websockets.socketFor(
-        `${this.endpoint}?access_token=${this.accessToken}`
-      );
-
+      if (this.accessToken) {
+        socket = this.websockets.socketFor(
+          `${this.endpoint}?access_token=${this.accessToken}`
+        );
+      } else {
+        socket = this.websockets.socketFor(this.endpoint);
+      }
       socket.on("open", this.connectionOpened, this);
       socket.on("message", this.messageReceived, this);
       socket.on("close", this.connectionClosed, this);
@@ -100,19 +102,19 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   connectionOpened(_: any) {
-    console.info("WS connection opened");
     this.set("status", Status.ONLINE);
     this.reconnectAttempts = 0;
   }
 
   messageReceived(event: any) {
-    if (event.data !== null) {
-      this.trigger("message", event);
+    if (event.data) {
+      if (event.data !== undefined) {
+        this.trigger("message", event);
+      }
     }
   }
 
   connectionClosed(_: any) {
-    console.log("WS connection closed");
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
       this.startConnecting.perform();
@@ -120,7 +122,6 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   connectionErrored(_: any) {
-    console.error("WS connection error");
     this.set("status", Status.OFFLINE);
     this.startConnecting.perform();
   }
