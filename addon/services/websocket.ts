@@ -109,6 +109,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   messageReceived(event: any) {
     if (event.data) {
       if (event.data !== undefined) {
+        //EACH message received over socket containing data wil ltrigger topic "message"
         this.trigger("message", event);
       }
     }
