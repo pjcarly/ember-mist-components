@@ -180,7 +180,11 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
    */
   @computed("relationshipModelName")
   get dynamicComponentName(): string {
-    return `input-belongsto-${this.relationshipModelName}`;
+    if (this.relationshipModelName instanceof Array) {
+      return `input-belongsto-${this.relationshipModelName.join("-")}`;
+    } else {
+      return `input-belongsto-${this.relationshipModelName}`;
+    }
   }
 
   @action

@@ -1,8 +1,8 @@
 {{#if (component-exists this.dynamicComponentName)}}
-  {{component dynamicComponentName
+  {{component this.dynamicComponentName
       baseQuery=this.baseQuery
       value=this.value
-      modelName=relationshipModelName
+      modelName=this.relationshipModelName
       valueChanged=(action 'doChangeValue')
       placeholder=@placeholder
       class=this.inputClass
