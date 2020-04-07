@@ -1,6 +1,7 @@
 import ResetModelRoute from "./reset-model-route";
 import Store from "ember-data/store";
-import EntityCacheService from "dummy/services/entity-cache";
+import EntityCacheService from "ember-mist-components/services/entity-cache";
+// @ts-ignore
 import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";

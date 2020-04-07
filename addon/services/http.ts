@@ -3,13 +3,14 @@ import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
-import fetch from "fetch";
+// @ts-ignore
+import fetch, { Response } from 'fetch';
 import { Promise } from "rsvp";
 
 export default class HttpService extends Service {
   @service session!: Service;
 
-  fetch(path: string, method: string = "GET", body?: any) {
+  fetch(path: string, method: string = "GET", body?: any) : Promise<Response> {
     const options: RequestInit = {
       headers: this.headers,
       method: method,
@@ -18,14 +19,14 @@ export default class HttpService extends Service {
 
     return new Promise(function(resolve, reject) {
       return fetch(`${path}`, options)
-        .then(response => {
+        .then((response : Response) => {
           if (response.ok) {
             resolve(response);
           } else {
             reject(response);
           }
         })
-        .catch(reason => {
+        .catch((reason : any) => {
           reject(reason);
         });
     });

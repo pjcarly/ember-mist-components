@@ -3,10 +3,10 @@ import Controller from "@ember/controller";
 import Model from "ember-data/model";
 import Store from "ember-data/store";
 import DrupalModel from "ember-mist-components/models/drupal-model";
-import EntityCacheService from "dummy/services/entity-cache";
-import EntityRouterService from "dummy/services/entity-router";
+import EntityCacheService from "ember-mist-components/services/entity-cache";
+import EntityRouterService from "ember-mist-components/services/entity-router";
 import FieldInformationService from "ember-field-components/services/field-information";
-import RecentlyViewedService from "dummy/services/recently-viewed";
+import RecentlyViewedService from "ember-mist-components/services/recently-viewed";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { debug } from "@ember/debug";
@@ -49,9 +49,9 @@ export default class ModelController extends Controller {
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, delete it!",
-        allowOutsideClick: true
+        allowOutsideClick: true,
       },
-      function(this: ModelController) {
+      function (this: ModelController) {
         // @ts-ignore
         this.deleteWithoutConfirm.perform(model);
       }.bind(this)
@@ -210,7 +210,7 @@ export default class ModelController extends Controller {
     let blob = null;
 
     yield actionToInvoke().then((response: Response) => {
-      return response.blob().then(data => {
+      return response.blob().then((data) => {
         blob = new Blob([data], { type: "octet/stream" });
       });
     });

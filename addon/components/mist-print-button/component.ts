@@ -7,7 +7,7 @@ import { getOwner } from "@ember/application";
 import Store from "ember-data/store";
 import { dropTask } from "ember-concurrency-decorators";
 import DrupalModel from "ember-mist-components/models/drupal-model";
-import SelectOption from "ember-field-components/addon/interfaces/SelectOption";
+import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { tagName } from "@ember-decorators/component";
 import { guidFor } from "@ember/object/internals";
 import $ from "jquery";
@@ -53,7 +53,7 @@ export default class MistPrintButtonComponent extends Component {
     yield this.template
       .generateDigest({ id: model.get("id") })
       .then((result: Response) => {
-        return result.json().then(jsonBody => {
+        return result.json().then((jsonBody) => {
           digest = jsonBody.digest;
         });
       });
@@ -76,9 +76,9 @@ export default class MistPrintButtonComponent extends Component {
         filter: {
           1: {
             field: "grouping",
-            value: this.grouping
-          }
-        }
+            value: this.grouping,
+          },
+        },
       })
       .then((results: any) => {
         pdfResults = results;
@@ -86,14 +86,14 @@ export default class MistPrintButtonComponent extends Component {
 
     let selectOptions: SelectOption[] = [];
     let value: string | null = null;
-    pdfResults.forEach(pdfResult => {
+    pdfResults.forEach((pdfResult) => {
       if (isBlank(value)) {
         value = pdfResult.get("id");
       }
 
       let selectOption: SelectOption = {
         value: pdfResult.id,
-        label: pdfResult.name
+        label: pdfResult.name,
       };
 
       selectOptions.push(selectOption);

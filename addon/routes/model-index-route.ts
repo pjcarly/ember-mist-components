@@ -1,6 +1,7 @@
 import Route from "@ember/routing/route";
+// @ts-ignore
 import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
-import EntityCacheService from "dummy/services/entity-cache";
+import EntityCacheService from "ember-mist-components/services/entity-cache";
 import { inject as service } from "@ember/service";
 import Controller from "@ember/controller";
 import Model from "@ember-data/model";
