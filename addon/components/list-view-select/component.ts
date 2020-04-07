@@ -30,8 +30,9 @@ export default class ListViewSelectComponent extends Component {
     super.didReceiveAttrs();
 
     assert("Grouping cannot be blank", !isBlank(this.grouping));
-    // @ts-ignore
-    this.setListViews.perform();
+    this.setListViews
+      // @ts-ignore
+      .perform();
   }
 
   @computed("selectOptions")

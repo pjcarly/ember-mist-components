@@ -93,6 +93,7 @@ export default class MistPrintButtonComponent extends Component {
 
       let selectOption: SelectOption = {
         value: pdfResult.id,
+        // @ts-ignore
         label: pdfResult.name,
       };
 
@@ -107,8 +108,9 @@ export default class MistPrintButtonComponent extends Component {
   showModal() {
     // @ts-ignore
     $(`#${this.modalId}`).modal("show");
-    // @ts-ignore
-    this.fetchTemplates.perform();
+    this.fetchTemplates
+      // @ts-ignore
+      .perform();
     this.set("modalVisible", true);
   }
 

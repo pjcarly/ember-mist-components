@@ -1,13 +1,14 @@
 {{#if (component-exists this.dynamicComponentName)}}
-  {{component dynamicComponentName
+  {{component this.dynamicComponentName
       baseQuery=this.baseQuery
       value=this.value
-      modelName=relationshipModelName
+      modelName=this.relationshipModelName
       valueChanged=(action 'doChangeValue')
       placeholder=@placeholder
       class=this.inputClass
       inputId=this.caluclatedInputId
-      options=this.inputOptions }}
+      required=this.isRequired
+      options=this.inputOptions}}
 {{else if this.isSelect}}
   {{#if setSelectOptions.isRunning}}
     {{mist-spinner size="20px"}}

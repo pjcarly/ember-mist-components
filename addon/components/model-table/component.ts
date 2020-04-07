@@ -14,7 +14,7 @@ import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import { computed, action } from "@ember/object";
 import { isArray } from "@ember/array";
-import { dropTask, task } from "ember-concurrency-decorators";
+import { task, restartableTask } from "ember-concurrency-decorators";
 import { guidFor } from "@ember/object/internals";
 import { A } from "@ember/array";
 import { get } from "@ember/object";
@@ -23,6 +23,12 @@ import { camelize, dasherize } from "@ember/string";
 import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
 import MutableArray from "@ember/array/mutable";
+import ListViewModel from "ember-mist-components/models/list-view";
+
+export interface ModelClassInterface {
+  fields: Map<string, string>;
+  eachComputedProperty: any;
+}
 
 export interface Column {
   label?: string;
@@ -99,14 +105,16 @@ export default class ModelTableComponent extends Component {
     super.didReceiveAttrs();
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
-    // @ts-ignore
-    this.initializeTable.perform();
+    this.initializeTable
+      // @ts-ignore
+      .perform();
   }
 
   @task
   *initializeTable() {
-    // @ts-ignore
-    yield this.fetchRecords.perform();
+    yield this.fetchRecords
+      // @ts-ignore
+      .perform();
 
     if (this.searchFixed) {
       this.set("searchVisible", true);
@@ -209,7 +217,7 @@ export default class ModelTableComponent extends Component {
     "modelListView",
     "listViewGrouping"
   )
-  get selectedListView(): Model | ModelListView {
+  get selectedListView(): ListViewModel | ModelListView {
     if (this.listViewGrouping) {
       return this.listView.getActiveListViewForCurrentRoute(
         this.activeModelName
@@ -222,6 +230,24 @@ export default class ModelTableComponent extends Component {
     }
 
     return this.listView.getDefaultListView(this.activeModelName);
+  }
+
+  @computed("activeModelName")
+  get activeModelClass(): ModelClassInterface {
+    return this.store.modelFor(this.activeModelName);
+  }
+
+  @computed("activeModelName")
+  get allActiveModelClassColums(): Map<string, any> {
+    const returnValue = new Map<string, any>();
+
+    this.activeModelClass.eachComputedProperty(
+      (field: string, options: any) => {
+        returnValue.set(field, options);
+      }
+    );
+
+    return returnValue;
   }
 
   /**
@@ -248,7 +274,21 @@ export default class ModelTableComponent extends Component {
     }
 
     // here we loop over every column in the listview, ans format it for ember light table
-    get(<any>this.selectedListView, "columns").forEach((modelColumn: any) => {
+    let listViewColumns: string[] = [];
+    if (this.selectedListView instanceof ListViewModel) {
+      this.selectedListView
+        .hasMany("columns")
+        .ids()
+        .forEach(fieldId => {
+          const fieldArray = fieldId.toString().split(".");
+          fieldArray.shift();
+          listViewColumns.push(fieldArray.join("."));
+        });
+    } else {
+      listViewColumns = this.selectedListView.columns;
+    }
+
+    listViewColumns.forEach((modelColumn: any) => {
       // First we split the columns by a ".", this is so we dont loose the dot when camelizing, as it indicates a value path
       // This only has effect for subobjects, like location, and address
       const splittedColumns = modelColumn.toString().split(".");
@@ -262,24 +302,27 @@ export default class ModelTableComponent extends Component {
         this.query.orders.length > 0 &&
         this.query.orders[0].field === dasherize(modelColumn);
 
-      // And finally build the structure for ember-light-table
-      const column: Column = {
-        label: this.fieldInformation.getTranslatedFieldlabel(
-          this.activeModelName,
-          camelizedColumn
-        ),
-        modelName: this.activeModelName,
-        valuePath: camelizedColumn,
-        transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displaye
-        width: modelColumn === "id" ? "60px" : undefined,
-        resizable: modelColumn !== "id",
-        cellComponent: "model-table-cell",
-        sorted: sortedOnColumn,
-        ascending:
-          sortedOnColumn && this.query.orders[0].direction === Direction.ASC
-      };
+      // Now that we know the column, lets see if it actually exists as a field on the modelclass
+      if (this.allActiveModelClassColums.has(camelizedColumn)) {
+        // And finally build the structure for ember-light-table
+        const column: Column = {
+          label: this.fieldInformation.getTranslatedFieldlabel(
+            this.activeModelName,
+            camelizedColumn
+          ),
+          modelName: this.activeModelName,
+          valuePath: camelizedColumn,
+          transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displaye
+          width: modelColumn === "id" ? "60px" : undefined,
+          resizable: modelColumn !== "id",
+          cellComponent: "model-table-cell",
+          sorted: sortedOnColumn,
+          ascending:
+            sortedOnColumn && this.query.orders[0].direction === Direction.ASC
+        };
 
-      columns.push(column);
+        columns.push(column);
+      }
     });
 
     return columns;
@@ -317,12 +360,18 @@ export default class ModelTableComponent extends Component {
     return selectOptions;
   }
 
+  get activeListViewKey(): string | number {
+    return this.listView.getActiveListViewKeyForCurrentRoute(
+      this.activeModelName
+    );
+  }
+
   /**
    * Returns true if the list view edit links should be displayed
    */
   @computed("config")
   get displayListViewLinks(): boolean {
-    const config = this.get("config");
+    const config = this.config;
     if (
       config.hasOwnProperty("ember-mist-components") &&
       config["ember-mist-components"].hasOwnProperty("displayListViewLinks")
@@ -400,8 +449,9 @@ export default class ModelTableComponent extends Component {
 
     if (this.selectedModels.length === 0 && this.displaySelected) {
       this.toggleProperty("displaySelected");
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -433,15 +483,11 @@ export default class ModelTableComponent extends Component {
   /**
    * Fetches the records from the back-end
    */
-  @dropTask
+  @restartableTask
   *fetchRecords() {
     // Lets check if a listview is selected. And pass if to the query if needed
-    const activeListViewKey = this.listView.getActiveListViewKeyForCurrentRoute(
-      this.activeModelName
-    );
-
-    if (activeListViewKey !== "All") {
-      this.query.setListView(<number>activeListViewKey);
+    if (this.activeListViewKey !== "All") {
+      this.query.setListView(<number>this.activeListViewKey);
     } else {
       this.query.clearListView();
     }
@@ -479,10 +525,11 @@ export default class ModelTableComponent extends Component {
     }
   }
 
-  @dropTask
+  @restartableTask
   *fetchRecordsAndRefreshColumns() {
-    // @ts-ignore
-    yield this.get("fetchRecords").perform();
+    yield this.fetchRecords
+      // @ts-ignore
+      .perform();
     // Needed for polymorphic tables
     this.setColumns();
   }
@@ -511,8 +558,9 @@ export default class ModelTableComponent extends Component {
       } else {
         // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
         this.query.clearSearch();
-        // @ts-ignore
-        this.fetchRecords.perform();
+        this.fetchRecords
+          // @ts-ignore
+          .perform();
       }
     }
   }
@@ -523,8 +571,9 @@ export default class ModelTableComponent extends Component {
   @action
   search() {
     if (this.searchVisible) {
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     } else {
       this.toggleSearch();
     }
@@ -535,8 +584,9 @@ export default class ModelTableComponent extends Component {
    */
   @action
   refresh() {
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -546,8 +596,9 @@ export default class ModelTableComponent extends Component {
   nextPage() {
     if (this.query.page < this.lastPage) {
       this.query.nextPage();
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -558,8 +609,9 @@ export default class ModelTableComponent extends Component {
   prevPage() {
     if (this.query.page > 1) {
       this.query.prevPage();
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -570,8 +622,9 @@ export default class ModelTableComponent extends Component {
   @action
   pageSelected(page: number) {
     this.query.setPage(page);
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -582,8 +635,9 @@ export default class ModelTableComponent extends Component {
   limitChanged(limit: number) {
     this.query.setPage(1);
     this.query.setLimit(limit);
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   /**
@@ -623,8 +677,9 @@ export default class ModelTableComponent extends Component {
         )
       );
       this.query.setPage(1);
-      // @ts-ignore
-      this.fetchRecords.perform();
+      this.fetchRecords
+        // @ts-ignore
+        .perform();
     }
   }
 
@@ -656,8 +711,9 @@ export default class ModelTableComponent extends Component {
         }
 
         if (this.displaySelected) {
-          // @ts-ignore
-          this.fetchRecords.perform();
+          this.fetchRecords
+            // @ts-ignore
+            .perform();
         } else {
           this.setSelectAllColumn();
         }
@@ -693,8 +749,9 @@ export default class ModelTableComponent extends Component {
   toggleDisplaySelected() {
     this.query.setPage(1);
     this.toggleProperty("displaySelected");
-    // @ts-ignore
-    this.fetchRecords.perform();
+    this.fetchRecords
+      // @ts-ignore
+      .perform();
   }
 
   @action
@@ -705,15 +762,17 @@ export default class ModelTableComponent extends Component {
     this.notifyPropertyChange("listViewKey");
 
     // Now we can refetch the records and reset the columns
-    // @ts-ignore
-    this.fetchRecordsAndRefreshColumns.perform();
+    this.fetchRecordsAndRefreshColumns
+      // @ts-ignore
+      .perform();
   }
 
   @action
   listViewChanged(_: string) {
     this.notifyPropertyChange("listViewKey");
     this.setQueryParamsBasedOnActiveListView();
-    // @ts-ignore
-    this.fetchRecordsAndRefreshColumns.perform();
+    this.fetchRecordsAndRefreshColumns
+      // @ts-ignore
+      .perform();
   }
 }

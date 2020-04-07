@@ -1,7 +1,8 @@
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+// @ts-ignore
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 
 export function authenticatedRoute(desc: any) {
-  if(typeof desc === 'function') {
+  if (typeof desc === "function") {
     desc.reopen(AuthenticatedRouteMixin);
   } else {
     return {

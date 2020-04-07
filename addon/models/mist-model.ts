@@ -68,6 +68,7 @@ export default abstract class MistModel extends Model {
         descriptor.options.hasOwnProperty("rollback") &&
         descriptor.options.rollback
       ) {
+        // @ts-ignore
         const childModels = this.get(name);
         if (!isBlank(childModels)) {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
@@ -90,15 +91,19 @@ export default abstract class MistModel extends Model {
    */
   copy(): MistModel {
     const modelName = this.fieldInformation.getModelName(this);
+    // @ts-ignore
     const copy = this.store.createRecord(modelName);
 
+    // @ts-ignore
     this.eachAttribute((attributeName: string) => {
+      // @ts-ignore
       const attributeValue = this.get(attributeName);
 
       copy.set(attributeName, attributeValue);
     });
 
     this.eachRelationship((relationshipName: string, meta: any) => {
+      // @ts-ignore
       const relationship = this.get(relationshipName);
 
       if (meta.kind === "belongsTo") {
@@ -115,7 +120,9 @@ export default abstract class MistModel extends Model {
   clearRelationships() {
     this.eachRelationship((relationshipName: string, descriptor: any) => {
       if (descriptor.kind === "belongsTo") {
+        // @ts-ignore
         this.set(relationshipName, null);
+        // @ts-ignore
         this.errors.remove(relationshipName);
       }
     });
@@ -125,8 +132,11 @@ export default abstract class MistModel extends Model {
    * Clears all the attribute values on this model
    */
   clearAttributes() {
+    // @ts-ignore
     this.eachAttribute((attributeName: string) => {
+      // @ts-ignore
       this.set(attributeName, null);
+      // @ts-ignore
       this.errors.remove(attributeName);
     });
   }
@@ -160,13 +170,16 @@ export default abstract class MistModel extends Model {
     this.eachRelationship((relationshipName: string, meta: any) => {
       if (relationshipName === relationshipNameToValidate) {
         if (meta.kind === "belongsTo") {
+          // @ts-ignore
           const relatedModel = this.get(relationshipName);
           isValid = relatedModel ? relatedModel.validate() : true;
         } else if (meta.kind === "hasMany") {
+          // @ts-ignore
           const relatedModels = this.get(relationshipName);
           if (relatedModels) {
             isValid = !relatedModels
               .toArray()
+              // @ts-ignore
               .some((relatedModel: MistModel) => !relatedModel.validate());
           } else {
             isValid = true;

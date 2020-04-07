@@ -13,6 +13,7 @@ export interface AutonumberFieldOptions extends FieldOptionsInterface {
 export default class OutputFieldAutonumberComponent extends OutputFieldComponent {
   @computed("value")
   get computedValue(): string {
+    // @ts-ignore (Is a dynamic computed property)
     let value = this.value;
 
     const fieldOptions = <AutonumberFieldOptions>this.fieldOptions;
@@ -31,6 +32,7 @@ export default class OutputFieldAutonumberComponent extends OutputFieldComponent
         : "created";
 
       // Next we check possible date values to replace
+      // @ts-ignore
       const date = this.model.get(dateField);
 
       if (date) {

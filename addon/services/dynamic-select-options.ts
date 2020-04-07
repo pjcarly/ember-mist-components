@@ -27,12 +27,13 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The name of the model
    * @param field The name of the field
    */
-  @task({ maxConcurrency: 4 })
+  @task({ enqueue: true, maxConcurrency: 4 })
   *getSelectOptions(modelName: string, field: string) {
     let cachedSelectOptions: SelectOption[] = [];
 
     const id = `${modelName}.${dasherize(field)}`;
 
+    // @ts-ignore
     const fieldAdapter = this.store.adapterFor("field");
     assert(
       `Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`,
@@ -54,6 +55,7 @@ export default class DynamicSelectOptionService extends Service {
     } else {
       // not yet loaded, let's do a callout
       yield this.store
+        // @ts-ignore
         .loadRecord("field", id)
         .then((fieldModel: FieldModel) => {
           cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
@@ -75,11 +77,12 @@ export default class DynamicSelectOptionService extends Service {
    * @param modelName The modelname you want to load select options for
    * @param nameField The nameField to be used when populating the label part of the selectOption
    */
-  @task({ maxConcurrency: 4 })
+  @task({ enqueue: true, maxConcurrency: 4 })
   *getModelSelectOptions(
     modelName: string,
     query: Query | undefined,
     nameField: string | undefined
+    // @ts-ignore
   ): SelectOption[] {
     let models;
 
@@ -88,23 +91,27 @@ export default class DynamicSelectOptionService extends Service {
     }
 
     if (query) {
+      // @ts-ignore
       models = yield query.fetch(this.store);
     } else if (this.loadedModelNames.includes(modelName)) {
       models = this.store.peekAll(modelName);
     } else {
+      // @ts-ignore
       models = yield this.store.loadAll(modelName);
       this.loadedModelNames.push(modelName);
     }
 
     const selectOptions: SelectOption[] = [];
 
-    for (const model of models.toArray()) {
-      const selectOption: SelectOption = {
-        value: model.id,
-        label: model.get(nameField)
-      };
+    if (models) {
+      for (const model of models.toArray()) {
+        const selectOption: SelectOption = {
+          value: model.id,
+          label: model.get(nameField)
+        };
 
-      selectOptions.push(selectOption);
+        selectOptions.push(selectOption);
+      }
     }
 
     return selectOptions;

@@ -1,3 +1,4 @@
+// @ts-ignore
 import Fragment from "ember-data-model-fragments/fragment";
 import Store from "ember-data/store";
 import attr from "ember-data/attr";
@@ -40,26 +41,43 @@ export default class Address extends Fragment {
   addressLine2?: string;
 
   copyAddress(): Address {
+    // @ts-ignore
     const newAddress = <Address>this.store.createFragment("address");
+    // @ts-ignore
     newAddress.set("countryCode", this.countryCode);
+    // @ts-ignore
     newAddress.set("administrativeArea", this.administrativeArea);
+    // @ts-ignore
     newAddress.set("locality", this.locality);
+    // @ts-ignore
     newAddress.set("dependentLocality", this.dependentLocality);
+    // @ts-ignore
     newAddress.set("postalCode", this.postalCode);
+    // @ts-ignore
     newAddress.set("sortingCode", this.sortingCode);
+    // @ts-ignore
     newAddress.set("addressLine1", this.addressLine1);
+    // @ts-ignore
     newAddress.set("addressLine2", this.addressLine2);
     return newAddress;
   }
 
   clear() {
+    // @ts-ignore
     this.set("countryCode", null);
+    // @ts-ignore
     this.set("administrativeArea", null);
+    // @ts-ignore
     this.set("locality", null);
+    // @ts-ignore
     this.set("dependentLocality", null);
+    // @ts-ignore
     this.set("postalCode", null);
+    // @ts-ignore
     this.set("sortingCode", null);
+    // @ts-ignore
     this.set("addressLine1", null);
+    // @ts-ignore
     this.set("addressLine2", null);
   }
 
@@ -82,11 +100,17 @@ export default class Address extends Fragment {
   }
 
   clearExceptAddressLines() {
+    // @ts-ignore
     this.set("countryCode", null);
+    // @ts-ignore
     this.set("administrativeArea", null);
+    // @ts-ignore
     this.set("locality", null);
+    // @ts-ignore
     this.set("dependentLocality", null);
+    // @ts-ignore
     this.set("postalCode", null);
+    // @ts-ignore
     this.set("sortingCode", null);
   }
 

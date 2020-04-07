@@ -1,21 +1,23 @@
-import Helper from '@ember/component/helper';
-import Image from 'ember-mist-components/interfaces/image';
-import { htmlSafe } from '@ember/template';
+import Helper from "@ember/component/helper";
+import Image from "ember-mist-components/interfaces/image";
+import { htmlSafe } from "@ember/template";
+// @ts-ignore
+import { SafeString } from "@ember/string/-private/handlebars";
 
 export default class ImageURLHelper extends Helper {
-  compute([value, style]: [Image|undefined, string]) : string | undefined {
-    if(!value) {
+  compute([value, style]: [Image | undefined, string]): SafeString | undefined {
+    if (!value) {
       return;
     }
 
-    if(!value.url) {
+    if (!value.url) {
       return;
     }
 
-    let returnValue = '';
+    let returnValue = "";
 
-    if(style) {
-      if(value.url.includes('?')) {
+    if (style) {
+      if (value.url.includes("?")) {
         returnValue = `${value.url}&style=${style}`;
       } else {
         returnValue = `${value.url}?style=${style}`;

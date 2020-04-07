@@ -1,0 +1,37 @@
+<div class="orders-edit">
+  <div class="button-bar">
+    <a role="button" {{action "addNewOrder"}} class="btn btn-default btn-xs waves-effect">
+      Add
+    </a>
+  </div>
+
+  {{#if @model.orders}}
+    {{#sortable-group model=@model.orders onChange=(action "reorderOrders") class=(if isOdd "is-odd" "is-even") as |group|}}
+      {{#each (sort-by "sort" group.model) as |order|}}
+        {{#if (not order.isDeleted)}}
+          {{#group.item model=order class=(if readOnly "read-only" "read-write") as |sortableItem|}}
+            {{#sortableItem.handle}}
+              <div class="b-0 sort-handle" sort={{order.sort}}>
+                <i class="zmdi zmdi-unfold-more"></i>
+              </div>
+            {{/sortableItem.handle}}
+
+            <div class="sort-col">
+              <InputField @model={{order}} @field="field" @inline={{true}} @placeholder="Field" @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
+            </div>
+            <div class="sort-col">
+              <InputField @model={{order}} @field="direction" @inline={{true}} />
+            </div>
+            <div class="b-0 action-column">
+              <ul class="actions">
+                <MenuDropdown>
+                  <MenuItem @itemClicked={{action "deleteOrder" order}}><i class="zmdi zmdi-delete zmdi-hc-lg"></i> Delete</MenuItem>
+                </MenuDropdown>
+              </ul>
+            </div>
+          {{/group.item}}
+        {{/if}}
+      {{/each}}
+    {{/sortable-group}}
+  {{/if}}
+</div>

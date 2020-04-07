@@ -37,10 +37,10 @@
         <IconSearch />
       {{/mist-menu-item}}
       {{#mist-menu-dropdown-item className="waves-circle"}}
-        {{#if (and listViewGrouping displayListViewLinks)}}
-          {{#if (and activeListViewKey (is-numeric activeListViewKey))}}
+        {{#if (and @listViewGrouping displayListViewLinks)}}
+          {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
             {{#mist-menu-item}}
-              <a href="{{href-to 'list-view.edit' activeListViewKey}}">
+              <a href="{{href-to 'list-view.edit' this.activeListViewKey}}">
                 <IconListViewEdit /> {{t 'ember-mist-components.list-view.edit'}}
               </a>
             {{/mist-menu-item}}

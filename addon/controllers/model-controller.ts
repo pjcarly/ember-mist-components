@@ -8,7 +8,6 @@ import EntityRouterService from "ember-mist-components/services/entity-router";
 import FieldInformationService from "ember-field-components/services/field-information";
 import RecentlyViewedService from "ember-mist-components/services/recently-viewed";
 import { inject as service } from "@ember/service";
-import { isBlank } from "@ember/utils";
 import { debug } from "@ember/debug";
 import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
@@ -52,8 +51,9 @@ export default class ModelController extends Controller {
         allowOutsideClick: true,
       },
       function (this: ModelController) {
-        // @ts-ignore
-        this.deleteWithoutConfirm.perform(model);
+        this.deleteWithoutConfirm
+          // @ts-ignore
+          .perform(model);
       }.bind(this)
     );
   }
@@ -80,9 +80,9 @@ export default class ModelController extends Controller {
   }
 
   @task({ group: "modelTasks" })
-  *cancel(target: string | DrupalModel) {
+  *cancel(target: string | Model) {
     const returnToModel = this.entityCache.getReturnToModelAndClear();
-    if (!isBlank(returnToModel)) {
+    if (returnToModel) {
       target = returnToModel;
     }
 
@@ -108,6 +108,7 @@ export default class ModelController extends Controller {
       model.get("isDirtyOrDeleted") ||
       model.hasDirtyEmbeddedRelationships()
     ) {
+      // @ts-ignore
       const validModel = model.validate();
       // TODO: Fix issue #8 first
       //const validEmbeddedModels = model.validateEmbeddedRelationships();
@@ -185,8 +186,9 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
-    // @ts-ignore
-    yield this.refresh.perform(model);
+    yield this.refresh
+      // @ts-ignore
+      .perform(model);
   }
 
   @task({ group: "modelTasks" })
@@ -251,6 +253,7 @@ export default class ModelController extends Controller {
   @action
   print(model: DrupalModel) {
     const title = document.title;
+    // @ts-ignore
     document.title = model.name;
     window.print();
     document.title = title;

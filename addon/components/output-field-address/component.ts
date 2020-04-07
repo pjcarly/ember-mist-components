@@ -15,6 +15,7 @@ export default class OutputFieldAddressComponent extends InputFieldAddressCompon
           column.component = replaceAll(column.component, "input", "output");
 
           if (emptyRow) {
+            // @ts-ignore
             emptyRow = isBlank(this.address.get(column.field));
           }
         }

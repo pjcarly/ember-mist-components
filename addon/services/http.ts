@@ -4,29 +4,38 @@ import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
 // @ts-ignore
-import fetch, { Response } from 'fetch';
+import fetch, { Response } from "fetch";
 import { Promise } from "rsvp";
+import qs from "qs";
 
 export default class HttpService extends Service {
   @service session!: Service;
 
-  fetch(path: string, method: string = "GET", body?: any) : Promise<Response> {
+  fetch(
+    path: string,
+    method: string = "GET",
+    body?: any,
+    queryParams?: any
+  ): Promise<Response> {
     const options: RequestInit = {
       headers: this.headers,
       method: method,
-      body: body
+      body: body,
     };
 
-    return new Promise(function(resolve, reject) {
-      return fetch(`${path}`, options)
-        .then((response : Response) => {
+    const endpoint = queryParams
+      ? `${path}?${qs.stringify(queryParams)}`
+      : path;
+    return new Promise(function (resolve, reject) {
+      return fetch(endpoint, options)
+        .then((response) => {
           if (response.ok) {
             resolve(response);
           } else {
             reject(response);
           }
         })
-        .catch((reason : any) => {
+        .catch((reason: any) => {
           reject(reason);
         });
     });

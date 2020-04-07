@@ -1,10 +1,10 @@
 import Service from "@ember/service";
 import Store from "ember-data/store";
-import Model from "ember-data/model";
 import FieldInformationService from "ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
+import ListViewModel from "ember-mist-components/models/list-view";
 
 export interface ModelListView {
   columns: string[];
@@ -31,7 +31,7 @@ export default class ListViewService extends Service {
   getListViewByKey(
     modelName: string,
     key: string | number
-  ): Model | ModelListView {
+  ): ListViewModel | ModelListView {
     if (this.store.hasRecordForId("list-view", key)) {
       return this.store.peekRecord("list-view", key);
     }
@@ -66,7 +66,9 @@ export default class ListViewService extends Service {
   /**
    * Returns the active list view for the current route
    */
-  getActiveListViewForCurrentRoute(modelName: string): Model | ModelListView {
+  getActiveListViewForCurrentRoute(
+    modelName: string
+  ): ListViewModel | ModelListView {
     const key = this.getActiveListViewKeyForCurrentRoute(modelName);
     return this.getListViewByKey(modelName, key);
   }

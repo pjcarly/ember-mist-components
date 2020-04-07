@@ -42,6 +42,7 @@ export default class AddressService extends Service {
    * Returns the different countries in a select option format
    */
   @enqueueTask
+  // @ts-ignore
   *getCountrySelectOptions(): SelectOption[] {
     // We first check in this service
     let countrySelectOptions = this.countrySelectOptions;

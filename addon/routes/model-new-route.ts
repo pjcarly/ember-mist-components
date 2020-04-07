@@ -6,6 +6,7 @@ import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-rout
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 
+// @ts-ignore
 export default abstract class ModelNewRoute extends ResetModelRoute.extend(
   AuthenticatedRouteMixin
 ) {

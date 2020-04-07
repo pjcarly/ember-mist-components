@@ -8,7 +8,9 @@ export default class DynamicOutputFieldSelectComponent extends OutputFieldSelect
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    this.loadSelectOptions.perform();
+    this.loadSelectOptions
+      // @ts-ignore
+      .perform();
   }
 
   @task
@@ -18,10 +20,9 @@ export default class DynamicOutputFieldSelectComponent extends OutputFieldSelect
       (!this.selectOptions || this.selectOptions.length === 0) &&
       this.widgetName !== "country-select"
     ) {
-      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions.perform(
-        this.modelName,
-        this.field
-      );
+      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions
+        // @ts-ignore
+        .perform(this.modelName, this.field);
 
       this.set("selectOptions", selectOptions);
     }

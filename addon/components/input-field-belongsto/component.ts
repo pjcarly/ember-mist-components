@@ -10,10 +10,15 @@ import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import { inject as service } from "@ember/service";
-import { BelongsToFieldOptions } from "../output-field-belongsto/component";
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
 import Query from "ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
+import { FieldOptionsInterface } from "ember-field-components/services/field-information";
+
+export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
+  filters: any;
+  polymorphic: boolean;
+}
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
@@ -22,19 +27,23 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    this.setSelectOptions.perform();
+    this.setSelectOptions
+      // @ts-ignore
+      .perform();
   }
 
   @computed("model", "field")
   get relationshipModelName(): string | string[] {
     if (this.isPolymorphic) {
       return this.fieldInformation.getBelongsToModelNames(
+        // @ts-ignore
         this.modelName,
         this.field
       );
     }
 
     return this.fieldInformation.getBelongsToModelName(
+      // @ts-ignore
       this.modelName,
       this.field
     );
@@ -42,7 +51,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
   @computed("fieldOptions")
   get isPolymorphic(): boolean {
-    const options = <BelongsToFieldOptions>this.fieldOptions;
+    const options = <BelongsToFieldOptionsInterface>this.fieldOptions;
     return (
       !isBlank(options) &&
       options.hasOwnProperty("polymorphic") &&
@@ -64,18 +73,20 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
 
       let selectOptions = [];
 
-      if (this.baseQuery.conditions || this.baseQuery.conditionLogic) {
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(
-          this.relationshipModelName,
-          this.baseQuery,
-          this.nameField
-        );
+      if (
+        this.baseQuery.conditions ||
+        this.baseQuery.conditionLogic ||
+        this.baseQuery.orders
+      ) {
+        // @ts-ignore
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
+          // @ts-ignore
+          .perform(this.relationshipModelName, this.baseQuery, this.nameField);
       } else {
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions.perform(
-          this.relationshipModelName,
-          undefined,
-          this.nameField
-        );
+        // @ts-ignore
+        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
+          // @ts-ignore
+          .perform(this.relationshipModelName, undefined, this.nameField);
       }
 
       this.set("selectOptions", selectOptions);
@@ -125,10 +136,9 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
     }
 
     // And also add conditions defined on the field options
-    if (this.fieldOptions && this.fieldOptions.filters) {
-      const fieldFilters = <BelongsToFilterInterface[]>(
-        this.fieldOptions.filters
-      );
+    const fieldOptions = <BelongsToFieldOptionsInterface>this.fieldOptions;
+    if (fieldOptions && fieldOptions.filters) {
+      const fieldFilters = <BelongsToFilterInterface[]>fieldOptions.filters;
 
       for (const fieldFilter of fieldFilters) {
         if (fieldFilter.operator) {
@@ -170,7 +180,11 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
    */
   @computed("relationshipModelName")
   get dynamicComponentName(): string {
-    return `input-belongsto-${this.relationshipModelName}`;
+    if (this.relationshipModelName instanceof Array) {
+      return `input-belongsto-${this.relationshipModelName.join("-")}`;
+    } else {
+      return `input-belongsto-${this.relationshipModelName}`;
+    }
   }
 
   @action
