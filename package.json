@@ -57,8 +57,6 @@
     "ember-mist-components"
   ],
   "dependencies": {
-    "broccoli-persistent-filter": "^2.3.1",
-    "debug": "^4.1.1",
     "ember-ajax": "~5.0.0",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",

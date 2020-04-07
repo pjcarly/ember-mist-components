@@ -3,16 +3,16 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import { dropTask } from "ember-concurrency-decorators";
+// @ts-ignore
 import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
-import { isArray } from "@ember/array";
 import { getOwner } from "@ember/application";
 
 export enum Status {
   OFFLINE = "OFFLINE",
   CONNECTING = "CONNECTING",
-  ONLINE = "ONLINE"
+  ONLINE = "ONLINE",
 }
 
 export default class WebsocketService extends Service.extend(Evented) {
@@ -26,7 +26,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   @alias("session.data.authenticated.access_token") accessToken!: string;
 
-  @computed
+  @computed()
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
@@ -51,8 +51,9 @@ export default class WebsocketService extends Service.extend(Evented) {
           let waitFor = Math.pow(2, exponent) * 1000;
 
           debug(
-            `Attempting to reconnect (${this.reconnectAttempts}) in ${waitFor /
-              1000}s`
+            `Attempting to reconnect (${this.reconnectAttempts}) in ${
+              waitFor / 1000
+            }s`
           );
 
           yield timeout(waitFor);
@@ -108,22 +109,24 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   messageReceived(event: any) {
     if (event.data) {
-      if (event.data !== undefined) {
-        //EACH message received over socket containing data wil ltrigger topic "message"
-        this.trigger("message", event);
-      }
+      //EACH message received over socket containing data wil ltrigger topic "message"
+      this.trigger("message", event);
     }
   }
 
   connectionClosed(_: any) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
-      this.startConnecting.perform();
+      this.startConnecting
+        // @ts-ignore
+        .perform();
     }
   }
 
   connectionErrored(_: any) {
     this.set("status", Status.OFFLINE);
-    this.startConnecting.perform();
+    this.startConnecting
+      // @ts-ignore
+      .perform();
   }
 }
