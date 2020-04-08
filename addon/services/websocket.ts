@@ -8,6 +8,7 @@ import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
+import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
 
 export enum Status {
   OFFLINE = "OFFLINE",
@@ -102,19 +103,18 @@ export default class WebsocketService extends Service.extend(Evented) {
     }
   }
 
-  connectionOpened(_: any) {
+  connectionOpened(_: OpenEvent) {
     this.set("status", Status.ONLINE);
     this.reconnectAttempts = 0;
   }
 
-  messageReceived(event: any) {
+  messageReceived(event: MessageEvent) {
     if (event.data) {
-      //EACH message received over socket containing data wil ltrigger topic "message"
-      this.trigger("message", event);
+      this.trigger("message", event.data);
     }
   }
 
-  connectionClosed(_: any) {
+  connectionClosed(_: CloseEvent) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
       this.startConnecting
@@ -123,7 +123,7 @@ export default class WebsocketService extends Service.extend(Evented) {
     }
   }
 
-  connectionErrored(_: any) {
+  connectionErrored(_: ErrorEvent) {
     this.set("status", Status.OFFLINE);
     this.startConnecting
       // @ts-ignore

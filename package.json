@@ -29,6 +29,7 @@
     "@types/qs": "^6.9.1",
     "@types/qunit": "~2.9.0",
     "@types/rsvp": "~4.0.3",
+    "@types/ws": "^7.2.3",
     "babel-eslint": "~8.0.0",
     "broccoli-asset-rev": "~3.0.0",
     "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git",
@@ -77,8 +78,8 @@
     "ember-uploader": "~2.0.0",
     "ember-websockets": "~7.2.0",
     "mock-socket": "^9.0.3",
-    "query": "^0.2.0",
     "qs": "^6.9.1",
+    "query": "^0.2.0",
     "toastr": "~2.1.4"
   },
   "ember-addon": {
