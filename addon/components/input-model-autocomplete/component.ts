@@ -14,7 +14,6 @@ import Query from "ember-mist-components/query/Query";
 
 @tagName("")
 export default class InputModelAutocompleteComponent extends Component {
-  @service ajax!: any;
   @service store!: Store;
 
   /**
