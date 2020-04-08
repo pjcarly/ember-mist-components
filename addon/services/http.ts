@@ -13,7 +13,7 @@ export default class HttpService extends Service {
 
   fetch(
     path: string,
-    method: string = "GET",
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'DELETE' = "GET",
     body?: any,
     queryParams?: any
   ): Promise<Response> {
@@ -28,7 +28,7 @@ export default class HttpService extends Service {
       : path;
     return new Promise(function (resolve, reject) {
       return fetch(endpoint, options)
-        .then((response) => {
+        .then((response: any) => {
           if (response.ok) {
             resolve(response);
           } else {

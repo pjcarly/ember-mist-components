@@ -129,4 +129,8 @@ export default class WebsocketService extends Service.extend(Evented) {
       // @ts-ignore
       .perform();
   }
+
+  sendMessage(message: any) {
+    this.socket.send(message);
+  }
 }
