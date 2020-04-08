@@ -7,13 +7,13 @@ import { dropTask } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
-import { isArray } from "@ember/array";
 import { getOwner } from "@ember/application";
+import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
 
 export enum Status {
   OFFLINE = "OFFLINE",
   CONNECTING = "CONNECTING",
-  ONLINE = "ONLINE"
+  ONLINE = "ONLINE",
 }
 
 export default class WebsocketService extends Service.extend(Evented) {
@@ -52,8 +52,9 @@ export default class WebsocketService extends Service.extend(Evented) {
           let waitFor = Math.pow(2, exponent) * 1000;
 
           debug(
-            `Attempting to reconnect (${this.reconnectAttempts}) in ${waitFor /
-              1000}s`
+            `Attempting to reconnect (${this.reconnectAttempts}) in ${
+              waitFor / 1000
+            }s`
           );
 
           yield timeout(waitFor);
@@ -70,14 +71,16 @@ export default class WebsocketService extends Service.extend(Evented) {
    */
   openConnection() {
     this.set("status", Status.CONNECTING);
-
     let socket = this.socket;
 
     if (!socket) {
-      socket = this.websockets.socketFor(
-        `${this.endpoint}?access_token=${this.accessToken}`
-      );
-
+      if (this.accessToken) {
+        socket = this.websockets.socketFor(
+          `${this.endpoint}?access_token=${this.accessToken}`
+        );
+      } else {
+        socket = this.websockets.socketFor(this.endpoint);
+      }
       socket.on("open", this.connectionOpened, this);
       socket.on("message", this.messageReceived, this);
       socket.on("close", this.connectionClosed, this);
@@ -100,23 +103,18 @@ export default class WebsocketService extends Service.extend(Evented) {
     }
   }
 
-  connectionOpened(_: any) {
+  connectionOpened(_: OpenEvent) {
     this.set("status", Status.ONLINE);
     this.reconnectAttempts = 0;
   }
 
-  messageReceived(event: any) {
+  messageReceived(event: MessageEvent) {
     if (event.data) {
-      const payload = JSON.parse(event.data);
-      if (payload.data && !isArray(payload.data)) {
-        if (payload.data.type) {
-          this.trigger("message", payload);
-        }
-      }
+      this.trigger("message", event.data);
     }
   }
 
-  connectionClosed(_: any) {
+  connectionClosed(_: CloseEvent) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
       this.startConnecting
@@ -125,7 +123,7 @@ export default class WebsocketService extends Service.extend(Evented) {
     }
   }
 
-  connectionErrored(_: any) {
+  connectionErrored(_: ErrorEvent) {
     this.set("status", Status.OFFLINE);
     this.startConnecting
       // @ts-ignore

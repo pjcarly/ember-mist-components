@@ -48,9 +48,9 @@ export default class ModelController extends Controller {
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, delete it!",
-        allowOutsideClick: true
+        allowOutsideClick: true,
       },
-      function(this: ModelController) {
+      function (this: ModelController) {
         this.deleteWithoutConfirm
           // @ts-ignore
           .perform(model);
@@ -212,7 +212,7 @@ export default class ModelController extends Controller {
     let blob = null;
 
     yield actionToInvoke().then((response: Response) => {
-      return response.blob().then(data => {
+      return response.blob().then((data) => {
         blob = new Blob([data], { type: "octet/stream" });
       });
     });

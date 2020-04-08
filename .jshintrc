@@ -1,5 +1,5 @@
 {
-  "predef": ["document", "window", "-Promise", "moment", "Decimal", "Pen"],
+  "predef": ["document", "window", "-Promise"],
   "browser": true,
   "boss": true,
   "curly": true,
