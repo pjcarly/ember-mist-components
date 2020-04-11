@@ -3,8 +3,7 @@ import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
-// @ts-ignore
-import fetch, { Response } from "fetch";
+import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
 
@@ -13,7 +12,7 @@ export default class HttpService extends Service {
 
   fetch(
     path: string,
-    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'DELETE' = "GET",
+    method: "GET" | "POST" | "PUT" | "PATCH" | "OPTIONS" | "DELETE" = "GET",
     body?: any,
     queryParams?: any
   ): Promise<Response> {
