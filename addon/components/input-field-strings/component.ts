@@ -29,7 +29,6 @@ export default class InputFieldStringsComponent extends InputFieldComponent {
 
   @action
   reorderLines(reorderedLines: string[]) {
-    console.log(reorderedLines);
     this.set("value", reorderedLines);
   }
 
