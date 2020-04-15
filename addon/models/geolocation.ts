@@ -1,8 +1,8 @@
-// @ts-ignore
-import Fragment from "ember-data-model-fragments/fragment";
+// import Fragment from "ember-data-model-fragments/fragment";
 import attr from "ember-data/attr";
+import EmberObject from "@ember/object";
 
-export default class Geolocation extends Fragment {
+export default class Geolocation extends EmberObject {
   @attr("number")
   lat!: number;
 

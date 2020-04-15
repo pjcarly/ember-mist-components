@@ -1,12 +1,11 @@
-// @ts-ignore
-import Fragment from "ember-data-model-fragments/fragment";
+// import Fragment from "ember-data-model-fragments/fragment";
 import Store from "ember-data/store";
 import attr from "ember-data/attr";
-import { computed } from "@ember/object";
+import EmberObject, { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 
-export default class Address extends Fragment {
+export default class Address extends EmberObject {
   @service store!: Store;
 
   /**
