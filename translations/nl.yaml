@@ -2,3 +2,23 @@ ember-attribute-validations:
   validAddress: "{label} is een ongeldig adres voor het geselecteerde land, vul alle verplichte velden in"
   requiredAddress: "{label} is verplicht"
   conditionalRequired: "{label} is verplicht"
+ember-mist-components:
+  labels:
+    automatically_generated: "Automatisch gegenereerd"
+    country_none: "-- Land (none) --"
+    browse: "Bladeren"
+    search: "Zoeken"
+    refresh: "Vernieuwen"
+    of: "van"
+    uploading: "Aan het uploaden"
+    remove: Verwijderen
+    add_images: Afbeeldingen toevoegen
+    previous: Vorige
+    next: Volgende
+  table:
+    rows: "Rijen"
+    selected: "Geselecteerd"
+    no_data: "Geen data gevonden"
+  list-view:
+    new: "Nieuwe List View"
+    edit: List View Aanpassen

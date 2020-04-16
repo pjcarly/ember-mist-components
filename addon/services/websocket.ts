@@ -110,6 +110,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   messageReceived(event: MessageEvent) {
     if (event.data) {
+      // @ts-ignore
       this.trigger("message", event.data);
     }
   }

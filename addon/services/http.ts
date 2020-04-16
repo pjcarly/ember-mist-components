@@ -2,6 +2,7 @@ import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
+// @ts-ignore
 import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
@@ -62,7 +63,10 @@ export default class HttpService extends Service {
   /**
    * We set the authorization header from the session service
    */
-  @computed("session.data.authenticated.access_token", "authStore.{authToken,authId}")
+  @computed(
+    "session.data.authenticated.access_token",
+    "authStore.{authToken,authId}"
+  )
   get headers() {
     const headers: any = {};
     // @ts-ignore
@@ -72,12 +76,12 @@ export default class HttpService extends Service {
       headers["Authorization"] = `Bearer ${access_token}`;
     }
 
-    if(this.authStore.authId) {
-      headers['X-Mist-Auth-Id'] = this.authStore.authId;
+    if (this.authStore.authId) {
+      headers["X-Mist-Auth-Id"] = this.authStore.authId;
     }
 
-    if(this.authStore.authToken) {
-      headers['X-Mist-Auth-Token'] = this.authStore.authToken;
+    if (this.authStore.authToken) {
+      headers["X-Mist-Auth-Token"] = this.authStore.authToken;
     }
 
     return headers;

@@ -43,6 +43,7 @@
     },
     "experimentalDecorators": true
   },
+  "exclude": ["node_modules/**/*"],
   "include": [
     "app/**/*",
     "addon/**/*",

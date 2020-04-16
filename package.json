@@ -68,7 +68,7 @@
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~7.0.0",
     "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git",
-    "ember-intl": "~3.5.2",
+    "ember-intl": "~4.2.0",
     "ember-light-table": "~2.0.0-beta.4",
     "ember-power-calendar": "~0.14.5",
     "ember-power-calendar-moment": "~0.1.7",
