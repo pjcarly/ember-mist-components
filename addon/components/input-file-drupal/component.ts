@@ -87,9 +87,9 @@ export default class InputFileDrupalComponent extends BaseInput {
       const uploaderOptions = {
         type: "POST",
         ajaxSettings: {
-          headers: this.headers
+          headers: this.headers,
         },
-        url: this.uploadEndpoint
+        url: this.uploadEndpoint,
       };
 
       const uploader = Uploader.extend(uploaderOptions).create();
@@ -107,6 +107,7 @@ export default class InputFileDrupalComponent extends BaseInput {
           yield uploader
             .upload(file)
             .then((data: any) => {
+              // @ts-ignore
               const fileObject: File = {
                 id: data.data.id,
                 filename: data.data.attributes.filename,
@@ -114,7 +115,7 @@ export default class InputFileDrupalComponent extends BaseInput {
                 url: data.data.attributes.url,
                 filemime: data.data.attributes.filemime,
                 filesize: data.data.attributes.filesize,
-                hash: data.data.attributes.hash
+                hash: data.data.attributes.hash,
               };
 
               if (this.multiple) {
