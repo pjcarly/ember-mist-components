@@ -55,7 +55,7 @@
   ],
   "dependencies": {
     "ember-ajax": "~5.0.0",
-    "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git",
+    "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git#6a70a06a3675cfb30acde3effb9394f2a1996ca5",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
@@ -67,7 +67,7 @@
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~7.0.0",
-    "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git",
+    "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git#2f76e0b2b3d3cdee3e17bb28cb681c122540c2ef",
     "ember-intl": "~4.2.0",
     "ember-light-table": "~2.0.0-beta.4",
     "ember-power-calendar": "~0.14.5",
