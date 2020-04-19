@@ -46,7 +46,7 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
       // Now we know which relationships are embedded
       // We check if they are dirty or not
       // If they arent dirty, we delete the key from the json, it shouldnt be transmitted in the PATCH
-      relationshipsToCheck.forEach(relationshipToCheck => {
+      relationshipsToCheck.forEach((relationshipToCheck) => {
         if (!model.hasDirtyEmbeddedRelationship(relationshipToCheck)) {
           // This relationship is clean, we delete the dasherized name from the payload.
           const dasherizedRelationshipName = dasherize(relationshipToCheck);
@@ -126,6 +126,7 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
             // by first casting it to array, and then looping it, everything worked fine, and all children were found
             if (!isBlank(localChildren)) {
               localChildren.toArray().forEach((localChild: DrupalModel) => {
+                // @ts-ignore
                 const childId = localChild.id;
                 // When the local child's id is blank, we also unload the model
                 // this means that the record is newly created locally, and was created in the back-end (as the response is succesful)

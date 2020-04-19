@@ -8,5 +8,6 @@ export default interface ModelInterface {
   isDirty: boolean;
   rollback(): void;
   reload(): void;
+  // @ts-ignore
   errors: DS.Errors;
 }

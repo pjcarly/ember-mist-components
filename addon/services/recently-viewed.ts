@@ -54,7 +54,8 @@ export default class RecentlyViewedService extends Service {
         type: this.fieldInformation.getModelName(model),
         // @ts-ignore
         name: model.name,
-        id: model.id
+        // @ts-ignore
+        id: model.id,
       };
 
       const oldRecentlyViewedRecords = this.records;

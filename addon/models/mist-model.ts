@@ -25,6 +25,7 @@ export default abstract class MistModel extends Model {
 
   @computed("isNew")
   get isExisting(): boolean {
+    // @ts-ignore
     return !this.get("isNew");
   }
 
@@ -63,6 +64,7 @@ export default abstract class MistModel extends Model {
   rollback() {
     // We override the rollback method provided by the ember-data-change-tracker
     // Where we rollback child records which have the rollback option in the relationship meta
+    // @ts-ignore
     this.eachRelationship((name: string, descriptor: any) => {
       if (
         descriptor.options.hasOwnProperty("rollback") &&
@@ -102,6 +104,7 @@ export default abstract class MistModel extends Model {
       copy.set(attributeName, attributeValue);
     });
 
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, meta: any) => {
       // @ts-ignore
       const relationship = this.get(relationshipName);
@@ -117,7 +120,9 @@ export default abstract class MistModel extends Model {
   /**
    * Clears all the belongsto relationship values
    */
+  // @ts-ignore
   clearRelationships() {
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, descriptor: any) => {
       if (descriptor.kind === "belongsTo") {
         // @ts-ignore
@@ -146,7 +151,7 @@ export default abstract class MistModel extends Model {
    * (which are being saved in 1 call with the main model) are dirty or deleted.
    */
   hasDirtyEmbeddedRelationships(): boolean {
-    return !this.embeddedRelationships.some(relationshipName => {
+    return !this.embeddedRelationships.some((relationshipName) => {
       return !this.hasDirtyEmbeddedRelationship(relationshipName);
     });
   }
@@ -155,7 +160,7 @@ export default abstract class MistModel extends Model {
    * Validate all the embedded relationships
    */
   validateEmbeddedRelationships(): boolean {
-    return !this.embeddedRelationships.some(relationshipName => {
+    return !this.embeddedRelationships.some((relationshipName) => {
       return !this.validateEmbeddedRelationship(relationshipName);
     });
   }
@@ -167,6 +172,7 @@ export default abstract class MistModel extends Model {
   validateEmbeddedRelationship(relationshipNameToValidate: string): boolean {
     let isValid = true;
 
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, meta: any) => {
       if (relationshipName === relationshipNameToValidate) {
         if (meta.kind === "belongsTo") {

@@ -61,14 +61,17 @@ export default class ModelController extends Controller {
   @task({ group: "modelTasks" })
   *deleteWithoutConfirm(model: DrupalModel) {
     const modelName = this.fieldInformation.getModelName(model);
+    // @ts-ignore
     model.deleteRecord();
     yield model
+      // @ts-ignore
       .save()
       .then(() => {
         this.successToast(`Success`, `Record deleted`);
         this.entityRouter.transitionToList(modelName);
 
         const modelClass = this.fieldInformation.getModelClassForModel(model);
+        // @ts-ignore
         this.recentlyViewed.removeRecentlyViewed(modelClass, model.id);
       })
       .catch((reason: any) => {
@@ -105,6 +108,7 @@ export default class ModelController extends Controller {
     model.hasDirtyEmbeddedRelationships();
 
     if (
+      // @ts-ignore
       model.get("isDirtyOrDeleted") ||
       model.hasDirtyEmbeddedRelationships()
     ) {
@@ -120,6 +124,7 @@ export default class ModelController extends Controller {
       }
 
       yield model
+        // @ts-ignore
         .save()
         .then(() => {
           this.successToast(`Success`, `Record saved`);
