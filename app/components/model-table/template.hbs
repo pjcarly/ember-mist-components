@@ -19,7 +19,7 @@
     <div class="h-search-wrap">
       <div class="hsw-inner">
         {{#if (not this.searchFixed)}}
-          <button class="btn btn-link" onclick={{action 'toggleSearch'}}>
+          <button class="btn btn-link" {{on "click" this.toggleSearch}}>
             <IconClose />
           </button>
         {{/if}}
@@ -32,30 +32,31 @@
 
     <div id={{concat guid '-new'}}></div>
 
-    {{#mist-menu id=(concat guid '-actions') class="actions"}}
-      {{#mist-menu-item action=(action "search") className="waves-circle"}}
-        <IconSearch />
-      {{/mist-menu-item}}
-      {{#mist-menu-dropdown-item className="waves-circle"}}
-        {{#if (and @listViewGrouping displayListViewLinks)}}
+    <ul id={{concat guid '-actions'}} class="actions">
+      <li><a {{on "click" this.search}} role="button" class="waves-effect waves-circle"><IconSearch /></a></li>
+
+      <MenuDropdown @class="waves-circle">
+        {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
-            {{#mist-menu-item}}
-              <a href="{{href-to 'list-view.edit' this.activeListViewKey}}">
+            <li>
+              <a href={{href-to 'list-view.edit' this.activeListViewKey}}>
                 <IconListViewEdit /> {{t 'ember-mist-components.list-view.edit'}}
               </a>
-            {{/mist-menu-item}}
+            </li>
           {{/if}}
-          {{#mist-menu-item}}
-            <a href="{{href-to 'list-view.new'}}">
+          <li>
+            <a href={{href-to 'list-view.new'}}>
               <IconListViewNew /> {{t 'ember-mist-components.list-view.new'}}
             </a>
-          {{/mist-menu-item}}
+          </li>
         {{/if}}
-        {{#mist-menu-item action=(action "refresh")}}
-          <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
-        {{/mist-menu-item}}
-      {{/mist-menu-dropdown-item}}
-    {{/mist-menu}}
+        <li>
+          <a {{on "click" this.refresh}} role="button">
+            <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
+          </a>
+        </li>
+      </MenuDropdown>
+    </ul>
   </div>
 
   {{#if this.fetchRecords.last}}

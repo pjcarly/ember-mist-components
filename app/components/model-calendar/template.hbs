@@ -30,13 +30,15 @@
       <IconArrowRight />
     </button>
 
-    {{#mist-menu id=(concat guid '-actions') class="actions"}}
-      {{#mist-menu-dropdown-item className="waves-circle"}}
-        {{#mist-menu-item action=(perform loadModels)}}
-          <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
-        {{/mist-menu-item}}
-      {{/mist-menu-dropdown-item}}
-    {{/mist-menu}}
+    <ul id={{concat guid '-actions'}} class="actions">
+      <MenuDropdown @class="waves-circle">
+        <li>
+          <a {{on "click" (perform this.loadModels)}} role="button">
+            <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
+          </a>
+        </li>
+      </MenuDropdown>
+    </ul>
     {{!-- <button class="ember-power-calendar-nav-control" onclick={{action calendar.actions.moveCenter 12 'month'}}>»</button> --}}
   </nav>
   <div class="day-grid">
