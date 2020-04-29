@@ -9,6 +9,7 @@ import { htmlSafe } from "@ember/template";
 import AjaxService from "ember-mist-components/services/ajax";
 import BaseInput from "ember-field-components/components/BaseInput";
 import File from "ember-mist-components/interfaces/file";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 export default class InputFileDrupalComponent extends BaseInput {
   @service ajax!: AjaxService;
@@ -154,8 +155,6 @@ export default class InputFileDrupalComponent extends BaseInput {
 
   @action
   filesSelected(files: any) {
-    this.uploadFile
-      // @ts-ignore
-      .perform(files);
+    taskFor(this.uploadFile).perform(files);
   }
 }

@@ -12,6 +12,7 @@ import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
 import { tagName } from "@ember-decorators/component";
 import { A } from "@ember/array";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 @tagName("")
 export default class ListViewSelectComponent extends Component {
@@ -30,9 +31,7 @@ export default class ListViewSelectComponent extends Component {
     super.didReceiveAttrs();
 
     assert("Grouping cannot be blank", !isBlank(this.grouping));
-    this.setListViews
-      // @ts-ignore
-      .perform();
+    taskFor(this.setListViews).perform();
   }
 
   @computed("selectOptions")
@@ -75,13 +74,13 @@ export default class ListViewSelectComponent extends Component {
     // Lets add the default List View
     foundListViews.push({
       label: this.intl.t("label.all"),
-      value: "All"
+      value: "All",
     });
 
     const query = Query.create({ modelName: "list-view" });
     query.addCondition(new Condition("grouping", "=", this.grouping));
 
-    yield query.fetch(this.store).then(listViews => {
+    yield query.fetch(this.store).then((listViews) => {
       listViews.forEach((listView: any) => {
         const selectOption: any = {};
         selectOption.value = listView.get("id");

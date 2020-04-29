@@ -6,7 +6,7 @@ import Table from "ember-light-table";
 import Query from "ember-mist-components/query/Query";
 import FieldInformationService from "ember-field-components/services/field-information";
 import ListViewService, {
-  ModelListView
+  ModelListView,
 } from "ember-mist-components/services/list-view";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
 import Order, { Direction } from "ember-mist-components/query/Order";
@@ -24,6 +24,7 @@ import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
 import MutableArray from "@ember/array/mutable";
 import ListViewModel from "ember-mist-components/models/list-view";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 export interface ModelClassInterface {
   fields: Map<string, string>;
@@ -105,16 +106,12 @@ export default class ModelTableComponent extends Component {
     super.didReceiveAttrs();
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
-    this.initializeTable
-      // @ts-ignore
-      .perform();
+    taskFor(this.initializeTable).perform();
   }
 
   @task
   *initializeTable() {
-    yield this.fetchRecords
-      // @ts-ignore
-      .perform();
+    yield taskFor(this.fetchRecords).perform();
 
     if (this.searchFixed) {
       this.set("searchVisible", true);
@@ -138,7 +135,7 @@ export default class ModelTableComponent extends Component {
   @computed("activeModelName", "baseQuery")
   get query(): Query {
     const query = Query.create({
-      modelName: this.activeModelName
+      modelName: this.activeModelName,
     });
 
     if (this.baseQuery) {
@@ -267,7 +264,7 @@ export default class ModelTableComponent extends Component {
         cellClassNames: "selector",
         component: "model-table-all-selector",
         classNames: "selector",
-        selectAll: true
+        selectAll: true,
       };
 
       columns.push(column);
@@ -279,7 +276,7 @@ export default class ModelTableComponent extends Component {
       this.selectedListView
         .hasMany("columns")
         .ids()
-        .forEach(fieldId => {
+        .forEach((fieldId) => {
           const fieldArray = fieldId.toString().split(".");
           fieldArray.shift();
           listViewColumns.push(fieldArray.join("."));
@@ -318,7 +315,7 @@ export default class ModelTableComponent extends Component {
           cellComponent: "model-table-cell",
           sorted: sortedOnColumn,
           ascending:
-            sortedOnColumn && this.query.orders[0].direction === Direction.ASC
+            sortedOnColumn && this.query.orders[0].direction === Direction.ASC,
         };
 
         columns.push(column);
@@ -351,7 +348,7 @@ export default class ModelTableComponent extends Component {
 
       const selectOption: SelectOption = {
         value: modelName,
-        label: plural
+        label: plural,
       };
 
       selectOptions.push(selectOption);
@@ -449,9 +446,7 @@ export default class ModelTableComponent extends Component {
 
     if (this.selectedModels.length === 0 && this.displaySelected) {
       this.toggleProperty("displaySelected");
-      this.fetchRecords
-        // @ts-ignore
-        .perform();
+      taskFor(this.fetchRecords).perform();
     }
   }
 
@@ -493,7 +488,7 @@ export default class ModelTableComponent extends Component {
     }
 
     // Now we can query the store
-    yield this.query.fetch(this.store).then(records => {
+    yield this.query.fetch(this.store).then((records) => {
       this.table.setRows(records);
 
       const meta = records.get("meta");
@@ -527,9 +522,7 @@ export default class ModelTableComponent extends Component {
 
   @restartableTask
   *fetchRecordsAndRefreshColumns() {
-    yield this.fetchRecords
-      // @ts-ignore
-      .perform();
+    yield taskFor(this.fetchRecords).perform();
     // Needed for polymorphic tables
     this.setColumns();
   }
@@ -558,9 +551,7 @@ export default class ModelTableComponent extends Component {
       } else {
         // when we toggle the search, and there is a search value filled in, we clear the value and refresh the records
         this.query.clearSearch();
-        this.fetchRecords
-          // @ts-ignore
-          .perform();
+        taskFor(this.fetchRecords).perform();
       }
     }
   }
@@ -571,9 +562,7 @@ export default class ModelTableComponent extends Component {
   @action
   search() {
     if (this.searchVisible) {
-      this.fetchRecords
-        // @ts-ignore
-        .perform();
+      taskFor(this.fetchRecords).perform();
     } else {
       this.toggleSearch();
     }
@@ -584,9 +573,7 @@ export default class ModelTableComponent extends Component {
    */
   @action
   refresh() {
-    this.fetchRecords
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecords).perform();
   }
 
   /**
@@ -596,9 +583,7 @@ export default class ModelTableComponent extends Component {
   nextPage() {
     if (this.query.page < this.lastPage) {
       this.query.nextPage();
-      this.fetchRecords
-        // @ts-ignore
-        .perform();
+      taskFor(this.fetchRecords).perform();
     }
   }
 
@@ -609,9 +594,7 @@ export default class ModelTableComponent extends Component {
   prevPage() {
     if (this.query.page > 1) {
       this.query.prevPage();
-      this.fetchRecords
-        // @ts-ignore
-        .perform();
+      taskFor(this.fetchRecords).perform();
     }
   }
 
@@ -622,9 +605,7 @@ export default class ModelTableComponent extends Component {
   @action
   pageSelected(page: number) {
     this.query.setPage(page);
-    this.fetchRecords
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecords).perform();
   }
 
   /**
@@ -635,9 +616,7 @@ export default class ModelTableComponent extends Component {
   limitChanged(limit: number) {
     this.query.setPage(1);
     this.query.setLimit(limit);
-    this.fetchRecords
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecords).perform();
   }
 
   /**
@@ -677,9 +656,7 @@ export default class ModelTableComponent extends Component {
         )
       );
       this.query.setPage(1);
-      this.fetchRecords
-        // @ts-ignore
-        .perform();
+      taskFor(this.fetchRecords).perform();
     }
   }
 
@@ -711,9 +688,7 @@ export default class ModelTableComponent extends Component {
         }
 
         if (this.displaySelected) {
-          this.fetchRecords
-            // @ts-ignore
-            .perform();
+          taskFor(this.fetchRecords).perform();
         } else {
           this.setSelectAllColumn();
         }
@@ -749,9 +724,7 @@ export default class ModelTableComponent extends Component {
   toggleDisplaySelected() {
     this.query.setPage(1);
     this.toggleProperty("displaySelected");
-    this.fetchRecords
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecords).perform();
   }
 
   @action
@@ -762,17 +735,13 @@ export default class ModelTableComponent extends Component {
     this.notifyPropertyChange("listViewKey");
 
     // Now we can refetch the records and reset the columns
-    this.fetchRecordsAndRefreshColumns
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecordsAndRefreshColumns).perform();
   }
 
   @action
   listViewChanged(_: string) {
     this.notifyPropertyChange("listViewKey");
     this.setQueryParamsBasedOnActiveListView();
-    this.fetchRecordsAndRefreshColumns
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchRecordsAndRefreshColumns).perform();
   }
 }

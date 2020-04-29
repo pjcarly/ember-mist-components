@@ -6,6 +6,7 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { dropTask } from "ember-concurrency-decorators";
 import WebsocketService from "./websocket";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 interface SessionService {
   invalidate(): void;
@@ -46,9 +47,7 @@ export default class LoggedInUserService extends Service {
       .loadRecord("user", userId, options)
       .then((user: UserModel) => {
         this.set("user", user);
-        this.websocket.startConnecting
-          //@ts-ignore
-          .perform();
+        taskFor(this.websocket.startConnecting).perform();
       })
       .catch((_: any) => {
         this.logOut();
@@ -66,8 +65,6 @@ export default class LoggedInUserService extends Service {
    * Invalidates the session, and unsets the user
    */
   logOut() {
-    this.signOut
-      //@ts-ignore
-      .perform();
+    taskFor(this.signOut).perform();
   }
 }

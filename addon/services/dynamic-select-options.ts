@@ -82,8 +82,7 @@ export default class DynamicSelectOptionService extends Service {
     modelName: string,
     query: Query | undefined,
     nameField: string | undefined
-    // @ts-ignore
-  ): SelectOption[] {
+  ) {
     let models;
 
     if (!nameField) {
@@ -107,7 +106,7 @@ export default class DynamicSelectOptionService extends Service {
       for (const model of models.toArray()) {
         const selectOption: SelectOption = {
           value: model.id,
-          label: model.get(nameField)
+          label: model.get(nameField),
         };
 
         selectOptions.push(selectOption);
@@ -130,7 +129,7 @@ export default class DynamicSelectOptionService extends Service {
       for (const key in fieldModel.selectOptions) {
         const selectOption: SelectOption = {
           value: key,
-          label: fieldModel.selectOptions[key]
+          label: fieldModel.selectOptions[key],
         };
 
         transformedSelectOptions.push(selectOption);

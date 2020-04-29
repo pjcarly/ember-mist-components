@@ -9,6 +9,7 @@ import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 export enum Status {
   OFFLINE = "OFFLINE",
@@ -118,17 +119,13 @@ export default class WebsocketService extends Service.extend(Evented) {
   connectionClosed(_: CloseEvent) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
-      this.startConnecting
-        // @ts-ignore
-        .perform();
+      taskFor(this.startConnecting).perform();
     }
   }
 
   connectionErrored(_: ErrorEvent) {
     this.set("status", Status.OFFLINE);
-    this.startConnecting
-      // @ts-ignore
-      .perform();
+    taskFor(this.startConnecting).perform();
   }
 
   sendMessage(message: any) {

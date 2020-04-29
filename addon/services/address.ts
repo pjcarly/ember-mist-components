@@ -42,8 +42,7 @@ export default class AddressService extends Service {
    * Returns the different countries in a select option format
    */
   @enqueueTask
-  // @ts-ignore
-  *getCountrySelectOptions(): SelectOption[] {
+  *getCountrySelectOptions() {
     // We first check in this service
     let countrySelectOptions = this.countrySelectOptions;
     if (countrySelectOptions) {
@@ -165,7 +164,7 @@ export default class AddressService extends Service {
           for (let subdivision of response.data) {
             const selectoption: SelectOption = {
               value: subdivision.attributes["code"],
-              label: subdivision.attributes["name"]
+              label: subdivision.attributes["name"],
             };
 
             if (!isBlank(subdivision.attributes["local-name"])) {

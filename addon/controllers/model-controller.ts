@@ -12,6 +12,7 @@ import { debug } from "@ember/debug";
 import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
 import { QueryParams } from "ember-mist-components/query/Query";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 declare global {
   const swal: any;
@@ -51,9 +52,7 @@ export default class ModelController extends Controller {
         allowOutsideClick: true,
       },
       function (this: ModelController) {
-        this.deleteWithoutConfirm
-          // @ts-ignore
-          .perform(model);
+        taskFor(this.deleteWithoutConfirm).perform(model);
       }.bind(this)
     );
   }
@@ -191,9 +190,7 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
-    yield this.refresh
-      // @ts-ignore
-      .perform(model);
+    yield taskFor(this.refresh).perform(model);
   }
 
   @task({ group: "modelTasks" })

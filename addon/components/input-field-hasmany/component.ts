@@ -15,6 +15,7 @@ import { isBlank } from "@ember/utils";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { FieldOptionsInterface } from "ember-field-components/services/field-information";
 import Model from "ember-data/model";
+import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -27,10 +28,9 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
   selectOptions: SelectOption[] = [];
 
   didReceiveAttrs() {
-    super.didReceiveAttrs();
-    this.setSelectOptions
-      // @ts-ignore
-      .perform();
+    // @ts-ignore
+    super.didReceiveAttrs(...arguments);
+    taskFor(this.setSelectOptions).perform();
   }
 
   @dropTask
@@ -52,13 +52,21 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
         this.baseQuery.conditionLogic ||
         this.baseQuery.orders
       ) {
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
-          // @ts-ignore
-          .perform(this.relationshipModelName, this.baseQuery, this.nameField);
+        selectOptions = yield taskFor(
+          this.dynamicSelectOptions.getModelSelectOptions
+        ).perform(
+          <string>this.relationshipModelName,
+          this.baseQuery,
+          this.nameField
+        );
       } else {
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
-          // @ts-ignore
-          .perform(this.relationshipModelName, undefined, this.nameField);
+        selectOptions = yield taskFor(
+          this.dynamicSelectOptions.getModelSelectOptions
+        ).perform(
+          <string>this.relationshipModelName,
+          undefined,
+          this.nameField
+        );
       }
 
       this.set("selectOptions", selectOptions);
