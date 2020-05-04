@@ -1,5 +1,4 @@
 import FieldInformationService from "ember-field-components/services/field-information";
-import Model from "ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { or } from "@ember/object/computed";
@@ -7,10 +6,11 @@ import { getOwner } from "@ember/application";
 import { inject as service } from "@ember/service";
 import { validationModel } from "ember-attribute-validations/decorators/validation-model";
 import { loadableModel } from "ember-mist-components/decorators/loadable-model";
+import ChangeTrackerModel from "./change-tracker-model";
 
 @validationModel
 @loadableModel
-export default abstract class MistModel extends Model {
+export default abstract class MistModel extends ChangeTrackerModel {
   @service fieldInformation!: FieldInformationService;
 
   @computed()
