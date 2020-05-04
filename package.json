@@ -64,7 +64,7 @@
     "ember-concurrency": "~1.1.0",
     "ember-concurrency-decorators": "~1.1.0-alpha.1",
     "ember-data": "~3.16.0",
-    "ember-data-change-tracker": "~0.10.0",
+    "ember-data-change-tracker": "~0.10.1",
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~7.0.0",
@@ -81,7 +81,7 @@
     "ember-uploader": "~2.0.0",
     "ember-websockets": "~7.2.0",
     "mock-socket": "^9.0.3",
-    "qs": "^6.9.1",
+    "qs": "^6.9.4",
     "query": "^0.2.0",
     "toastr": "~2.1.4"
   },
