@@ -16,7 +16,6 @@ export default class InputSelectCountryComponent extends BaseInput {
   }
 
   @task
-  // @ts-ignore
   *setCountrySelectOptions() {
     const selectOptions = yield taskFor(
       this.address.getCountrySelectOptions

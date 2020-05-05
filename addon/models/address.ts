@@ -1,11 +1,12 @@
-// import Fragment from "ember-data-model-fragments/fragment";
+// @ts-ignore
+import Fragment from "ember-data-model-fragments/fragment";
 import Store from "ember-data/store";
 import attr from "ember-data/attr";
-import EmberObject, { computed } from "@ember/object";
+import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 
-export default class Address extends EmberObject {
+export default class Address extends Fragment {
   @service store!: Store;
 
   /**
@@ -92,7 +93,7 @@ export default class Address extends EmberObject {
       postalCode: this.postalCode,
       sortingCode: this.sortingCode,
       addressLine1: this.addressLine1,
-      addressLine2: this.addressLine2
+      addressLine2: this.addressLine2,
     };
 
     return pojo;
@@ -152,7 +153,7 @@ export default class Address extends EmberObject {
       "organization",
       "givenName",
       "additionalName",
-      "familyName"
+      "familyName",
     ];
     let returnValue = true;
 

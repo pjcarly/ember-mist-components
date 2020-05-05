@@ -1,15 +1,15 @@
 <div class="row">
-  <div class="{{if applyXS 'col-xs-12' 'col-12'}} country-select">
+  <div class="{{if applyXS "col-xs-12" "col-12"}} country-select">
     <InputSelectCountry
       @value={{this.address.countryCode}}
-      @valueChanged={{action 'countryCodeChanged'}}
+      @valueChanged={{action this.countryCodeChanged}}
       @inputId={{this.inputId}}
       @required={{this.isRequired}} />
   </div>
 </div>
 
-{{#if address.format}}
-  {{#each displayRows as |row|}}
+{{#if this.address.format}}
+  {{#each this.displayRows as |row|}}
     <div class="row">
       {{#each row.columns as |column|}}
         <div class={{row.columnClassName}}>
@@ -26,7 +26,7 @@
   {{/each}}
 {{/if}}
 
-{{#if addressLoading.isRunning}}
+{{#if this.addressLoading.isRunning}}
   <div class="address-spinner">
     {{mist-spinner size="20px" class="text-center"}}
   </div>
