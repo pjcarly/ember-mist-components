@@ -30,9 +30,9 @@
       </div>
     </div>
 
-    <div id={{concat guid '-new'}}></div>
+    <div id={{concat this.guid '-new'}}></div>
 
-    <ul id={{concat guid '-actions'}} class="actions">
+    <ul id={{concat this.guid '-actions'}} class="actions">
       <li><a {{on "click" this.search}} role="button" class="waves-effect waves-circle"><IconSearch /></a></li>
 
       <MenuDropdown @class="waves-circle">
@@ -60,7 +60,7 @@
   </div>
 
   {{#if this.fetchRecords.last}}
-    {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) new=(component 'ember-wormhole' to=(concat guid '-new')))}}
+    {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) new=(component 'ember-wormhole' to=(concat this.guid '-new')))}}
 
     {{#if this.isMultiModelNames}}
       <div class="model-type-selector">
