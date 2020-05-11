@@ -10,6 +10,8 @@ export default class ModalComponent extends Component {
   modalVisible: boolean = false;
   modal?: bsn.Modal;
 
+  modalClass = "modal-dialog-centered";
+
   // didInsertElement() {
   //   super.didInsertElement();
   //   const element = document.getElementById("ember-mist-modal-wormhole");
