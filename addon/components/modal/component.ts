@@ -4,58 +4,28 @@ import { tagName } from "@ember-decorators/component";
 // @ts-ignore
 import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { guidFor } from "@ember/object/internals";
+import { inject as service } from "@ember/service";
 
 @tagName("")
 export default class ModalComponent extends Component {
+  @service router!: any;
+
   modalVisible: boolean = false;
+  closeOnRouteChange: boolean = false;
   modal?: bsn.Modal;
 
   modalClass = "modal-dialog-centered";
 
-  // didInsertElement() {
-  //   super.didInsertElement();
-  //   const element = document.getElementById("ember-mist-modal-wormhole");
+  didReceiveAttrs() {
+    // @ts-ignore
+    super.didReceiveAttrs(...arguments);
 
-  //   if (element) {
-  //     element.addEventListener(
-  //       "shown.bs.modal",
-  //       (event) => {
-  //         console.log(event);
-  //       },
-  //       false
-  //     );
-  //     element.addEventListener(
-  //       "hidden.bs.modal",
-  //       (event) => {
-  //         console.log(event);
-  //       },
-  //       false
-  //     );
-  //   }
-  // }
-
-  // willDestroyElement() {
-  //   const element = document.getElementById("ember-mist-modal-wormhole");
-
-  //   if (element) {
-  //     element.removeEventListener(
-  //       "show.bs.modal",
-  //       (event) => {
-  //         console.log(event);
-  //       },
-  //       false
-  //     );
-  //     element.removeEventListener(
-  //       "hidden.bs.modal",
-  //       (event) => {
-  //         console.log(event);
-  //       },
-  //       false
-  //     );
-  //   }
-
-  //   super.willDestroyElement();
-  // }
+    if (this.closeOnRouteChange) {
+      this.router.on("routeWillChange", (_: TransitionEvent) => {
+        this.closeModal();
+      });
+    }
+  }
 
   @computed()
   get modalId(): string {
@@ -78,6 +48,11 @@ export default class ModalComponent extends Component {
   }
 
   @computed("modalId")
+  get modalContentId(): string {
+    return `${this.modalId}-content`;
+  }
+
+  @computed("modalId")
   get modalTriggerId(): string {
     return `${this.modalId}-trigger`;
   }
@@ -87,10 +62,12 @@ export default class ModalComponent extends Component {
     return this.modalVisible ? "visible" : "hidden";
   }
 
-  getModal() {
+  getModal(): bsn.Modal {
     if (!this.modal) {
       const element = document.getElementById(this.modalId);
-      const modal = new bsn.Modal(element, {});
+      const modal = new bsn.Modal(element, {
+        backdrop: "static",
+      });
       this.set("modal", modal);
     }
 
@@ -99,13 +76,17 @@ export default class ModalComponent extends Component {
 
   @action
   closeModal() {
-    this.set("modalVisible", false);
-    this.getModal().hide();
+    if (this.modalVisible) {
+      this.set("modalVisible", false);
+      this.getModal().hide();
+    }
   }
 
   @action
   showModal() {
-    this.set("modalVisible", true);
-    this.getModal().show();
+    if (!this.modalVisible) {
+      this.set("modalVisible", true);
+      this.getModal().show();
+    }
   }
 }
