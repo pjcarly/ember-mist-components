@@ -6,7 +6,7 @@
     <div class="table-header-title-wrapper">
       <h2>{{this.titleComputed}}</h2>
       {{#if this.fetchRecords.isRunning}}
-        {{mist-spinner size="10px" tagName="span"}}
+        <Loading />
       {{else}}
         <span style="width: 10px;height:10px;display:inline-block;"></span>
       {{/if}}
@@ -77,7 +77,11 @@
       {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
 
       {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
-        {{#if this.table.isEmpty}}
+        {{#if this.fetchRecords.isRunning}}
+          {{#body.loader}}
+            <Loading />
+          {{/body.loader}}
+        {{else if this.table.isEmpty}}
           {{#body.no-data}}
             No data found
           {{/body.no-data}}
