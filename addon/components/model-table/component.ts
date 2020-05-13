@@ -86,11 +86,6 @@ export default class ModelTableComponent extends Component {
   listViewsAsTabs: boolean = false;
 
   /**
-   * The default class the wrapper will get
-   */
-  class: string = "model-table";
-
-  /**
    * The flag to indicate whether the amount of selected models in the table should be displayed
    */
   displaySelected: boolean = false;

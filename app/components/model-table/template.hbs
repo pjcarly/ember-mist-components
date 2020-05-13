@@ -1,4 +1,4 @@
-<div class={{this.class}}>
+<div class="model-table {{@class}}">
   {{#if (and @listViewGrouping this.listViewsAsTabs)}}
     <ListViewTabs @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
   {{/if}}
