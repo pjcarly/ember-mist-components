@@ -56,19 +56,26 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
     const countryCode = this.address.countryCode;
 
     if (!countryCode) {
-      // no country code is chosen, the address must be cleared
-      this.address.clear();
-      // @ts-ignore
-      this.address.set("format", null);
-      // @ts-ignore
-      this.address.notifyPropertyChange("format");
-      this.notifyPropertyChange("field");
+      if (!this.address.isBlankModel) {
+        // no country code is chosen, the address must be cleared
+        this.address.clear();
+        // @ts-ignore
+        this.address.set("format", null);
+        // @ts-ignore
+        this.address.notifyPropertyChange("format");
+        this.notifyPropertyChange("field");
+      }
     } else {
-      const format = yield taskFor(this.addressing.getAddressFormat).perform(
-        countryCode
-      );
-      // @ts-ignore
-      this.address.set("format", format);
+      if (
+        !this.address.format ||
+        this.address.format.data.id !== this.address.countryCode
+      ) {
+        const format = yield taskFor(this.addressing.getAddressFormat).perform(
+          countryCode
+        );
+        // @ts-ignore
+        this.address.set("format", format);
+      }
     }
 
     yield taskFor(this.setDisplayRows).perform();
