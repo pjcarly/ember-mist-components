@@ -1,3 +1,4 @@
+// @ts-ignore
 import Task from "ember-concurrency/task";
 
 type ECTask<Args extends Array<any>, Return> = (

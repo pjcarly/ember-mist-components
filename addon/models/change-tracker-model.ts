@@ -5,6 +5,7 @@ import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
 import Store from "ember-data/store";
 
+// @ts-ignore
 export default abstract class ChangeTrackerModel extends DS.Model {
   @service store!: Store;
 
@@ -46,6 +47,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
    * @returns {*}
    */
   modelChanges() {
+    // @ts-ignore
     let changed = assign({}, this.changedAttributes());
     let trackerInfo = Tracker.metaInfo(this);
     for (let key in trackerInfo) {
@@ -70,7 +72,9 @@ export default abstract class ChangeTrackerModel extends DS.Model {
    *
    */
   rollback() {
+    // @ts-ignore
     const isNew = this.get("isNew");
+    // @ts-ignore
     this.rollbackAttributes();
     if (isNew) {
       return;
@@ -95,18 +99,22 @@ export default abstract class ChangeTrackerModel extends DS.Model {
   // Related: https://github.com/emberjs/rfcs/pull/329
 
   initTracking() {
+    // @ts-ignore
     this.didCreate = () => {
       this.saveOnCreate();
     };
 
+    // @ts-ignore
     this.didUpdate = () => {
       this.saveOnUpdate();
     };
 
+    // @ts-ignore
     this.didDelete = () => {
       this.clearSavedAttributes();
     };
 
+    // @ts-ignore
     (this.ready = () => {
       this.setupTrackerMetaData();
       this.setupUnknownRelationshipLoadObservers();
@@ -157,6 +165,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
 
   // watch for relationships loaded with data via links
   setupUnknownRelationshipLoadObservers() {
+    // @ts-ignore
     this.eachRelationship((key) => {
       // @ts-ignore
       this.addObserver(key, this, "observeUnknownRelationshipLoaded");
@@ -179,6 +188,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
 
   // There is no didReload callback on models, so have to override reload
   reload() {
+    // @ts-ignore
     let promise = this._super(...arguments);
     promise.then(() => {
       if (Tracker.isAutoSaveEnabled(this)) {
@@ -193,7 +203,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
     Tracker.clear(this);
   }
 
-  observeUnknownRelationshipLoaded(sender: any, key: string /*, value, rev*/) {
+  observeUnknownRelationshipLoaded(_: any, key: string /*, value, rev*/) {
     if (Tracker.trackingIsSetup(this) && Tracker.isTracking(this, key)) {
       let saved = Tracker.saveLoadedRelationship(this, key);
       if (saved) {
