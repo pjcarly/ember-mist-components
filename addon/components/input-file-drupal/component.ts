@@ -6,13 +6,13 @@ import { inject as service } from "@ember/service";
 import { isEmpty } from "@ember/utils";
 import { dasherize } from "@ember/string";
 import { htmlSafe } from "@ember/template";
-import AjaxService from "ember-mist-components/services/ajax";
 import BaseInput from "ember-field-components/components/BaseInput";
 import File from "ember-mist-components/interfaces/file";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import HttpService from "ember-mist-components/services/http";
 
 export default class InputFileDrupalComponent extends BaseInput {
-  @service ajax!: AjaxService;
+  @service http!: HttpService;
   @service toast!: any;
 
   type = "file-drupal";
@@ -43,32 +43,32 @@ export default class InputFileDrupalComponent extends BaseInput {
     return returnValue;
   }
 
-  @computed("options.endpoint", "ajax.endpoint")
+  @computed("options.endpoint", "http.endpoint")
   get uploadEndpoint(): string {
     if (this.options && this.options.endpoint) {
-      return `${this.ajax.endpoint}${this.options.endpoint}`;
+      return `${this.http.endpoint}${this.options.endpoint}`;
     } else {
-      return `${this.ajax.endpoint}file/files`;
+      return `${this.http.endpoint}file/files`;
     }
   }
 
   @computed()
-  get ajaxHeaders(): Map<string, string> {
+  get httpHeaders(): Map<string, string> {
     const returnValue = new Map();
-    const ajaxHeaders = this.ajax.headers;
+    const httpHeaders = this.http.headers;
 
-    if (ajaxHeaders) {
-      for (const key in ajaxHeaders) {
-        returnValue.set(key, ajaxHeaders[key]);
+    if (httpHeaders) {
+      for (const key in httpHeaders) {
+        returnValue.set(key, httpHeaders[key]);
       }
     }
 
     return returnValue;
   }
 
-  @computed("fieldHeaders", "ajaxHeaders", "mistFieldTarget")
+  @computed("fieldHeaders", "httpHeaders", "mistFieldTarget")
   get headers(): { [s: string]: string } {
-    const headers = new Map([...this.fieldHeaders, ...this.ajaxHeaders]);
+    const headers = new Map([...this.fieldHeaders, ...this.httpHeaders]);
 
     if (this.mistFieldTarget) {
       headers.set("X-Mist-Field-Target", this.mistFieldTarget);
