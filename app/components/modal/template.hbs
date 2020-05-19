@@ -1,9 +1,9 @@
 {{yield (
   hash
-    header=(component 'ember-wormhole' to=this.modalHeaderId)
-    body=(component 'ember-wormhole' to=this.modalBodyId)
-    footer=(component 'ember-wormhole' to=this.modalFooterId)
-    trigger=(component 'ember-wormhole' to=this.modalTriggerId)
+    header=(component "ember-wormhole" to=this.modalHeaderId)
+    body=(component "ember-wormhole" to=this.modalBodyId)
+    footer=(component "ember-wormhole" to=this.modalFooterId)
+    trigger=(component "ember-wormhole" to=this.modalTriggerId)
     close=this.closeModal
     show=this.showModal
     status=this.status
@@ -12,10 +12,9 @@
 
 <div id={{this.modalTriggerId}} class="modal-trigger"></div>
 
-
 <EmberWormhole @to="ember-mist-modal-wormhole">
-  <div id={{this.modalId}} class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog{{if this.modalClass (concat ' ' this.modalClass)}}">
+  <div id={{this.modalId}} class="modal{{if @class (concat " " @class)}}" tabindex="-1" role="dialog">
+    <div class="modal-dialog{{if this.dialogClass (concat " " this.dialogClass)}}">
       <ClickOutside @class="modal-content" @onClickOutside={{action this.closeModal}} @exceptSelector="#{{this.modalTriggerId}}">
         <div id={{this.modalHeaderId}} class="modal-header"></div>
         <div id={{this.modalBodyId}} class="modal-body"></div>

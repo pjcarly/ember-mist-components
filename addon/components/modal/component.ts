@@ -14,7 +14,7 @@ export default class ModalComponent extends Component {
   closeOnRouteChange: boolean = false;
   modal?: bsn.Modal;
 
-  modalClass = "modal-dialog-centered";
+  dialogClass = "modal-dialog-centered";
 
   didReceiveAttrs() {
     // @ts-ignore
