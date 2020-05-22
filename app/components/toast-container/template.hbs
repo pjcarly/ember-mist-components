@@ -1,0 +1,7 @@
+{{#if this.toast.toasts}}
+  <div aria-live="polite" aria-atomic="true" class="toast-container">
+    {{#each this.toast.toasts as |toastMessage|}}
+      <ToastMessage @toast={{toastMessage}} />
+    {{/each}}
+  </div>
+{{/if}}
