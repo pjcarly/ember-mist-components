@@ -36,6 +36,7 @@
     "@types/ws": "^7.2.3",
     "babel-eslint": "~8.0.0",
     "broccoli-asset-rev": "~3.0.0",
+    "els-addon-typed-templates": "^2.2.18",
     "ember-cli": "~3.16.0",
     "ember-cli-dependency-checker": "~3.2.0",
     "ember-cli-eslint": "~5.1.0",
@@ -51,13 +52,14 @@
     "ember-source": "~3.16.0",
     "ember-try": "~1.1.0",
     "loader.js": "~4.7.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.0"
   },
   "keywords": [
     "ember-addon",
     "ember-mist-components"
   ],
   "dependencies": {
+    "@glimmer/tracking": "^1.0.0",
     "bootstrap.native": "^2.0.27",
     "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git#improvement/ember-upgrade",
     "ember-auto-import": "^1.5.3",
