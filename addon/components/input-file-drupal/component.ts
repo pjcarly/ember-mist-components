@@ -10,10 +10,11 @@ import BaseInput from "ember-field-components/components/BaseInput";
 import File from "ember-mist-components/interfaces/file";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 import HttpService from "ember-mist-components/services/http";
+import ToastService from "ember-mist-components/services/toast";
 
 export default class InputFileDrupalComponent extends BaseInput {
   @service http!: HttpService;
-  @service toast!: any;
+  @service toast!: ToastService;
 
   type = "file-drupal";
   totalFiles: number = 0;

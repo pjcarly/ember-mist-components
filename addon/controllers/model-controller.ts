@@ -13,6 +13,7 @@ import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
 import { QueryParams } from "ember-mist-components/query/Query";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import ToastService from "ember-mist-components/services/toast";
 
 declare global {
   const swal: any;
@@ -24,7 +25,7 @@ export default class ModelController extends Controller {
   @service fieldInformation!: FieldInformationService;
   @service recentlyViewed!: RecentlyViewedService;
   @service store!: Store;
-  @service toast!: any;
+  @service toast!: ToastService;
   @service storage!: any;
 
   @dropTaskGroup modelTasks!: any;
