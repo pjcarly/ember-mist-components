@@ -304,7 +304,7 @@ export default class ModelTableComponent extends Component {
           ),
           modelName: this.activeModelName,
           valuePath: camelizedColumn,
-          transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displaye
+          transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displayed
           width: modelColumn === "id" ? "60px" : undefined,
           resizable: modelColumn !== "id",
           cellComponent: "model-table-cell",
