@@ -1,8 +1,6 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
 import Model from "ember-data/model";
-// @ts-ignore
-import Table from "ember-light-table";
 import Query from "ember-mist-components/query/Query";
 import FieldInformationService from "ember-field-components/services/field-information";
 import ListViewService, {
@@ -14,29 +12,49 @@ import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import { computed, action } from "@ember/object";
 import { isArray } from "@ember/array";
+import NativeArray from "@ember/array/mutable";
 import { task, restartableTask } from "ember-concurrency-decorators";
 import { guidFor } from "@ember/object/internals";
 import { A } from "@ember/array";
 import { get } from "@ember/object";
-import { getOwner } from "@ember/application";
 import { camelize, dasherize } from "@ember/string";
 import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
-import MutableArray from "@ember/array/mutable";
 import ListViewModel from "ember-mist-components/models/list-view";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { tracked } from "@glimmer/tracking";
+import { getOwner, setOwner } from "@ember/application";
 
 export interface ModelClassInterface {
   fields: Map<string, string>;
   eachComputedProperty: any;
 }
 
-export interface Column {
+export class Table {
+  rows = A<Row>();
+  columns = A<Column>();
+
+  setRows(models: NativeArray<Model>) {
+    this.rows.clear();
+
+    models.forEach((model) => {
+      const row = new Row();
+      setOwner(row, getOwner(this));
+
+      row.content = model;
+      row.rowSelected = false;
+      row.activated = false;
+      this.rows.pushObject(row);
+    });
+  }
+}
+
+export class Column {
   label?: string;
   modelName?: string;
-  valuePath?: string;
+  valuePath?: string | boolean;
   transitionToModel?: boolean;
-  width?: string | undefined;
+  width?: string;
   resizable?: boolean;
   cellComponent?: string;
   cellClassNames?: string;
@@ -47,11 +65,10 @@ export interface Column {
   selectAll?: boolean;
 }
 
-export interface Row {
-  content: any;
-  rowSelected: boolean;
-  activated: boolean; // this boolean is used when the row is active, for example when it is hovered, or when it is the active row in a navigation with the keyboard
-  set(key: string, value: any): void;
+export class Row {
+  content!: Model;
+  @tracked rowSelected!: boolean;
+  @tracked activated!: boolean; // this boolean is used when the row is active, for example when it is hovered, or when it is the active row in a navigation with the keyboard
 }
 
 @tagName("")
@@ -62,10 +79,7 @@ export default class ModelTableComponent extends Component {
   @service fieldInformation!: FieldInformationService;
   @service listView!: ListViewService;
 
-  /**
-   * The ember-light-table instance
-   */
-  table: Table = Table.create();
+  table!: Table;
   lastPage: number = 0;
   resultRowFirst: number = 0;
   resultRowLast: number = 0;
@@ -98,6 +112,9 @@ export default class ModelTableComponent extends Component {
   onRowMouseLeave?: (selectedRow: any) => void;
 
   didReceiveAttrs() {
+    this.table = new Table();
+    setOwner(this.table, getOwner(this));
+
     super.didReceiveAttrs();
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
@@ -246,28 +263,29 @@ export default class ModelTableComponent extends Component {
    * This will return the columns that need to be displayed in the table (based on the list view)
    */
   @computed("activeModelName", "selectedListView", "intl.locale")
-  get columns(): Column[] {
+  get columns(): NativeArray<Column> {
     // This function gets the columns defined on the model, and sets them as the columns of the table
-    const columns = [];
+    const columns = A<Column>();
 
     if (this.isMultiSelect) {
-      const column: Column = {
-        label: "",
-        width: "60px",
-        resizable: false,
-        cellComponent: "model-table-selector",
-        cellClassNames: "selector",
-        component: "model-table-all-selector",
-        classNames: "selector",
-        selectAll: true,
-      };
+      const column = new Column();
+      setOwner(column, getOwner(this));
 
-      columns.push(column);
+      column.label = "";
+      column.width = "60px";
+      column.resizable = false;
+      column.cellComponent = "model-table-selector";
+      column.cellClassNames = "selector";
+      column.component = "model-table-all-selector";
+      column.classNames = "selector";
+      column.selectAll = true;
+
+      columns.pushObject(column);
     }
 
     // here we loop over every column in the listview, ans format it for ember light table
     let listViewColumns: string[] = [];
-    if (this.selectedListView instanceof ListViewModel) {
+    if (this.selectedListView instanceof Model) {
       this.selectedListView
         .hasMany("columns")
         .ids()
@@ -296,22 +314,24 @@ export default class ModelTableComponent extends Component {
 
       // Now that we know the column, lets see if it actually exists as a field on the modelclass
       if (this.allActiveModelClassColums.has(camelizedColumn)) {
-        // And finally build the structure for ember-light-table
-        const column: Column = {
-          label: this.fieldInformation.getTranslatedFieldlabel(
-            this.activeModelName,
-            camelizedColumn
-          ),
-          modelName: this.activeModelName,
-          valuePath: camelizedColumn,
-          transitionToModel: !this.onRowSelected && !this.isMultiSelect, // When no row selected action or multiselect is provided, we will route to the model being displayed
-          width: modelColumn === "id" ? "60px" : undefined,
-          resizable: modelColumn !== "id",
-          cellComponent: "model-table-cell",
-          sorted: sortedOnColumn,
-          ascending:
-            sortedOnColumn && this.query.orders[0].direction === Direction.ASC,
-        };
+        // And finally build the structure for the table
+        const column = new Column();
+        setOwner(column, getOwner(this));
+
+        column.label = this.fieldInformation.getTranslatedFieldlabel(
+          this.activeModelName,
+          camelizedColumn
+        );
+
+        column.modelName = this.activeModelName;
+        column.valuePath = camelizedColumn;
+        column.transitionToModel = !this.onRowSelected && !this.isMultiSelect; // When no row selected action or multiselect is provided, we will route to the model being displayed
+        column.width = modelColumn === "id" ? "60px" : undefined;
+        column.resizable = modelColumn !== "id";
+        column.cellComponent = "model-table-cell";
+        column.sorted = sortedOnColumn;
+        column.ascending =
+          sortedOnColumn && this.query.orders[0].direction === Direction.ASC;
 
         columns.push(column);
       }
@@ -379,7 +399,7 @@ export default class ModelTableComponent extends Component {
    * The activated state is the indication which row is 'active' (for example the one you are hovering, or the one your are navigating on with the keyboard)
    */
   deactivateRows() {
-    this.table.get("rows").setEach("activated", false);
+    this.table.rows.setEach("activated", false);
   }
 
   /**
@@ -411,12 +431,9 @@ export default class ModelTableComponent extends Component {
    */
   reSetSelected() {
     if (this.isMultiSelect) {
-      const rows: MutableArray<Row> = this.table.rows;
-
-      for (const row of rows.toArray()) {
-        const model = <Model>row.content;
-        row.set("rowSelected", this.selectedModels.includes(model));
-      }
+      this.table.rows.forEach((row) => {
+        row.rowSelected = this.selectedModels.includes(row.content);
+      });
 
       this.setSelectAllColumn();
     }
@@ -426,22 +443,23 @@ export default class ModelTableComponent extends Component {
    * Sets the colums on the table based on the active list view
    */
   setColumns() {
-    this.table.setColumns(this.columns);
+    this.table.columns.clear();
+    this.table.columns.pushObjects(this.columns);
   }
 
   /**
    * This function will set the select all boolean, based on the selected rows
    */
   setSelectAllColumn() {
-    const selectAllColumn = this.table.columns.get("firstObject");
-    selectAllColumn.set(
-      "valuePath",
-      this.table.get("rows").isEvery("rowSelected", true)
-    );
+    const selectAllColumn = this.table.columns.firstObject;
 
-    if (this.selectedModels.length === 0 && this.displaySelected) {
-      this.toggleProperty("displaySelected");
-      taskFor(this.fetchRecords).perform();
+    if (selectAllColumn) {
+      selectAllColumn.valuePath = this.table.rows.isEvery("rowSelected", true);
+
+      if (this.selectedModels.length === 0 && this.displaySelected) {
+        this.toggleProperty("displaySelected");
+        taskFor(this.fetchRecords).perform();
+      }
     }
   }
 
@@ -450,14 +468,12 @@ export default class ModelTableComponent extends Component {
    */
   setQueryParamsBasedOnActiveListView() {
     assert(`Listview not found`, !isBlank(this.selectedListView));
-    // @ts-ignore
-    const listViewLimit = get(this.selectedListView, "rows");
-    // @ts-ignore
+
     const listViewSort = get(this.selectedListView, "sortOrder");
 
-    this.query.setLimit(isBlank(listViewLimit) ? 10 : listViewLimit);
+    this.query.setLimit(this.selectedListView.rows ?? 10);
 
-    if (!isBlank(listViewSort)) {
+    if (this.selectedListView.sortOrder) {
       this.query.clearOrders();
       this.query.addOrder(
         new Order(
@@ -483,34 +499,22 @@ export default class ModelTableComponent extends Component {
     }
 
     // Now we can query the store
-    yield this.query.fetch(this.store).then((records) => {
+    yield this.query.fetch(this.store).then((records: NativeArray<Model>) => {
       this.table.setRows(records);
 
+      // @ts-ignore
       const meta = records.get("meta");
-      this.query.setPage(
-        isBlank(meta["page-current"]) ? 1 : meta["page-current"]
-      );
-      this.set(
-        "lastPage",
-        isBlank(meta["page-count"]) ? 1 : meta["page-count"]
-      );
-      this.set(
-        "resultRowFirst",
-        isBlank(meta["result-row-first"]) ? 0 : meta["result-row-first"]
-      );
-      this.set(
-        "resultRowLast",
-        isBlank(meta["result-row-last"]) ? 0 : meta["result-row-last"]
-      );
-      this.set(
-        "resultTotalCount",
-        isBlank(meta["total-count"]) ? 0 : meta["total-count"]
-      );
+      this.query.setPage(meta["page-current"] ?? 1);
+      this.set("lastPage", meta["page-count"] ?? 1);
+      this.set("resultRowFirst", meta["result-row-first"] ?? 0);
+      this.set("resultRowLast", meta["result-row-last"] ?? 0);
+      this.set("resultTotalCount", meta["total-count"] ?? 0);
+
       this.reSetSelected();
     });
 
     // If no colums are found, lets also set them
-    if (isBlank(this.table.get("columns"))) {
+    if (this.table.columns.length === 0) {
       this.setColumns();
     }
   }
@@ -619,34 +623,33 @@ export default class ModelTableComponent extends Component {
    * @param column The column that was clicked
    */
   @action
-  onColumnClick(column: any) {
-    if (this.isMultiSelect && column.get("selectAll")) {
-      column.set("sorted", false);
-      column.toggleProperty("valuePath");
+  onColumnClick(column: Column) {
+    debugger;
 
-      const rows: MutableArray<Row> = this.table.rows;
+    if (this.isMultiSelect && column.selectAll) {
+      column.sorted = false;
+      column.valuePath = !column.valuePath;
 
-      for (const row of rows.toArray()) {
-        row.set("rowSelected", column.get("valuePath"));
-        const model = <Model>row.content;
+      this.table.rows.forEach((row) => {
+        row.rowSelected = <boolean>column.valuePath;
 
         if (row.rowSelected) {
-          if (!this.selectedModels.includes(model)) {
+          if (!this.selectedModels.includes(row.content)) {
             // model not yet in the array, so we add it
-            this.selectedModels.pushObject(model);
+            this.selectedModels.pushObject(row.content);
           }
         } else {
-          if (this.selectedModels.includes(model)) {
+          if (this.selectedModels.includes(row.content)) {
             // model in the array, while it shouldn't be, remove it
-            this.selectedModels.removeObject(model);
+            this.selectedModels.removeObject(row.content);
           }
         }
-      }
+      });
     } else if (column.sorted) {
       this.query.clearOrders();
       this.query.addOrder(
         new Order(
-          dasherize(column.get("valuePath")),
+          dasherize(<string>column.valuePath),
           column.ascending ? Direction.ASC : Direction.DESC
         )
       );
@@ -700,18 +703,18 @@ export default class ModelTableComponent extends Component {
    * @param row The row which is being hovered
    */
   @action
-  rowMouseEnter(row: any) {
+  rowMouseEnter(event: Event) {
     this.deactivateRows();
     if (this.onRowMouseEnter) {
-      this.onRowMouseEnter(row);
+      this.onRowMouseEnter(event);
     }
   }
 
   @action
-  rowMouseLeave(row: any) {
+  rowMouseLeave(event: Event) {
     this.deactivateRows();
     if (this.onRowMouseLeave) {
-      this.onRowMouseLeave(row);
+      this.onRowMouseLeave(event);
     }
   }
 

@@ -1,18 +1,24 @@
 <div class="model-table {{@class}}">
   {{#if (and @listViewGrouping this.listViewsAsTabs)}}
-    <ListViewTabs @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+    <ListViewTabs 
+      @modelName={{this.activeModelName}} 
+      @grouping={{@listViewGrouping}} 
+      @valueChanged={{this.listViewChanged}} />
   {{/if}}
-  <div class={{concat 'card-header ch-alt model-table-header' (if this.searchVisible ' search-toggled')}}>
-    <div class="table-header-title-wrapper">
-      <h2>{{this.titleComputed}}</h2>
+  <div class={{concat 'model-table__header' (if this.searchVisible ' search-toggled')}}>
+    <div class="model-table__title__wrapper">
+      <h2 class="model-table__title">{{this.titleComputed}}</h2>
       {{#if this.fetchRecords.isRunning}}
         <Loading />
       {{else}}
-        <span style="width: 10px;height:10px;display:inline-block;"></span>
+        <span class="model-table__title__loading-placeholder"></span>
       {{/if}}
 
       {{#if (and @listViewGrouping (not this.listViewsAsTabs))}}
-        <ListViewSelect @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+        <ListViewSelect 
+          @modelName={{this.activeModelName}} 
+          @grouping={{@listViewGrouping}} 
+          @valueChanged={{this.listViewChanged}} />
       {{/if}}
     </div>
 
@@ -25,7 +31,11 @@
         {{/if}}
 
         <form {{action "search" on="submit"}}>
-          <InputSearch @inputId={{this.searchInputId}} @value={{this.query.search}} @placeholder="Search..." @valueChanged={{action 'searchValueChanged'}} />
+          <InputSearch 
+            @inputId={{this.searchInputId}} 
+            @value={{this.query.search}} 
+            @placeholder="Search..." 
+            @valueChanged={{action this.searchValueChanged}} />
         </form>
       </div>
     </div>
@@ -73,7 +83,50 @@
       </div>
     {{/if}}
 
-    {{#light-table this.table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if this.fetchRecords.isRunning ' is-busy')) as |t|}}
+    <div class="table-responsive">
+      <table class="table table-hover{{if this.fetchRecords.isRunning ' is-busy'}}">
+        <thead class="model-table__head">
+          <tr>
+            {{#each this.columns as |column|}}
+              <th class="model-table__column is-sortable"
+                {{on "click" (fn this.onColumnClick column)}}>
+                {{column.label}}
+              </th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody class="model-table__body">
+          {{#if this.fetchRecords.isRunning}}
+            <tr class="model-table__row model-table__is-loading">
+              <td colspan="0">
+                <Loading />
+              </td>
+            </tr>
+          {{else}}
+            {{#each this.table.rows as |row|}}
+              <tr class="model-table__row is-selectable" 
+                {{on "click" (fn this.rowSelected row)}} 
+                {{on "mouseenter" (fn this.rowMouseEnter row)}} 
+                {{on "mouseleave" (fn this.rowMouseLeave row)}}>
+                {{#each this.columns as |column|}}
+                  <td class="model-table__cell">
+                    <ModelTableCell @row={{row}} @column={{column}} />
+                  </td>
+                {{/each}}
+              </tr>
+            {{else}}
+              <tr class="model-table__row model-table__no-data">
+                <td colspan="0">
+                  No data found
+                </td>
+              </tr>
+            {{/each}}
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- {{#light-table this.table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if this.fetchRecords.isRunning ' is-busy')) as |t|}}
       {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
 
       {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
@@ -87,7 +140,7 @@
           {{/body.no-data}}
         {{/if}}
       {{/t.body}}
-    {{/light-table}}
+    {{/light-table}} --}}
 
     <div class="table-footer">
       <ModelTableControls

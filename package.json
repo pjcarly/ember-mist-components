@@ -77,7 +77,6 @@
     "ember-fetch": "~7.0.0",
     "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git#improvement/ember-upgrade",
     "ember-intl": "~4.2.0",
-    "ember-light-table": "~2.0.0-beta.4",
     "ember-power-calendar": "~0.14.5",
     "ember-power-calendar-moment": "~0.1.7",
     "ember-power-select": "~3.0.4",

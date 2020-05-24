@@ -6,9 +6,11 @@ import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
 import ListViewModel from "ember-mist-components/models/list-view";
 
+// A ModelListview is an object that can be defined as a static POJO on the Model itself
 export interface ModelListView {
+  rows?: number;
   columns: string[];
-  sort: ModelListViewSort;
+  sortOrder: ModelListViewSort;
 }
 
 export interface ModelListViewSort {
