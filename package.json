@@ -36,7 +36,6 @@
     "@types/ws": "^7.2.3",
     "babel-eslint": "~8.0.0",
     "broccoli-asset-rev": "~3.0.0",
-    "els-addon-typed-templates": "^2.2.18",
     "ember-cli": "~3.16.0",
     "ember-cli-dependency-checker": "~3.2.0",
     "ember-cli-eslint": "~5.1.0",
