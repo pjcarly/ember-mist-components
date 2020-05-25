@@ -9,11 +9,11 @@
   <div class={{concat 'model-table__header' (if this.searchVisible ' search-toggled')}}>
     <div class="model-table__title__wrapper">
       <h2 class="model-table__title">{{this.titleComputed}}</h2>
-      {{#if this.fetchRecords.isRunning}}
-        <Loading />
-      {{else}}
-        <span class="model-table__title__loading-placeholder"></span>
-      {{/if}}
+      <span class="model-table__title__loading">
+        {{#if this.fetchRecords.isRunning}}
+          <Loading />
+        {{/if}}
+      </span>
 
       {{#if (and @listViewGrouping (not this.listViewsAsTabs))}}
         <ListViewSelect 
