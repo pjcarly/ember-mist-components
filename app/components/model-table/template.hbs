@@ -1,10 +1,11 @@
 <div class="model-table {{@class}}">
-  {{#if (and @listViewGrouping this.listViewsAsTabs)}}
+  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'top'))}}
     <ListViewTabs 
       @modelName={{this.activeModelName}} 
       @grouping={{@listViewGrouping}} 
       @valueChanged={{this.listViewChanged}} />
   {{/if}}
+
   <div class={{concat 'model-table__header' (if this.searchVisible ' search-toggled')}}>
     <div class="model-table__title__wrapper">
       <h2 class="model-table__title">{{this.titleComputed}}</h2>
@@ -22,15 +23,15 @@
       {{/if}}
     </div>
 
-    <div class="h-search-wrap">
-      <div class="hsw-inner">
+    <div class="model-table__search__wrapper">
+      <div class="model-table__search__wrapper__inner">
         {{#if (not this.searchFixed)}}
-          <button class="btn btn-link" {{on "click" this.toggleSearch}}>
+          <button class="btn btn-icon model-table__search__close" {{on "click" this.toggleSearch}}>
             <IconClose />
           </button>
         {{/if}}
 
-        <form {{action "search" on="submit"}}>
+        <form class="model-table__search__form" {{action "search" on="submit"}}>
           <InputSearch 
             @inputId={{this.searchInputId}} 
             @value={{this.query.search}} 
@@ -42,10 +43,14 @@
 
     <div id={{concat this.guid '-new'}}></div>
 
-    <ul id={{concat this.guid '-actions'}} class="actions">
-      <li><a {{on "click" this.search}} role="button" class="waves-effect waves-circle"><IconSearch /></a></li>
+    <ul id={{concat this.guid '-actions'}} class="action__menu">
+      <li>
+        <a {{on "click" this.search}} role="button" class="model-table__action__search">
+          <IconSearch />
+        </a>
+      </li>
 
-      <MenuDropdown @class="waves-circle">
+      <MenuDropdown @class="action__menu__dropdown">
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
             <li>
@@ -68,6 +73,13 @@
       </MenuDropdown>
     </ul>
   </div>
+
+  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'bottom'))}}
+    <ListViewTabs 
+      @modelName={{this.activeModelName}} 
+      @grouping={{@listViewGrouping}} 
+      @valueChanged={{this.listViewChanged}} />
+  {{/if}}
 
   {{#if this.fetchRecords.last}}
     {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) new=(component 'ember-wormhole' to=(concat this.guid '-new')))}}
@@ -98,7 +110,7 @@
         <tbody class="model-table__body">
           {{#if this.fetchRecords.isRunning}}
             <tr class="model-table__row model-table__is-loading">
-              <td colspan="0">
+              <td colspan={{this.columns.length}}>
                 <Loading />
               </td>
             </tr>
@@ -116,8 +128,8 @@
               </tr>
             {{else}}
               <tr class="model-table__row model-table__no-data">
-                <td colspan="0">
-                  No data found
+                <td colspan={{this.columns.length}}>
+                  {{t 'ember-mist-components.table.no_data'}}
                 </td>
               </tr>
             {{/each}}
@@ -125,22 +137,6 @@
         </tbody>
       </table>
     </div>
-
-    {{!-- {{#light-table this.table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if this.fetchRecords.isRunning ' is-busy')) as |t|}}
-      {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
-
-      {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
-        {{#if this.fetchRecords.isRunning}}
-          {{#body.loader}}
-            <Loading />
-          {{/body.loader}}
-        {{else if this.table.isEmpty}}
-          {{#body.no-data}}
-            No data found
-          {{/body.no-data}}
-        {{/if}}
-      {{/t.body}}
-    {{/light-table}} --}}
 
     <div class="table-footer">
       <ModelTableControls

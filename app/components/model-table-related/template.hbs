@@ -7,7 +7,7 @@
   @listViewGrouping={{@listViewGrouping}} as |Table| >
   {{#if (not this.hideNew)}}
     <Table.new>
-      <button class="btn bgm-pink btn-float waves-effect" onclick={{action 'newFromRelated'}}>
+      <button class="btn bgm-pink btn-float waves-effect" {{on "click" this.newFromRelated}}>
         <IconPlus />
       </button>
     </Table.new>

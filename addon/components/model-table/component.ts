@@ -98,6 +98,7 @@ export default class ModelTableComponent extends Component {
    * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
    */
   listViewsAsTabs: boolean = false;
+  tabPosition: "bottom" | "top" = "bottom";
 
   /**
    * The flag to indicate whether the amount of selected models in the table should be displayed
