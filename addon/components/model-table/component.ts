@@ -502,7 +502,7 @@ export default class ModelTableComponent extends Component {
     yield this.query.fetch(this.store).then((records: NativeArray<Model>) => {
       this.table.setRows(records);
 
-      // @ts-ignore
+      // @ts-ignore: The ember-data types do not expose a Array type of a query result, with meta data from the query result in
       const meta = records.get("meta");
       this.query.setPage(meta["page-current"] ?? 1);
       this.set("lastPage", meta["page-count"] ?? 1);
@@ -624,8 +624,6 @@ export default class ModelTableComponent extends Component {
    */
   @action
   onColumnClick(column: Column) {
-    debugger;
-
     if (this.isMultiSelect && column.selectAll) {
       column.sorted = false;
       column.valuePath = !column.valuePath;
@@ -645,7 +643,11 @@ export default class ModelTableComponent extends Component {
           }
         }
       });
-    } else if (column.sorted) {
+    } else {
+      this.table.columns.setEach("sorted", false);
+      column.sorted = true;
+      column.ascending = !column.ascending;
+
       this.query.clearOrders();
       this.query.addOrder(
         new Order(
