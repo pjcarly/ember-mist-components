@@ -88,7 +88,7 @@
         <thead class="model-table__head">
           <tr>
             {{#each this.columns as |column|}}
-              <th class="model-table__column is-sortable"
+              <th class="model-table__column{{if column.sorted ' model-table__column__sorted'}}{{if column.ascending ' model-table__column__sorted__asc' ' model-table__column__sorted__desc'}}"
                 {{on "click" (fn this.onColumnClick column)}}>
                 {{column.label}}
               </th>

@@ -52,7 +52,7 @@ export class Table {
 export class Column {
   label?: string;
   modelName?: string;
-  valuePath?: string | boolean;
+  @tracked valuePath?: string | boolean;
   transitionToModel?: boolean;
   width?: string;
   resizable?: boolean;
@@ -60,8 +60,8 @@ export class Column {
   cellClassNames?: string;
   component?: string;
   classNames?: string;
-  sorted?: boolean;
-  ascending?: boolean;
+  @tracked sorted?: boolean;
+  @tracked ascending?: boolean;
   selectAll?: boolean;
 }
 
