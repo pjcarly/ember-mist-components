@@ -2,7 +2,7 @@
   @title={{@title}}
   @modelName={{this.hasManyModelName}}
   @baseQuery={{this.baseQuery}}
-  @class={{@class}}
+  @class={{concat "model-table__related " @class}}
   @modelListView={{@modelListView}}
   @listViewGrouping={{@listViewGrouping}} as |Table| >
   {{#if (not this.hideNew)}}
