@@ -31,7 +31,7 @@
           </button>
         {{/if}}
 
-        <form class="model-table__search__form" {{action "search" on="submit"}}>
+        <form class="model-table__search__form" {{on "submit" this.search}}>
           <InputSearch 
             @inputId={{this.searchInputId}} 
             @value={{this.query.search}} 
