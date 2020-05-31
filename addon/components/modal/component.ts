@@ -67,21 +67,30 @@ export default class ModalComponent extends Component {
   getModal(): bsn.Modal {
     if (!this.modal) {
       const element = document.getElementById(this.modalId);
-      const modal = new bsn.Modal(element, {
-        backdrop: "static",
-      });
-      this.set("modal", modal);
+      if (element) {
+        const modal = new bsn.Modal(element, {
+          backdrop: "static",
+        });
+        element.addEventListener(
+          "hidden.bs.modal",
+          this.hideModalListener.bind(this)
+        );
+        this.set("modal", modal);
+      }
     }
 
     return this.modal;
   }
 
+  hideModalListener() {
+    this.set("modalVisible", false);
+    this.onClose();
+  }
+
   @action
   closeModal() {
     if (this.modalVisible) {
-      this.set("modalVisible", false);
       this.getModal().hide();
-      this.onClose();
     }
   }
 
@@ -92,5 +101,15 @@ export default class ModalComponent extends Component {
       this.getModal().show();
       this.onOpen();
     }
+  }
+
+  willDestroyElement() {
+    const element = document.getElementById(this.modalId);
+    if (element) {
+      element.removeEventListener("hidden.bs.modal", this.hideModalListener);
+    }
+
+    // @ts-ignore
+    super.willDestroyElement(...arguments);
   }
 }
