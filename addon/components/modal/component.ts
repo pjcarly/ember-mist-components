@@ -15,6 +15,8 @@ export default class ModalComponent extends Component {
   modal?: bsn.Modal;
 
   dialogClass = "modal-dialog-centered";
+  onOpen() {}
+  onClose() {}
 
   didReceiveAttrs() {
     // @ts-ignore
@@ -79,6 +81,7 @@ export default class ModalComponent extends Component {
     if (this.modalVisible) {
       this.set("modalVisible", false);
       this.getModal().hide();
+      this.onClose();
     }
   }
 
@@ -87,6 +90,7 @@ export default class ModalComponent extends Component {
     if (!this.modalVisible) {
       this.set("modalVisible", true);
       this.getModal().show();
+      this.onOpen();
     }
   }
 }
