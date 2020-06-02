@@ -54,7 +54,7 @@ export default class AddressService extends Service {
       countrySelectOptions = this.storage.get("addressCountrySelectOptions");
 
       if (countrySelectOptions) {
-        this.countrySelectOptions = countrySelectOptions;
+        this.set("countrySelectOptions", countrySelectOptions);
         return countrySelectOptions;
       }
     }
