@@ -5,7 +5,13 @@ import Store from "ember-data/store";
 
 interface Data {
   authenticated: {
-    id: string;
+    access_token: string;
+    authenticator: string;
+    expires_at: number;
+    expires_in: number;
+    refresh_token: string;
+    token_type: "Bearer";
+    user_id: string;
   };
 }
 declare module "ember-simple-auth/services/session" {
