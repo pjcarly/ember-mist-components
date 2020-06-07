@@ -7,6 +7,7 @@ import { inject as service } from "@ember/service";
 import { validationModel } from "ember-attribute-validations/decorators/validation-model";
 import { loadableModel } from "ember-mist-components/decorators/loadable-model";
 import ChangeTrackerModel from "./change-tracker-model";
+import JSONAPISerializer from '@ember-data/serializer/json-api';
 
 @validationModel
 @loadableModel
@@ -26,13 +27,13 @@ export default abstract class MistModel extends ChangeTrackerModel {
   @computed("isNew")
   get isExisting(): boolean {
     // @ts-ignore
-    return !this.get("isNew");
+    return !this.isNew;
   }
 
   @computed("errors.[]")
   get hasErrors(): boolean {
     // @ts-ignore
-    return this.errors.get("length") > 0;
+    return this.errors.length > 0;
   }
 
   @computed()
@@ -41,7 +42,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
 
     const modelName = this.fieldInformation.getModelName(this);
     // @ts-ignore
-    const serializer = this.store.serializerFor(modelName);
+    const serializer = <JSONAPISerializer> this.store.serializerFor(modelName);
     const attrs = serializer.attrs;
 
     if (isBlank(attrs)) {
@@ -76,6 +77,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
+          // @ts-ignore
           childModels.toArray().forEach((childModel: MistModel) => {
             childModel.rollback();
           });
@@ -178,12 +180,14 @@ export default abstract class MistModel extends ChangeTrackerModel {
         if (meta.kind === "belongsTo") {
           // @ts-ignore
           const relatedModel = this.get(relationshipName);
+          // @ts-ignore
           isValid = relatedModel ? relatedModel.validate() : true;
         } else if (meta.kind === "hasMany") {
           // @ts-ignore
           const relatedModels = this.get(relationshipName);
           if (relatedModels) {
             isValid = !relatedModels
+              // @ts-ignore
               .toArray()
               // @ts-ignore
               .some((relatedModel: MistModel) => !relatedModel.validate());
@@ -202,12 +206,15 @@ export default abstract class MistModel extends ChangeTrackerModel {
    * @param relationshipName The relationship you want to check
    */
   hasDirtyEmbeddedRelationship(relationshipName: string): boolean {
-    // @ts-ignore
-    return this.get(relationshipName)
-      .toArray()
-      .some((relatedModel: MistModel) => {
-        return relatedModel.isDirtyOrDeleted;
-      });
+    return (
+      // @ts-ignore
+      this.get(relationshipName)
+        // @ts-ignore
+        .toArray()
+        .some((relatedModel: MistModel) => {
+          return relatedModel.isDirtyOrDeleted;
+        })
+    );
   }
 
   /**
