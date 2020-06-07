@@ -1,24 +1,27 @@
 import Route from "@ember/routing/route";
-// @ts-ignore
-import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import EntityCacheService from "ember-mist-components/services/entity-cache";
 import { inject as service } from "@ember/service";
+import Transition from "@ember/routing/-private/transition";
 import Controller from "@ember/controller";
-// @ts-ignore
 import Model from "@ember-data/model";
+import SessionService from "ember-simple-auth/services/session";
 
-// @ts-ignore
-export default abstract class ModelIndexRoute extends Route.extend(
-  AuthenticatedRouteMixin
-) {
+export default abstract class ModelIndexRoute extends Route {
   @service entityCache!: EntityCacheService;
+  @service session!: SessionService;
 
   modelName!: string;
   listViewGrouping?: string;
   hideNew: boolean = false;
 
+  beforeModel(transition: Transition) {
+    this.session.requireAuthentication(transition, "login");
+    this._super(...arguments);
+  }
+
   afterModel() {
-    super.afterModel();
+    // @ts-ignore
+    super.afterModel(...arguments);
     this.entityCache.clearReturnToModel();
   }
 

@@ -10,6 +10,7 @@ import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import SessionService from "ember-simple-auth/services/session";
 
 export enum Status {
   OFFLINE = "OFFLINE",
@@ -19,7 +20,7 @@ export enum Status {
 
 export default class WebsocketService extends Service.extend(Evented) {
   @service websockets!: any;
-  @service session!: Service;
+  @service session!: SessionService;
 
   socket!: any;
   status: string = Status.OFFLINE;

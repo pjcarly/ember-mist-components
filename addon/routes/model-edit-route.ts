@@ -1,8 +1,13 @@
-import SingleModelRoute from "./single-model-route";
-// @ts-ignore
-import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
+import Route from "@ember/routing/route";
+import Transition from "@ember/routing/-private/transition";
+import { inject as service } from "@ember/service";
+import SessionService from "ember-simple-auth/services/session";
 
-// @ts-ignore
-export default abstract class ModelEditRoute extends SingleModelRoute.extend(
-  AuthenticatedRouteMixin
-) {}
+export default class ModelEditRoute extends Route {
+  @service session!: SessionService;
+
+  beforeModel(transition: Transition) {
+    this.session.requireAuthentication(transition, "login");
+    this._super(...arguments);
+  }
+}
