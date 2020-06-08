@@ -15,11 +15,11 @@
 <EmberWormhole @to="ember-mist-modal-wormhole">
   <div id={{this.modalId}} class="modal{{if @class (concat " " @class)}}" tabindex="-1" role="dialog">
     <div class="modal-dialog{{if this.dialogClass (concat " " this.dialogClass)}}">
-      <ClickOutside @class="modal-content" @onClickOutside={{action this.closeModal}} @exceptSelector="#{{this.modalTriggerId}}">
+      <div class="modal-content">
         <div id={{this.modalHeaderId}} class="modal-header"></div>
         <div id={{this.modalBodyId}} class="modal-body"></div>
         <div id={{this.modalFooterId}} class="modal-footer"></div>
-      </ClickOutside>
+      </div>
     </div>
   </div>
 </EmberWormhole>

@@ -68,9 +68,7 @@ export default class ModalComponent extends Component {
     if (!this.modal) {
       const element = document.getElementById(this.modalId);
       if (element) {
-        const modal = new bsn.Modal(element, {
-          backdrop: "static",
-        });
+        const modal = new bsn.Modal(element);
         element.addEventListener(
           "hidden.bs.modal",
           this.hideModalListener.bind(this)
