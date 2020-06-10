@@ -1,28 +1,66 @@
-// @ts-ignore
-import Uploader from "ember-uploader/uploaders/uploader";
-import { dropTask } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isEmpty } from "@ember/utils";
 import { dasherize } from "@ember/string";
 import { htmlSafe } from "@ember/template";
 import BaseInput from "ember-field-components/components/BaseInput";
-import File from "ember-mist-components/interfaces/file";
+import FileModel from "ember-mist-components/interfaces/file";
+import File from "ember-file-upload/file";
 import { taskFor } from "ember-mist-components/utils/ember-concurrency";
 import HttpService from "ember-mist-components/services/http";
 import ToastService from "ember-mist-components/services/toast";
+import FileQueueService from "ember-file-upload/services/file-queue";
+import Queue from "ember-file-upload/queue";
 
 export default class InputFileDrupalComponent extends BaseInput {
   @service http!: HttpService;
   @service toast!: ToastService;
+  @service fileQueue!: FileQueueService;
 
   type = "file-drupal";
-  totalFiles: number = 0;
+
+  /**
+   * The last active ember-file-upload queue that was used uploading files, null when nothing has been uploaded
+   */
+  lastActiveQueue?: string;
+
   activeFile?: File;
 
   multiple: boolean = false;
   modelName!: string;
   field!: string;
+
+  @computed("lastActiveQueue")
+  get queue(): Queue | null {
+    if (this.lastActiveQueue) {
+      return this.fileQueue.find(this.lastActiveQueue);
+    }
+
+    return null;
+  }
+
+  @computed("queue")
+  get totalFiles(): number {
+    if (this.queue) {
+      return <number>this.queue.files.length;
+    }
+
+    return 0;
+  }
+
+  @computed("queue", "activeFile")
+  get activeFilePositionInQueue(): number {
+    if (this.activeFile && this.queue) {
+      const position = this.queue.files.indexOf(this.activeFile);
+
+      if (position !== -1) {
+        return position + 1;
+      }
+    }
+
+    return -1;
+  }
 
   @computed("modelName", "field")
   get mistFieldTarget(): string | undefined {
@@ -83,79 +121,110 @@ export default class InputFileDrupalComponent extends BaseInput {
     return returnValue;
   }
 
-  @dropTask
-  *uploadFile(files: any) {
-    if (!isEmpty(files)) {
-      const uploaderOptions = {
-        type: "POST",
-        ajaxSettings: {
-          headers: this.headers,
-        },
-        url: this.uploadEndpoint,
-      };
+  @task({ enqueue: true, maxConcurrency: 3 })
+  *uploadFile(file: File) {
+    this.set("activeFile", file);
+    console.log(file);
+    console.log(file.queue);
+    console.log(file.queue.name);
 
-      const uploader = Uploader.extend(uploaderOptions).create();
-      let fieldValue: File[] | File = [];
+    if (!isEmpty(file)) {
+      this.set("lastActiveQueue", file.queue.name);
+      console.log(this.queue?.files.length);
 
-      let activeFile = 0;
-      let shouldContinue = true;
-      for (const file of files) {
-        activeFile++;
+      yield file
+        .upload(this.uploadEndpoint, { headers: this.headers })
+        .then((response: any) => {
+          // @ts-ignore
+          const fileObject: FileModel = {
+            id: response.body.data.id,
+            filename: response.body.data.attributes.filename,
+            uri: response.body.data.attributes.uri,
+            url: response.body.data.attributes.url,
+            filemime: response.body.data.attributes.filemime,
+            filesize: response.body.data.attributes.filesize,
+            hash: response.body.data.attributes.hash,
+          };
 
-        this.set("totalFiles", files.length);
-        this.set("activeFile", activeFile);
+          let fieldValue = this.computedValue;
+          if (this.multiple) {
+            fieldValue = [...fieldValue, fileObject];
+          } else {
+            fieldValue = fileObject;
+          }
 
-        if (shouldContinue) {
-          yield uploader
-            .upload(file)
-            .then((data: any) => {
-              // @ts-ignore
-              const fileObject: File = {
-                id: data.data.id,
-                filename: data.data.attributes.filename,
-                uri: data.data.attributes.uri,
-                url: data.data.attributes.url,
-                filemime: data.data.attributes.filemime,
-                filesize: data.data.attributes.filesize,
-                hash: data.data.attributes.hash,
-              };
+          this.set("computedValue", fieldValue);
+        })
+        .catch((error: any) => {
+          file.queue.remove(file);
 
-              if (this.multiple) {
-                // @ts-ignore
-                fieldValue.push(fileObject);
-              } else {
-                fieldValue = fileObject;
-                shouldContinue = false;
-              }
-            })
-            .catch((error: any) => {
-              let errorMessage = "File upload failed";
+          let errorMessage = "File upload failed";
+          if (error.responseJSON) {
+            if ("error_description" in error.responseJSON) {
+              errorMessage = error.responseJSON.error_description;
+            } else if ("error" in error.responseJSON) {
+              errorMessage = error.responseJSON.error;
+            }
+          }
 
-              if (error.responseJSON) {
-                if ("error_description" in error.responseJSON) {
-                  errorMessage = error.responseJSON.error_description;
-                } else if ("error" in error.responseJSON) {
-                  errorMessage = error.responseJSON.error;
-                }
-              }
+          errorMessage = `(${htmlSafe(file.name)}) ${errorMessage}`;
+          this.toast.error(errorMessage);
+        });
+    }
 
-              errorMessage = `(${htmlSafe(file.name)}) ${errorMessage}`;
-              this.toast.error(errorMessage, errorMessage);
-            });
+    // if (!isEmpty(files)) {
+    //   const uploaderOptions = {
+    //     type: "POST",
+    //     ajaxSettings: {
+    //       headers: this.headers,
+    //     },
+    //     url: this.uploadEndpoint,
+    //   };
+
+    //   const uploader = Uploader.extend(uploaderOptions).create();
+    //   let fieldValue: File[] | File = [];
+
+    //   let activeFile = 0;
+    //   let shouldContinue = true;
+    //   for (const file of files) {
+    //     activeFile++;
+
+    //     this.set("totalFiles", files.length);
+    //     this.set("activeFile", activeFile);
+
+    //     if (shouldContinue) {
+    //       yield uploader
+    //         .upload(file)
+
+    //     }
+    //   }
+
+    //   this.set("computedValue", fieldValue);
+    // }
+  }
+
+  @action
+  deleteFile(file: FileModel) {
+    if (this.multiple) {
+      const values = <FileModel[]>this.computedValue;
+      const indexOfValue = values.indexOf(file);
+
+      if (indexOfValue !== -1) {
+        values.splice(indexOfValue, 1);
+
+        if (values.length === 0) {
+          this.set("computedValue", null);
+        } else {
+          this.set("computedValue", [...values]);
         }
       }
-
-      this.set("computedValue", fieldValue);
+    } else {
+      this.set("computedValue", null);
     }
   }
 
   @action
-  deleteFile() {
-    this.set("computedValue", null);
-  }
-
-  @action
-  filesSelected(files: any) {
-    taskFor(this.uploadFile).perform(files);
+  fileSelected(file: File) {
+    taskFor(this.uploadFile).perform(file);
   }
 }

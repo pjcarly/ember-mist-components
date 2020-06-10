@@ -1,17 +1,36 @@
-<span class="input file-drupal">
-  {{#if (and this.computedValue.id this.computedValue.url)}}
-    <OutputImageLink @value={{this.computedValue}} />
-    <button class="btn btn-xs btn-default remove waves-effect" onclick={{action 'deleteFile'}}>{{t 'ember-mist-components.labels.remove'}}</button>
-  {{else}}
-    {{#if this.uploadFile.isRunning}}
-      <button class="btn btn-xs btn-default waves-effect uploading" disabled="disabled">
-        {{t 'ember-mist-components.labels.uploading'}} {{this.activeFile}}/{{this.totalFiles}} <span class="m-l-10"><Loading @size="10px" /></span>
-      </button>
+<span class="input file-drupal{{if @multiple ' file-drupal__multiple' ' file-drupal__single'}}">
+  {{#if this.computedValue}}
+    {{#if @multiple}}
+      <ul class="file-drupal__list">
+        {{#each this.computedValue as |file|}}
+          <li>
+            <OutputImageLink @value={{file}} />
+            <button class="btn btn-xs btn-default remove" onclick={{action (fn this.deleteFile file)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+          </li>
+        {{/each}}
+      </ul>
     {{else}}
+      <ul class="file-drupal__list">
+        <li>
+          <OutputImageLink @value={{this.computedValue}} />
+          <button class="btn btn-xs btn-default remove" onclick={{action (fn this.deleteFile computedValue)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+        </li>
+      </ul>
+    {{/if}}
+  {{/if}}
+  
+  {{#if this.uploadFile.isRunning}}
+    <span class="file-drupal__uploading">
+      {{t 'ember-mist-components.labels.uploading'}} <Loading /> <span class="file-drupal__progress">({{this.activeFilePositionInQueue}}/{{this.totalFiles}})</span>
+    </span>
+  {{/if}}
+  
+  {{#if this.uploadFile.isIdle}}
+    {{#if (or @multiple (not this.computedValue))}}
       <InputFile
         @multiple={{this.multiple}}
-        @inputId={{this.inputId}}
-        @valueChanged={{action 'filesSelected'}} />
+        @inputId={{@inputId}}
+        @valueChanged={{action this.fileSelected}} />
     {{/if}}
   {{/if}}
 </span>
