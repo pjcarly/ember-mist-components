@@ -6,7 +6,7 @@
   {{log @inputId}}
 
   <FileUpload 
-    @name={{@inputId}}
+    @name={{this.inputIdComputed}}
     @class="form-control browse"
     @multiple={{@multiple}}
     @onfileadd={{action this.filesSelected}} as |queue|>
