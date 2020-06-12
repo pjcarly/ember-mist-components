@@ -124,13 +124,9 @@ export default class InputFileDrupalComponent extends BaseInput {
   @task({ enqueue: true, maxConcurrency: 3 })
   *uploadFile(file: File) {
     this.set("activeFile", file);
-    console.log(file);
-    console.log(file.queue);
-    console.log(file.queue.name);
 
     if (!isEmpty(file)) {
       this.set("lastActiveQueue", file.queue.name);
-      console.log(this.queue?.files.length);
 
       yield file
         .upload(this.uploadEndpoint, { headers: this.headers })
@@ -171,36 +167,6 @@ export default class InputFileDrupalComponent extends BaseInput {
           this.toast.error(errorMessage);
         });
     }
-
-    // if (!isEmpty(files)) {
-    //   const uploaderOptions = {
-    //     type: "POST",
-    //     ajaxSettings: {
-    //       headers: this.headers,
-    //     },
-    //     url: this.uploadEndpoint,
-    //   };
-
-    //   const uploader = Uploader.extend(uploaderOptions).create();
-    //   let fieldValue: File[] | File = [];
-
-    //   let activeFile = 0;
-    //   let shouldContinue = true;
-    //   for (const file of files) {
-    //     activeFile++;
-
-    //     this.set("totalFiles", files.length);
-    //     this.set("activeFile", activeFile);
-
-    //     if (shouldContinue) {
-    //       yield uploader
-    //         .upload(file)
-
-    //     }
-    //   }
-
-    //   this.set("computedValue", fieldValue);
-    // }
   }
 
   @action
