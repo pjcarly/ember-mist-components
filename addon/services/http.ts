@@ -16,7 +16,16 @@ export default class HttpService extends Service {
   fetch(
     path: string,
     method: "GET" | "POST" | "PUT" | "PATCH" | "OPTIONS" | "DELETE" = "GET",
-    body?: any,
+    body?:
+      | string
+      | Blob
+      | ArrayBufferView
+      | ArrayBuffer
+      | FormData
+      | URLSearchParams
+      | ReadableStream<Uint8Array>
+      | null
+      | undefined,
     queryParams?: any
   ): Promise<Response> {
     const options: RequestInit = {
