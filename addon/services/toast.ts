@@ -40,7 +40,7 @@ export default class ToastService extends Service {
 
   @task
   *removeToastTimer(toast: ToastMessage) {
-    yield timeout(2500);
+    yield timeout(5000);
     this.removeToast(toast);
   }
 
