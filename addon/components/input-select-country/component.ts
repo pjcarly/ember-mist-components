@@ -3,7 +3,7 @@ import { inject as service } from "@ember/service";
 import AddressService from "ember-mist-components/services/address";
 import BaseInput from "ember-field-components/components/BaseInput";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class InputSelectCountryComponent extends BaseInput {
   @service address!: AddressService;

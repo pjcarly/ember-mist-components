@@ -14,7 +14,7 @@ import DynamicSelectOptionService from "ember-mist-components/services/dynamic-s
 import Query from "ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
 import { FieldOptionsInterface } from "ember-field-components/services/field-information";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;

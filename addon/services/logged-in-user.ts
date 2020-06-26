@@ -6,7 +6,7 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { dropTask } from "ember-concurrency-decorators";
 import WebsocketService from "./websocket";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 import SessionService from "ember-simple-auth/services/session";
 
 export default class LoggedInUserService extends Service {
@@ -29,17 +29,17 @@ export default class LoggedInUserService extends Service {
   *loadCurrentUser(query?: Query) {
     const userId = this.session.data?.authenticated.user_id;
 
-    if(userId) {
+    if (userId) {
       let options: any = {};
 
       if (query) {
         options = query.queryParams;
       }
-  
+
       if (this.user) {
         this.user.rollback();
       }
-  
+
       yield this.store
         // @ts-ignore
         .loadRecord("user", userId, options)

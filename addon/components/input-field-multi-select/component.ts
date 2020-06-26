@@ -2,7 +2,7 @@ import InputFieldMultiSelectComponent from "ember-field-components/components/in
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class DynamicInputFieldMultiSelectComponent extends InputFieldMultiSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;

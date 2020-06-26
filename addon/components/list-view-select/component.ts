@@ -12,7 +12,7 @@ import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
 import { tagName } from "@ember-decorators/component";
 import { A } from "@ember/array";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 @tagName("")
 export default class ListViewSelectComponent extends Component {

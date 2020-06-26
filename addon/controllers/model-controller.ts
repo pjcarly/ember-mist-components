@@ -12,7 +12,7 @@ import { debug } from "@ember/debug";
 import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
 import { QueryParams } from "ember-mist-components/query/Query";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 import ToastService from "ember-mist-components/services/toast";
 
 declare global {

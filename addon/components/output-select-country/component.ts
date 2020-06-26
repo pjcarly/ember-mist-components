@@ -3,7 +3,7 @@ import BaseOutput from "ember-field-components/components/BaseOutput";
 import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import SelectOption from "ember-field-components/interfaces/SelectOption";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class OutputSelectCountryComponent extends BaseOutput {
   @service address!: AddressService;

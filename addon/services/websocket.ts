@@ -8,7 +8,7 @@ import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 import SessionService from "ember-simple-auth/services/session";
 
 export enum Status {

@@ -11,7 +11,7 @@ import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { tagName } from "@ember-decorators/component";
 import { guidFor } from "@ember/object/internals";
 import $ from "jquery";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 @tagName("")
 export default class MistPrintButtonComponent extends Component {

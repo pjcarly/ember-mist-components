@@ -19,7 +19,7 @@ import {
 import { dasherize } from "@ember/string";
 import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class ModelCalendarComponent extends Component {
   @service store!: Store;

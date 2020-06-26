@@ -6,7 +6,7 @@ import { A } from "@ember/array";
 import { getOwner, setOwner } from "@ember/application";
 import { task } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
-import { taskFor } from "ember-mist-components/utils/ember-concurrency";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class ToastService extends Service {
   toasts = A<ToastMessage>();
