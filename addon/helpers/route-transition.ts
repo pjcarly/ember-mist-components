@@ -1,11 +1,8 @@
 import Helper from "@ember/component/helper";
 import { inject as service } from "@ember/service";
+import RouterService from "@ember/routing/router-service";
 
-interface RouterService {
-  transitionTo(route: string, id?: string): void;
-}
-
-export default class ArrayJoinHelper extends Helper {
+export default class RouteTransitionHelper extends Helper {
   @service router!: RouterService;
 
   compute([route]: [string]) {
