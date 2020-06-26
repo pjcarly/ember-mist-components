@@ -25,8 +25,13 @@ export default abstract class ModelIndexRoute extends Route {
     this.entityCache.clearReturnToModel();
   }
 
-  setupController(controller: Controller, model: Model) {
-    super.setupController(controller, model);
+  setupController(
+    controller: Controller,
+    model: Model,
+    transition: Transition
+  ) {
+    // @ts-ignore
+    super.setupController(controller, model, transition);
     // @ts-ignore
     controller.set("modelName", this.modelName);
     // @ts-ignore
