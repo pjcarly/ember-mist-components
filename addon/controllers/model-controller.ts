@@ -35,11 +35,13 @@ export default class ModelController extends Controller {
     this.entityRouter.transitionToView(model);
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *edit(model: DrupalModel) {
     this.entityRouter.transitionToEdit(model);
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *delete(model: DrupalModel) {
     swal(
@@ -58,6 +60,7 @@ export default class ModelController extends Controller {
     );
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *deleteWithoutConfirm(model: DrupalModel) {
     const modelName = this.fieldInformation.getModelName(model);
@@ -82,6 +85,7 @@ export default class ModelController extends Controller {
       });
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *cancel(target: string | Model) {
     const returnToModel = this.entityCache.getReturnToModelAndClear();
@@ -101,6 +105,7 @@ export default class ModelController extends Controller {
     }
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *save(model: DrupalModel) {
     const afterSaveModel = this.entityCache.getAfterSaveModelAndClear();
@@ -150,6 +155,7 @@ export default class ModelController extends Controller {
     }
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *new(modelName: string) {
     this.entityRouter.transitionToCreate(modelName);
@@ -179,6 +185,7 @@ export default class ModelController extends Controller {
       });
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *invokeModelActionAndRefresh(model: DrupalModel, action: string) {
     // @ts-ignore
@@ -194,6 +201,7 @@ export default class ModelController extends Controller {
     yield taskFor(this.refresh).perform(model);
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *invokeModelAction(model: DrupalModel, action: string) {
     // @ts-ignore
@@ -207,6 +215,7 @@ export default class ModelController extends Controller {
       });
   }
 
+  // @ts-ignore
   @task({ group: "modelTasks" })
   *invokeDownloadAction(model: DrupalModel, action: string, filename: string) {
     // @ts-ignore

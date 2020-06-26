@@ -3,7 +3,6 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import { dropTask } from "ember-concurrency-decorators";
-// @ts-ignore
 import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
