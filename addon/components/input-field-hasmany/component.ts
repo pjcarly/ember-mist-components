@@ -96,6 +96,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
 
   @computed("model", "field")
   get relationshipModelName(): string | string[] {
+    // @ts-ignore
     return this.fieldInformation.getHasManyModelName(
       // @ts-ignore
       this.modelName,

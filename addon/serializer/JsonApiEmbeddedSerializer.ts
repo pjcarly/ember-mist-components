@@ -50,6 +50,7 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
         if (!model.hasDirtyEmbeddedRelationship(relationshipToCheck)) {
           // This relationship is clean, we delete the dasherized name from the payload.
           const dasherizedRelationshipName = dasherize(relationshipToCheck);
+          // @ts-ignore
           delete json.data[dasherizedRelationshipName];
         }
       });

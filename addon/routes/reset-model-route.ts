@@ -3,6 +3,7 @@ import Controller from "@ember/controller";
 
 export default class ResetModelRoute extends Route {
   resetController(controller: Controller, isExiting: boolean, transition: any) {
+    // @ts-ignore
     super.resetController(controller, isExiting, transition);
     controller.model.rollback();
   }

@@ -36,6 +36,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       model.set(this.field, address);
     }
 
+    // @ts-ignore
     return address;
   }
 

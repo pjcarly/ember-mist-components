@@ -42,6 +42,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       );
     }
 
+    // @ts-ignore
     return this.fieldInformation.getBelongsToModelName(
       // @ts-ignore
       this.modelName,
@@ -81,12 +82,20 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
         // @ts-ignore
         selectOptions = yield taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
-        ).perform(this.relationshipModelName, this.baseQuery, this.nameField);
+        ).perform(
+          <string>this.relationshipModelName,
+          this.baseQuery,
+          this.nameField
+        );
       } else {
         // @ts-ignore
         selectOptions = yield taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
-        ).perform(this.relationshipModelName, undefined, this.nameField);
+        ).perform(
+          <string>this.relationshipModelName,
+          undefined,
+          this.nameField
+        );
       }
 
       this.set("selectOptions", selectOptions);
