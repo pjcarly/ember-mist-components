@@ -14,7 +14,7 @@ export default class RouteIsActiveHelper extends Helper {
       (activeWhen !== undefined &&
         activeWhen !== null &&
         activeWhen.split(" ").some((possibleActiveRoute) => {
-          return this.getRootRoute(possibleActiveRoute) === rootRoute;
+          return this.getRootRoute(possibleActiveRoute) === activeRootNode;
         }))
     );
   }
