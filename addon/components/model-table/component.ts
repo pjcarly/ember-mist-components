@@ -113,7 +113,7 @@ export default class ModelTableComponent extends Component {
   onRowMouseLeave?: (selectedRow: any) => void;
 
   didReceiveAttrs() {
-    this.table = new Table();
+    this.set("table", new Table());
     setOwner(this.table, getOwner(this));
 
     super.didReceiveAttrs();
