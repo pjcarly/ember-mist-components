@@ -1,5 +1,4 @@
 import FieldInformationService from "ember-field-components/services/field-information";
-import Model from "ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { or } from "@ember/object/computed";
@@ -7,10 +6,12 @@ import { getOwner } from "@ember/application";
 import { inject as service } from "@ember/service";
 import { validationModel } from "ember-attribute-validations/decorators/validation-model";
 import { loadableModel } from "ember-mist-components/decorators/loadable-model";
+import ChangeTrackerModel from "./change-tracker-model";
+import JSONAPISerializer from '@ember-data/serializer/json-api';
 
 @validationModel
 @loadableModel
-export default abstract class MistModel extends Model {
+export default abstract class MistModel extends ChangeTrackerModel {
   @service fieldInformation!: FieldInformationService;
 
   @computed()
@@ -25,13 +26,14 @@ export default abstract class MistModel extends Model {
 
   @computed("isNew")
   get isExisting(): boolean {
-    return !this.get("isNew");
+    // @ts-ignore
+    return !this.isNew;
   }
 
   @computed("errors.[]")
   get hasErrors(): boolean {
     // @ts-ignore
-    return this.errors.get("length") > 0;
+    return this.errors.length > 0;
   }
 
   @computed()
@@ -40,7 +42,7 @@ export default abstract class MistModel extends Model {
 
     const modelName = this.fieldInformation.getModelName(this);
     // @ts-ignore
-    const serializer = this.store.serializerFor(modelName);
+    const serializer = <JSONAPISerializer> this.store.serializerFor(modelName);
     const attrs = serializer.attrs;
 
     if (isBlank(attrs)) {
@@ -63,6 +65,7 @@ export default abstract class MistModel extends Model {
   rollback() {
     // We override the rollback method provided by the ember-data-change-tracker
     // Where we rollback child records which have the rollback option in the relationship meta
+    // @ts-ignore
     this.eachRelationship((name: string, descriptor: any) => {
       if (
         descriptor.options.hasOwnProperty("rollback") &&
@@ -74,6 +77,7 @@ export default abstract class MistModel extends Model {
           // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
           // Sometimes gave a null value instead of a child while looping it
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
+          // @ts-ignore
           childModels.toArray().forEach((childModel: MistModel) => {
             childModel.rollback();
           });
@@ -102,6 +106,7 @@ export default abstract class MistModel extends Model {
       copy.set(attributeName, attributeValue);
     });
 
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, meta: any) => {
       // @ts-ignore
       const relationship = this.get(relationshipName);
@@ -117,7 +122,9 @@ export default abstract class MistModel extends Model {
   /**
    * Clears all the belongsto relationship values
    */
+  // @ts-ignore
   clearRelationships() {
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, descriptor: any) => {
       if (descriptor.kind === "belongsTo") {
         // @ts-ignore
@@ -146,7 +153,7 @@ export default abstract class MistModel extends Model {
    * (which are being saved in 1 call with the main model) are dirty or deleted.
    */
   hasDirtyEmbeddedRelationships(): boolean {
-    return !this.embeddedRelationships.some(relationshipName => {
+    return !this.embeddedRelationships.some((relationshipName) => {
       return !this.hasDirtyEmbeddedRelationship(relationshipName);
     });
   }
@@ -155,7 +162,7 @@ export default abstract class MistModel extends Model {
    * Validate all the embedded relationships
    */
   validateEmbeddedRelationships(): boolean {
-    return !this.embeddedRelationships.some(relationshipName => {
+    return !this.embeddedRelationships.some((relationshipName) => {
       return !this.validateEmbeddedRelationship(relationshipName);
     });
   }
@@ -167,17 +174,20 @@ export default abstract class MistModel extends Model {
   validateEmbeddedRelationship(relationshipNameToValidate: string): boolean {
     let isValid = true;
 
+    // @ts-ignore
     this.eachRelationship((relationshipName: string, meta: any) => {
       if (relationshipName === relationshipNameToValidate) {
         if (meta.kind === "belongsTo") {
           // @ts-ignore
           const relatedModel = this.get(relationshipName);
+          // @ts-ignore
           isValid = relatedModel ? relatedModel.validate() : true;
         } else if (meta.kind === "hasMany") {
           // @ts-ignore
           const relatedModels = this.get(relationshipName);
           if (relatedModels) {
             isValid = !relatedModels
+              // @ts-ignore
               .toArray()
               // @ts-ignore
               .some((relatedModel: MistModel) => !relatedModel.validate());
@@ -196,12 +206,15 @@ export default abstract class MistModel extends Model {
    * @param relationshipName The relationship you want to check
    */
   hasDirtyEmbeddedRelationship(relationshipName: string): boolean {
-    // @ts-ignore
-    return this.get(relationshipName)
-      .toArray()
-      .some((relatedModel: MistModel) => {
-        return relatedModel.isDirtyOrDeleted;
-      });
+    return (
+      // @ts-ignore
+      this.get(relationshipName)
+        // @ts-ignore
+        .toArray()
+        .some((relatedModel: MistModel) => {
+          return relatedModel.isDirtyOrDeleted;
+        })
+    );
   }
 
   /**

@@ -36,7 +36,7 @@ export default class OutputFieldAutonumberComponent extends OutputFieldComponent
       const date = this.model.get(dateField);
 
       if (date) {
-        const momentDate = moment(date);
+        const momentDate = moment(<string>date);
         prefix = replaceAll(prefix, "{{YYYY}}", momentDate.format("YYYY"));
         prefix = replaceAll(
           prefix,

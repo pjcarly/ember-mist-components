@@ -14,6 +14,7 @@ import DynamicSelectOptionService from "ember-mist-components/services/dynamic-s
 import Query from "ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
 import { FieldOptionsInterface } from "ember-field-components/services/field-information";
+import { taskFor } from "ember-concurrency-ts";
 
 export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -26,10 +27,9 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
   selectOptions: SelectOption[] = [];
 
   didReceiveAttrs() {
-    super.didReceiveAttrs();
-    this.setSelectOptions
-      // @ts-ignore
-      .perform();
+    // @ts-ignore
+    super.didReceiveAttrs(...arguments);
+    taskFor(this.setSelectOptions).perform();
   }
 
   @computed("model", "field")
@@ -42,6 +42,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
       );
     }
 
+    // @ts-ignore
     return this.fieldInformation.getBelongsToModelName(
       // @ts-ignore
       this.modelName,
@@ -79,14 +80,22 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent {
         this.baseQuery.orders
       ) {
         // @ts-ignore
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
-          // @ts-ignore
-          .perform(this.relationshipModelName, this.baseQuery, this.nameField);
+        selectOptions = yield taskFor(
+          this.dynamicSelectOptions.getModelSelectOptions
+        ).perform(
+          <string>this.relationshipModelName,
+          this.baseQuery,
+          this.nameField
+        );
       } else {
         // @ts-ignore
-        selectOptions = yield this.dynamicSelectOptions.getModelSelectOptions
-          // @ts-ignore
-          .perform(this.relationshipModelName, undefined, this.nameField);
+        selectOptions = yield taskFor(
+          this.dynamicSelectOptions.getModelSelectOptions
+        ).perform(
+          <string>this.relationshipModelName,
+          undefined,
+          this.nameField
+        );
       }
 
       this.set("selectOptions", selectOptions);

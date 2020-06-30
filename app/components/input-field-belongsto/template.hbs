@@ -11,7 +11,7 @@
       options=this.inputOptions}}
 {{else if this.isSelect}}
   {{#if setSelectOptions.isRunning}}
-    {{mist-spinner size="20px"}}
+    <Loading />
   {{else if this.noChoiceAvailable}}
     <OutputText
       @value={{this.selectOptions.firstObject.label}}

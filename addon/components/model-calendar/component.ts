@@ -13,12 +13,13 @@ import {
   isBefore,
   startOf,
   endOf,
-  weekday
+  weekday,
   // @ts-ignore
 } from "ember-power-calendar-utils";
 import { dasherize } from "@ember/string";
 import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class ModelCalendarComponent extends Component {
   @service store!: Store;
@@ -44,16 +45,15 @@ export default class ModelCalendarComponent extends Component {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
   weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   center = new Date();
 
   didReceiveAttrs() {
-    this._super(...arguments);
-    this.loadModels
-      // @ts-ignore
-      .perform();
+    // @ts-ignore
+    super.didReceiveAttrs(...arguments);
+    taskFor(this.loadModels).perform();
   }
 
   /**
@@ -76,7 +76,7 @@ export default class ModelCalendarComponent extends Component {
     loadedModels.forEach((model: Model) => {
       // @ts-ignore
       const dateValue = model.get(this.dateField);
-      const key = moment(dateValue).format("YYYY-MM-DD");
+      const key = moment(<string>dateValue).format("YYYY-MM-DD");
       if (!models.hasOwnProperty(key)) {
         models[key] = [];
       }
@@ -196,7 +196,7 @@ export default class ModelCalendarComponent extends Component {
         date: copy,
         isCurrentMonth,
         isToday,
-        isWeekend
+        isWeekend,
       });
       day = add(day, 1, "day");
     }
@@ -273,9 +273,7 @@ export default class ModelCalendarComponent extends Component {
    */
   centerCalendarOn(this: ModelCalendarComponent, date: Date) {
     this.set("center", date);
-    this.loadModels
-      // @ts-ignore
-      .perform();
+    taskFor(this.loadModels).perform();
   }
 
   /**
@@ -333,8 +331,6 @@ export default class ModelCalendarComponent extends Component {
   @action
   listViewChanged(listViewKey: string) {
     this.set("listViewKey", listViewKey);
-    this.loadModels
-      // @ts-ignore
-      .perform();
+    taskFor(this.loadModels).perform();
   }
 }

@@ -6,11 +6,8 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { dropTask } from "ember-concurrency-decorators";
 import WebsocketService from "./websocket";
-
-interface SessionService {
-  invalidate(): void;
-  get(key: string): any;
-}
+import { taskFor } from "ember-concurrency-ts";
+import SessionService from "ember-simple-auth/services/session";
 
 export default class LoggedInUserService extends Service {
   @service session!: SessionService;
@@ -30,29 +27,30 @@ export default class LoggedInUserService extends Service {
    */
   @dropTask
   *loadCurrentUser(query?: Query) {
-    const userId = this.session.get("data.authenticated.user_id");
-    let options: any = {};
+    const userId = this.session.data?.authenticated.user_id;
 
-    if (query) {
-      options = query.queryParams;
+    if (userId) {
+      let options: any = {};
+
+      if (query) {
+        options = query.queryParams;
+      }
+
+      if (this.user) {
+        this.user.rollback();
+      }
+
+      yield this.store
+        // @ts-ignore
+        .loadRecord("user", userId, options)
+        .then((user: UserModel) => {
+          this.set("user", user);
+          taskFor(this.websocket.startConnecting).perform();
+        })
+        .catch((_: any) => {
+          this.logOut();
+        });
     }
-
-    if (this.user) {
-      this.user.rollback();
-    }
-
-    yield this.store
-      // @ts-ignore
-      .loadRecord("user", userId, options)
-      .then((user: UserModel) => {
-        this.set("user", user);
-        this.websocket.startConnecting
-          //@ts-ignore
-          .perform();
-      })
-      .catch((_: any) => {
-        this.logOut();
-      });
   }
 
   @dropTask
@@ -60,14 +58,13 @@ export default class LoggedInUserService extends Service {
     this.websocket.closeConnection();
     yield this.session.invalidate();
     this.set("user", null);
+    this.store.unloadAll("user");
   }
 
   /**
    * Invalidates the session, and unsets the user
    */
   logOut() {
-    this.signOut
-      //@ts-ignore
-      .perform();
+    taskFor(this.signOut).perform();
   }
 }

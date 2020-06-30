@@ -12,7 +12,7 @@
     <ul>
       <li class="infos">
         {{#if @isBusy}}
-          {{mist-spinner size="10px" tagName="span"}}
+          <Loading />
         {{else}}
           {{@firstRow}} - {{@lastRow}} {{t 'ember-mist-components.labels.of'}} {{@totalCount}}
         {{/if}}

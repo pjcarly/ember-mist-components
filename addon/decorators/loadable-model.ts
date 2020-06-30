@@ -1,7 +1,8 @@
-import LoadableModel from 'ember-data-storefront/mixins/loadable-model';
+// @ts-ignore
+import LoadableModel from "ember-data-storefront/mixins/loadable-model";
 
 export function loadableModel(desc: any) {
-  if(typeof desc === 'function') {
+  if (typeof desc === "function") {
     desc.reopen(LoadableModel);
   } else {
     return {
@@ -10,7 +11,7 @@ export function loadableModel(desc: any) {
         target.reopen(LoadableModel);
 
         return target;
-      }
+      },
     };
   }
 }

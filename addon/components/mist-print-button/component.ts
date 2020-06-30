@@ -11,6 +11,7 @@ import SelectOption from "ember-field-components/interfaces/SelectOption";
 import { tagName } from "@ember-decorators/component";
 import { guidFor } from "@ember/object/internals";
 import $ from "jquery";
+import { taskFor } from "ember-concurrency-ts";
 
 @tagName("")
 export default class MistPrintButtonComponent extends Component {
@@ -108,9 +109,7 @@ export default class MistPrintButtonComponent extends Component {
   showModal() {
     // @ts-ignore
     $(`#${this.modalId}`).modal("show");
-    this.fetchTemplates
-      // @ts-ignore
-      .perform();
+    taskFor(this.fetchTemplates).perform();
     this.set("modalVisible", true);
   }
 

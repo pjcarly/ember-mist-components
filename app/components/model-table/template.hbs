@@ -1,65 +1,88 @@
-<div class={{this.class}}>
-  {{#if (and @listViewGrouping this.listViewsAsTabs)}}
-    <ListViewTabs @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+<div class="model-table {{@class}}">
+  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'top'))}}
+    <ListViewTabs 
+      @modelName={{this.activeModelName}} 
+      @grouping={{@listViewGrouping}} 
+      @valueChanged={{this.listViewChanged}} />
   {{/if}}
-  <div class={{concat 'card-header ch-alt model-table-header' (if this.searchVisible ' search-toggled')}}>
-    <div class="table-header-title-wrapper">
-      <h2>{{this.titleComputed}}</h2>
-      {{#if this.fetchRecords.isRunning}}
-        {{mist-spinner size="10px" tagName="span"}}
-      {{else}}
-        <span style="width: 10px;height:10px;display:inline-block;"></span>
-      {{/if}}
+
+  <div class={{concat 'model-table__header' (if this.searchVisible ' search-toggled')}}>
+    <div class="model-table__title__wrapper">
+      <h2 class="model-table__title">{{this.titleComputed}}</h2>
+      <span class="model-table__title__loading">
+        {{#if this.fetchRecords.isRunning}}
+          <Loading />
+        {{/if}}
+      </span>
 
       {{#if (and @listViewGrouping (not this.listViewsAsTabs))}}
-        <ListViewSelect @modelName={{this.activeModelName}} @grouping={{@listViewGrouping}} @valueChanged={{this.listViewChanged}} />
+        <ListViewSelect 
+          @modelName={{this.activeModelName}} 
+          @grouping={{@listViewGrouping}} 
+          @valueChanged={{this.listViewChanged}} />
       {{/if}}
     </div>
 
-    <div class="h-search-wrap">
-      <div class="hsw-inner">
+    <div class="model-table__search__wrapper">
+      <div class="model-table__search__wrapper__inner">
         {{#if (not this.searchFixed)}}
-          <button class="btn btn-link" onclick={{action 'toggleSearch'}}>
+          <button class="btn btn-icon model-table__search__close" {{on "click" this.toggleSearch}}>
             <IconClose />
           </button>
         {{/if}}
 
-        <form {{action "search" on="submit"}}>
-          <InputSearch @inputId={{this.searchInputId}} @value={{this.query.search}} @placeholder="Search..." @valueChanged={{action 'searchValueChanged'}} />
+        <form class="model-table__search__form" {{on "submit" this.search}}>
+          <InputSearch 
+            @inputId={{this.searchInputId}} 
+            @value={{this.query.search}} 
+            @placeholder="Search..." 
+            @valueChanged={{action this.searchValueChanged}} />
         </form>
       </div>
     </div>
 
-    <div id={{concat guid '-new'}}></div>
+    <div id={{concat this.guid '-new'}}></div>
 
-    {{#mist-menu id=(concat guid '-actions') class="actions"}}
-      {{#mist-menu-item action=(action "search") className="waves-circle"}}
-        <IconSearch />
-      {{/mist-menu-item}}
-      {{#mist-menu-dropdown-item className="waves-circle"}}
-        {{#if (and @listViewGrouping displayListViewLinks)}}
+    <ul id={{concat this.guid '-actions'}} class="action__menu">
+      <li>
+        <a {{on "click" this.search}} role="button" class="model-table__action__search">
+          <IconSearch />
+        </a>
+      </li>
+
+      <MenuDropdown @class="action__menu__dropdown">
+        {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
-            {{#mist-menu-item}}
-              <a href="{{href-to 'list-view.edit' this.activeListViewKey}}">
+            <li>
+              <a href={{href-to 'list-view.edit' this.activeListViewKey}}>
                 <IconListViewEdit /> {{t 'ember-mist-components.list-view.edit'}}
               </a>
-            {{/mist-menu-item}}
+            </li>
           {{/if}}
-          {{#mist-menu-item}}
-            <a href="{{href-to 'list-view.new'}}">
+          <li>
+            <a href={{href-to 'list-view.new'}}>
               <IconListViewNew /> {{t 'ember-mist-components.list-view.new'}}
             </a>
-          {{/mist-menu-item}}
+          </li>
         {{/if}}
-        {{#mist-menu-item action=(action "refresh")}}
-          <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
-        {{/mist-menu-item}}
-      {{/mist-menu-dropdown-item}}
-    {{/mist-menu}}
+        <li>
+          <a {{on "click" this.refresh}} role="button">
+            <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
+          </a>
+        </li>
+      </MenuDropdown>
+    </ul>
   </div>
 
+  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'bottom'))}}
+    <ListViewTabs 
+      @modelName={{this.activeModelName}} 
+      @grouping={{@listViewGrouping}} 
+      @valueChanged={{this.listViewChanged}} />
+  {{/if}}
+
   {{#if this.fetchRecords.last}}
-    {{yield (hash actions=(component 'ember-wormhole' to=(concat guid '-actions')) new=(component 'ember-wormhole' to=(concat guid '-new')))}}
+    {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) new=(component 'ember-wormhole' to=(concat this.guid '-new')))}}
 
     {{#if this.isMultiModelNames}}
       <div class="model-type-selector">
@@ -72,17 +95,48 @@
       </div>
     {{/if}}
 
-    {{#light-table this.table height=@tableHeight class="table-responsive" tableClassNames=(concat "table table-hover" (if this.fetchRecords.isRunning ' is-busy')) as |t|}}
-      {{t.head fixed=fixed onColumnClick=(action 'onColumnClick') iconAscending='zmdi zmdi-chevron-up' iconDescending='zmdi zmdi-chevron-down'}}
-
-      {{#t.body onRowClick=(action 'rowSelected') onRowMouseEnter=(action 'rowMouseEnter') onRowMouseLeave=(action 'rowMouseLeave') as |body|}}
-        {{#if this.table.isEmpty}}
-          {{#body.no-data}}
-            No data found
-          {{/body.no-data}}
-        {{/if}}
-      {{/t.body}}
-    {{/light-table}}
+    <div class="table-responsive">
+      <table class="table table-hover{{if this.fetchRecords.isRunning ' is-busy'}}">
+        <thead class="model-table__head">
+          <tr>
+            {{#each this.columns as |column|}}
+              <th class="model-table__column{{if column.sorted ' model-table__column__sorted'}}{{if column.ascending ' model-table__column__sorted__asc' ' model-table__column__sorted__desc'}}"
+                {{on "click" (fn this.onColumnClick column)}}>
+                {{column.label}}
+              </th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody class="model-table__body">
+          {{#if this.fetchRecords.isRunning}}
+            <tr class="model-table__row model-table__is-loading">
+              <td colspan={{this.columns.length}}>
+                <Loading />
+              </td>
+            </tr>
+          {{else}}
+            {{#each this.table.rows as |row|}}
+              <tr class="model-table__row is-selectable" 
+                {{on "click" (fn this.rowSelected row)}} 
+                {{on "mouseenter" (fn this.rowMouseEnter row)}} 
+                {{on "mouseleave" (fn this.rowMouseLeave row)}}>
+                {{#each this.columns as |column|}}
+                  <td class="model-table__cell">
+                    <ModelTableCell @row={{row}} @column={{column}} />
+                  </td>
+                {{/each}}
+              </tr>
+            {{else}}
+              <tr class="model-table__row model-table__no-data">
+                <td colspan={{this.columns.length}}>
+                  {{t 'ember-mist-components.table.no_data'}}
+                </td>
+              </tr>
+            {{/each}}
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
 
     <div class="table-footer">
       <ModelTableControls

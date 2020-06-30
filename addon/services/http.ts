@@ -1,19 +1,31 @@
 import Service from "@ember/service";
-import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
+// @ts-ignore
 import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
+import AuthStoreService from "ember-mist-components/services/auth-store";
+import SessionService from "ember-simple-auth/services/session";
 
 export default class HttpService extends Service {
-  @service session!: Service;
+  @service session!: SessionService;
+  @service authStore!: AuthStoreService;
 
   fetch(
     path: string,
     method: "GET" | "POST" | "PUT" | "PATCH" | "OPTIONS" | "DELETE" = "GET",
-    body?: any,
+    body?:
+      | string
+      | Blob
+      | ArrayBufferView
+      | ArrayBuffer
+      | FormData
+      | URLSearchParams
+      | ReadableStream<Uint8Array>
+      | null
+      | undefined,
     queryParams?: any
   ): Promise<Response> {
     const options: RequestInit = {
@@ -61,14 +73,25 @@ export default class HttpService extends Service {
   /**
    * We set the authorization header from the session service
    */
-  @computed("session.data.authenticated.access_token")
+  @computed(
+    "session.data.authenticated.access_token",
+    "authStore.{authToken,authId}"
+  )
   get headers() {
     const headers: any = {};
     // @ts-ignore
     const access_token = this.session.get("data.authenticated.access_token");
 
-    if (!isBlank(access_token)) {
+    if (access_token) {
       headers["Authorization"] = `Bearer ${access_token}`;
+    }
+
+    if (this.authStore.authId) {
+      headers["X-Mist-Auth-Id"] = this.authStore.authId;
+    }
+
+    if (this.authStore.authToken) {
+      headers["X-Mist-Auth-Token"] = this.authStore.authToken;
     }
 
     return headers;

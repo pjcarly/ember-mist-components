@@ -5,5 +5,9 @@ export default interface ModelInterface {
   set(property: string, value: any): void;
   get(property: string): any;
   validate(): boolean;
+  isDirty: boolean;
+  rollback(): void;
+  reload(): void;
+  // @ts-ignore
   errors: DS.Errors;
 }

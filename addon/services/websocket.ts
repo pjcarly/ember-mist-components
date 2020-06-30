@@ -3,12 +3,13 @@ import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import { dropTask } from "ember-concurrency-decorators";
-// @ts-ignore
 import { timeout } from "ember-concurrency";
 import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
+import { taskFor } from "ember-concurrency-ts";
+import SessionService from "ember-simple-auth/services/session";
 
 export enum Status {
   OFFLINE = "OFFLINE",
@@ -18,7 +19,7 @@ export enum Status {
 
 export default class WebsocketService extends Service.extend(Evented) {
   @service websockets!: any;
-  @service session!: Service;
+  @service session!: SessionService;
 
   socket!: any;
   status: string = Status.OFFLINE;
@@ -110,6 +111,7 @@ export default class WebsocketService extends Service.extend(Evented) {
 
   messageReceived(event: MessageEvent) {
     if (event.data) {
+      // @ts-ignore
       this.trigger("message", event.data);
     }
   }
@@ -117,17 +119,13 @@ export default class WebsocketService extends Service.extend(Evented) {
   connectionClosed(_: CloseEvent) {
     this.set("status", Status.OFFLINE);
     if (!this.manuallyClosed) {
-      this.startConnecting
-        // @ts-ignore
-        .perform();
+      taskFor(this.startConnecting).perform();
     }
   }
 
   connectionErrored(_: ErrorEvent) {
     this.set("status", Status.OFFLINE);
-    this.startConnecting
-      // @ts-ignore
-      .perform();
+    taskFor(this.startConnecting).perform();
   }
 
   sendMessage(message: any) {

@@ -12,6 +12,8 @@ import { debug } from "@ember/debug";
 import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
 import { QueryParams } from "ember-mist-components/query/Query";
+import { taskFor } from "ember-concurrency-ts";
+import ToastService from "ember-mist-components/services/toast";
 
 declare global {
   const swal: any;
@@ -23,7 +25,7 @@ export default class ModelController extends Controller {
   @service fieldInformation!: FieldInformationService;
   @service recentlyViewed!: RecentlyViewedService;
   @service store!: Store;
-  @service toast!: any;
+  @service toast!: ToastService;
   @service storage!: any;
 
   @dropTaskGroup modelTasks!: any;
@@ -51,9 +53,7 @@ export default class ModelController extends Controller {
         allowOutsideClick: true,
       },
       function (this: ModelController) {
-        this.deleteWithoutConfirm
-          // @ts-ignore
-          .perform(model);
+        taskFor(this.deleteWithoutConfirm).perform(model);
       }.bind(this)
     );
   }
@@ -61,14 +61,17 @@ export default class ModelController extends Controller {
   @task({ group: "modelTasks" })
   *deleteWithoutConfirm(model: DrupalModel) {
     const modelName = this.fieldInformation.getModelName(model);
+    // @ts-ignore
     model.deleteRecord();
     yield model
+      // @ts-ignore
       .save()
       .then(() => {
         this.successToast(`Success`, `Record deleted`);
         this.entityRouter.transitionToList(modelName);
 
         const modelClass = this.fieldInformation.getModelClassForModel(model);
+        // @ts-ignore
         this.recentlyViewed.removeRecentlyViewed(modelClass, model.id);
       })
       .catch((reason: any) => {
@@ -105,6 +108,7 @@ export default class ModelController extends Controller {
     model.hasDirtyEmbeddedRelationships();
 
     if (
+      // @ts-ignore
       model.get("isDirtyOrDeleted") ||
       model.hasDirtyEmbeddedRelationships()
     ) {
@@ -120,6 +124,7 @@ export default class ModelController extends Controller {
       }
 
       yield model
+        // @ts-ignore
         .save()
         .then(() => {
           this.successToast(`Success`, `Record saved`);
@@ -186,9 +191,7 @@ export default class ModelController extends Controller {
         this.errorToast("Error", error);
       });
 
-    yield this.refresh
-      // @ts-ignore
-      .perform(model);
+    yield taskFor(this.refresh).perform(model);
   }
 
   @task({ group: "modelTasks" })

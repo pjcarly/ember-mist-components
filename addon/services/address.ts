@@ -6,11 +6,11 @@ import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
 import { replaceAll } from "ember-field-components/classes/utils";
 import { isBlank } from "@ember/utils";
+import HttpService from "./http";
 
 export default class AddressService extends Service {
   @service storage!: any;
-  @service ajax!: any;
-  @service toast!: any;
+  @service http!: HttpService;
 
   countrySelectOptions?: SelectOption[];
   addressFormats: Map<string, any> = new Map();
@@ -42,8 +42,7 @@ export default class AddressService extends Service {
    * Returns the different countries in a select option format
    */
   @enqueueTask
-  // @ts-ignore
-  *getCountrySelectOptions(): SelectOption[] {
+  *getCountrySelectOptions() {
     // We first check in this service
     let countrySelectOptions = this.countrySelectOptions;
     if (countrySelectOptions) {
@@ -55,25 +54,23 @@ export default class AddressService extends Service {
       countrySelectOptions = this.storage.get("addressCountrySelectOptions");
 
       if (countrySelectOptions) {
-        this.countrySelectOptions = countrySelectOptions;
+        this.set("countrySelectOptions", countrySelectOptions);
         return countrySelectOptions;
       }
     }
 
-    yield this.ajax
-      .request(`${this.apiEndpoint}address/address/countries/selectoptions`)
-      .then((response: any) => {
-        countrySelectOptions = <SelectOption[]>response;
+    yield this.http
+      .fetch(`${this.http.endpoint}address/address/countries/selectoptions`)
+      .then((response) => {
+        return response.json().then((data) => {
+          countrySelectOptions = <SelectOption[]>data;
+        });
       })
       .catch((error: any) => {
         console.log(error);
-        this.toast.error(
-          "Error fetching countries",
-          "Error fetching countries"
-        );
       });
 
-    this.countrySelectOptions = countrySelectOptions;
+    this.set("countrySelectOptions", countrySelectOptions);
 
     if (this.shouldCache) {
       this.storage.set("addressCountrySelectOptions", countrySelectOptions);
@@ -107,17 +104,15 @@ export default class AddressService extends Service {
       }
     }
 
-    yield this.ajax
-      .request(`${this.apiEndpoint}address/address/format/${countryCode}`)
-      .then((response: any) => {
-        foundAddressFormat = response;
+    yield this.http
+      .fetch(`${this.http.endpoint}address/address/format/${countryCode}`)
+      .then((response) => {
+        return response.json().then((data) => {
+          foundAddressFormat = data;
+        });
       })
       .catch((error: any) => {
         console.log(error);
-        this.toast.error(
-          "Error fetching address format",
-          "Error fetching address format"
-        );
       });
 
     this.addressFormats.set(storageKey, foundAddressFormat);
@@ -156,32 +151,30 @@ export default class AddressService extends Service {
       }
     }
 
-    yield this.ajax
-      .request(
-        `${this.apiEndpoint}address/address/subdivisions/${parentGrouping}`
+    yield this.http
+      .fetch(
+        `${this.http.endpoint}address/address/subdivisions/${parentGrouping}`
       )
-      .then((response: any) => {
-        if (!isBlank(response) && !isBlank(response.data)) {
-          for (let subdivision of response.data) {
-            const selectoption: SelectOption = {
-              value: subdivision.attributes["code"],
-              label: subdivision.attributes["name"]
-            };
+      .then((response) => {
+        return response.json().then((body) => {
+          if (!isBlank(body) && !isBlank(body.data)) {
+            for (let subdivision of body.data) {
+              const selectoption: SelectOption = {
+                value: subdivision.attributes["code"],
+                label: subdivision.attributes["name"],
+              };
 
-            if (!isBlank(subdivision.attributes["local-name"])) {
-              selectoption.label += ` (${subdivision.attributes["local-name"]})`;
+              if (!isBlank(subdivision.attributes["local-name"])) {
+                selectoption.label += ` (${subdivision.attributes["local-name"]})`;
+              }
+
+              selectoptions.push(selectoption);
             }
-
-            selectoptions.push(selectoption);
           }
-        }
+        });
       })
       .catch((error: any) => {
         console.log(error);
-        this.toast.error(
-          "Error fetching subdivisions",
-          "Error fetching subdivisions"
-        );
       });
 
     this.subdivisionSelectOptions.set(cacheKey, selectoptions);

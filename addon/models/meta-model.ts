@@ -27,14 +27,8 @@ export default class MetaModelModel extends Model {
   static settings = {
     listViews: {
       default: {
-        columns: ["label"]
-      }
-    }
+        columns: ["label"],
+      },
+    },
   };
-}
-
-declare module "ember-data/types/registries/model" {
-  export default interface ModelRegistry {
-    "meta-model": MetaModelModel;
-  }
 }

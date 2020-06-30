@@ -15,11 +15,9 @@
             @onRowSelected={{action 'didSelectRow'}}
             as |table| >
 
-            {{#table.actions}}
-              {{#mist-menu-item action=(action "closeModal") className="waves-circle"}}
-                <IconClose />
-              {{/mist-menu-item}}
-            {{/table.actions}}
+            <Table.actions>
+              <li><a {{on "click" this.closeModal}} role="button" class="waves-effect waves-circle"><IconClose /></a></li>
+            </Table.actions>
           </ModelTable>
         {{/if}}
       </div>
@@ -31,7 +29,7 @@
 {{#if hasBlock}}
   {{yield (action 'showModal')}}
 {{else}}
-  <button type="button" class="btn btn-default waves-effect btn-link" {{action 'showModal'}}>
+  <button type="button" class="btn btn-default waves-effect btn-link" {{on "click" this.showModal}}>
     <IconSearch />
   </button>
 {{/if}}

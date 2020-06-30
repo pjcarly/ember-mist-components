@@ -3,10 +3,8 @@ import RecentlyViewedService from "ember-mist-components/services/recently-viewe
 import EntityCacheService from "ember-mist-components/services/entity-cache";
 import DrupalModel from "ember-mist-components/models/drupal-model";
 import { inject as service } from "@ember/service";
-import { authenticatedRoute } from "ember-mist-components/decorators/authenticated-route";
 import Transition from "@ember/routing/-private/transition";
 
-@authenticatedRoute
 export default abstract class ModelViewRoute extends SingleModelRoute {
   @service entityCache!: EntityCacheService;
   @service storage!: any;

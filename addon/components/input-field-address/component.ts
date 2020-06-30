@@ -8,6 +8,7 @@ import { isBlank } from "@ember/utils";
 import { isNone } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class InputFieldAddressComponent extends InputFieldComponent {
   // @ts-ignore
@@ -17,10 +18,9 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
   displayRows: any[] = [];
 
   didReceiveAttrs() {
-    super.didReceiveAttrs();
-    this.setAddressFormat
-      // @ts-ignore
-      .perform();
+    // @ts-ignore
+    super.didReceiveAttrs(...arguments);
+    taskFor(this.setAddressFormat).perform();
   }
 
   @computed("model", "field")
@@ -36,6 +36,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       model.set(this.field, address);
     }
 
+    // @ts-ignore
     return address;
   }
 
@@ -55,25 +56,30 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
   *setAddressFormat() {
     const countryCode = this.address.countryCode;
 
-    if (isBlank(countryCode)) {
-      // no country code is chosen, the address must be cleared
-      this.address.clear();
-      // @ts-ignore
-      this.address.set("format", null);
-      // @ts-ignore
-      this.address.notifyPropertyChange("format");
-      this.notifyPropertyChange("field");
-    } else {
-      const format = yield this.addressing.getAddressFormat
+    if (!countryCode) {
+      if (!this.address.isBlankModel) {
+        // no country code is chosen, the address must be cleared
+        this.address.clear();
         // @ts-ignore
-        .perform(countryCode);
-      // @ts-ignore
-      this.address.set("format", format);
+        this.address.set("format", null);
+        // @ts-ignore
+        this.address.notifyPropertyChange("format");
+        this.notifyPropertyChange("field");
+      }
+    } else {
+      if (
+        !this.address.format ||
+        this.address.format.data.id !== this.address.countryCode
+      ) {
+        const format = yield taskFor(this.addressing.getAddressFormat).perform(
+          countryCode
+        );
+        // @ts-ignore
+        this.address.set("format", format);
+      }
     }
 
-    this.setDisplayRows
-      // @ts-ignore
-      .perform();
+    yield taskFor(this.setDisplayRows).perform();
   }
 
   /**
@@ -85,8 +91,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
    * - depending on the country some parts have a different label (state, province, region, island, ...)
    */
   @task({ group: "addressLoading" })
-  // @ts-ignore
-  *setDisplayRows(): any[] {
+  *setDisplayRows() {
     const addressFormat = this.address.format;
     const rows = [];
 
@@ -106,9 +111,10 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
         for (let rawColumn of rawColumns) {
           rawColumn = rawColumn.replace(/[^0-9a-z]/gi, ""); // we remove all none alpha numeric characters
           if (!isBlank(rawColumn)) {
-            let column = yield this.getDisplayColumnnForField
-              // @ts-ignore
-              .perform(rawColumn, addressFormat);
+            let column = yield taskFor(this.getDisplayColumnnForField).perform(
+              rawColumn,
+              addressFormat
+            );
             if (!isBlank(column)) {
               row.columns.push(column);
             }
@@ -190,9 +196,9 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
 
             if (isNone(subdivisionSelectOptions)) {
               const parentGrouping = this.getParentGroupingForField(field);
-              subdivisionSelectOptions = yield this.getSubdivisionSelectOptions
-                // @ts-ignore
-                .perform(parentGrouping);
+              subdivisionSelectOptions = yield taskFor(
+                this.getSubdivisionSelectOptions
+              ).perform(parentGrouping);
             }
 
             if (isBlank(subdivisionSelectOptions)) {
@@ -221,9 +227,9 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
   @task({ group: "addressLoading" })
   *getSubdivisionSelectOptions(parentGrouping: string) {
     // a subdivision is basically a generic name for an address component which has selectoptions that need to be fetched
-    const selectoptions: SelectOption[] = yield this.addressing.getSubdivisionSelectOptions
-      // @ts-ignore
-      .perform(parentGrouping);
+    const selectoptions: SelectOption[] = yield taskFor(
+      this.addressing.getSubdivisionSelectOptions
+    ).perform(parentGrouping);
     return selectoptions;
   }
 
@@ -237,9 +243,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       const positionOfField = usedFields.indexOf(editedField) + 1; // 0-based
 
       if (positionOfField < selectlistDepth) {
-        this.setDisplayRows
-          // @ts-ignore
-          .perform();
+        taskFor(this.setDisplayRows).perform();
       }
     }
   }
@@ -315,9 +319,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
     this.notifyPropertyChange("field");
     // @ts-ignore
     this.address.set("countryCode", value);
-    this.setAddressFormat
-      // @ts-ignore
-      .perform();
+    taskFor(this.setAddressFormat).perform();
     this.removeAddressErrors();
   }
 

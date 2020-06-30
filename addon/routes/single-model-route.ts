@@ -5,6 +5,7 @@ import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { action } from "@ember/object";
 import Transition from "@ember/routing/-private/transition";
+import SessionService from "ember-simple-auth/services/session";
 
 export interface SingleModelRouteModelParams {
   id: string;
@@ -13,9 +14,15 @@ export interface SingleModelRouteModelParams {
 export default class SingleModelRoute extends ResetModelRoute {
   @service fieldInformation!: FieldInformationService;
   @service recentlyViewed!: RecentlyViewedService;
+  @service session!: SessionService;
 
   modelName!: string;
   defaultIncludes: string[] = [];
+
+  beforeModel(transition: Transition) {
+    this.session.requireAuthentication(transition, "login");
+    this._super(...arguments);
+  }
 
   /**
    * The model hook with functionality for single entities

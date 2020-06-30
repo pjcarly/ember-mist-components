@@ -4,7 +4,6 @@ import { isBlank } from "@ember/utils";
 import { computed, action } from "@ember/object";
 import { debug, assert } from "@ember/debug";
 import { task } from "ember-concurrency-decorators";
-// @ts-ignore
 import { timeout } from "ember-concurrency";
 import { tagName } from "@ember-decorators/component";
 import Store from "ember-data/store";

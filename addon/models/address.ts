@@ -93,7 +93,7 @@ export default class Address extends Fragment {
       postalCode: this.postalCode,
       sortingCode: this.sortingCode,
       addressLine1: this.addressLine1,
-      addressLine2: this.addressLine2
+      addressLine2: this.addressLine2,
     };
 
     return pojo;
@@ -153,7 +153,7 @@ export default class Address extends Fragment {
       "organization",
       "givenName",
       "additionalName",
-      "familyName"
+      "familyName",
     ];
     let returnValue = true;
 

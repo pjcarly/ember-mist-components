@@ -2,15 +2,14 @@ import OutputFieldSelectComponent from "ember-field-components/components/output
 import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
+import { taskFor } from "ember-concurrency-ts";
 
 export default class DynamicOutputFieldSelectComponent extends OutputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
   didReceiveAttrs() {
     super.didReceiveAttrs();
-    this.loadSelectOptions
-      // @ts-ignore
-      .perform();
+    taskFor(this.loadSelectOptions).perform();
   }
 
   @task
@@ -20,9 +19,9 @@ export default class DynamicOutputFieldSelectComponent extends OutputFieldSelect
       (!this.selectOptions || this.selectOptions.length === 0) &&
       this.widgetName !== "country-select"
     ) {
-      const selectOptions = yield this.dynamicSelectOptions.getSelectOptions
-        // @ts-ignore
-        .perform(this.modelName, this.field);
+      const selectOptions = yield taskFor(
+        this.dynamicSelectOptions.getSelectOptions
+      ).perform(<string>this.modelName, this.field);
 
       this.set("selectOptions", selectOptions);
     }

@@ -21,7 +21,7 @@
                 <span>No templates found</span>
               {{/if}}
             {{else}}
-              {{mist-spinner size="20px"}}
+              <Loading />
             {{/if}}
           {{/if}}
         </div>
@@ -31,7 +31,7 @@
             {{#if this.generatePdf.isIdle}}
               Generate
             {{else}}
-              Generating {{mist-spinner size="10px" tagName="span"}}
+              Generating <Loading />
             {{/if}}
           </button>
         </div>

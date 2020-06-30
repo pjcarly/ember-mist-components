@@ -15,6 +15,7 @@ export default function apiAction(path: string) {
     const modelName = fieldInformation.getModelName(this);
     // @ts-ignore
     const adapter = store.adapterFor(modelName);
+    // @ts-ignore
     const baseURL = adapter.buildURL(
       modelName,
       this.id,

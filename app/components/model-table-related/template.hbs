@@ -2,12 +2,12 @@
   @title={{@title}}
   @modelName={{this.hasManyModelName}}
   @baseQuery={{this.baseQuery}}
-  @class={{@class}}
+  @class={{concat "model-table__related " @class}}
   @modelListView={{@modelListView}}
   @listViewGrouping={{@listViewGrouping}} as |Table| >
   {{#if (not this.hideNew)}}
     <Table.new>
-      <button class="btn bgm-pink btn-float waves-effect" onclick={{action 'newFromRelated'}}>
+      <button class="btn bgm-pink btn-float waves-effect" {{on "click" this.newFromRelated}}>
         <IconPlus />
       </button>
     </Table.new>
