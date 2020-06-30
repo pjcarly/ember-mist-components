@@ -77,7 +77,7 @@
   "dependencies": {
     "@glimmer/tracking": "^1.0.0",
     "bootstrap.native": "^2.0.27",
-    "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git#improvement/ember-upgrade",
+    "ember-attribute-validations": "git+ssh://git@gitlab.com:getflights/ember-attribute-validations.git",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
@@ -93,7 +93,7 @@
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~7.0.0",
-    "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git#improvement/ember-upgrade",
+    "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git",
     "ember-file-upload": "~3.0.4",
     "ember-intl": "~4.2.0",
     "ember-power-calendar": "~0.14.5",
