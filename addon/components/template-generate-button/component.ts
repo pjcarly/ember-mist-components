@@ -22,11 +22,8 @@ export default class TemplateGenerateButtonComponent extends Component {
     return getOwner(this).resolveRegistration("config:environment");
   }
 
-  @computed("config")
-  get apiEndpoint(): string {
-    const config = this.get("config");
-    return config.apiEndpoint;
-  }
+  @alias("config.apiEndpoint")
+  apiEndpoint!: string;
 
   @dropTask
   *generatePdf() {
@@ -41,7 +38,7 @@ export default class TemplateGenerateButtonComponent extends Component {
 
     window.open(
       // @ts-ignore
-      `${this.get("apiEndpoint")}template/generate/${this.template.key}?id=${
+      `${this.apiEndpoint}template/generate/${this.template.key}?id=${
         this.model.id
       }&digest=${digest}${
         !isBlank(this.language) ? `&lang=${this.language}` : ""

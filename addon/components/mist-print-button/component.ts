@@ -12,6 +12,7 @@ import { tagName } from "@ember-decorators/component";
 import { guidFor } from "@ember/object/internals";
 import $ from "jquery";
 import { taskFor } from "ember-concurrency-ts";
+import { alias } from "@ember/object/computed";
 
 @tagName("")
 export default class MistPrintButtonComponent extends Component {
@@ -34,25 +35,20 @@ export default class MistPrintButtonComponent extends Component {
     return getOwner(this).resolveRegistration("config:environment");
   }
 
-  @computed("config")
-  get apiEndpoint(): string {
-    const config = this.get("config");
-    return config.apiEndpoint;
-  }
+  @alias("config.apiEndpoint")
+  apiEndpoint!: string;
 
   @computed("value")
   get template(): any {
-    const store = this.get("store");
-    return store.peekRecord("pdf", this.value);
+    return this.store.peekRecord("pdf", this.value);
   }
 
   @dropTask
   *generatePdf() {
-    const model = this.get("model");
     let digest = null;
 
     yield this.template
-      .generateDigest({ id: model.get("id") })
+      .generateDigest({ id: this.model.get("id") })
       .then((result: Response) => {
         return result.json().then((jsonBody) => {
           digest = jsonBody.digest;
@@ -60,7 +56,7 @@ export default class MistPrintButtonComponent extends Component {
       });
 
     window.open(
-      `${this.get("apiEndpoint")}template/generate/${this.template.key}?id=${
+      `${this.apiEndpoint}template/generate/${this.template.key}?id=${
         this.model.id
       }&digest=${digest}${
         !isBlank(this.language) ? `&lang=${this.language}` : ""

@@ -70,10 +70,9 @@ export default class ModelCalendarComponent extends Component {
    */
   @computed("loadedModels", "dateField", "dateFormat")
   get modelsPerDate(): { [key: string]: Array<Model> } {
-    const loadedModels = this.get("loadedModels");
     const models: { [key: string]: Array<Model> } = {};
 
-    loadedModels.forEach((model: Model) => {
+    this.loadedModels.forEach((model: Model) => {
       // @ts-ignore
       const dateValue = model.get(this.dateField);
       const key = moment(<string>dateValue).format("YYYY-MM-DD");

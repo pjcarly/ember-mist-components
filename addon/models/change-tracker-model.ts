@@ -73,7 +73,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
    */
   rollback() {
     // @ts-ignore
-    const isNew = this.get("isNew");
+    const isNew = <boolean>this.isNew;
     // @ts-ignore
     this.rollbackAttributes();
     if (isNew) {

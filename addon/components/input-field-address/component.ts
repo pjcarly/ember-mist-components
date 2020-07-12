@@ -252,9 +252,8 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
    * Here we reset values of address, for fields where parent dependencies change
    */
   resetValues(editedField: string) {
-    const address = this.get("address");
     // @ts-ignore
-    const addressFormat = address.get("format");
+    const addressFormat = this.address.get("format");
     const selectlistDepth = addressFormat.data.attributes["subdivision-depth"];
 
     if (selectlistDepth !== 0) {
@@ -265,7 +264,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       if (zeroBasedPositionOfField + 1 < selectlistDepth) {
         for (let i = zeroBasedPositionOfField + 1; i < selectlistDepth; i++) {
           // @ts-ignore
-          address.set(usedFields[i], null);
+          this.address.set(usedFields[i], null);
         }
       }
     }

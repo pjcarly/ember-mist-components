@@ -672,19 +672,17 @@ export default class ModelTableComponent extends Component {
     if (!this.onRowSelected) {
       if (this.isMultiSelect) {
         selectedRow.toggleProperty("rowSelected");
-
-        const selectedModels = this.get("selectedModels");
         const model = selectedRow.get("content");
 
         if (selectedRow.get("rowSelected")) {
-          if (!selectedModels.includes(model)) {
+          if (!this.selectedModels.includes(model)) {
             // model not yet in the array, so we add it
-            selectedModels.pushObject(model);
+            this.selectedModels.pushObject(model);
           }
         } else {
-          if (selectedModels.includes(model)) {
+          if (this.selectedModels.includes(model)) {
             // model in the array, while it shouldn't be, remove it
-            selectedModels.removeObject(model);
+            this.selectedModels.removeObject(model);
           }
         }
 
