@@ -189,7 +189,7 @@ export default abstract class ChangeTrackerModel extends DS.Model {
   // There is no didReload callback on models, so have to override reload
   reload() {
     // @ts-ignore
-    let promise = this._super(...arguments);
+    const promise = super.reload(...arguments);
     promise.then(() => {
       if (Tracker.isAutoSaveEnabled(this)) {
         this.saveChanges();
