@@ -1,17 +1,15 @@
-import DS from "ember-data";
+import Model from "@ember-data/model";
 // @ts-ignore
 import Tracker from "ember-data-change-tracker/tracker";
 import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
 import Store from "ember-data/store";
 
-// @ts-ignore
-export default abstract class ChangeTrackerModel extends DS.Model {
+export default abstract class ChangeTrackerModel extends Model {
   @service store!: Store;
 
   init() {
-    // @ts-ignore
-    super.init(...arguments);
+    super.init();
 
     if (Tracker.isAutoSaveEnabled(this)) {
       this.initTracking();
