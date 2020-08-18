@@ -92,7 +92,7 @@
     "ember-data-model-fragments": "~5.0.0-beta.0",
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
-    "ember-fetch": "~7.0.0",
+    "ember-fetch": "~8.0.0",
     "ember-field-components": "git+ssh://git@gitlab.com:getflights/ember-field-components.git",
     "ember-file-upload": "~3.0.4",
     "ember-intl": "~4.2.0",
