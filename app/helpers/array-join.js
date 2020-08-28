@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/helpers/array-join';
+export { default } from "@getflights/ember-mist-components/helpers/array-join";

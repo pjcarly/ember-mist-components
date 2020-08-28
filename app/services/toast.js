@@ -1,1 +1,1 @@
-export { default } from "ember-mist-components/services/toast";
+export { default } from "@getflights/ember-mist-components/services/toast";

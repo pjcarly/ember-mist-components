@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/validators/conditional-required';
+export { default } from "@getflights/ember-mist-components/validators/conditional-required";

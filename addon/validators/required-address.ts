@@ -1,8 +1,8 @@
-import Validator from "ember-attribute-validations/validator";
+import Validator from "@getflights/ember-attribute-validations/validator";
 import Model from "ember-data/model";
 import { isBlank } from "@ember/utils";
-import { hasValue } from "ember-attribute-validations/utils";
-import Address from "ember-mist-components/models/address";
+import { hasValue } from "@getflights/ember-attribute-validations/utils";
+import Address from "@getflights/ember-mist-components/models/address";
 import { assert } from "@ember/debug";
 
 export default class RequiredAddressValidator extends Validator {

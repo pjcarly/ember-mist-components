@@ -1,1 +1,1 @@
-export { default } from "ember-mist-components/helpers/store-has-record";
+export { default } from "@getflights/ember-mist-components/helpers/store-has-record";

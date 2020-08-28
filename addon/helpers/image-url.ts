@@ -1,5 +1,5 @@
 import Helper from "@ember/component/helper";
-import Image from "ember-mist-components/interfaces/image";
+import Image from "@getflights/ember-mist-components/interfaces/image";
 import { htmlSafe } from "@ember/template";
 // @ts-ignore
 import { SafeString } from "@ember/string/-private/handlebars";

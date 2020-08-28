@@ -1,5 +1,5 @@
 import { hasMany } from "ember-data/relationships";
-import DrupalModel from "ember-mist-components/models/drupal-model";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import MutableArray from "@ember/array/mutable";
 import ConditionModel from "./condition";
 import SortOrderModel from "./order";

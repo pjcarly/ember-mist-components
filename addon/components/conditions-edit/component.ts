@@ -3,10 +3,10 @@ import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import Store from "ember-data/store";
 import { action, computed } from "@ember/object";
-import ListViewModel from "ember-mist-components/models/list-view";
-import ConditionModel from "ember-mist-components/models/condition";
-import Query from "ember-mist-components/query/Query";
-import Condition from "ember-mist-components/query/Condition";
+import ListViewModel from "@getflights/ember-mist-components/models/list-view";
+import ConditionModel from "@getflights/ember-mist-components/models/condition";
+import Query from "@getflights/ember-mist-components/query/Query";
+import Condition from "@getflights/ember-mist-components/query/Condition";
 
 @tagName("")
 export default class ConditionsEditComponent extends Component {
@@ -20,7 +20,7 @@ export default class ConditionsEditComponent extends Component {
     const conditions = this.model.conditions;
     let topSort = 1;
 
-    conditions.toArray().forEach(condition => {
+    conditions.toArray().forEach((condition) => {
       if (!condition.isDeleted) {
         condition.set("sort", topSort);
         topSort++;
@@ -50,7 +50,7 @@ export default class ConditionsEditComponent extends Component {
 
   @action
   deleteCondition(conditionToDelete: ConditionModel) {
-    this.model.conditions.toArray().forEach(condition => {
+    this.model.conditions.toArray().forEach((condition) => {
       if (
         condition.sort &&
         conditionToDelete.sort &&

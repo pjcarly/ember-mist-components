@@ -1,5 +1,3 @@
-import InputFieldComponent from 'ember-field-components/components/input-field/component';
+import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
 
-export default class InputFieldFileComponent extends InputFieldComponent {
-
-}
+export default class InputFieldFileComponent extends InputFieldComponent {}

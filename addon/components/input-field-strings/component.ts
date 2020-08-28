@@ -1,5 +1,5 @@
 import { computed, action } from "@ember/object";
-import InputFieldComponent from "ember-field-components/components/input-field/component";
+import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
 import { A } from "@ember/array";
 import MutableArray from "@ember/array/mutable";
 

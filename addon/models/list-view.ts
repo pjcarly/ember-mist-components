@@ -1,6 +1,6 @@
 import QueryModel from "../models/query";
 import { isBlank } from "@ember/utils";
-import { field } from "ember-field-components/model/attribute";
+import { field } from "@getflights/ember-field-components/model/attribute";
 import attr from "ember-data/attr";
 import { hasMany, belongsTo } from "ember-data/relationships";
 import MutableArray from "@ember/array/mutable";
@@ -29,11 +29,20 @@ export default class ListViewModel extends QueryModel {
   sortOrder: any; // pseudo attribute which will contain an object with the sort order. This is only serialized by the back-end. And cant be updated. Use the hasMany relationship sortOrders instead
 
   // @ts-ignore
-  @belongsTo("meta-model", { widget: "select", async: false, validation: { required: true }})
+  @belongsTo("meta-model", {
+    widget: "select",
+    async: false,
+    validation: { required: true },
+  })
   model!: MetaModelModel;
 
   // @ts-ignore
-  @hasMany("field", { async: false, widget: "select", rollback: true, validation: { required: true }})
+  @hasMany("field", {
+    async: false,
+    widget: "select",
+    rollback: true,
+    validation: { required: true },
+  })
   columns!: MutableArray<FieldModel>;
 
   /* Functions */
@@ -41,7 +50,7 @@ export default class ListViewModel extends QueryModel {
     let conditionsValid = true;
 
     if (!isBlank(this.conditions)) {
-      this.conditions.toArray().forEach(condition => {
+      this.conditions.toArray().forEach((condition) => {
         // @ts-ignore
         conditionsValid = condition.validate();
       });
@@ -54,7 +63,7 @@ export default class ListViewModel extends QueryModel {
     let ordersValid = true;
 
     if (!isBlank(this.orders)) {
-      this.orders.toArray().forEach(order => {
+      this.orders.toArray().forEach((order) => {
         // @ts-ignore
         ordersValid = order.validate();
       });
@@ -70,9 +79,9 @@ export default class ListViewModel extends QueryModel {
         rows: 10,
         sortOrder: {
           field: "created",
-          dir: "desc"
-        }
-      }
-    }
+          dir: "desc",
+        },
+      },
+    },
   };
 }

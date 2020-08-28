@@ -1,10 +1,10 @@
 import Service from "@ember/service";
 import Store from "ember-data/store";
-import FieldInformationService from "ember-field-components/services/field-information";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
-import ListViewModel from "ember-mist-components/models/list-view";
+import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 
 // A ModelListview is an object that can be defined as a static POJO on the Model itself
 export interface ModelListView {

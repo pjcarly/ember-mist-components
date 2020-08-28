@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/components/input-file-drupal/component';
+export { default } from "@getflights/ember-mist-components/components/input-file-drupal/component";

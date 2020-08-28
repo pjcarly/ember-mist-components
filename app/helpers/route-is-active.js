@@ -1,1 +1,1 @@
-export { default } from "ember-mist-components/helpers/route-is-active";
+export { default } from "@getflights/ember-mist-components/helpers/route-is-active";

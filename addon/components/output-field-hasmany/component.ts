@@ -1,7 +1,7 @@
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
-import OutputFieldComponent from "ember-field-components/components/output-field/component";
-import { FieldOptionsInterface } from "ember-field-components/services/field-information";
+import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
+import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 
 export interface HasManyFieldOptions extends FieldOptionsInterface {
   polymorphic: boolean;

@@ -1,21 +1,23 @@
-import Component from '@ember/component';
+import Component from "@ember/component";
 import { tagName } from "@ember-decorators/component";
-import ToastMessage, { MessageType } from "ember-mist-components/objects/toast-message";
+import ToastMessage, {
+  MessageType,
+} from "@getflights/ember-mist-components/objects/toast-message";
 import { computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 // @ts-ignore
 import bsn from "bootstrap.native/dist/bootstrap-native-v4";
-import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
-import ToastService from 'ember-mist-components/services/toast';
+import { action } from "@ember/object";
+import { inject as service } from "@ember/service";
+import ToastService from "@getflights/ember-mist-components/services/toast";
 
 @tagName("")
 export default class ToastMessageComponent extends Component {
   // @ts-ignore
-  @service('toast') toastService !: ToastService;
+  @service("toast") toastService!: ToastService;
 
-  toast !: ToastMessage;
-  bootstrapToast !: bsn.Toast;
+  toast!: ToastMessage;
+  bootstrapToast!: bsn.Toast;
 
   didInsertElement() {
     // @ts-ignore
@@ -23,7 +25,10 @@ export default class ToastMessageComponent extends Component {
 
     const element = document.getElementById(this.toastId);
     if (element) {
-      const bootstrapToast = new bsn.Toast(element, { animation: true, autohide: false });
+      const bootstrapToast = new bsn.Toast(element, {
+        animation: true,
+        autohide: false,
+      });
       bootstrapToast.show();
       this.set("bootstrapToast", bootstrapToast);
     }
@@ -36,38 +41,34 @@ export default class ToastMessageComponent extends Component {
 
   get class(): string {
     const classes: string[] = [];
-    classes.push('toast');
+    classes.push("toast");
 
     if (this.toast.type === MessageType.SUCCESS) {
-      classes.push('toast-success');
-    }
-    else if (this.toast.type === MessageType.ERROR) {
-      classes.push('toast-error');
-    }
-    else if (this.toast.type === MessageType.INFO) {
-      classes.push('toast-info');
-    }
-    else if (this.toast.type === MessageType.WARNING) {
-      classes.push('toast-warning');
+      classes.push("toast-success");
+    } else if (this.toast.type === MessageType.ERROR) {
+      classes.push("toast-error");
+    } else if (this.toast.type === MessageType.INFO) {
+      classes.push("toast-info");
+    } else if (this.toast.type === MessageType.WARNING) {
+      classes.push("toast-warning");
     }
 
-    return classes.join(' ');
+    return classes.join(" ");
   }
 
   get ariaLive(): string {
     if (this.toast.type === MessageType.ERROR) {
-      return 'assertive';
+      return "assertive";
     } else {
-      return 'polite';
+      return "polite";
     }
   }
 
   willDestroyElement() {
     this.bootstrapToast.hide();
-    this.set('bootstrapToast', null);
+    this.set("bootstrapToast", null);
     // @ts-ignore
     super.willDestroyElement(...arguments);
-
   }
 
   @action

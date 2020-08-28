@@ -1,4 +1,4 @@
-import BaseInput from "ember-field-components/components/BaseInput";
+import BaseInput from "@getflights/ember-field-components/components/BaseInput";
 import File from "ember-file-upload/file";
 import { isEmpty } from "@ember/utils";
 import { action } from "@ember/object";

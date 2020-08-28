@@ -1,6 +1,6 @@
 import ResetModelRoute from "./reset-model-route";
-import RecentlyViewedService from "ember-mist-components/services/recently-viewed";
-import FieldInformationService from "ember-field-components/services/field-information";
+import RecentlyViewedService from "@getflights/ember-mist-components/services/recently-viewed";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { action } from "@ember/object";

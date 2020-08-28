@@ -4,10 +4,10 @@ import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
-import FieldModel from "ember-mist-components/models/field";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
+import FieldModel from "@getflights/ember-mist-components/models/field";
 import { isBlank } from "@ember/utils";
-import Query from "ember-mist-components/query/Query";
+import Query from "@getflights/ember-mist-components/query/Query";
 
 export default class DynamicSelectOptionService extends Service {
   @service storage!: any;

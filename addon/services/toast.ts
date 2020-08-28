@@ -1,7 +1,7 @@
 import Service from "@ember/service";
 import ToastMessage, {
   MessageType,
-} from "ember-mist-components/objects/toast-message";
+} from "@getflights/ember-mist-components/objects/toast-message";
 import { A } from "@ember/array";
 import { getOwner, setOwner } from "@ember/application";
 import { task } from "ember-concurrency-decorators";

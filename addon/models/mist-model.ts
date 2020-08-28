@@ -1,13 +1,13 @@
-import FieldInformationService from "ember-field-components/services/field-information";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { or } from "@ember/object/computed";
 import { getOwner } from "@ember/application";
 import { inject as service } from "@ember/service";
-import { validationModel } from "ember-attribute-validations/decorators/validation-model";
-import { loadableModel } from "ember-mist-components/decorators/loadable-model";
+import { validationModel } from "@getflights/ember-attribute-validations/decorators/validation-model";
+import { loadableModel } from "@getflights/ember-mist-components/decorators/loadable-model";
 import ChangeTrackerModel from "./change-tracker-model";
-import JSONAPISerializer from '@ember-data/serializer/json-api';
+import JSONAPISerializer from "@ember-data/serializer/json-api";
 
 @validationModel
 @loadableModel
@@ -42,7 +42,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
 
     const modelName = this.fieldInformation.getModelName(this);
     // @ts-ignore
-    const serializer = <JSONAPISerializer> this.store.serializerFor(modelName);
+    const serializer = <JSONAPISerializer>this.store.serializerFor(modelName);
     const attrs = serializer.attrs;
 
     if (isBlank(attrs)) {

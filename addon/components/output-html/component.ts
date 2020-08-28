@@ -1,4 +1,4 @@
-import BaseOutput from "ember-field-components/components/BaseOutput";
+import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
 import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
 // @ts-ignore

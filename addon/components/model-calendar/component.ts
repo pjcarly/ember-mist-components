@@ -1,9 +1,9 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
 import Model from "ember-data/model";
-import ListViewService from "ember-mist-components/services/list-view";
-import Query from "ember-mist-components/query/Query";
-import Condition from "ember-mist-components/query/Condition";
+import ListViewService from "@getflights/ember-mist-components/services/list-view";
+import Query from "@getflights/ember-mist-components/query/Query";
+import Condition from "@getflights/ember-mist-components/query/Condition";
 import moment from "moment";
 import { restartableTask } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";

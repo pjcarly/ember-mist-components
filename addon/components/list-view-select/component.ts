@@ -1,9 +1,9 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
-import Query from "ember-mist-components/query/Query";
-import Condition from "ember-mist-components/query/Condition";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
-import ListViewService from "ember-mist-components/services/list-view";
+import Query from "@getflights/ember-mist-components/query/Query";
+import Condition from "@getflights/ember-mist-components/query/Condition";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
+import ListViewService from "@getflights/ember-mist-components/services/list-view";
 import MutableArray from "@ember/array/mutable";
 import { dropTask } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";

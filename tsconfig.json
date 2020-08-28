@@ -23,22 +23,26 @@
     "paths": {
       "dummy/tests/*": ["tests/*"],
       "dummy/*": ["tests/dummy/app/*", "app/*"],
-      "ember-mist-components": ["addon"],
-      "ember-mist-components/*": ["addon/*"],
-      "ember-field-components": ["node_modules/ember-field-components/addon"],
-      "ember-field-components/*": [
-        "node_modules/ember-field-components/addon/*"
+      "@getflights/ember-mist-components": ["addon"],
+      "@getflights/ember-mist-components/*": ["addon/*"],
+      "@getflights/ember-field-components": [
+        "node_modules/@getflights/ember-field-components/addon"
       ],
-      "ember-attribute-validations": [
-        "node_modules/ember-attribute-validations/addon"
+      "@getflights/ember-field-components/*": [
+        "node_modules/@getflights/ember-field-components/addon/*"
       ],
-      "ember-attribute-validations/*": [
-        "node_modules/ember-attribute-validations/addon/*"
+      "@getflights/ember-attribute-validations": [
+        "node_modules/@getflights/ember-attribute-validations/addon"
+      ],
+      "@getflights/ember-attribute-validations/*": [
+        "node_modules/@getflights/ember-attribute-validations/addon/*"
+      ],
+      "@getflights/ember-mist-components/test-support": ["addon-test-support"],
+      "@getflights/ember-mist-components/test-support/*": [
+        "addon-test-support/*"
       ],
       "ember-data-storefront": ["node_modules/ember-data-storefront/addon"],
       "ember-data-storefront/*": ["node_modules/ember-data-storefront/addon/*"],
-      "ember-mist-components/test-support": ["addon-test-support"],
-      "ember-mist-components/test-support/*": ["addon-test-support/*"],
       "fetch": ["node_modules/ember-fetch"],
       "*": ["types/*"]
     },
@@ -54,9 +58,9 @@
     "addon-test-support/**/*",
     "node_modules/ember-data-storefront/app",
     "node_modules/ember-data-storefront/addon",
-    "node_modules/ember-field-components/app",
-    "node_modules/ember-field-components/addon",
-    "node_modules/ember-attribute-validations/app",
-    "node_modules/ember-attribute-validations/addon"
+    "node_modules/@getflights/ember-field-components/app",
+    "node_modules/@getflights/ember-field-components/addon",
+    "node_modules/@getflights/ember-attribute-validations/app",
+    "node_modules/@getflights/ember-attribute-validations/addon"
   ]
 }

@@ -1,5 +1,3 @@
-import OutputFieldComponent from "ember-field-components/components/output-field/component";
+import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
 
-export default class  OutputFieldFileComponent extends OutputFieldComponent {
-
-}
+export default class OutputFieldFileComponent extends OutputFieldComponent {}

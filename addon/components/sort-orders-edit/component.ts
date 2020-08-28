@@ -3,10 +3,10 @@ import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import Store from "ember-data/store";
 import { action, computed } from "@ember/object";
-import ListViewModel from "ember-mist-components/models/list-view";
-import SortOrderModel from "ember-mist-components/models/order";
-import Query from "ember-mist-components/query/Query";
-import Condition from "ember-mist-components/query/Condition";
+import ListViewModel from "@getflights/ember-mist-components/models/list-view";
+import SortOrderModel from "@getflights/ember-mist-components/models/order";
+import Query from "@getflights/ember-mist-components/query/Query";
+import Condition from "@getflights/ember-mist-components/query/Condition";
 
 @tagName("")
 export default class SortOrdersEditComponent extends Component {
@@ -20,7 +20,7 @@ export default class SortOrdersEditComponent extends Component {
     // this function will preserve the new order, but make sure no sort value will be the same over all the types
     let topSort = 1;
 
-    this.model.orders.toArray().forEach(order => {
+    this.model.orders.toArray().forEach((order) => {
       // @ts-ignore
       if (!order.isDeleted) {
         order.set("sort", topSort);
@@ -51,7 +51,7 @@ export default class SortOrdersEditComponent extends Component {
 
   @action
   deleteOrder(orderToDelete: SortOrderModel) {
-    this.model.orders.toArray().forEach(order => {
+    this.model.orders.toArray().forEach((order) => {
       if (order.sort && orderToDelete.sort && order.sort > orderToDelete.sort) {
         order.set("sort", order.sort - 1);
       }

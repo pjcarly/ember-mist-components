@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/transforms/strings';
+export { default } from "@getflights/ember-mist-components/transforms/strings";

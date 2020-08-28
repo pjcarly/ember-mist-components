@@ -7,9 +7,9 @@ import { task } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
 import { tagName } from "@ember-decorators/component";
 import Store from "ember-data/store";
-import DrupalModel from "ember-mist-components/models/drupal-model";
-import { Operator } from "ember-mist-components/query/Condition";
-import Query from "ember-mist-components/query/Query";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import { Operator } from "@getflights/ember-mist-components/query/Condition";
+import Query from "@getflights/ember-mist-components/query/Query";
 
 @tagName("")
 export default class InputModelAutocompleteComponent extends Component {

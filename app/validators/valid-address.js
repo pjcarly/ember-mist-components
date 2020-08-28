@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/validators/valid-address';
+export { default } from "@getflights/ember-mist-components/validators/valid-address";

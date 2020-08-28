@@ -2,7 +2,7 @@ import InputFieldImageComponent from "../input-field-image/component";
 import { isBlank } from "@ember/utils";
 import { computed, action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
-import Image from "ember-mist-components/interfaces/image";
+import Image from "@getflights/ember-mist-components/interfaces/image";
 
 export default class InputFieldImagesComponent extends InputFieldImageComponent {
   @computed()

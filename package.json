@@ -75,10 +75,10 @@
     "ember-mist-components"
   ],
   "dependencies": {
-    "@glimmer/tracking": "^1.0.1",
-    "@types/google-libphonenumber": "^7.4.19",
-    "bootstrap.native": "^2.0.27",
     "@getflights/ember-attribute-validations": "^1.0.0",
+    "@getflights/ember-field-components": "^1.0.0",
+    "@glimmer/tracking": "^1.0.1",
+    "bootstrap.native": "^2.0.27",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
@@ -94,7 +94,6 @@
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~8.0.0",
-    "@getflights/ember-field-components": "^1.0.0",
     "ember-file-upload": "~3.0.4",
     "ember-intl": "~4.2.0",
     "ember-power-calendar": "~0.14.5",
@@ -105,7 +104,6 @@
     "ember-storage": "~2.0.0",
     "ember-websockets": "~7.2.0",
     "ember-wormhole": "^0.5.5",
-    "libphonenumber-js": "^1.7.57",
     "mock-socket": "^9.0.3",
     "qs": "^6.9.4",
     "query": "^0.2.0"

@@ -1,4 +1,4 @@
-import { Operator } from "ember-mist-components/query/Condition";
+import { Operator } from "@getflights/ember-mist-components/query/Condition";
 
 export default interface BelongsToFilterInterface {
   field: string;

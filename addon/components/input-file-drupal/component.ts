@@ -4,12 +4,12 @@ import { inject as service } from "@ember/service";
 import { isEmpty } from "@ember/utils";
 import { dasherize } from "@ember/string";
 import { htmlSafe } from "@ember/template";
-import BaseInput from "ember-field-components/components/BaseInput";
-import FileModel from "ember-mist-components/interfaces/file";
+import BaseInput from "@getflights/ember-field-components/components/BaseInput";
+import FileModel from "@getflights/ember-mist-components/interfaces/file";
 import File from "ember-file-upload/file";
 import { taskFor } from "ember-concurrency-ts";
-import HttpService from "ember-mist-components/services/http";
-import ToastService from "ember-mist-components/services/toast";
+import HttpService from "@getflights/ember-mist-components/services/http";
+import ToastService from "@getflights/ember-mist-components/services/toast";
 import FileQueueService from "ember-file-upload/services/file-queue";
 import Queue from "ember-file-upload/queue";
 

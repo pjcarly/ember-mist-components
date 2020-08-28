@@ -1,15 +1,15 @@
 import Component from "@ember/component";
-import EntityCacheService from "ember-mist-components/services/entity-cache";
-import EntityRouterService from "ember-mist-components/services/entity-router";
-import FieldInformationService from "ember-field-components/services/field-information";
+import EntityCacheService from "@getflights/ember-mist-components/services/entity-cache";
+import EntityRouterService from "@getflights/ember-mist-components/services/entity-router";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import Store from "ember-data/store";
 import Model from "ember-data/model";
-import Condition from "ember-mist-components/query/Condition";
+import Condition from "@getflights/ember-mist-components/query/Condition";
 import { computed, action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
 import { tagName } from "@ember-decorators/component";
-import Query from "ember-mist-components/query/Query";
+import Query from "@getflights/ember-mist-components/query/Query";
 
 @tagName("")
 export default class ModelTableRelatedComponent extends Component {

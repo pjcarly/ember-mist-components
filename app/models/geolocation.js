@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/models/geolocation';
+export { default } from "@getflights/ember-mist-components/models/geolocation";

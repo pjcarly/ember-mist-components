@@ -1,1 +1,1 @@
-export { default } from "ember-mist-components/services/auth-store";
+export { default } from "@getflights/ember-mist-components/services/auth-store";

@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/services/logged-in-user';
+export { default } from "@getflights/ember-mist-components/services/logged-in-user";

@@ -1,10 +1,10 @@
 import Service from "@ember/service";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { inject as service } from "@ember/service";
 import { enqueueTask } from "ember-concurrency-decorators";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
-import { replaceAll } from "ember-field-components/classes/utils";
+import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 import { isBlank } from "@ember/utils";
 import HttpService from "./http";
 
