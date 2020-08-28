@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/transforms/richtext';
+export { default } from "@getflights/ember-mist-components/transforms/richtext";

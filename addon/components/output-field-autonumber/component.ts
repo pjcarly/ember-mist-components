@@ -1,8 +1,11 @@
 import moment from "moment";
-import { padStart, replaceAll } from "ember-field-components/classes/utils";
+import {
+  padStart,
+  replaceAll,
+} from "@getflights/ember-field-components/classes/utils";
 import { computed } from "@ember/object";
-import OutputFieldComponent from "ember-field-components/components/output-field/component";
-import { FieldOptionsInterface } from "ember-field-components/services/field-information";
+import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
+import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 
 export interface AutonumberFieldOptions extends FieldOptionsInterface {
   minLength: number;

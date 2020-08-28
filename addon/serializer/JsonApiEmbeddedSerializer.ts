@@ -5,7 +5,7 @@ import { isBlank } from "@ember/utils";
 import { get } from "@ember/object";
 import { debug } from "@ember/debug";
 import { dasherize } from "@ember/string";
-import DrupalModel from "ember-mist-components/models/drupal-model";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 
 /**
  * This is an extension for the JSON API serializer, where relationships marked as embedded will be serialized

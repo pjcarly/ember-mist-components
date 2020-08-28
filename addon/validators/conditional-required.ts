@@ -1,6 +1,9 @@
-import Validator from "ember-attribute-validations/validator";
+import Validator from "@getflights/ember-attribute-validations/validator";
 import Model from "ember-data/model";
-import { hasValue, hasBelongsToValue } from "ember-attribute-validations/utils";
+import {
+  hasValue,
+  hasBelongsToValue,
+} from "@getflights/ember-attribute-validations/utils";
 
 export default class ConditionalRequiredValidator extends Validator {
   name = "conditionalRequired";

@@ -6,7 +6,7 @@ import { inject as service } from "@ember/service";
 import { getOwner } from "@ember/application";
 import Store from "ember-data/store";
 import { dropTask } from "ember-concurrency-decorators";
-import DrupalModel from "ember-mist-components/models/drupal-model";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { tagName } from "@ember-decorators/component";
 
 @tagName("")

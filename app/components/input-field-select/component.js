@@ -1,3 +1,1 @@
-export { default } from 'ember-mist-components/components/input-field-select/component';
-
-
+export { default } from "@getflights/ember-mist-components/components/input-field-select/component";

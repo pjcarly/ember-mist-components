@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/components/input-lookup-window/component';
+export { default } from "@getflights/ember-mist-components/components/input-lookup-window/component";

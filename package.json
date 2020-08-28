@@ -75,9 +75,10 @@
     "ember-mist-components"
   ],
   "dependencies": {
+    "@getflights/ember-attribute-validations": "^1.0.0",
+    "@getflights/ember-field-components": "^1.0.0",
     "@glimmer/tracking": "^1.0.1",
     "bootstrap.native": "^2.0.27",
-    "@getflights/ember-attribute-validations": "^1.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "~7.7.3",
     "ember-cli-htmlbars": "~3.1.0",
@@ -93,7 +94,6 @@
     "ember-data-storefront": "~0.17.1",
     "ember-decorators": "~6.1.1",
     "ember-fetch": "~8.0.0",
-    "@getflights/ember-field-components": "^1.0.0",
     "ember-file-upload": "~3.0.4",
     "ember-intl": "~4.2.0",
     "ember-power-calendar": "~0.14.5",

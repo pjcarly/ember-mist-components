@@ -1,7 +1,7 @@
-import InputFieldComponent from "ember-field-components/components/input-field/component";
-import Address from "ember-mist-components/models/address";
-import AddressService from "ember-mist-components/services/address";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
+import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
+import Address from "@getflights/ember-mist-components/models/address";
+import AddressService from "@getflights/ember-mist-components/services/address";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { task, taskGroup } from "ember-concurrency-decorators";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";

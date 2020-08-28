@@ -1,4 +1,4 @@
-import { replaceAll } from "ember-field-components/classes/utils";
+import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 
 export interface QueryFilter {
   field: string;
@@ -20,7 +20,7 @@ export enum Operator {
   ENDS_WITH = "ENDS_WITH",
   IN = "IN",
   NOT_IN = "NOT IN",
-  BETWEEN = "BETWEEN"
+  BETWEEN = "BETWEEN",
 }
 
 export default class Condition {
@@ -72,7 +72,7 @@ export default class Condition {
   get conditionParam(): QueryFilter {
     // @ts-ignore
     const filter: QueryFilter = {
-      field: this.field
+      field: this.field,
     };
 
     if (this.id) {

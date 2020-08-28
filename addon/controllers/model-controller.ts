@@ -2,18 +2,18 @@
 import Controller from "@ember/controller";
 import Model from "ember-data/model";
 import Store from "ember-data/store";
-import DrupalModel from "ember-mist-components/models/drupal-model";
-import EntityCacheService from "ember-mist-components/services/entity-cache";
-import EntityRouterService from "ember-mist-components/services/entity-router";
-import FieldInformationService from "ember-field-components/services/field-information";
-import RecentlyViewedService from "ember-mist-components/services/recently-viewed";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import EntityCacheService from "@getflights/ember-mist-components/services/entity-cache";
+import EntityRouterService from "@getflights/ember-mist-components/services/entity-router";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
+import RecentlyViewedService from "@getflights/ember-mist-components/services/recently-viewed";
 import { inject as service } from "@ember/service";
 import { debug } from "@ember/debug";
 import { task, dropTaskGroup } from "ember-concurrency-decorators";
 import { action } from "@ember/object";
-import { QueryParams } from "ember-mist-components/query/Query";
+import { QueryParams } from "@getflights/ember-mist-components/query/Query";
 import { taskFor } from "ember-concurrency-ts";
-import ToastService from "ember-mist-components/services/toast";
+import ToastService from "@getflights/ember-mist-components/services/toast";
 
 declare global {
   const swal: any;

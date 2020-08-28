@@ -1,8 +1,8 @@
-import AddressService from "ember-mist-components/services/address";
-import BaseOutput from "ember-field-components/components/BaseOutput";
+import AddressService from "@getflights/ember-mist-components/services/address";
+import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
 import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { taskFor } from "ember-concurrency-ts";
 
 export default class OutputSelectCountryComponent extends BaseOutput {

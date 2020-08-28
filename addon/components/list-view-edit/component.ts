@@ -1,9 +1,9 @@
 import Component from "@ember/component";
 import { tagName } from "@ember-decorators/component";
-import ListViewModel from "ember-mist-components/models/list-view";
-import Query from "ember-mist-components/query/Query";
+import ListViewModel from "@getflights/ember-mist-components/models/list-view";
+import Query from "@getflights/ember-mist-components/query/Query";
 import { computed } from "@ember/object";
-import Condition from "ember-mist-components/query/Condition";
+import Condition from "@getflights/ember-mist-components/query/Condition";
 
 @tagName("")
 export default class ListViewEditComponent extends Component {

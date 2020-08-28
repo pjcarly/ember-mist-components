@@ -6,7 +6,7 @@ import { getOwner } from "@ember/application";
 import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
-import AuthStoreService from "ember-mist-components/services/auth-store";
+import AuthStoreService from "@getflights/ember-mist-components/services/auth-store";
 import SessionService from "ember-simple-auth/services/session";
 
 export default class HttpService extends Service {

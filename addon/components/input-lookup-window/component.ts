@@ -1,11 +1,11 @@
-import FieldInformationService from "ember-field-components/services/field-information";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { computed, action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isArray } from "@ember/array";
-import BaseInput from "ember-field-components/components/BaseInput";
+import BaseInput from "@getflights/ember-field-components/components/BaseInput";
 import { Row } from "../model-table/component";
 import { guidFor } from "@ember/object/internals";
-import Query from "ember-mist-components/query/Query";
+import Query from "@getflights/ember-mist-components/query/Query";
 
 export default class InputLookupWindowComponent extends BaseInput {
   @service intl!: any;

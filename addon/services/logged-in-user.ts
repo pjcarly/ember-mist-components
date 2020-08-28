@@ -1,7 +1,7 @@
 import Service from "@ember/service";
 import Store from "ember-data/store";
-import Query from "ember-mist-components/query/Query";
-import UserModel from "ember-mist-components/models/user";
+import Query from "@getflights/ember-mist-components/query/Query";
+import UserModel from "@getflights/ember-mist-components/models/user";
 import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
 import { dropTask } from "ember-concurrency-decorators";

@@ -1,8 +1,8 @@
 import { belongsTo } from "ember-data/relationships";
-import DrupalModel from "ember-mist-components/models/drupal-model";
-import { field } from "ember-field-components/model/attribute";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import { field } from "@getflights/ember-field-components/model/attribute";
 import QueryModel from "./query";
-import FieldModel from "ember-mist-components/models/field";
+import FieldModel from "@getflights/ember-mist-components/models/field";
 
 export default class ConditionModel extends DrupalModel {
   @field("string")
@@ -19,7 +19,11 @@ export default class ConditionModel extends DrupalModel {
 
   /* Relationships */
   // @ts-ignore
-  @belongsTo("field", { widget: "select", async: false, validation: { required: true }})
+  @belongsTo("field", {
+    widget: "select",
+    async: false,
+    validation: { required: true },
+  })
   field!: FieldModel;
 
   // @ts-ignore
@@ -33,9 +37,9 @@ export default class ConditionModel extends DrupalModel {
         rows: 10,
         sortOrder: {
           field: "created",
-          dir: "desc"
-        }
-      }
-    }
+          dir: "desc",
+        },
+      },
+    },
   };
 }

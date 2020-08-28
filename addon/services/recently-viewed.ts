@@ -1,6 +1,6 @@
 import Service from "@ember/service";
-import DrupalModel from "ember-mist-components/models/drupal-model";
-import FieldInformationService from "ember-field-components/services/field-information";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { computed } from "@ember/object";

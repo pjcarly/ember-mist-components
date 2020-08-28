@@ -1,1 +1,1 @@
-export { default } from 'ember-mist-components/helpers/belongsto';
+export { default } from "@getflights/ember-mist-components/helpers/belongsto";

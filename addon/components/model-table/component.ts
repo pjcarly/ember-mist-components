@@ -1,13 +1,15 @@
 import Component from "@ember/component";
 import Store from "ember-data/store";
 import Model from "ember-data/model";
-import Query from "ember-mist-components/query/Query";
-import FieldInformationService from "ember-field-components/services/field-information";
+import Query from "@getflights/ember-mist-components/query/Query";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import ListViewService, {
   ModelListView,
-} from "ember-mist-components/services/list-view";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
-import Order, { Direction } from "ember-mist-components/query/Order";
+} from "@getflights/ember-mist-components/services/list-view";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
+import Order, {
+  Direction,
+} from "@getflights/ember-mist-components/query/Order";
 import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import { computed, action } from "@ember/object";
@@ -20,7 +22,7 @@ import { get } from "@ember/object";
 import { camelize, dasherize } from "@ember/string";
 import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
-import ListViewModel from "ember-mist-components/models/list-view";
+import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
 import { getOwner, setOwner } from "@ember/application";

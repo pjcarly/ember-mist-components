@@ -1,8 +1,10 @@
-import InputFieldComponent from "ember-field-components/components/input-field/component";
-import Condition, { Operator } from "ember-mist-components/query/Condition";
-import BelongsToFilterInterface from "ember-mist-components/interfaces/belongs-to-filters";
-import SelectOption from "ember-field-components/interfaces/SelectOption";
-import DrupalModel from "ember-mist-components/models/drupal-model";
+import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
+import Condition, {
+  Operator,
+} from "@getflights/ember-mist-components/query/Condition";
+import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import Model from "ember-data/model";
 import { dropTask } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
@@ -10,10 +12,10 @@ import { isBlank } from "@ember/utils";
 import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import { inject as service } from "@ember/service";
-import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
-import Query from "ember-mist-components/query/Query";
+import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
+import Query from "@getflights/ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
-import { FieldOptionsInterface } from "ember-field-components/services/field-information";
+import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 import { taskFor } from "ember-concurrency-ts";
 
 export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {

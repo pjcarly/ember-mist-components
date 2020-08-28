@@ -1,5 +1,5 @@
 import Route from "@ember/routing/route";
-import EntityCacheService from "ember-mist-components/services/entity-cache";
+import EntityCacheService from "@getflights/ember-mist-components/services/entity-cache";
 import { inject as service } from "@ember/service";
 import Transition from "@ember/routing/-private/transition";
 import Controller from "@ember/controller";
@@ -25,6 +25,7 @@ export default abstract class ModelIndexRoute extends Route {
     this.entityCache.clearReturnToModel();
   }
 
+  // @ts-ignore
   setupController(
     controller: Controller,
     model: Model,

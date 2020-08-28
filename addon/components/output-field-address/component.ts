@@ -1,5 +1,5 @@
-import InputFieldAddressComponent from "ember-mist-components/components/input-field-address/component";
-import { replaceAll } from "ember-field-components/classes/utils";
+import InputFieldAddressComponent from "@getflights/ember-mist-components/components/input-field-address/component";
+import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 

@@ -1,7 +1,7 @@
 import Model from "ember-data/model";
 import { getOwner } from "@ember/application";
-import FieldInformationService from "ember-field-components/services/field-information";
-import HttpService from "ember-mist-components/services/http";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
+import HttpService from "@getflights/ember-mist-components/services/http";
 import Store from "ember-data/store";
 
 export default function apiAction(path: string) {

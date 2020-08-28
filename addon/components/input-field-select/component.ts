@@ -1,5 +1,5 @@
-import InputFieldSelectComponent from "ember-field-components/components/input-field-select/component";
-import DynamicSelectOptionService from "ember-mist-components/services/dynamic-select-options";
+import InputFieldSelectComponent from "@getflights/ember-field-components/components/input-field-select/component";
+import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";

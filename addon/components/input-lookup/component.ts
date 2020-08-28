@@ -1,11 +1,11 @@
-import BaseInput from "ember-field-components/components/BaseInput";
-import FieldInformationService from "ember-field-components/services/field-information";
+import BaseInput from "@getflights/ember-field-components/components/BaseInput";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isArray } from "@ember/array";
 import { action } from "@ember/object";
-import DrupalModel from "ember-mist-components/models/drupal-model";
-import Query from "ember-mist-components/query/Query";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import Query from "@getflights/ember-mist-components/query/Query";
 
 export default class InputLookup extends BaseInput {
   @service intl!: any;
