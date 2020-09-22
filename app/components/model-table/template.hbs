@@ -43,14 +43,14 @@
 
     <div id={{concat this.guid '-new'}}></div>
 
-    <ul id={{concat this.guid '-actions'}} class="action__menu">
+    <ul id={{concat this.guid '-actions'}} class="action-menu">
       <li>
         <a {{on "click" this.search}} role="button" class="model-table__action__search">
           <IconSearch />
         </a>
       </li>
 
-      <MenuDropdown @class="action__menu__dropdown">
+      <MenuDropdown @class="action-menu__dropdown">
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
             <li>
