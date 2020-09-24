@@ -6,10 +6,12 @@
   @modelListView={{@modelListView}}
   @listViewGrouping={{@listViewGrouping}} as |Table| >
   {{#if (not this.hideNew)}}
-    <Table.new>
-      <button class="btn btn-primary model-table__new__button" {{on "click" this.newFromRelated}}>
-        <IconPlus />
-      </button>
-    </Table.new>
+    <Table.actions>
+      <MenuItem @class="model-table__new__wrapper">
+        <button class="btn btn-primary model-table__new__trigger action-menu__link" {{on "click" this.newFromRelated}}>
+          <IconPlus />
+        </button>
+      </MenuItem>
+    </Table.actions>
   {{/if}}
 </ModelTable>
