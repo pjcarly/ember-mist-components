@@ -16,7 +16,7 @@
             as |table| >
 
             <Table.actions>
-              <li><a {{on "click" this.closeModal}} role="button" class="waves-effect waves-circle"><IconClose /></a></li>
+              <li><a {{on "click" this.closeModal}} role="button" class=""><IconClose /></a></li>
             </Table.actions>
           </ModelTable>
         {{/if}}
@@ -29,7 +29,7 @@
 {{#if hasBlock}}
   {{yield (action 'showModal')}}
 {{else}}
-  <button type="button" class="btn btn-default waves-effect btn-link" {{on "click" this.showModal}}>
+  <button type="button" class="btn btn-default btn-link" {{on "click" this.showModal}}>
     <IconSearch />
   </button>
 {{/if}}

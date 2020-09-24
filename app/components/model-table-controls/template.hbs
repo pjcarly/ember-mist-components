@@ -23,14 +23,14 @@
           @valueChanged={{action 'didSelectRows'}} @required={{true}} />
       </li>
       <li>
-        <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToPrevPage"}}>
+        <button class="btn btn-link btn-icon waves-circle" {{action "goToPrevPage"}}>
           <IconChevronLeft />
         </button>
 
         <InputSelect @class="plain-select" @selectOptions={{this.pageSelectOptions}} @value={{@currentPage}}
           @valueChanged={{action 'didSelectPage'}} @required={{true}} />
 
-        <button class="btn btn-link btn-icon waves-effect waves-circle" {{action "goToNextPage"}}>
+        <button class="btn btn-link btn-icon waves-circle" {{action "goToNextPage"}}>
           <IconChevronRight />
         </button>
       </li>

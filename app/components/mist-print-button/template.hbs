@@ -1,5 +1,5 @@
 {{#if @grouping}}
-  <button class="btn bgm-pink waves-effect" {{action 'showModal'}}>{{yield}}</button>
+  <button class="btn bgm-pink" {{action 'showModal'}}>{{yield}}</button>
 
   <div id={{this.modalId}} class="modal fade text-left" tabindex="-1">
     <div class="modal-dialog">
@@ -26,8 +26,8 @@
           {{/if}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-link waves-effect" {{action 'closeModal'}}>Close</button>
-          <button type="button" class="btn bgm-pink waves-effect" onclick={{perform this.generatePdf}}>
+          <button type="button" class="btn btn-link" {{action 'closeModal'}}>Close</button>
+          <button type="button" class="btn bgm-pink" onclick={{perform this.generatePdf}}>
             {{#if this.generatePdf.isIdle}}
               Generate
             {{else}}
