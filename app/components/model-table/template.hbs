@@ -41,35 +41,25 @@
       </div>
     </div>
 
-    <div id={{concat this.guid '-new'}} class="model-table__new__wrapper"></div>
-
-    <ul id={{concat this.guid '-actions'}} class="action-menu">
-      <li>
-        <a {{on "click" this.search}} role="button" class="model-table__action__search">
-          <IconSearch />
-        </a>
-      </li>
+    <ul id={{concat this.guid '-actions'}} class="model-table__actions action-menu">
+      <MenuItem @itemClicked={{this.search}}>
+        <IconSearch />
+      </MenuItem>
 
       <MenuDropdown @class="action-menu__dropdown">
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
-            <li>
-              <a href={{href-to 'list-view.edit' this.activeListViewKey}}>
-                <IconListViewEdit /> {{t 'ember-mist-components.list-view.edit'}}
-              </a>
-            </li>
+            <MenuItem @targetRoute={{href-to "list-view.edit" this.activeListViewKey}}>
+              {{t 'ember-mist-components.list-view.edit'}} <IconListViewEdit />
+            </MenuItem>
           {{/if}}
-          <li>
-            <a href={{href-to 'list-view.new'}}>
-              <IconListViewNew /> {{t 'ember-mist-components.list-view.new'}}
-            </a>
-          </li>
+          <MenuItem @targetRoute="list-view.new">
+            {{t 'ember-mist-components.list-view.new'}} <IconListViewNew />
+          </MenuItem>
         {{/if}}
-        <li>
-          <a {{on "click" this.refresh}} role="button">
-            <IconRefresh /> {{t 'ember-mist-components.labels.refresh'}}
-          </a>
-        </li>
+        <MenuItem @itemClicked={{this.refresh}}>
+          {{t 'ember-mist-components.labels.refresh'}} <IconRefresh />
+        </MenuItem>
       </MenuDropdown>
     </ul>
   </div>
@@ -82,7 +72,7 @@
   {{/if}}
 
   {{#if this.fetchRecords.last}}
-    {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) new=(component 'ember-wormhole' to=(concat this.guid '-new')))}}
+    {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) )}}
 
     {{#if this.isMultiModelNames}}
       <div class="model-type-selector">
