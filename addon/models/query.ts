@@ -1,4 +1,4 @@
-import { hasMany } from "ember-data/relationships";
+import { hasMany } from "@ember-data/model";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import MutableArray from "@ember/array/mutable";
 import ConditionModel from "./condition";

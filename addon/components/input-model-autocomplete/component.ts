@@ -6,7 +6,7 @@ import { debug, assert } from "@ember/debug";
 import { task } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
 import { tagName } from "@ember-decorators/component";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { Operator } from "@getflights/ember-mist-components/query/Condition";
 import Query from "@getflights/ember-mist-components/query/Query";

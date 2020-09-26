@@ -1,4 +1,4 @@
-import { belongsTo } from "ember-data/relationships";
+import { belongsTo } from "@ember-data/model";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { field } from "@getflights/ember-field-components/model/attribute";
 import QueryModel from "./query";

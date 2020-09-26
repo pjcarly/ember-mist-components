@@ -1,6 +1,6 @@
 import Service from "@ember/service";
-import Store from "ember-data/store";
-import Model from "ember-data/model";
+import Store from "@ember-data/store";
+import Model from "@ember-data/model";
 import { inject as service } from "@ember/service";
 import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 

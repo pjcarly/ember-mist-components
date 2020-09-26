@@ -1,7 +1,5 @@
-import Model from "ember-data/model";
-import attr from "ember-data/attr";
+import Model, { attr, hasMany } from "@ember-data/model";
 import { alias } from "@ember/object/computed";
-import { hasMany } from "ember-data/relationships";
 import MutableArray from "@ember/array/mutable";
 import FieldModel from "./field";
 

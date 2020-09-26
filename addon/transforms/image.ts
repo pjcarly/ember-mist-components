@@ -1,11 +1,11 @@
-import Transform from 'ember-data/transform';
-import { isBlank } from '@ember/utils';
+import Transform from "@ember-data/serializer/transform";
+import { isBlank } from "@ember/utils";
 
 export default class ImageTransform extends Transform {
   deserialize(serialized: any | null) {
     let file: any | null = {};
 
-    if(!isBlank(serialized)) {
+    if (!isBlank(serialized)) {
       file.id = serialized.id;
       file.filename = serialized.filename;
       file.url = serialized.url;
@@ -22,17 +22,17 @@ export default class ImageTransform extends Transform {
   serialize(deserialized: any | null) {
     let serializedFile: any | null = {};
 
-    if(!isBlank(deserialized)) {
-      serializedFile['id'] = deserialized.id;
-      serializedFile['filename'] = deserialized.filename;
-      serializedFile['url'] = deserialized.url;
-      serializedFile['filemime'] = deserialized.filemimie;
-      serializedFile['filesize'] = deserialized.filesize;
-      serializedFile['hash'] = deserialized.hash;
+    if (!isBlank(deserialized)) {
+      serializedFile["id"] = deserialized.id;
+      serializedFile["filename"] = deserialized.filename;
+      serializedFile["url"] = deserialized.url;
+      serializedFile["filemime"] = deserialized.filemimie;
+      serializedFile["filesize"] = deserialized.filesize;
+      serializedFile["hash"] = deserialized.hash;
     } else {
       serializedFile = null;
     }
 
     return serializedFile;
   }
-};
+}

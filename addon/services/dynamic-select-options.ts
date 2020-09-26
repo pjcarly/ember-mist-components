@@ -1,5 +1,5 @@
 import Service from "@ember/service";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";

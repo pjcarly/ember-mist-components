@@ -1,6 +1,6 @@
 import Component from "@ember/component";
-import Store from "ember-data/store";
-import Model from "ember-data/model";
+import Store from "@ember-data/store";
+import Model from "@ember-data/model";
 import Query from "@getflights/ember-mist-components/query/Query";
 import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import ListViewService, {

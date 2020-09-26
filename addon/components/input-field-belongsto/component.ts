@@ -5,7 +5,7 @@ import Condition, {
 import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
-import Model from "ember-data/model";
+import Model from "@ember-data/model";
 import { dropTask } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
 import { isBlank } from "@ember/utils";

@@ -1,5 +1,5 @@
 import Validator from "@getflights/ember-attribute-validations/validator";
-import Model from "ember-data/model";
+import Model from "@ember-data/model";
 import { isBlank } from "@ember/utils";
 import Address from "@getflights/ember-mist-components/models/address";
 import { assert } from "@ember/debug";

@@ -1,5 +1,5 @@
 import ResetModelRoute from "./reset-model-route";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import EntityCacheService from "@getflights/ember-mist-components/services/entity-cache";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";

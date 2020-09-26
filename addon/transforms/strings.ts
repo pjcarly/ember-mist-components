@@ -1,4 +1,4 @@
-import Transform from "ember-data/transform";
+import Transform from "@ember-data/serializer/transform";
 import { isArray } from "@ember/array";
 import { isBlank } from "@ember/utils";
 

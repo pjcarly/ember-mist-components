@@ -1,4 +1,4 @@
-import Transform from 'ember-data/transform';
+import Transform from "@ember-data/serializer/transform";
 
 export default class JsonTransform extends Transform {
   deserialize(serialized: any) {
@@ -8,4 +8,4 @@ export default class JsonTransform extends Transform {
   serialize(deserialized: any) {
     return deserialized;
   }
-};
+}

@@ -1,4 +1,4 @@
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import Condition, { QueryFilter, Operator } from "./Condition";
 import Order from "./Order";
 import EmberObject from "@ember/object";

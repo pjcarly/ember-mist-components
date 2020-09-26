@@ -1,5 +1,5 @@
 import Helper from "@ember/component/helper";
-import Model from "ember-data/model";
+import Model from "@ember-data/model";
 import { isBlank } from "@ember/utils";
 
 export default class ArrayJoinHelper extends Helper {

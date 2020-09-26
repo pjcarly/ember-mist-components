@@ -1,11 +1,11 @@
-import Transform from 'ember-data/transform';
-import { isBlank } from '@ember/utils';
+import Transform from "@ember-data/serializer/transform";
+import { isBlank } from "@ember/utils";
 
 export default class GeolocationTransform extends Transform {
   deserialize(serialized: any | null) {
     const location: any = {};
 
-    if(!isBlank(serialized)) {
+    if (!isBlank(serialized)) {
       location.lat = serialized.lat;
       location.lng = serialized.lng;
     }
@@ -16,11 +16,11 @@ export default class GeolocationTransform extends Transform {
   serialize(deserialized: any | null) {
     const serializedLocation: any = {};
 
-    if(!isBlank(deserialized)) {
-      serializedLocation['lat'] = deserialized.lat;
-      serializedLocation['lng'] = deserialized.lng;
+    if (!isBlank(deserialized)) {
+      serializedLocation["lat"] = deserialized.lat;
+      serializedLocation["lng"] = deserialized.lng;
     }
 
     return serializedLocation;
   }
-};
+}

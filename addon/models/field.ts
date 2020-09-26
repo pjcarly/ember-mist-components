@@ -1,6 +1,4 @@
-import Model from "ember-data/model";
-import attr from "ember-data/attr";
-import { belongsTo } from "ember-data/relationships";
+import Model, { attr, belongsTo } from "@ember-data/model";
 import MetaModelModel from "./meta-model";
 
 export default class FieldModel extends Model {
@@ -33,9 +31,9 @@ export default class FieldModel extends Model {
         rows: 10,
         sortOrder: {
           field: "created",
-          dir: "desc"
-        }
-      }
-    }
+          dir: "desc",
+        },
+      },
+    },
   };
 }

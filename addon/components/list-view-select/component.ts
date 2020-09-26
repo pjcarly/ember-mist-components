@@ -1,5 +1,5 @@
 import Component from "@ember/component";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";

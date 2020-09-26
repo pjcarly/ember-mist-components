@@ -1,7 +1,7 @@
 // @ts-ignore
 import Fragment from "ember-data-model-fragments/fragment";
-import Store from "ember-data/store";
-import attr from "ember-data/attr";
+import Store from "@ember-data/store";
+import { attr } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";

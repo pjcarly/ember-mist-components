@@ -3,7 +3,7 @@ import Model from "@ember-data/model";
 import Tracker from "ember-data-change-tracker/tracker";
 import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 
 export default abstract class ChangeTrackerModel extends Model {
   @service store!: Store;

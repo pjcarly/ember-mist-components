@@ -1,7 +1,7 @@
 import Component from "@ember/component";
 import { inject as service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import { action, computed } from "@ember/object";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import ConditionModel from "@getflights/ember-mist-components/models/condition";

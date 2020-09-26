@@ -1,5 +1,5 @@
 import Service from "@ember/service";
-import Model from "ember-data/model";
+import Model from "@ember-data/model";
 
 export default class EntityCacheService extends Service {
   returnToModel: Model | null = null;

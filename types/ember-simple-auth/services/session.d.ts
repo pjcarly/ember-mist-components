@@ -1,7 +1,7 @@
 import Service from "@ember/service";
 import Evented from "@ember/object/evented";
 import Transition from "@ember/routing/-private/transition";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 
 interface Data {
   authenticated: {

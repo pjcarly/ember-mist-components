@@ -1,5 +1,5 @@
 import Service from "@ember/service";
-import Store from "ember-data/store";
+import Store from "@ember-data/store";
 import Query from "@getflights/ember-mist-components/query/Query";
 import UserModel from "@getflights/ember-mist-components/models/user";
 import { inject as service } from "@ember/service";

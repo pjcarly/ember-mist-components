@@ -16,7 +16,7 @@ import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
-import Model from "ember-data/model";
+import Model from "@ember-data/model";
 import { taskFor } from "ember-concurrency-ts";
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
