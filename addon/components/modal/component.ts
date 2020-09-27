@@ -6,6 +6,12 @@ import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { guidFor } from "@ember/object/internals";
 import { inject as service } from "@ember/service";
 
+export interface YieldedComponent {
+  close: CallableFunction;
+  show: CallableFunction;
+  status: "visible" | "hidden"
+}
+
 @tagName("")
 export default class ModalComponent extends Component {
   @service router!: any;

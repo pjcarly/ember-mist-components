@@ -4,8 +4,8 @@ import { inject as service } from "@ember/service";
 import { isArray } from "@ember/array";
 import BaseInput from "@getflights/ember-field-components/components/BaseInput";
 import { Row } from "../model-table/component";
-import { guidFor } from "@ember/object/internals";
 import Query from "@getflights/ember-mist-components/query/Query";
+import { YieldedComponent as ModalComponent } from "@getflights/ember-mist-components/components/modal/component";
 
 export default class InputLookupWindowComponent extends BaseInput {
   @service intl!: any;
@@ -30,35 +30,14 @@ export default class InputLookupWindowComponent extends BaseInput {
     }
   }
 
-  @computed()
-  get modalId(): string {
-    return `${guidFor(this)}-modal`;
-  }
-
-  @action
-  showModal() {
-    this.set("modalVisible", true);
-    // TODO: Remove jQuery dependency
-    // @ts-ignore
-    $(`#${this.modalId}`).modal("show");
-  }
-
-  @action
-  closeModal() {
-    this.set("modalVisible", false);
-    // TODO: Remove jQuery dependency
-    // @ts-ignore
-    $(`#${this.modalId}`).modal("hide");
-  }
-
   @action
   clearLookup() {
     this.set("computedValue", null);
   }
 
   @action
-  didSelectRow(row: Row) {
-    this.closeModal();
+  didSelectRow(modal: ModalComponent, row: Row) {
+    modal.close();
     this.set("computedValue", row.content);
   }
 }

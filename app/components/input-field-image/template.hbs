@@ -1,43 +1,38 @@
-<div id={{this.modalId}} class="modal fade" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Choose an image</h4>
-      </div>
-      <div class="modal-body text-center">
-        {{#if modalVisible}}
-          <InputFileDrupal
-            @value={{this.value}}
-            @field={{@field}}
-            @multiple={{false}}
-            @modelName={{this.modelName}}
-            @options={{this.modifiedOptions}}
-            @valueChanged={{action (mut this.value)}} />
-          {{#if value.id}}
-            <OutputImage
-              @value={{this.value}}
-              @class='image-preview' />
-          {{/if}}
+<Modal @dialogClass="" @closeOnRouteChange={{true}} as |Element|>
+  <Element.trigger>
+    <div class="input-field-image-controls">
+      {{#if hasBlock}}
+        {{yield Element.show @value}}
+      {{else}}
+        {{#if @value.id}}
+          <OutputImageLink
+            @value={{this.value}} />
+
+          <button class="btn btn-xs" {{on "click" Element.show}}>Edit Image</button>
+        {{else}}
+          <button class="btn btn-xs" {{on "click" Element.show}}>Upload Image</button>
         {{/if}}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-link" {{action 'closeModal'}}>Close</button>
-      </div>
+      {{/if}}
     </div>
-  </div>
-</div>
-
-<div class="input-field-image-controls">
-  {{#if hasBlock}}
-    {{yield (action 'showModal') value}}
-  {{else}}
-    {{#if value.id}}
-      <OutputImageLink
-        @value={{this.value}} />
-
-      {{#mist-button class="btn-xs" click=(action 'showModal')}}Edit Image{{/mist-button}}
-    {{else}}
-      {{#mist-button class="btn-xs" click=(action 'showModal')}}Upload Image{{/mist-button}}
+  </Element.trigger>
+  <Element.header>
+    Choose an image
+  </Element.header>
+  <Element.body>
+    <InputFileDrupal
+      @value={{this.value}}
+      @field={{@field}}
+      @multiple={{false}}
+      @modelName={{this.modelName}}
+      @options={{this.modifiedOptions}}
+      @valueChanged={{action (mut this.value)}} />
+    {{#if @value.id}}
+      <OutputImage
+        @value={{this.value}}
+        @class='image-preview' />
     {{/if}}
-  {{/if}}
-</div>
+  </Element.body>
+  <Element.footer>
+    <button type="button" class="btn btn-link" {{on "click" Element.close}}>Close</button>
+  </Element.footer>
+</Modal>

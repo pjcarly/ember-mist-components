@@ -1,35 +1,34 @@
-<div id={{this.modalId}} class="modal fade" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-body">
-        {{#if modalVisible}}
-          <ModelTable
-            @title={{@title}}
-            @modelName={{@modelName}}
-            @activeModelName={{@activeModelName}}
-            @baseQuery={{@baseQuery}}
-            @class="model-table model-table__lookup-window"
-            @searchFixed={{true}}
-            @modelListView={{@modelListView}}
-            @listViewGrouping={{@listViewGrouping}}
-            @onRowSelected={{action 'didSelectRow'}}
-            as |table| >
+<Modal @dialogClass="" @closeOnRouteChange={{true}} as |Element|>
+  <Element.trigger>
+    {{#if hasBlock}}
+      {{yield Element.show}}
+    {{else}}
+      <button type="button" class="btn btn-default btn-link" {{on "click" Element.show}}>
+        <IconSearch />
+      </button>
+    {{/if}}
+  </Element.trigger>
+  <Element.header>
+    <button class="btn btn-icon" {{on "click" Element.close}}>
+      <i class="icon-cancel"></i>
+    </button>
+  </Element.header>
+  <Element.body>
+    <ModelTable
+      @title={{@title}}
+      @modelName={{@modelName}}
+      @activeModelName={{@activeModelName}}
+      @baseQuery={{@baseQuery}}
+      @class="model-table model-table__lookup-window"
+      @searchFixed={{true}}
+      @modelListView={{@modelListView}}
+      @listViewGrouping={{@listViewGrouping}}
+      @onRowSelected={{action this.didSelectRow Element}}
+      as |Table| >
 
-            <Table.actions>
-              <li><a {{on "click" this.closeModal}} role="button" class=""><IconClose /></a></li>
-            </Table.actions>
-          </ModelTable>
-        {{/if}}
-      </div>
-    </div>
-  </div>
-</div>
-
-
-{{#if hasBlock}}
-  {{yield (action 'showModal')}}
-{{else}}
-  <button type="button" class="btn btn-default btn-link" {{on "click" this.showModal}}>
-    <IconSearch />
-  </button>
-{{/if}}
+      <Table.actions>
+        <li><a {{on "click" Element.close}} role="button" class=""><IconClose /></a></li>
+      </Table.actions>
+    </ModelTable>
+  </Element.body>
+</Modal>
