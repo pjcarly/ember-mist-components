@@ -1,8 +1,8 @@
 {{#if setListViews.isIdle}}
-  <ul class="list-view-tabs{{if (eq bootstrapVersion 4) ' nav nav-tabs' ' tab-nav'}}" role="tablist">
+  <ul class="list-view-tabs nav nav-tabs" role="tablist">
     {{#each this.listViewSelectOptions as |listView|}}
-      <li class="{{if (eq listView.value this.selectedValue) 'active'}}{{if (eq bootstrapVersion 4) ' nav-item'}}">
-        <a class="{{if (eq listView.value this.selectedValue) 'active'}}{{if (eq bootstrapVersion 4) ' nav-link'}}" role="tab" {{action 'selectionChanged' listView.value}}>{{listView.label}}</a>
+      <li class="{{if (eq listView.value this.selectedValue) 'active'}} nav-item">
+        <a class="{{if (eq listView.value this.selectedValue) 'active'}} nav-link" role="tab" {{on "click" (fn this.selectionChanged listView.value)}}>{{listView.label}}</a>
       </li>
     {{/each}}
   </ul>

@@ -40,18 +40,6 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
     return address;
   }
 
-  @computed("addressing.config")
-  get applyXS(): boolean {
-    const config = this.addressing.config;
-    if (
-      config.hasOwnProperty("ember-mist-components") &&
-      config["ember-mist-components"].hasOwnProperty("bootstrapVersion")
-    ) {
-      return config["ember-mist-components"].bootstrapVersion < 4;
-    }
-    return true;
-  }
-
   @task({ group: "addressLoading" })
   *setAddressFormat() {
     const countryCode = this.address.countryCode;
@@ -124,11 +112,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
         row.amountOfColumns = row.columns.length;
 
         if (row.amountOfColumns > 0) {
-          if (this.applyXS) {
-            row.columnClassName = `col-xs-${12 / row.amountOfColumns}`;
-          } else {
-            row.columnClassName = `col-${12 / row.amountOfColumns}`;
-          }
+          row.columnClassName = `col-${12 / row.amountOfColumns}`;
           rows.push(row);
         }
       }
