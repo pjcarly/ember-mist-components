@@ -3,7 +3,7 @@
     {{#if hasBlock}}
       {{yield Element.show}}
     {{else}}
-      <button type="button" class="btn btn-default btn-link" {{on "click" Element.show}}>
+      <button type="button" class="btn btn-default" {{on "click" Element.show}}>
         <IconSearch />
       </button>
     {{/if}}

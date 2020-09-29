@@ -1,23 +1,32 @@
 <span class={{this.computedClass}}>
+  {{#if @prefix}}
+    <div class="input-group-prepend">
+      <span class="input-group-text prefix">{{@prefix}}</span>
+    </div>
+  {{/if}}
   <InputModelAutocomplete
     @modelName={{@modelName}}
     @value={{value}}
     @inputId={{@inputId}}
     @placeholder={{@placeholder}}
-    @valueChanged={{action 'doChangeValue'}}
+    @valueChanged={{action this.doChangeValue}}
     @options={{hash hideClear=true}}
     @baseQuery={{@baseQuery}} />
 
-  {{#if this.computedValue}}
-    <button type="button" class="btn btn-default btn-link" {{action 'clearLookup'}}>
-      <IconRemove />
-    </button>
-  {{/if}}
-
-  <InputLookupWindow
-    @title={{this.modelTitle}}
-    @baseQuery={{@baseQuery}}
-    @modelName={{@modelName}}
-    @activeModelName={{this.activeModelName}}
-    @valueChanged={{action 'doChangeValue'}} />
+  <div class="input-group-append">
+    {{#if this.computedValue}}
+      <button type="button" class="btn btn-default" {{on "click" this.clearLookup}}>
+        <IconRemove />
+      </button>
+    {{/if}}
+    <InputLookupWindow
+      @title={{this.modelTitle}}
+      @baseQuery={{@baseQuery}}
+      @modelName={{@modelName}}
+      @activeModelName={{this.activeModelName}}
+      @valueChanged={{action this.doChangeValue}} />
+    {{#if @suffix}}
+      <span class="input-group-text suffix">{{@suffix}}</span>
+    {{/if}}
+  </div>
 </span>

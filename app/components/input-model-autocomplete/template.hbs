@@ -1,11 +1,11 @@
 <PowerSelect
-  @triggerClass="form-control"
+  class="form-control"
   @triggerId={{@inputId}}
   @placeholder={{@placeholder}}
   @search={{perform searchTask}}
   @selected={{@value}}
-  @onChange={{action 'formValueChanged'}}
-  @onFocus={{action 'handleFocus'}}
+  @onChange={{action this.formValueChanged}}
+  @onFocus={{action this.handleFocus}}
   @searchEnabled={{true}}
   @disabled={{@disabled}}
   @allowClear={{not this.shouldHideClear}}
