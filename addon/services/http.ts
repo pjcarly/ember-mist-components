@@ -8,6 +8,7 @@ import { Promise } from "rsvp";
 import qs from "qs";
 import AuthStoreService from "@getflights/ember-mist-components/services/auth-store";
 import SessionService from "ember-simple-auth/services/session";
+import JSONAPIAdapter from "@ember-data/adapter/json-api";
 
 export default class HttpService extends Service {
   @service session!: SessionService;
@@ -37,19 +38,33 @@ export default class HttpService extends Service {
     const endpoint = queryParams
       ? `${path}?${qs.stringify(queryParams)}`
       : path;
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       return fetch(endpoint, options)
-        .then((response: any) => {
+        .then((response: Response) => {
           if (response.ok) {
             resolve(response);
           } else {
+            this._handleErrorResponse(response, options);
             reject(response);
           }
         })
-        .catch((reason: any) => {
+        .catch((reason: Response) => {
+          this._handleErrorResponse(reason, options);
           reject(reason);
         });
     });
+  }
+
+  _handleErrorResponse(response: Response, request: RequestInit) {
+    const applicationAdapter: JSONAPIAdapter = getOwner(this).lookup(
+      "adapter:application"
+    );
+    applicationAdapter.handleResponse(
+      response.status,
+      response.headers.values,
+      response.text,
+      request
+    );
   }
 
   /**
