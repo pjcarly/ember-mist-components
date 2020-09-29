@@ -1,6 +1,8 @@
 <span class={{this.computedClass}}>
-  {{#if @prefix}}
-    <span class="input-group-addon prefix">{{@prefix}}</span>
+    {{#if @prefix}}
+    <div class="input-group-prepend">
+      <span class="input-group-text prefix">{{@prefix}}</span>
+    </div>
   {{/if}}
 
   <FileUpload 
@@ -16,6 +18,8 @@
   </FileUpload>
 
   {{#if @suffix}}
-    <span class="input-group-addon suffix">{{@suffix}}</span>
+    <div class="input-group-append">
+      <span class="input-group-text suffix">{{@suffix}}</span>
+    </div>
   {{/if}}
 </span>
