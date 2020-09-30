@@ -13,12 +13,12 @@
 <div id={{this.modalTriggerId}} class="modal-trigger"></div>
 
 <EmberWormhole @to="ember-mist-modal-wormhole">
-  <div id={{this.modalId}} class="modal{{if @class (concat " " @class)}}" tabindex="-1" role="dialog">
-    <div class="modal-dialog{{if this.dialogClass (concat " " this.dialogClass)}}">
+  <div id={{this.modalId}} class="modal {{@class}}" tabindex="-1" role="dialog">
+    <div class="modal-dialog {{this.dialogClass}}">
       <div class="modal-content">
-        <div id={{this.modalHeaderId}} class="modal-header"></div>
-        <div id={{this.modalBodyId}} class="modal-body"></div>
-        <div id={{this.modalFooterId}} class="modal-footer"></div>
+        <div id={{this.modalHeaderId}} class="modal-header {{@modalHeaderClass}}"></div>
+        <div id={{this.modalBodyId}} class="modal-body {{@modalBodyClass}}"></div>
+        <div id={{this.modalFooterId}} class="modal-footer {{@modalFooterClass}}"></div>
       </div>
     </div>
   </div>
