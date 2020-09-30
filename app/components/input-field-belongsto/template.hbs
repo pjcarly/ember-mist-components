@@ -3,7 +3,7 @@
       baseQuery=this.baseQuery
       value=this.value
       modelName=this.relationshipModelName
-      valueChanged=(action 'doChangeValue')
+      valueChanged=(action this.doChangeValue)
       placeholder=@placeholder
       class=this.inputClass
       inputId=this.caluclatedInputId
@@ -21,7 +21,7 @@
       @selectOptions={{this.selectOptions}}
       @value={{this.relationshipId}}
       @required={{this.isRequired}}
-      @valueChanged={{action 'doChangeValue'}}
+      @valueChanged={{action this.doChangeValue}}
       @class={{this.inputClass}}
       @inputId={{this.caluclatedInputId}} />
   {{/if}}
@@ -30,7 +30,7 @@
     @baseQuery={{this.baseQuery}}
     @value={{this.value}}
     @modelName={{this.relationshipModelName}}
-    @valueChanged={{action 'doChangeValue'}}
+    @valueChanged={{action this.doChangeValue}}
     @placeholder={{@placeholder}}
     @class={{this.inputClass}}
     @inputId={{this.caluclatedInputId}} />

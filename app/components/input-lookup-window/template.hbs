@@ -1,4 +1,4 @@
-<Modal @dialogClass="" @closeOnRouteChange={{true}} as |Element|>
+<Modal @dialogClass="modal-lg" @modalBodyClass="lookup-window__wrapper" @closeOnRouteChange={{true}} as |Element|>
   <Element.trigger>
     {{#if hasBlock}}
       {{yield Element.show}}
@@ -14,21 +14,24 @@
     </button>
   </Element.header>
   <Element.body>
-    <ModelTable
-      @title={{@title}}
-      @modelName={{@modelName}}
-      @activeModelName={{@activeModelName}}
-      @baseQuery={{@baseQuery}}
-      @class="model-table model-table__lookup-window"
-      @searchFixed={{true}}
-      @modelListView={{@modelListView}}
-      @listViewGrouping={{@listViewGrouping}}
-      @onRowSelected={{action this.didSelectRow Element}}
-      as |Table| >
+    <div class="lookup-window">
+      {{#if (eq Element.status "visible")}}
+        <ModelTable
+          @title={{@title}}
+          @modelName={{@modelName}}
+          @activeModelName={{@activeModelName}}
+          @baseQuery={{@baseQuery}}
+          @searchFixed={{true}}
+          @modelListView={{@modelListView}}
+          @listViewGrouping={{@listViewGrouping}}
+          @onRowSelected={{action this.didSelectRow Element}}
+          as |Table| >
 
-      <Table.actions>
-        <li><a {{on "click" Element.close}} role="button" class=""><IconClose /></a></li>
-      </Table.actions>
-    </ModelTable>
+          <Table.actions>
+            <MenuItem><a {{on "click" Element.close}} class="action-menu__link" role="button"><IconClose /></a></MenuItem>
+          </Table.actions>
+        </ModelTable>
+      {{/if}}
+    </div>
   </Element.body>
 </Modal>
