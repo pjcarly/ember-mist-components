@@ -26,6 +26,7 @@ import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
 import { getOwner, setOwner } from "@ember/application";
+import { later } from "@ember/runloop";
 
 export interface ModelClassInterface {
   fields: Map<string, string>;
@@ -408,7 +409,13 @@ export default class ModelTableComponent extends Component {
   focusSearch() {
     const domElement = document.getElementById(this.searchInputId);
     if (domElement) {
-      domElement.focus();
+      later(
+        domElement,
+        function () {
+          domElement.focus();
+        },
+        250
+      );
     }
   }
 
@@ -546,12 +553,14 @@ export default class ModelTableComponent extends Component {
    * Executes the search or displays the search innput, depending on if the search was visible or not
    */
   @action
-  search() {
+  search(event: Event) {
     if (this.searchVisible) {
       taskFor(this.fetchRecords).perform();
     } else {
       this.toggleSearch();
     }
+
+    event.preventDefault();
   }
 
   /**
