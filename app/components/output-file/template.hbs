@@ -1,5 +1,5 @@
 <span class={{this.computedClass}}>
-  {{#if @prefix}}
+  {{#if (and @value @prefix)}}
     <span class="prefix">
       {{@prefix}}
     </span>
@@ -15,7 +15,7 @@
   {{else}}
     <span class="value empty"></span>
   {{/if}}
-  {{#if @suffix}}
+  {{#if (and @value @suffix)}}
     <span class="suffix">
       {{@suffix}}
     </span>
