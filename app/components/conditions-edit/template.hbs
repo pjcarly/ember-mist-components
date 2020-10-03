@@ -1,12 +1,12 @@
 <div class="conditions-edit">
   <div class="button-bar">
-    <a role="button" {{action "addNewCondition"}} class="btn btn-default btn-xs">
+    <a role="button" {{action this.addNewCondition}} class="btn btn-default btn-xs">
       Add
     </a>
   </div>
 
   {{#if @model.conditions}}
-    {{#sortable-group model=@model.conditions onChange=(action "reorderConditions") class=(if isOdd "is-odd" "is-even") as |group|}}
+    {{#sortable-group model=@model.conditions onChange=(action this.reorderConditions) class=(if isOdd "is-odd" "is-even") as |group|}}
       {{#each (sort-by "sort" group.model) as |condition|}}
         {{#if (not condition.isDeleted)}}
           {{#group.item model=condition class=(if readOnly "read-only" "read-write") as |sortableItem|}}
@@ -28,7 +28,7 @@
             <div class="b-0 action-column">
               <ul class="action-menu">
                 <MenuDropdown>
-                  <MenuItem @itemClicked={{action "deleteCondition" condition}}><i class="zmdi zmdi-delete zmdi-hc-lg"></i> Delete</MenuItem>
+                  <MenuItem @itemClicked={{action this.deleteCondition condition}}>Delete <i class="zmdi zmdi-delete"></i></MenuItem>
                 </MenuDropdown>
               </ul>
             </div>

@@ -1,12 +1,12 @@
 <div class="orders-edit">
   <div class="button-bar">
-    <a role="button" {{action "addNewOrder"}} class="btn btn-default btn-xs">
+    <a role="button" {{action this.addNewOrder}} class="btn btn-default btn-xs">
       Add
     </a>
   </div>
 
   {{#if @model.orders}}
-    {{#sortable-group model=@model.orders onChange=(action "reorderOrders") class=(if isOdd "is-odd" "is-even") as |group|}}
+    {{#sortable-group model=@model.orders onChange=(action this.reorderOrders) class=(if isOdd "is-odd" "is-even") as |group|}}
       {{#each (sort-by "sort" group.model) as |order|}}
         {{#if (not order.isDeleted)}}
           {{#group.item model=order class=(if readOnly "read-only" "read-write") as |sortableItem|}}
@@ -25,7 +25,7 @@
             <div class="b-0 action-column">
               <ul class="action-menu">
                 <MenuDropdown>
-                  <MenuItem @itemClicked={{action "deleteOrder" order}}><i class="zmdi zmdi-delete zmdi-hc-lg"></i> Delete</MenuItem>
+                  <MenuItem @itemClicked={{action this.deleteOrder order}}>Delete <i class="zmdi zmdi-delete"></i></MenuItem>
                 </MenuDropdown>
               </ul>
             </div>
