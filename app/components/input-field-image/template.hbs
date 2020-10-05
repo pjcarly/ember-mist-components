@@ -2,9 +2,9 @@
   <Element.trigger>
     <div class="input-field-image-controls">
       {{#if hasBlock}}
-        {{yield Element.show @value}}
+        {{yield Element.show this.value}}
       {{else}}
-        {{#if @value.id}}
+        {{#if this.value.id}}
           <OutputImageLink
             @value={{this.value}} />
 
@@ -26,10 +26,10 @@
       @modelName={{this.modelName}}
       @options={{this.modifiedOptions}}
       @valueChanged={{action (mut this.value)}} />
-    {{#if @value.id}}
+    {{#if this.value.id}}
       <OutputImage
         @value={{this.value}}
-        @class='image-preview' />
+        @class="image-preview" />
     {{/if}}
   </Element.body>
   <Element.footer>
