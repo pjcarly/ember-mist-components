@@ -1,58 +1,51 @@
-{{#if (and this.isSelect setSelectOptions.isRunning)}}
-  <Loading />
-{{else}}
-  {{#if this.value}}
-    {{#sortable-group tagName="ul" model=this.value onChange=(action "reorderedValues") as |group|}}
-      {{#each group.model as |model index|}}
-        {{#group.item tagName="li" model=model class=(if readOnly "read-only" "read-write") as |sortableItem|}}
-          <span class="input-hasmany-item">
-            {{#sortableItem.handle tagName="span"}}
-              <div class="b-0 sort-handle" sort={{condition.sort}}>
-                <i class="zmdi zmdi-unfold-more"></i>
-              </div>
-            {{/sortableItem.handle}}
-
+<span class={{this.computedClass}}>
+  {{#if (and this.isSelect setSelectOptions.isRunning)}}
+    <Loading />
+  {{else}}
+    {{#if this.value}}
+      <div class="input-multi-field" {{sortable-group onChange=(action this.reorderedValues)}}>
+        {{#each this.value as |model index|}}
+          <div class="input-multi-field__item{{if readOnly ' read-only' ' read-write'}}" {{sortable-item model=item}}>
+            <div class="input-multi-field__item__sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
             {{#if this.isSelect}}
-              <InputSelect
-                @selectOptions={{this.selectOptions}}
-                @value={{model.id}}
-                @required={{this.isRequired}}
-                @valueChanged={{action 'doChangeValue' index}}
-                @class={{this.inputClass}}
-                @inputId={{this.caluclatedInputId}} />
-            {{else}}
-              <InputLookup
-                @baseQuery={{this.baseQuery}}
-                @value={{model}}
-                @modelName={{model-class-name model}}
-                @valueChanged={{action 'doChangeValue' index}}
-                @placeholder={{@placeholder}}
-                @class={{this.inputClass}}
-                @inputId={{this.caluclatedInputId}} />
-            {{/if}}
-          </span>
-        {{/group.item}}
-      {{/each}}
-    {{/sortable-group}}
-  {{/if}}
-  <ul>
-    <li>
+                <InputSelect
+                  @selectOptions={{this.selectOptions}}
+                  @value={{model.id}}
+                  @required={{this.isRequired}}
+                  @valueChanged={{action this.doChangeValue index}}
+                  @class={{this.inputClass}}
+                  @inputId={{this.caluclatedInputId}} />
+              {{else}}
+                <InputLookup
+                  @baseQuery={{this.baseQuery}}
+                  @value={{model}}
+                  @modelName={{model-class-name model}}
+                  @valueChanged={{action this.doChangeValue index}}
+                  @placeholder={{@placeholder}}
+                  @class={{this.inputClass}}
+                  @inputId={{this.caluclatedInputId}} />
+              {{/if}}
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
+    <div class="input-multi-field__item">
       {{#if this.isSelect}}
         <InputSelect
           @selectOptions={{this.selectOptions}}
           @required={{this.isRequired}}
-          @valueChanged={{action 'doChangeValue' index}}
+          @valueChanged={{action this.doChangeValue index}}
           @class={{this.inputClass}}
           @inputId={{this.caluclatedInputId}} />
       {{else}}
         <InputLookup
           @baseQuery={{this.baseQuery}}
           @modelName={{this.relationshipModelName}}
-          @valueChanged={{action 'doChangeValue' index}}
+          @valueChanged={{action this.doChangeValue index}}
           @placeholder={{@placeholder}}
           @class={{this.inputClass}}
           @inputId={{this.caluclatedInputId}} />
       {{/if}}
-    </li>
-  </ul>
-{{/if}}
+    </div>
+  {{/if}}
+</span>
