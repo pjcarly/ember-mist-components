@@ -1,0 +1,26 @@
+<div class="input-multi-field" {{sortable-group onChange=(action this.reorderLines)}}>
+  {{#each this.items as |item index|}}
+    <div class="input-multi-field__item" {{sortable-item model=item}}>
+      <div class="input-multi-field__item__sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
+      {{component 
+        @inputComponent 
+        value=item
+        valueChanged=(action this.itemValueChanged index)
+        placeholder=@placeholder
+        prefix=@prefix
+        suffix=@suffix
+        inputClass=@inputClass
+        inputId=@inputId
+        options=@inputOptions}}
+      <button class="btn input-multi-field__item__remove" {{on "click" (fn this.removeIndexFromValue index)}}>
+        <IconRemove />
+      </button>
+    </div>
+  {{/each}}
+
+  <div class="input-multi-field__button__wrapper">
+    <button class="btn input-multi-field__button" {{on "click" this.addNewValue}}>
+      <IconPlus />
+    </button>
+  </div>
+</div>

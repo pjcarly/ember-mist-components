@@ -1,20 +1,13 @@
-<div class="button-bar">
-  <a {{action 'addNewValue'}} class="btn btn-default btn-xs">
-    Add
-  </a>
-</div>
-
-{{#sortable-group model=this.items tagName="div" onChange=(action 'reorderLines') as |group|}}
-  {{#each group.model as |item index|}}
-    {{#group.item model=item as |sortableItem|}}
-      {{#sortableItem.handle}}
-        <div class="b-0 sort-handle" sort={{index}}>&varr;</div>
-      {{/sortableItem.handle}}
-
-      <InputText @value={{item}} @valueChanged={{action 'setArrayValue' index}} />
-      <a {{action 'removeIndexFromValue' index}} class="btn btn-default icon-button">
-        <IconRemove />
-      </a>
-    {{/group.item}}
-  {{/each}}
-{{/sortable-group}}
+<InputMultiField 
+  @inputComponent="input-text"
+  @value={{this.value}}
+  @field={{@field}}
+  @model={{@model}}
+  @valueChanged={{action (mut this.value)}}
+  @preSetHook={{this.preSetHook}}
+  @placeholder={{@placeholder}}
+  @prefix={{@prefix}}
+  @suffix={{@suffix}}
+  @inputClass={{@inputClass}}
+  @inputId={{@inputId}}
+  @inputOptions={{this.inputOptions}}/>
