@@ -5,7 +5,7 @@
         {{#each this.computedValue as |file|}}
           <li>
             <OutputImageLink @value={{file}} />
-            <button class="btn btn-xs btn-default remove" onclick={{action (fn this.deleteFile file)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+            <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile file)}}>{{t 'ember-mist-components.labels.remove'}}</button>
           </li>
         {{/each}}
       </ul>
@@ -13,7 +13,7 @@
       <ul class="file-drupal__list">
         <li>
           <OutputImageLink @value={{this.computedValue}} />
-          <button class="btn btn-xs btn-default remove" onclick={{action (fn this.deleteFile computedValue)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+          <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile computedValue)}}>{{t 'ember-mist-components.labels.remove'}}</button>
         </li>
       </ul>
     {{/if}}
