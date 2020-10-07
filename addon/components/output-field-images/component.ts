@@ -12,8 +12,11 @@ export default class OutputFieldImagesComponent extends OutputFieldComponent {
   didInsertElement() {
     // @ts-ignore
     super.didInsertElement(...arguments);
-    const carousel = new bsn.Carousel(`#${this.carouselName}`);
-    this.set("carousel", carousel);
+    const element = document.getElementById(this.carouselName);
+    if (element) {
+      const carousel = new bsn.Carousel(element);
+      this.set("carousel", carousel);
+    }
   }
 
   @computed()
