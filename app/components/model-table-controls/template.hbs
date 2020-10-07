@@ -3,7 +3,7 @@
     <ul>
       <li class={{if @amountSelected 'infos'}}>
         {{#if @amountSelected}}
-          <a {{action "didToggleDisplaySelected"}}>{{t 'ember-mist-components.table.rows'}}: {{@amountSelected}}</a>
+          <a {{on "click" this.didToggleDisplaySelected}}>{{t 'ember-mist-components.table.rows'}}: {{@amountSelected}}</a>
         {{/if}}
       </li>
     </ul>
@@ -19,18 +19,25 @@
       </li>
       <li>
         {{t 'ember-mist-components.table.rows'}}:
-        <InputSelect @class="plain-select" @selectOptions={{this.rowSelectOptions}} @value={{this.rowsValue}}
-          @valueChanged={{action 'didSelectRows'}} @required={{true}} />
+        <InputSelect @class="plain-select" 
+          @selectOptions={{this.rowSelectOptions}} 
+          @value={{this.rowsValue}}
+          @valueChanged={{action this.didSelectRows}} 
+          @required={{true}} />
       </li>
       <li>
-        <button class="btn btn-link btn-icon waves-circle" {{action "goToPrevPage"}}>
+        <button class="btn btn-link btn-icon" {{on "click" this.goToPrevPage}}>
           <IconChevronLeft />
         </button>
 
-        <InputSelect @class="plain-select" @selectOptions={{this.pageSelectOptions}} @value={{@currentPage}}
-          @valueChanged={{action 'didSelectPage'}} @required={{true}} />
+        <InputSelect 
+          @class="plain-select" 
+          @selectOptions={{this.pageSelectOptions}} 
+          @value={{@currentPage}}
+          @valueChanged={{action this.didSelectPage}} 
+          @required={{true}} />
 
-        <button class="btn btn-link btn-icon waves-circle" {{action "goToNextPage"}}>
+        <button class="btn btn-link btn-icon" {{on "click" this.goToNextPage}}>
           <IconChevronRight />
         </button>
       </li>
