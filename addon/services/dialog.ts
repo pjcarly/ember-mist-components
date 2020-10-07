@@ -5,10 +5,11 @@ import swal from "sweetalert2";
 export default class DialogService extends Service {
   @service intl!: any;
 
-  async confirm(title?: string): Promise<boolean> {
+  async confirm(message?: string, title?: string): Promise<boolean> {
     return swal
       .fire({
         title: title ?? this.intl.t("label.are_you_sure"),
+        text: message,
         icon: "warning",
         confirmButtonText: this.intl.t("label.yes"),
         showCancelButton: true,
