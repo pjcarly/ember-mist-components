@@ -21,7 +21,8 @@ export default class SingleModelRoute extends ResetModelRoute {
 
   beforeModel(transition: Transition) {
     this.session.requireAuthentication(transition, "login");
-    this._super(...arguments);
+    // @ts-ignore
+    super.beforeModel(...arguments);
   }
 
   /**

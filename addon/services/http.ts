@@ -61,7 +61,7 @@ export default class HttpService extends Service {
     );
     applicationAdapter.handleResponse(
       response.status,
-      response.headers.values,
+      response.headers?.values ?? {},
       response.text,
       request
     );

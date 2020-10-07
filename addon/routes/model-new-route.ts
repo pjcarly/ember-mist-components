@@ -15,7 +15,8 @@ export default abstract class ModelNewRoute extends ResetModelRoute {
 
   beforeModel(transition: Transition) {
     this.session.requireAuthentication(transition, "login");
-    this._super(...arguments);
+    // @ts-ignore
+    super.beforeModel(...arguments);
   }
 
   model(): any {

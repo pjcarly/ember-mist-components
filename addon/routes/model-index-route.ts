@@ -16,7 +16,8 @@ export default abstract class ModelIndexRoute extends Route {
 
   beforeModel(transition: Transition) {
     this.session.requireAuthentication(transition, "login");
-    this._super(...arguments);
+    // @ts-ignore
+    super.beforeModel(...arguments);
   }
 
   afterModel() {
