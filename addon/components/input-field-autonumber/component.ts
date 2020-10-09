@@ -8,8 +8,6 @@ import { computed } from "@ember/object";
 export default class InputFieldAutonumberComponent extends InputFieldComponent {
   @service autonumber!: AutonumberService;
 
-  readonly = true;
-
   @computed("value")
   get computedValue(): string {
     return this.autonumber.computeValue(
