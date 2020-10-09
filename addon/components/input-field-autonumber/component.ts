@@ -1,12 +1,14 @@
-import { computed } from "@ember/object";
-import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
+import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
 import AutonumberService, {
   AutonumberFieldOptions,
 } from "@getflights/ember-mist-components/services/autonumber";
 import { inject as service } from "@ember/service";
+import { computed } from "@ember/object";
 
-export default class OutputFieldAutonumberComponent extends OutputFieldComponent {
+export default class InputFieldAutonumberComponent extends InputFieldComponent {
   @service autonumber!: AutonumberService;
+
+  readonly = true;
 
   @computed("value")
   get computedValue(): string {

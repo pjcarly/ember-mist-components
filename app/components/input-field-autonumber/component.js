@@ -1,1 +1,1 @@
-export { default } from "@getflights/ember-mist-components/components/output-field-autonumber/component";
+export { default } from "@getflights/ember-mist-components/components/input-field-autonumber/component";
