@@ -19,18 +19,20 @@
     Choose an image
   </Element.header>
   <Element.body>
-    <InputFileDrupal
-      @value={{this.value}}
-      @field={{@field}}
-      @multiple={{false}}
-      @modelName={{this.modelName}}
-      @options={{this.modifiedOptions}}
-      @valueChanged={{action (mut this.value)}} />
-    {{#if this.value.id}}
-      <OutputImage
+    <div class="input-field-image__body">
+      <InputFileDrupal
         @value={{this.value}}
-        @class="image-preview" />
-    {{/if}}
+        @field={{@field}}
+        @multiple={{false}}
+        @modelName={{this.modelName}}
+        @options={{this.modifiedOptions}}
+        @valueChanged={{action (mut this.value)}} />
+      {{#if this.value.id}}
+        <OutputImage
+          @value={{this.value}}
+          @class="image-preview" />
+      {{/if}}
+    </div>
   </Element.body>
   <Element.footer>
     <button type="button" class="btn btn-white" {{on "click" Element.close}}>{{t "label.close"}}</button>
