@@ -1,31 +1,31 @@
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-6">
     <InputField @model={{this.model}} @field="name" />
     <InputField @model={{this.model}} @field="grouping" />
     <InputField @model={{this.model}} @field="rows" />
   </div>
-  <div class="col-sm-6">
+  <div class="col-6">
     <InputField @model={{this.model}} @field="model" />
     <InputField @model={{this.model}} @field="sort" />
   </div>
   {{#if this.model.model}}
-    <div class="col-sm-12">
+    <div class="col-12">
       <InputField @model={{this.model}} @field="columns" @options={{hash baseQuery=this.fieldQuery nameField="label"}}/>
     </div>
-    <div class="col-sm-12">
+    <div class="col-12">
       <div class="card-header">
         <h2>Conditions</h2>
       </div>
     </div>
-    <div class="col-sm-12">
+    <div class="col-12">
       <ConditionsEdit @model={{this.model}} @field="conditions" />
     </div>
-    <div class="col-sm-12">
+    <div class="col-12">
       <div class="card-header">
         <h2>Sort Order</h2>
       </div>
     </div>
-    <div class="col-sm-12">
+    <div class="col-12">
       <SortOrdersEdit @model={{this.model}} @field="orders" />
     </div>
   {{/if}}
