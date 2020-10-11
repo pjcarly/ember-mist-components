@@ -27,8 +27,7 @@ export default class InputModelAutocompleteComponent extends Component {
 
   /**
    * Options that can be passed in.
-   * `renderInPlace` see this.shouldRenderInPlace
-   * `renderInPlace` see this.shouldHIdeClear
+   * `hideClear` see this.shouldHideClear
    * `searchQuery` see this.shouldUseSearchQuery
    */
   options?: any;
@@ -89,18 +88,6 @@ export default class InputModelAutocompleteComponent extends Component {
       !isBlank(this.options) &&
       "searchQuery" in this.options &&
       this.options.searchQuery
-    );
-  }
-
-  /**
-   * Sets the renderInPlace attribute on the Ember Power Select component (default true)
-   */
-  @computed("options.renderInPlace")
-  get shouldRenderInPlace(): boolean {
-    return (
-      isBlank(this.options) ||
-      !("renderInPlace" in this.options) ||
-      this.options.renderInPlace
     );
   }
 

@@ -8,8 +8,7 @@
   @onFocus={{action this.handleFocus}}
   @searchEnabled={{true}}
   @disabled={{@disabled}}
-  @allowClear={{not this.shouldHideClear}}
-  @renderInPlace={{this.shouldRenderInPlace}} as |model|>
+  @allowClear={{not this.shouldHideClear}} as |model|>
   <span class="name">
     {{model.name}}
   </span>
