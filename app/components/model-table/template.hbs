@@ -82,7 +82,7 @@
           @selectOptions={{this.modelNameSelectOptions}}
           @value={{this.activeModelName}}
           @required={{true}}
-          @valueChanged={{action 'activeModelNameChanged'}} />
+          @valueChanged={{action this.activeModelNameChanged}} />
       </div>
     {{/if}}
 
@@ -131,7 +131,7 @@
 
     <div class="table-footer">
       <ModelTableControls
-        @toggleDisplaySelected={{action 'toggleDisplaySelected'}}
+        @toggleDisplaySelected={{action this.toggleDisplaySelected}}
         @amountSelected={{this.amountSelected}}
         @isBusy={{this.fetchRecords.isRunning}}
         @currentPage={{this.query.page}}
@@ -140,10 +140,10 @@
         @firstRow={{this.resultRowFirst}}
         @lastRow={{this.resultRowLast}}
         @totalCount={{this.resultTotalCount}}
-        @nextPage={{action 'nextPage'}}
-        @prevPage={{action 'prevPage'}}
-        @pageSelected={{action 'pageSelected'}}
-        @rowsSelected={{action 'limitChanged'}} />
+        @nextPage={{action this.nextPage}}
+        @prevPage={{action this.prevPage}}
+        @pageSelected={{action this.pageSelected}}
+        @rowsSelected={{action this.limitChanged}} />
     </div>
   {{/if}}
 </div>

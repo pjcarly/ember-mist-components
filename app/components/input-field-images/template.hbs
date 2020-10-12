@@ -15,7 +15,7 @@
             @multiple={{true}}
             @modelName={{this.modelName}}
             @options={{this.modifiedOptions}}
-            @valueChanged={{action 'didChangeValue' index}} />
+            @valueChanged={{action this.didChangeValue index}} />
           <OutputImage
             @value={{imageValue}}
             @style={{this.style}}
@@ -42,5 +42,5 @@
     @multiple={{true}}
     @modelName={{this.modelName}}
     @options={{this.modifiedOptions}}
-    @valueChanged={{action 'didChangeValue' null}} />
+    @valueChanged={{action this.didChangeValue null}} />
 </div>

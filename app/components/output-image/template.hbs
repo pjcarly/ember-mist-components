@@ -5,7 +5,7 @@
     </span>
   {{/if}}
   {{#if (and @value @value.url)}}
-    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{action 'didClickImage' @value}}/>
+    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{on "click" (fn didClickImage @value)}}/>
   {{else}}
     <span class='value empty'></span>
   {{/if}}

@@ -1,5 +1,5 @@
 {{#if @grouping}}
-  <button class="btn btn-primary" {{action 'showModal'}}>{{yield}}</button>
+  <button class="btn btn-primary" {{on "click" this.showModal}}>{{yield}}</button>
 
   <div id={{this.modalId}} class="modal fade text-left" tabindex="-1">
     <div class="modal-dialog">
@@ -16,7 +16,7 @@
                   @selectOptions={{this.selectOptions}}
                   @value={{this.value}}
                   @required={{true}}
-                  @valueChanged={{action 'templateValueChanged'}} />
+                  @valueChanged={{action this.templateValueChanged}} />
               {{else}}
                 <span>No templates found</span>
               {{/if}}
@@ -26,8 +26,8 @@
           {{/if}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-link" {{action 'closeModal'}}>Close</button>
-          <button type="button" class="btn btn-primary" onclick={{perform this.generatePdf}}>
+          <button type="button" class="btn btn-link" {{on "click" this.closeModal}}>Close</button>
+          <button type="button" class="btn btn-primary" {{on "click" (perform this.generatePdf)}}>
             {{#if this.generatePdf.isIdle}}
               Generate
             {{else}}

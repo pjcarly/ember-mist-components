@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" onclick={{perform this.generatePdf}}>
+<button type="button" class="btn btn-primary" {{on "click" (perform this.generatePdf)}}>
   {{#if hasBlock}}
     {{yield this.generatePdf}}
   {{else}}
