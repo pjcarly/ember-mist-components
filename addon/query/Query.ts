@@ -67,6 +67,20 @@ export default class Query {
   }
 
   /**
+   * Returns the orders
+   */
+  getOrders(): Order[] {
+    return this.orders;
+  }
+
+  /**
+   * Returns the current page the query is on
+   */
+  getCurrentPage(): number {
+    return this.page;
+  }
+
+  /**
    * Adds an include to the Query
    * @param relationshipName The relationship to include in the results
    */

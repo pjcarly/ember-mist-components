@@ -295,8 +295,8 @@ export default class ModelTableComponent extends Component {
       // We handled the ".", and now we can rejoin the column
       const camelizedColumn = splittedColumns.join(".");
       const sortedOnColumn =
-        this.query.orders.length > 0 &&
-        this.query.orders[0].field === dasherize(modelColumn);
+        this.query.getOrders().length > 0 &&
+        this.query.getOrders()[0].field === dasherize(modelColumn);
 
       // Now that we know the column, lets see if it actually exists as a field on the modelclass
       if (this.allActiveModelClassColums.has(camelizedColumn)) {
@@ -317,7 +317,8 @@ export default class ModelTableComponent extends Component {
         column.cellComponent = "model-table-cell";
         column.sorted = sortedOnColumn;
         column.ascending =
-          sortedOnColumn && this.query.orders[0].direction === Direction.ASC;
+          sortedOnColumn &&
+          this.query.getOrders()[0].direction === Direction.ASC;
 
         columns.push(column);
       }
@@ -574,7 +575,7 @@ export default class ModelTableComponent extends Component {
    */
   @action
   nextPage() {
-    if (this.query.page < this.lastPage) {
+    if (this.query.getCurrentPage() < this.lastPage) {
       this.query.nextPage();
       taskFor(this.fetchRecords).perform();
     }
@@ -585,7 +586,7 @@ export default class ModelTableComponent extends Component {
    */
   @action
   prevPage() {
-    if (this.query.page > 1) {
+    if (this.query.getCurrentPage() > 1) {
       this.query.prevPage();
       taskFor(this.fetchRecords).perform();
     }
