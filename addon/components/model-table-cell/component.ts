@@ -1,5 +1,9 @@
-import Component from "@ember/component";
-import { tagName } from "@ember-decorators/component";
+import Component from "@glimmer/component";
+import { Column, Row } from "../model-table/component";
 
-@tagName("")
-export default class ModelTableCellComponent extends Component {}
+interface Arguments {
+  row: Row;
+  column: Column;
+}
+
+export default class ModelTableCellComponent extends Component<Arguments> {}
