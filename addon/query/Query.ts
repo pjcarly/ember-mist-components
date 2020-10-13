@@ -1,7 +1,7 @@
 import Store from "@ember-data/store";
+import { tracked } from "@glimmer/tracking";
 import Condition, { QueryFilter, Operator } from "./Condition";
 import Order from "./Order";
-import EmberObject from "@ember/object";
 
 export interface QueryParams {
   page?: number;
@@ -12,20 +12,25 @@ export interface QueryParams {
   _single?: boolean;
 }
 
-export default class Query extends EmberObject {
-  modelName!: string; // The type of model you want to query
-  conditions: Condition[] = []; // The conditions of the query
-  conditionLogic?: string; // The condition logic you want to use for the condtions. Defaults to AND for everything
-  orders: Order[] = []; // The sort orders
-  includes: string[] = []; // Which related records you want the response to include
-  limit?: number; // The limit of records you want the result to have
-  page: number = 1; // The page of results you want to be on
-  search?: string;
-  searchField?: string; // The field you want to search on
-  searchOperator: Operator = Operator.LIKE; // The search operator you want to use
-  searchQuery?: string | null; // The search query you want to search with
-  listView?: number; // Which list view was selected
-  includeDefaultIncludes = true;
+export default class Query {
+  private modelName!: string; // The type of model you want to query
+  private conditions: Condition[] = []; // The conditions of the query
+  private conditionLogic?: string; // The condition logic you want to use for the condtions. Defaults to AND for everything
+  private orders: Order[] = []; // The sort orders
+  private includes: string[] = []; // Which related records you want the response to include
+  private searchField?: string; // The field you want to search on
+  private searchOperator: Operator = Operator.LIKE; // The search operator you want to use
+  private searchQuery?: string | null; // The search query you want to search with
+  private listView?: number; // Which list view was selected
+  private includeDefaultIncludes = true;
+
+  @tracked private limit?: number; // The limit of records you want the result to have
+  @tracked private page: number = 1; // The page of results you want to be on
+  @tracked private search?: string;
+
+  constructor(modelName: string) {
+    this.modelName = modelName;
+  }
 
   /**
    * Adds a condition to the Query
@@ -40,7 +45,7 @@ export default class Query extends EmberObject {
    * Removes all the conditions that were already added to the Query
    */
   clearConditions(): Query {
-    this.set("conditions", []);
+    this.conditions = [];
     return this;
   }
 
@@ -57,7 +62,7 @@ export default class Query extends EmberObject {
    * Removes the orders that were already added to the Query
    */
   clearOrders(): Query {
-    this.set("orders", []);
+    this.orders = [];
     return this;
   }
 
@@ -78,7 +83,7 @@ export default class Query extends EmberObject {
    * @param id The ID of the list view
    */
   setListView(id: number): Query {
-    this.set("listView", id);
+    this.listView = id;
     return this;
   }
 
@@ -87,7 +92,7 @@ export default class Query extends EmberObject {
    * @param value Whether or not to include the default model includes
    */
   setIncludeDefaultIncludes(value: boolean): Query {
-    this.set("includeDefaultIncludes", value);
+    this.includeDefaultIncludes = value;
     return this;
   }
 
@@ -95,7 +100,7 @@ export default class Query extends EmberObject {
    * Removes the list view
    */
   clearListView(): Query {
-    this.set("listView", undefined);
+    this.listView = undefined;
     return this;
   }
 
@@ -103,7 +108,7 @@ export default class Query extends EmberObject {
    * Removes all the includes
    */
   clearIncludes(): Query {
-    this.set("includes", []);
+    this.includes = [];
     return this;
   }
 
@@ -112,7 +117,7 @@ export default class Query extends EmberObject {
    * @param limit the limit
    */
   setLimit(limit: number): Query {
-    this.set("limit", limit);
+    this.limit = limit;
     return this;
   }
 
@@ -120,7 +125,7 @@ export default class Query extends EmberObject {
    * Removes the limit
    */
   clearLimit(): Query {
-    this.set("limit", undefined);
+    this.limit = undefined;
     return this;
   }
 
@@ -130,7 +135,7 @@ export default class Query extends EmberObject {
    * @param conditionLogic the logic you want to set
    */
   setConditionLogic(conditionLogic: string): Query {
-    this.set("conditionLogic", conditionLogic);
+    this.conditionLogic = conditionLogic;
     return this;
   }
 
@@ -138,7 +143,7 @@ export default class Query extends EmberObject {
    * Removes the filter logic
    */
   clearConditionLogic(): Query {
-    this.set("conditionLogic", undefined);
+    this.conditionLogic = undefined;
     return this;
   }
 
@@ -147,7 +152,7 @@ export default class Query extends EmberObject {
    * @param page The page you want returned
    */
   setPage(page: number): Query {
-    this.set("page", page);
+    this.page = page;
     return this;
   }
 
@@ -155,7 +160,7 @@ export default class Query extends EmberObject {
    * Clears the page
    */
   clearPage(): Query {
-    this.set("page", undefined);
+    this.page = 1;
     return this;
   }
 
@@ -164,7 +169,7 @@ export default class Query extends EmberObject {
    * @param modelName The new model name
    */
   setModelName(modelName: string): Query {
-    this.set("modelName", modelName);
+    this.modelName = modelName;
     return this;
   }
 
@@ -178,9 +183,9 @@ export default class Query extends EmberObject {
     searchOperator: Operator = Operator.LIKE,
     searchField: string | undefined = undefined
   ): Query {
-    this.set("search", search);
-    this.set("searchField", searchField);
-    this.set("searchOperator", searchOperator);
+    this.search = search;
+    this.searchField = searchField;
+    this.searchOperator = searchOperator;
     return this;
   }
 
@@ -188,9 +193,9 @@ export default class Query extends EmberObject {
    * Clears the search and the searchfield
    */
   clearSearch(): Query {
-    this.set("search", undefined);
-    this.set("searchField", undefined);
-    this.set("searchOperator", Operator.LIKE);
+    this.search = undefined;
+    this.searchField = undefined;
+    this.searchOperator = Operator.LIKE;
     return this;
   }
 
@@ -200,7 +205,7 @@ export default class Query extends EmberObject {
    * @param searchQuery The search query
    */
   setSearchQuery(searchQuery: string | undefined | null): Query {
-    this.set("searchQuery", searchQuery);
+    this.searchQuery = searchQuery;
     return this;
   }
 
@@ -208,7 +213,7 @@ export default class Query extends EmberObject {
    * Removes the search query
    */
   clearSearchQuery(): Query {
-    this.set("searchQuery", undefined);
+    this.searchQuery = undefined;
     return this;
   }
 
@@ -229,7 +234,7 @@ export default class Query extends EmberObject {
    * Increments the page by 1
    */
   nextPage() {
-    this.incrementProperty("page");
+    this.page++;
   }
 
   /**
@@ -237,7 +242,7 @@ export default class Query extends EmberObject {
    */
   prevPage() {
     if (this.page > 1) {
-      this.decrementProperty("page");
+      this.page--;
     }
   }
 

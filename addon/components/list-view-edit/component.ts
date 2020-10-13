@@ -12,7 +12,7 @@ export default class ListViewEditComponent extends Component {
   @computed("model.model")
   get fieldQuery(): Query {
     const model = this.model.model;
-    const query = Query.create({ modelName: "field" });
+    const query = new Query("field");
 
     if (model) {
       query.addCondition(new Condition("model", "=", model.id));

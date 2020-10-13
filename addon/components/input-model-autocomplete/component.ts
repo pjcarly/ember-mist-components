@@ -101,7 +101,7 @@ export default class InputModelAutocompleteComponent extends Component {
 
   @computed("baseQuery")
   get query(): Query {
-    const query = Query.create({ modelName: this.modelName });
+    const query = new Query(this.modelName);
 
     if (this.baseQuery) {
       query.copyFrom(this.baseQuery);

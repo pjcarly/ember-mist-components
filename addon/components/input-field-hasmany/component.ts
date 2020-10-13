@@ -112,7 +112,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
     const modelName = isArray(this.relationshipModelName)
       ? this.relationshipModelName[0]
       : this.relationshipModelName;
-    const query = Query.create({ modelName: modelName });
+    const query = new Query(modelName);
 
     if (this.options && this.options.baseQuery) {
       assert(

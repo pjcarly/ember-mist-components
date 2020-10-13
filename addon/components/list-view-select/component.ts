@@ -77,7 +77,7 @@ export default class ListViewSelectComponent extends Component {
       value: "All",
     });
 
-    const query = Query.create({ modelName: "list-view" });
+    const query = new Query("list-view");
     query.addCondition(new Condition("grouping", "=", this.grouping));
 
     yield query.fetch(this.store).then((listViews) => {

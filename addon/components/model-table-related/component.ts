@@ -47,7 +47,7 @@ export default class ModelTableRelatedComponent extends Component {
 
   @computed("model", "inverseRelationship", "hasManyModelName")
   get baseQuery(): Query {
-    const query = Query.create({ modelName: this.hasManyModelName });
+    const query = new Query(this.hasManyModelName);
     query.addCondition(
       new Condition(
         dasherize(this.inverseRelationship),

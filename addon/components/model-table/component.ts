@@ -150,9 +150,7 @@ export default class ModelTableComponent extends Component {
    */
   @computed("activeModelName", "baseQuery")
   get query(): Query {
-    const query = Query.create({
-      modelName: this.activeModelName,
-    });
+    const query = new Query(this.activeModelName);
 
     if (this.baseQuery) {
       query.copyFrom(this.baseQuery);
