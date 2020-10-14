@@ -2,10 +2,9 @@
   @title={{@title}}
   @modelName={{this.hasManyModelName}}
   @baseQuery={{this.baseQuery}}
-  @class={{concat "model-table__related " @class}}
   @modelListView={{@modelListView}}
-  @listViewGrouping={{@listViewGrouping}} as |Table| >
-  {{#if (not this.hideNew)}}
+  @listViewGrouping={{@listViewGrouping}} ...attributes as |Table|>
+  {{#if (not @hideNew)}}
     <Table.actions>
       <MenuItem @class="model-table__new__wrapper">
         <button class="btn btn-primary model-table__new__trigger action-menu__link" {{on "click" this.newFromRelated}}>
