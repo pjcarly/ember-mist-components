@@ -1,4 +1,4 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import Store from "@ember-data/store";
 import Model from "@ember-data/model";
 import Query from "@getflights/ember-mist-components/query/Query";
@@ -11,9 +11,7 @@ import Order, {
   Direction,
 } from "@getflights/ember-mist-components/query/Order";
 import { inject as service } from "@ember/service";
-import { tagName } from "@ember-decorators/component";
 import { computed, action } from "@ember/object";
-import { isArray } from "@ember/array";
 import NativeArray from "@ember/array/mutable";
 import { task, restartableTask } from "ember-concurrency-decorators";
 import { guidFor } from "@ember/object/internals";
@@ -25,7 +23,7 @@ import { assert } from "@ember/debug";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
-import { getOwner, setOwner } from "@ember/application";
+import { getOwner } from "@ember/application";
 import { later } from "@ember/runloop";
 
 export interface ModelClassInterface {
@@ -42,10 +40,9 @@ export class Table {
 
     models.forEach((model) => {
       const row = new Row();
-      setOwner(row, getOwner(this));
 
       row.content = model;
-      row.rowSelected = false;
+      row.selected = false;
       row.activated = false;
       this.rows.pushObject(row);
     });
@@ -53,107 +50,88 @@ export class Table {
 }
 
 export class Column {
-  label?: string;
-  modelName?: string;
-  @tracked valuePath?: string | boolean;
-  transitionToModel?: boolean;
-  width?: string;
-  resizable?: boolean;
-  cellComponent?: string;
-  cellClassNames?: string;
-  component?: string;
-  classNames?: string;
   @tracked sorted?: boolean;
   @tracked ascending?: boolean;
+  @tracked valuePath?: string | boolean;
+  label?: string;
+  modelName!: string | string[];
+  transitionToModel?: boolean;
+  cellComponent?: string;
   selectAll?: boolean;
 }
 
 export class Row {
-  content!: Model;
-  @tracked rowSelected!: boolean;
+  @tracked selected!: boolean;
   @tracked activated!: boolean; // this boolean is used when the row is active, for example when it is hovered, or when it is the active row in a navigation with the keyboard
+  content!: Model;
 }
 
-@tagName("")
-export default class ModelTableComponent extends Component {
+export interface Arguments {
+  modelName: string | string[];
+  title?: string;
+  multiselect?: boolean;
+  listViewGrouping?: string; // The list view grouping string
+  modelListView?: string; // The static list view defined on the model
+  searchFixed?: boolean; // whether or not to display the search field fixed
+  listViewsAsTabs?: boolean;
+  baseQuery?: Query;
+  tabPosition?: "bottom" | "top";
+}
+
+export default class ModelTableComponent extends Component<Arguments> {
   @service store!: Store;
   @service intl!: any;
   @service router!: any;
   @service fieldInformation!: FieldInformationService;
   @service listView!: ListViewService;
 
-  table!: Table;
-  lastPage: number = 0;
-  resultRowFirst: number = 0;
-  resultRowLast: number = 0;
-  resultTotalCount: number = 0;
-  selectedModels: any = A();
-  modelName!: string | string[];
-  activeModelName!: string;
-  title?: string;
-  multiselect: boolean = false;
-  listViewKey: string = "";
-  listViewGrouping?: string;
-  modelListView?: string;
-  baseQuery?: Query;
+  @tracked activeModelName!: string;
+  @tracked searchVisible: boolean = false;
+  @tracked lastPage: number = 0;
+  @tracked resultRowFirst: number = 0;
+  @tracked resultRowLast: number = 0;
+  @tracked resultTotalCount: number = 0;
+  @tracked listViewKey: string = "";
 
-  /**
-   * A flag that can be passed in to indicate whether to display the list views as tabs or as a select list
-   */
-  listViewsAsTabs: boolean = false;
-  tabPosition: "bottom" | "top" = "bottom";
-
-  /**
-   * The flag to indicate whether the amount of selected models in the table should be displayed
-   */
-  displaySelected: boolean = false;
+  table = new Table();
+  guid!: string;
+  selectedModels = A<Model>();
 
   /**
    * Closure actions
    */
-  onRowSelected?: (selectedRow: any) => void;
-  onRowMouseEnter?: (selectedRow: any) => void;
-  onRowMouseLeave?: (selectedRow: any) => void;
+  onRowSelected?: (selectedRow: Row) => void;
+  onRowMouseEnter?: (selectedRow: Row) => void;
+  onRowMouseLeave?: (selectedRow: Row) => void;
 
-  didReceiveAttrs() {
-    this.set("table", new Table());
-    setOwner(this.table, getOwner(this));
+  constructor(owner: any, args: Arguments) {
+    super(owner, args);
+    this.guid = guidFor(this);
 
-    super.didReceiveAttrs();
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
     taskFor(this.initializeTable).perform();
   }
 
   @task
-  *initializeTable() {
-    yield taskFor(this.fetchRecords).perform();
+  async initializeTable() {
+    await taskFor(this.fetchRecords).perform();
 
-    if (this.searchFixed) {
-      this.set("searchVisible", true);
+    if (this.args.searchFixed) {
+      this.searchVisible = true;
       this.focusSearch();
     }
   }
 
   /**
-   * Indicates whether the search bar on top of the table should always be visible
-   */
-  searchFixed: boolean = false;
-
-  /**
-   * Indicates whether the search bar should be visible or not
-   */
-  searchVisible: boolean = false;
-
-  /**
    * Returns a Query instance based on the active model name.
    */
-  @computed("activeModelName", "baseQuery")
+  @computed("activeModelName", "args.baseQuery")
   get query(): Query {
     const query = new Query(this.activeModelName);
 
-    if (this.baseQuery) {
-      query.copyFrom(this.baseQuery);
+    if (this.args.baseQuery) {
+      query.copyFrom(this.args.baseQuery);
       query.setModelName(this.activeModelName);
     }
 
@@ -162,27 +140,10 @@ export default class ModelTableComponent extends Component {
   }
 
   /**
-   * Returns true if there are multiple modelnames passed (for example with polymorphic relationships)
-   */
-  @computed("modelName")
-  get isMultiModelNames(): boolean {
-    return isArray(this.modelName);
-  }
-
-  /**
    * The inputId that will be used for the search input element
    */
-  @computed()
   get searchInputId(): string {
     return `${this.guid}-search`;
-  }
-
-  /**
-   * Checks whether multiselect should be enabled on this table
-   */
-  @computed("multiselect")
-  get isMultiSelect(): boolean {
-    return this.multiselect === true;
   }
 
   /**
@@ -193,10 +154,9 @@ export default class ModelTableComponent extends Component {
     return getOwner(this).resolveRegistration("config:environment");
   }
 
-  @computed("title", "activeModelName")
   get titleComputed(): string {
-    if (this.title) {
-      return this.title;
+    if (this.args.title) {
+      return this.args.title;
     } else {
       return this.fieldInformation.getTranslatedPlural(this.activeModelName);
     }
@@ -209,18 +169,18 @@ export default class ModelTableComponent extends Component {
     "router.currentRouteName",
     "activeModelName",
     "listViewKey",
-    "modelListView",
-    "listViewGrouping"
+    "args.modelListView",
+    "args.listViewGrouping"
   )
   get selectedListView(): ListViewModel | ModelListView {
-    if (this.listViewGrouping) {
+    if (this.args.listViewGrouping) {
       return this.listView.getActiveListViewForCurrentRoute(
         this.activeModelName
       );
-    } else if (this.modelListView) {
+    } else if (this.args.modelListView) {
       return this.listView.getModelListView(
         this.activeModelName,
-        this.modelListView
+        this.args.modelListView
       );
     }
 
@@ -253,17 +213,10 @@ export default class ModelTableComponent extends Component {
     // This function gets the columns defined on the model, and sets them as the columns of the table
     const columns = A<Column>();
 
-    if (this.isMultiSelect) {
+    if (this.args.multiselect) {
       const column = new Column();
-      setOwner(column, getOwner(this));
-
       column.label = "";
-      column.width = "60px";
-      column.resizable = false;
       column.cellComponent = "model-table-selector";
-      column.cellClassNames = "selector";
-      column.component = "model-table-all-selector";
-      column.classNames = "selector";
       column.selectAll = true;
 
       columns.pushObject(column);
@@ -302,7 +255,6 @@ export default class ModelTableComponent extends Component {
       if (this.allActiveModelClassColums.has(camelizedColumn)) {
         // And finally build the structure for the table
         const column = new Column();
-        setOwner(column, getOwner(this));
 
         column.label = this.fieldInformation.getTranslatedFieldlabel(
           this.activeModelName,
@@ -311,9 +263,8 @@ export default class ModelTableComponent extends Component {
 
         column.modelName = this.activeModelName;
         column.valuePath = camelizedColumn;
-        column.transitionToModel = !this.onRowSelected && !this.isMultiSelect; // When no row selected action or multiselect is provided, we will route to the model being displayed
-        column.width = modelColumn === "id" ? "60px" : undefined;
-        column.resizable = modelColumn !== "id";
+        column.transitionToModel =
+          !this.onRowSelected && !this.args.multiselect; // When no row selected action or multiselect is provided, we will route to the model being displayed
         column.cellComponent = "model-table-cell";
         column.sorted = sortedOnColumn;
         column.ascending =
@@ -327,25 +278,11 @@ export default class ModelTableComponent extends Component {
     return columns;
   }
 
-  @computed("selectedModels.[]")
-  get amountSelected(): number {
-    return this.selectedModels.length;
-  }
-
-  /**
-   * Returns a unique id for this component
-   */
-  @computed()
-  get guid(): string {
-    return guidFor(this);
-  }
-
   @computed("modelName", "intl.locale")
   get modelNameSelectOptions(): SelectOption[] {
-    const modelNames = <string[]>this.modelName;
     const selectOptions: SelectOption[] = [];
 
-    modelNames.forEach((modelName: string) => {
+    const pushSelectOptionForModelName = (modelName: string): void => {
       const plural = this.fieldInformation.getTranslatedPlural(modelName);
 
       const selectOption: SelectOption = {
@@ -354,7 +291,15 @@ export default class ModelTableComponent extends Component {
       };
 
       selectOptions.push(selectOption);
-    });
+    };
+
+    if (Array.isArray(this.args.modelName)) {
+      this.args.modelName.forEach((modelName: string) => {
+        pushSelectOptionForModelName(modelName);
+      });
+    } else {
+      pushSelectOptionForModelName(this.args.modelName);
+    }
 
     return selectOptions;
   }
@@ -365,20 +310,18 @@ export default class ModelTableComponent extends Component {
     );
   }
 
+  get isMultiModelNames(): boolean {
+    return Array.isArray(this.args.modelName);
+  }
+
   /**
    * Returns true if the list view edit links should be displayed
    */
-  @computed("config")
+  @computed()
   get displayListViewLinks(): boolean {
-    const config = this.config;
-    if (
-      config.hasOwnProperty("ember-mist-components") &&
-      config["ember-mist-components"].hasOwnProperty("displayListViewLinks")
-    ) {
-      return config["ember-mist-components"].displayListViewLinks;
-    }
-
-    return false;
+    return (
+      this.config?.["ember-mist-components"]?.displayListViewLinks ?? false
+    );
   }
 
   /**
@@ -394,10 +337,10 @@ export default class ModelTableComponent extends Component {
    */
   setActiveModelName(): void {
     if (!this.activeModelName) {
-      if (this.isMultiModelNames) {
-        this.set("activeModelName", this.modelName[0]);
+      if (Array.isArray(this.args.modelName)) {
+        this.activeModelName = this.args.modelName[0];
       } else {
-        this.set("activeModelName", this.modelName);
+        this.activeModelName = this.args.modelName;
       }
     }
   }
@@ -423,12 +366,10 @@ export default class ModelTableComponent extends Component {
    * we set the selected attribute to the correct rows
    */
   reSetSelected() {
-    if (this.isMultiSelect) {
+    if (this.args.multiselect) {
       this.table.rows.forEach((row) => {
-        row.rowSelected = this.selectedModels.includes(row.content);
+        row.selected = this.selectedModels.includes(row.content);
       });
-
-      this.setSelectAllColumn();
     }
   }
 
@@ -440,20 +381,14 @@ export default class ModelTableComponent extends Component {
     this.table.columns.pushObjects(this.columns);
   }
 
-  /**
-   * This function will set the select all boolean, based on the selected rows
-   */
-  setSelectAllColumn() {
-    const selectAllColumn = this.table.columns.firstObject;
-
-    if (selectAllColumn) {
-      selectAllColumn.valuePath = this.table.rows.isEvery("rowSelected", true);
-
-      if (this.selectedModels.length === 0 && this.displaySelected) {
-        this.toggleProperty("displaySelected");
-        taskFor(this.fetchRecords).perform();
-      }
-    }
+  @computed("fetchRecords.isRunning", "table.rows.@each.selected")
+  get allRowsSelected(): boolean {
+    return (
+      !(
+        // @ts-ignore
+        this.fetchRecords.isRunning
+      ) && this.table.rows.isEvery("selected", true)
+    );
   }
 
   /**
@@ -483,7 +418,7 @@ export default class ModelTableComponent extends Component {
    * Fetches the records from the back-end
    */
   @restartableTask
-  *fetchRecords() {
+  async fetchRecords() {
     // Lets check if a listview is selected. And pass if to the query if needed
     if (this.activeListViewKey !== "All") {
       this.query.setListView(<number>this.activeListViewKey);
@@ -492,16 +427,16 @@ export default class ModelTableComponent extends Component {
     }
 
     // Now we can query the store
-    yield this.query.fetch(this.store).then((records: NativeArray<Model>) => {
+    await this.query.fetch(this.store).then((records: NativeArray<Model>) => {
       this.table.setRows(records);
 
       // @ts-ignore: The ember-data types do not expose a Array type of a query result, with meta data from the query result in
       const meta = records.get("meta");
       this.query.setPage(meta["page-current"] ?? 1);
-      this.set("lastPage", meta["page-count"] ?? 1);
-      this.set("resultRowFirst", meta["result-row-first"] ?? 0);
-      this.set("resultRowLast", meta["result-row-last"] ?? 0);
-      this.set("resultTotalCount", meta["total-count"] ?? 0);
+      this.lastPage = meta["page-count"] ?? 1;
+      this.resultRowFirst = meta["result-row-first"] ?? 0;
+      this.resultRowLast = meta["result-row-last"] ?? 0;
+      this.resultTotalCount = meta["total-count"] ?? 0;
 
       this.reSetSelected();
     });
@@ -513,8 +448,8 @@ export default class ModelTableComponent extends Component {
   }
 
   @restartableTask
-  *fetchRecordsAndRefreshColumns() {
-    yield taskFor(this.fetchRecords).perform();
+  async fetchRecordsAndRefreshColumns() {
+    await taskFor(this.fetchRecords).perform();
     // Needed for polymorphic tables
     this.setColumns();
   }
@@ -535,8 +470,8 @@ export default class ModelTableComponent extends Component {
    */
   @action
   toggleSearch() {
-    if (!this.searchFixed) {
-      this.toggleProperty("searchVisible");
+    if (!this.args.searchFixed) {
+      this.searchVisible = !this.searchVisible;
 
       if (this.searchVisible) {
         this.focusSearch();
@@ -619,14 +554,14 @@ export default class ModelTableComponent extends Component {
    */
   @action
   onColumnClick(column: Column) {
-    if (this.isMultiSelect && column.selectAll) {
+    if (this.args.multiselect && column.selectAll) {
       column.sorted = false;
       column.valuePath = !column.valuePath;
 
       this.table.rows.forEach((row) => {
-        row.rowSelected = <boolean>column.valuePath;
+        row.selected = <boolean>column.valuePath;
 
-        if (row.rowSelected) {
+        if (row.selected) {
           if (!this.selectedModels.includes(row.content)) {
             // model not yet in the array, so we add it
             this.selectedModels.pushObject(row.content);
@@ -662,34 +597,26 @@ export default class ModelTableComponent extends Component {
    * @param selectedRow The row that was selected
    */
   @action
-  rowSelected(selectedRow: any) {
-    if (!this.onRowSelected) {
-      if (this.isMultiSelect) {
-        selectedRow.toggleProperty("rowSelected");
-        const model = selectedRow.get("content");
+  rowSelected(selectedRow: Row) {
+    if (this.args.multiselect) {
+      selectedRow.selected = !selectedRow.selected;
+      const model = selectedRow.content;
 
-        if (selectedRow.get("rowSelected")) {
-          if (!this.selectedModels.includes(model)) {
-            // model not yet in the array, so we add it
-            this.selectedModels.pushObject(model);
-          }
-        } else {
-          if (this.selectedModels.includes(model)) {
-            // model in the array, while it shouldn't be, remove it
-            this.selectedModels.removeObject(model);
-          }
+      if (selectedRow.selected) {
+        if (!this.selectedModels.includes(model)) {
+          // model not yet in the array, so we add it
+          this.selectedModels.pushObject(model);
         }
-
-        if (this.displaySelected) {
-          taskFor(this.fetchRecords).perform();
-        } else {
-          this.setSelectAllColumn();
+      } else {
+        if (this.selectedModels.includes(model)) {
+          // model in the array, while it shouldn't be, remove it
+          this.selectedModels.removeObject(model);
         }
       }
-    } else {
-      if (this.onRowSelected) {
-        this.onRowSelected(selectedRow);
-      }
+    }
+
+    if (this.onRowSelected) {
+      this.onRowSelected(selectedRow);
     }
   }
 
@@ -698,42 +625,30 @@ export default class ModelTableComponent extends Component {
    * @param row The row which is being hovered
    */
   @action
-  rowMouseEnter(event: Event) {
+  rowMouseEnter(row: Row) {
     this.deactivateRows();
     if (this.onRowMouseEnter) {
-      this.onRowMouseEnter(event);
+      this.onRowMouseEnter(row);
     }
   }
 
   @action
-  rowMouseLeave(event: Event) {
+  rowMouseLeave(row: Row) {
     this.deactivateRows();
     if (this.onRowMouseLeave) {
-      this.onRowMouseLeave(event);
+      this.onRowMouseLeave(row);
     }
-  }
-
-  @action
-  toggleDisplaySelected() {
-    this.query.setPage(1);
-    this.toggleProperty("displaySelected");
-    taskFor(this.fetchRecords).perform();
   }
 
   @action
   activeModelNameChanged(activeModelName: string) {
-    this.set("activeModelName", activeModelName);
-
-    // We trigger the property change for the list view key, this way the list views will be reloaded
-    this.notifyPropertyChange("listViewKey");
-
+    this.activeModelName = activeModelName;
     // Now we can refetch the records and reset the columns
     taskFor(this.fetchRecordsAndRefreshColumns).perform();
   }
 
   @action
   listViewChanged(_: string) {
-    this.notifyPropertyChange("listViewKey");
     this.setQueryParamsBasedOnActiveListView();
     taskFor(this.fetchRecordsAndRefreshColumns).perform();
   }

@@ -13,7 +13,6 @@ export default class ModelTableControlsComponent extends Component {
   prevPage() {}
   pageSelected(_: number) {}
   rowsSelected(_: number) {}
-  toggleDisplaySelected() {}
 
   rowSelectOptions: SelectOption[] = [
     {
@@ -82,10 +81,5 @@ export default class ModelTableControlsComponent extends Component {
   @action
   didSelectRows(rows: string) {
     this.rowsSelected(parseInt(rows));
-  }
-
-  @action
-  didToggleDisplaySelected() {
-    this.toggleDisplaySelected();
   }
 }

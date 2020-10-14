@@ -1,5 +1,5 @@
-<div class="model-table {{@class}}">
-  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'top'))}}
+<div class="model-table {{@class}}" ...attributes>
+  {{#if (and @listViewGrouping @listViewsAsTabs (or (eq @tabPosition 'top') (not @tabPosition)))}}
     <ListViewTabs 
       @modelName={{this.activeModelName}} 
       @grouping={{@listViewGrouping}} 
@@ -12,10 +12,10 @@
       <span class="model-table__title__loading">
         {{#if this.fetchRecords.isRunning}}
           <Loading />
-        {{/if}}
+        {{/if}} 
       </span>
 
-      {{#if (and @listViewGrouping (not this.listViewsAsTabs))}}
+      {{#if (and @listViewGrouping (not @listViewsAsTabs))}}
         <ListViewSelect 
           @modelName={{this.activeModelName}} 
           @grouping={{@listViewGrouping}} 
@@ -25,18 +25,27 @@
 
     <div class="model-table__search__wrapper">
       <div class="model-table__search__wrapper__inner">
-        {{#if (not this.searchFixed)}}
-          <button class="btn btn-icon model-table__search__close" {{on "click" this.toggleSearch}}>
-            <IconClose />
-          </button>
-        {{/if}}
 
         <form class="model-table__search__form" {{on "submit" this.search}}>
-          <InputSearch 
-            @inputId={{this.searchInputId}} 
-            @value={{this.query.search}} 
-            @placeholder="Search..." 
-            @valueChanged={{action this.searchValueChanged}} />
+          <div class="form-group">
+            <div class="input-container">
+              <InputSearch 
+                @inputId={{this.searchInputId}} 
+                @value={{this.query.search}} 
+                @placeholder="Search..." 
+                @valueChanged={{action this.searchValueChanged}} />
+              <div class="input-group-append">
+                <button type="submit" class="btn model-table__search__submit" {{on "click" this.search}}>
+                  <IconSearch />
+                </button>
+                {{#if (not @searchFixed)}}
+                  <button class="btn model-table__search__close" {{on "click" this.toggleSearch}}>
+                    <IconClose />
+                  </button>
+                {{/if}}
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -65,7 +74,7 @@
     </ul>
   </div>
 
-  {{#if (and @listViewGrouping this.listViewsAsTabs (eq this.tabPosition 'bottom'))}}
+  {{#if (and @listViewGrouping @listViewsAsTabs (eq @tabPosition 'bottom'))}}
     <ListViewTabs 
       @modelName={{this.activeModelName}} 
       @grouping={{@listViewGrouping}} 
@@ -76,7 +85,7 @@
     {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) )}}
 
     {{#if this.isMultiModelNames}}
-      <div class="model-type-selector">
+      <div class="model-table__type-selector">
         <InputSelect
           @class="plain-select"
           @selectOptions={{this.modelNameSelectOptions}}
@@ -93,7 +102,11 @@
             {{#each this.columns as |column|}}
               <th class="model-table__column{{if column.sorted ' model-table__column__sorted'}}{{if column.ascending ' model-table__column__sorted__asc' ' model-table__column__sorted__desc'}}"
                 {{on "click" (fn this.onColumnClick column)}}>
-                {{column.label}}
+                {{#if column.selectAll}}
+                  <OutputCheckbox @value={{this.allRowsSelected}} />
+                {{else}}
+                  {{column.label}}
+                {{/if}}
               </th>
             {{/each}}
           </tr>
@@ -112,8 +125,9 @@
                 {{on "mouseenter" (fn this.rowMouseEnter row)}} 
                 {{on "mouseleave" (fn this.rowMouseLeave row)}}>
                 {{#each this.columns as |column|}}
-                  <td class="model-table__cell">
-                    <ModelTableCell @row={{row}} @column={{column}} />
+                  <td class="model-table__cell {{column.cellComponent}}">
+                    {{component column.cellComponent row=row column=column}}
+                    {{!-- <ModelTableCell @row={{row}} @column={{column}} /> --}}
                   </td>
                 {{/each}}
               </tr>
@@ -131,8 +145,6 @@
 
     <div class="table-footer">
       <ModelTableControls
-        @toggleDisplaySelected={{action this.toggleDisplaySelected}}
-        @amountSelected={{this.amountSelected}}
         @isBusy={{this.fetchRecords.isRunning}}
         @currentPage={{this.query.page}}
         @lastPage={{this.lastPage}}
