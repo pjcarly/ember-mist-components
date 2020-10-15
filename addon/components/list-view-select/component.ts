@@ -1,4 +1,4 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import Store from "@ember-data/store";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
@@ -7,43 +7,40 @@ import ListViewService from "@getflights/ember-mist-components/services/list-vie
 import MutableArray from "@ember/array/mutable";
 import { dropTask } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import { assert } from "@ember/debug";
 import { isBlank } from "@ember/utils";
-import { tagName } from "@ember-decorators/component";
 import { A } from "@ember/array";
 import { taskFor } from "ember-concurrency-ts";
+import { tracked } from "@glimmer/tracking";
 
-@tagName("")
-export default class ListViewSelectComponent extends Component {
+interface Arguments {
+  modelName: string;
+  grouping: string;
+  valueChanged: (selectOptionValue: any) => void;
+}
+
+export default class ListViewSelectComponent extends Component<Arguments> {
   @service store!: Store;
   @service router!: any;
   @service intl!: any;
   @service listView!: ListViewService;
 
-  modelName!: string;
-  grouping!: string;
-  listViewSelectOptions: SelectOption[] = [];
+  @tracked listViewSelectOptions: SelectOption[] = [];
 
-  valueChanged!: (selectOptionValue: any) => void;
-
-  didReceiveAttrs() {
-    super.didReceiveAttrs();
-
-    assert("Grouping cannot be blank", !isBlank(this.grouping));
+  constructor(owner: any, args: Arguments) {
+    super(owner, args);
+    assert("Grouping cannot be blank", !isBlank(args.grouping));
     taskFor(this.setListViews).perform();
   }
 
-  @computed("selectOptions")
   get listViewSelectOptionsComputed(): MutableArray<SelectOption> {
     return A(this.listViewSelectOptions);
   }
 
-  @computed("router.currentRouteName", "modelName", "listViewSelectOptions")
   get selectedValue(): string | number {
-    const modelName = this.modelName;
     let selection = this.listView.getActiveListViewKeyForCurrentRoute(
-      modelName
+      this.args.modelName
     );
 
     const foundSelectOption = this.listViewSelectOptionsComputed.findBy(
@@ -57,18 +54,16 @@ export default class ListViewSelectComponent extends Component {
     return selection;
   }
 
-  @computed("modelName")
   get modelClass(): any {
-    return this.store.modelFor(this.modelName);
+    return this.store.modelFor(this.args.modelName);
   }
 
-  @computed("modelClass")
   get defaultListView(): any {
-    return this.listView.getDefaultListView(this.modelName);
+    return this.listView.getDefaultListView(this.args.modelName);
   }
 
   @dropTask
-  *setListViews() {
+  async setListViews() {
     const foundListViews: SelectOption[] = [];
 
     // Lets add the default List View
@@ -78,13 +73,13 @@ export default class ListViewSelectComponent extends Component {
     });
 
     const query = new Query("list-view");
-    query.addCondition(new Condition("grouping", "=", this.grouping));
+    query.addCondition(new Condition("grouping", "=", this.args.grouping));
 
-    yield query.fetch(this.store).then((listViews) => {
+    await query.fetch(this.store).then((listViews) => {
       listViews.forEach((listView: any) => {
         const selectOption: any = {};
-        selectOption.value = listView.get("id");
-        selectOption.label = listView.get("name");
+        selectOption.value = listView.id;
+        selectOption.label = listView.name;
         foundListViews.push(selectOption);
       });
     });
@@ -95,11 +90,10 @@ export default class ListViewSelectComponent extends Component {
   @action
   selectionChanged(selectOptionValue: any) {
     this.listView.setListViewSelectionForCurrentRoute(
-      this.modelName,
+      this.args.modelName,
       selectOptionValue
     );
 
-    this.notifyPropertyChange("selectedValue");
-    this.valueChanged(selectOptionValue);
+    this.args.valueChanged(selectOptionValue);
   }
 }

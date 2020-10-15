@@ -15,7 +15,7 @@ export interface ModelListView {
 
 export interface ModelListViewSort {
   field: string;
-  dir: string;
+  dir: "ASC" | "DESC";
 }
 
 export default class ListViewService extends Service {

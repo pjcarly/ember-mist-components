@@ -6,9 +6,9 @@
       @valueChanged={{this.listViewChanged}} />
   {{/if}}
 
-  <div class={{concat "model-table__header" (if this.searchVisible " search-toggled")}}>
+  <div class="model-table__header{{if this.searchVisible " search-toggled"}}">
     <div class="model-table__title__wrapper">
-      <h2 class="model-table__title">{{this.titleComputed}}</h2>
+      <h5 class="model-table__title">{{this.titleComputed}}</h5>
       <span class="model-table__title__loading">
         {{#if this.fetchRecords.isRunning}}
           <Loading />
@@ -35,14 +35,16 @@
                 @placeholder="Search..." 
                 @valueChanged={{action this.searchValueChanged}} />
               <div class="input-group-append">
-                <button type="submit" class="btn model-table__search__submit" {{on "click" this.search}}>
-                  <IconSearch />
-                </button>
-                {{#if (not @searchFixed)}}
-                  <button class="btn model-table__search__close" {{on "click" this.toggleSearch}}>
-                    <IconClose />
-                  </button>
-                {{/if}}
+                <ul class="action-menu model-table__actions">
+                  <MenuItem @itemClicked={{this.search}} @role="submit">
+                    <IconSearch />
+                  </MenuItem>
+                  {{#if (not @searchFixed)}}
+                    <MenuItem @itemClicked={{this.toggleSearch}}>
+                      <IconClose />
+                    </MenuItem>
+                  {{/if}}
+                </ul>
               </div>
             </div>
           </div>
@@ -51,7 +53,7 @@
     </div>
 
     <ul id={{concat this.guid "-actions"}} class="model-table__actions action-menu">
-      <MenuItem @itemClicked={{this.search}}>
+      <MenuItem @itemClicked={{this.toggleSearch}}>
         <IconSearch />
       </MenuItem>
 

@@ -492,8 +492,6 @@ export default class ModelTableComponent extends Component<Arguments> {
   search(event: Event) {
     if (this.searchVisible) {
       taskFor(this.fetchRecords).perform();
-    } else {
-      this.toggleSearch();
     }
 
     event.preventDefault();
