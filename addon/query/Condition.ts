@@ -56,7 +56,7 @@ export default class Condition {
     if (value instanceof Array) {
       returnValue = value.join(",");
     } else {
-      returnValue = value ? value + "" : "null";
+      returnValue = (value || value === 0) ? value + "" : "null";
     }
 
     if (this.operator === Operator.LIKE) {
