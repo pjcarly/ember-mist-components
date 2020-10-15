@@ -76,6 +76,11 @@ export interface Arguments {
   listViewsAsTabs?: boolean;
   baseQuery?: Query;
   tabPosition?: "bottom" | "top";
+  selectedModels?: NativeArray<Model>;
+  onSelectionChanged?: (selection: NativeArray<Model>) => void;
+  onRowSelected?: (selectedRow: Row) => void;
+  onRowMouseEnter?: (selectedRow: Row) => void;
+  onRowMouseLeave?: (selectedRow: Row) => void;
 }
 
 export default class ModelTableComponent extends Component<Arguments> {
@@ -97,16 +102,13 @@ export default class ModelTableComponent extends Component<Arguments> {
   guid!: string;
   selectedModels = A<Model>();
 
-  /**
-   * Closure actions
-   */
-  onRowSelected?: (selectedRow: Row) => void;
-  onRowMouseEnter?: (selectedRow: Row) => void;
-  onRowMouseLeave?: (selectedRow: Row) => void;
-
   constructor(owner: any, args: Arguments) {
     super(owner, args);
     this.guid = guidFor(this);
+
+    if (args.selectedModels) {
+      this.selectedModels.addObjects(args.selectedModels);
+    }
 
     this.setActiveModelName();
     this.setQueryParamsBasedOnActiveListView();
@@ -264,7 +266,7 @@ export default class ModelTableComponent extends Component<Arguments> {
         column.modelName = this.activeModelName;
         column.valuePath = camelizedColumn;
         column.transitionToModel =
-          !this.onRowSelected && !this.args.multiselect; // When no row selected action or multiselect is provided, we will route to the model being displayed
+          !this.args.onRowSelected && !this.args.multiselect; // When no row selected action or multiselect is provided, we will route to the model being displayed
         column.cellComponent = "model-table-cell";
         column.sorted = sortedOnColumn;
         column.ascending =
@@ -573,6 +575,10 @@ export default class ModelTableComponent extends Component<Arguments> {
           }
         }
       });
+
+      if (this.args.onSelectionChanged) {
+        this.args.onSelectionChanged(this.selectedModels);
+      }
     } else {
       this.table.columns.setEach("sorted", false);
       column.sorted = true;
@@ -613,10 +619,14 @@ export default class ModelTableComponent extends Component<Arguments> {
           this.selectedModels.removeObject(model);
         }
       }
+
+      if (this.args.onSelectionChanged) {
+        this.args.onSelectionChanged(this.selectedModels);
+      }
     }
 
-    if (this.onRowSelected) {
-      this.onRowSelected(selectedRow);
+    if (this.args.onRowSelected) {
+      this.args.onRowSelected(selectedRow);
     }
   }
 
@@ -627,16 +637,16 @@ export default class ModelTableComponent extends Component<Arguments> {
   @action
   rowMouseEnter(row: Row) {
     this.deactivateRows();
-    if (this.onRowMouseEnter) {
-      this.onRowMouseEnter(row);
+    if (this.args.onRowMouseEnter) {
+      this.args.onRowMouseEnter(row);
     }
   }
 
   @action
   rowMouseLeave(row: Row) {
     this.deactivateRows();
-    if (this.onRowMouseLeave) {
-      this.onRowMouseLeave(row);
+    if (this.args.onRowMouseLeave) {
+      this.args.onRowMouseLeave(row);
     }
   }
 

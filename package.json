@@ -75,6 +75,7 @@
     "ember-mist-components"
   ],
   "dependencies": {
+    "@ember/render-modifiers": "^1.0.2",
     "@getflights/ember-attribute-validations": "^1.0.0",
     "@getflights/ember-field-components": "^1.0.0",
     "@glimmer/tracking": "^1.0.2",

@@ -1,12 +1,12 @@
-<div class="model-table" ...attributes>
-  {{#if (and @listViewGrouping @listViewsAsTabs (or (eq @tabPosition 'top') (not @tabPosition)))}}
+<div class="model-table" {{did-update this.refresh @modelName @baseQuery}} ...attributes>
+  {{#if (and @listViewGrouping @listViewsAsTabs (or (eq @tabPosition "top") (not @tabPosition)))}}
     <ListViewTabs 
       @modelName={{this.activeModelName}} 
       @grouping={{@listViewGrouping}} 
       @valueChanged={{this.listViewChanged}} />
   {{/if}}
 
-  <div class={{concat 'model-table__header' (if this.searchVisible ' search-toggled')}}>
+  <div class={{concat "model-table__header" (if this.searchVisible " search-toggled")}}>
     <div class="model-table__title__wrapper">
       <h2 class="model-table__title">{{this.titleComputed}}</h2>
       <span class="model-table__title__loading">
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <ul id={{concat this.guid '-actions'}} class="model-table__actions action-menu">
+    <ul id={{concat this.guid "-actions"}} class="model-table__actions action-menu">
       <MenuItem @itemClicked={{this.search}}>
         <IconSearch />
       </MenuItem>
@@ -59,22 +59,22 @@
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
             <MenuItem @targetRoute={{href-to "list-view.edit" this.activeListViewKey}}>
-              {{t 'ember-mist-components.list-view.edit'}} <IconListViewEdit />
+              {{t "ember-mist-components.list-view.edit"}} <IconListViewEdit />
             </MenuItem>
           {{/if}}
           <MenuItem @targetRoute="list-view.new">
-            {{t 'ember-mist-components.list-view.new'}} <IconListViewNew />
+            {{t "ember-mist-components.list-view.new"}} <IconListViewNew />
           </MenuItem>
           <hr>
         {{/if}}
         <MenuItem @itemClicked={{this.refresh}}>
-          {{t 'ember-mist-components.labels.refresh'}} <IconRefresh />
+          {{t "ember-mist-components.labels.refresh"}} <IconRefresh />
         </MenuItem>
       </MenuDropdown>
     </ul>
   </div>
 
-  {{#if (and @listViewGrouping @listViewsAsTabs (eq @tabPosition 'bottom'))}}
+  {{#if (and @listViewGrouping @listViewsAsTabs (eq @tabPosition "bottom"))}}
     <ListViewTabs 
       @modelName={{this.activeModelName}} 
       @grouping={{@listViewGrouping}} 
@@ -82,7 +82,7 @@
   {{/if}}
 
   {{#if this.fetchRecords.last}}
-    {{yield (hash actions=(component 'ember-wormhole' to=(concat this.guid '-actions')) )}}
+    {{yield (hash actions=(component "ember-wormhole" to=(concat this.guid "-actions")) )}}
 
     {{#if this.isMultiModelNames}}
       <div class="model-table__type-selector">
@@ -96,11 +96,11 @@
     {{/if}}
 
     <div class="table-responsive">
-      <table class="table table-hover{{if this.fetchRecords.isRunning ' is-busy'}}">
+      <table class="table table-hover{{if this.fetchRecords.isRunning " is-busy"}}">
         <thead class="model-table__head">
           <tr>
             {{#each this.columns as |column|}}
-              <th class="model-table__column{{if column.sorted ' model-table__column__sorted'}}{{if column.ascending ' model-table__column__sorted__asc' ' model-table__column__sorted__desc'}}"
+              <th role="button" class="model-table__column{{if column.selectAll " model-table__select-all"}}{{if column.sorted " model-table__column__sorted"}}{{if column.ascending " model-table__column__sorted__asc" " model-table__column__sorted__desc"}}"
                 {{on "click" (fn this.onColumnClick column)}}>
                 {{#if column.selectAll}}
                   <OutputCheckbox @value={{this.allRowsSelected}} />
@@ -120,21 +120,20 @@
             </tr>
           {{else}}
             {{#each this.table.rows as |row|}}
-              <tr class="model-table__row is-selectable" 
+              <tr class="model-table__row is-selectable" role="button"
                 {{on "click" (fn this.rowSelected row)}} 
                 {{on "mouseenter" (fn this.rowMouseEnter row)}} 
                 {{on "mouseleave" (fn this.rowMouseLeave row)}}>
                 {{#each this.columns as |column|}}
                   <td class="model-table__cell {{column.cellComponent}}">
                     {{component column.cellComponent row=row column=column}}
-                    {{!-- <ModelTableCell @row={{row}} @column={{column}} /> --}}
                   </td>
                 {{/each}}
               </tr>
             {{else}}
               <tr class="model-table__row model-table__no-data">
                 <td colspan={{this.columns.length}}>
-                  {{t 'ember-mist-components.table.no_data'}}
+                  {{t "ember-mist-components.table.no_data"}}
                 </td>
               </tr>
             {{/each}}
