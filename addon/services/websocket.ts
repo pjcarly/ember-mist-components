@@ -10,6 +10,7 @@ import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
 import { taskFor } from "ember-concurrency-ts";
 import SessionService from "ember-simple-auth/services/session";
+import { tracked } from "@glimmer/tracking";
 
 export enum Status {
   OFFLINE = "OFFLINE",
@@ -21,26 +22,26 @@ export default class WebsocketService extends Service.extend(Evented) {
   @service websockets!: any;
   @service session!: SessionService;
 
-  socket!: any;
-  status: string = Status.OFFLINE;
-  reconnectAttempts: number = 0;
-  manuallyClosed: boolean = false;
+  @tracked socket!: any;
+  @tracked status: string = Status.OFFLINE;
+  @tracked manuallyClosed: boolean = false;
+  @tracked reconnectAttempts: number = 0;
 
-  @alias("session.data.authenticated.access_token") accessToken!: string;
+  @alias("session.data.authenticated.access_token") 
+  accessToken!: string;
 
   @computed()
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
 
-  @computed("config")
   get endpoint(): string | undefined | null {
     return this.config.websocketHost;
   }
 
   @dropTask
-  *startConnecting() {
-    this.set("manuallyClosed", false);
+  async startConnecting() {
+    this.manuallyClosed = false;
 
     if (this.endpoint) {
       while (
@@ -58,11 +59,11 @@ export default class WebsocketService extends Service.extend(Evented) {
             }s`
           );
 
-          yield timeout(waitFor);
+          await timeout(waitFor);
         }
 
         this.openConnection();
-        this.incrementProperty("reconnectAttempts");
+        this.reconnectAttempts++;
       }
     }
   }
@@ -71,7 +72,7 @@ export default class WebsocketService extends Service.extend(Evented) {
    * Opens the connection to the websocket endpoint
    */
   openConnection() {
-    this.set("status", Status.CONNECTING);
+    this.status = Status.CONNECTING;
     let socket = this.socket;
 
     if (!socket) {
@@ -90,7 +91,7 @@ export default class WebsocketService extends Service.extend(Evented) {
       socket.reconnect();
     }
 
-    this.set("socket", socket);
+    this.socket = socket;
   }
 
   /**
@@ -98,14 +99,14 @@ export default class WebsocketService extends Service.extend(Evented) {
    */
   closeConnection() {
     if (this.endpoint && this.socket) {
-      this.set("manuallyClosed", true);
-      this.set("status", Status.CONNECTING);
+      this.manuallyClosed = true;
+      this.status = Status.CONNECTING;
       this.socket.close();
     }
   }
 
   connectionOpened(_: OpenEvent) {
-    this.set("status", Status.ONLINE);
+    this.status = Status.ONLINE;
     this.reconnectAttempts = 0;
   }
 
@@ -117,14 +118,14 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   connectionClosed(_: CloseEvent) {
-    this.set("status", Status.OFFLINE);
+    this.status = Status.OFFLINE;
     if (!this.manuallyClosed) {
       taskFor(this.startConnecting).perform();
     }
   }
 
   connectionErrored(_: ErrorEvent) {
-    this.set("status", Status.OFFLINE);
+    this.status = Status.OFFLINE;
     taskFor(this.startConnecting).perform();
   }
 
