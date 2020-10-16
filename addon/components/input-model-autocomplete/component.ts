@@ -1,19 +1,20 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import { debug, assert } from "@ember/debug";
 import { task } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
-import { tagName } from "@ember-decorators/component";
 import Store from "@ember-data/store";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { Operator } from "@getflights/ember-mist-components/query/Condition";
 import Query from "@getflights/ember-mist-components/query/Query";
 
-@tagName("")
-export default class InputModelAutocompleteComponent extends Component {
-  @service store!: Store;
+interface Arguments {
+  /**
+   * The passed in name of the model
+   */
+  modelName: string;
 
   /**
    * Query that can be passed in to limit the results to
@@ -21,16 +22,11 @@ export default class InputModelAutocompleteComponent extends Component {
   baseQuery?: Query;
 
   /**
-   * The passed in name of the model
-   */
-  modelName!: string;
-
-  /**
    * Options that can be passed in.
    * `hideClear` see this.shouldHideClear
    * `searchQuery` see this.shouldUseSearchQuery
    */
-  options?: any;
+  options?: InputOptionsArgument;
 
   /**
    * The passed in inputId that will be used
@@ -45,19 +41,30 @@ export default class InputModelAutocompleteComponent extends Component {
   /**
    * The passed in value that will be used as the selected value in the autocomplete component
    */
-  value?: any;
+  value?: DrupalModel;
 
   /* Closure Actions */
-  valueChanged(_: DrupalModel) {}
+  valueChanged?: (model?: DrupalModel) => void;
+}
+
+interface InputOptionsArgument {
+  hideClear: boolean;
+  searchQuery: boolean;
+}
+
+export default class InputModelAutocompleteComponent extends Component<
+  Arguments
+> {
+  @service store!: Store;
 
   @task
-  *searchTask(searchQuery: string) {
+  async searchTask(searchQuery: string) {
     assert(
       "You must pass in the attribute modelName",
-      !isBlank(this.modelName)
+      !isBlank(this.args.modelName)
     );
 
-    yield timeout(500); // Lets debounce the typing by 500ms
+    await timeout(500); // Lets debounce the typing by 500ms
     const query = this.query;
 
     query.clearSearch();
@@ -82,30 +89,23 @@ export default class InputModelAutocompleteComponent extends Component {
   /**
    * Decides whether the attribute searchQuery on the Query should be used, or the search should happen on the `name` field
    */
-  @computed("options.searchQuery")
   get shouldUseSearchQuery(): boolean {
-    return (
-      !isBlank(this.options) &&
-      "searchQuery" in this.options &&
-      this.options.searchQuery
-    );
+    return this.args.options?.searchQuery ?? false;
   }
 
   /**
    * Hides the clear button on the power select component
    */
-  @computed("options.hideClear")
   get shouldHideClear(): boolean {
-    return !isBlank(this.options) && this.options.hideClear;
+    return this.args.options?.hideClear ?? false;
   }
 
-  @computed("baseQuery")
   get query(): Query {
-    const query = new Query(this.modelName);
+    const query = new Query(this.args.modelName);
 
-    if (this.baseQuery) {
-      query.copyFrom(this.baseQuery);
-      query.setModelName(this.modelName);
+    if (this.args.baseQuery) {
+      query.copyFrom(this.args.baseQuery);
+      query.setModelName(this.args.modelName);
     }
 
     return query;
@@ -136,7 +136,9 @@ export default class InputModelAutocompleteComponent extends Component {
   }
 
   @action
-  formValueChanged(value: any) {
-    this.valueChanged(value);
+  formValueChanged(value?: DrupalModel) {
+    if (this.args.valueChanged) {
+      this.args.valueChanged(value);
+    }
   }
 }
