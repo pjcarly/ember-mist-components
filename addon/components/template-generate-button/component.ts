@@ -1,21 +1,23 @@
 /* global window */
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { computed } from "@ember/object";
-import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { getOwner } from "@ember/application";
 import Store from "@ember-data/store";
 import { dropTask } from "ember-concurrency-decorators";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
-import { tagName } from "@ember-decorators/component";
+import { alias } from "@ember/object/computed";
 
-@tagName("")
-export default class TemplateGenerateButtonComponent extends Component {
-  @service store!: Store;
-
-  model!: DrupalModel; // The model you want to generate the template with
-  template!: DrupalModel; // The Template to generate
+interface Arguments {
+  model: DrupalModel;
+  template: DrupalModel;
   language?: string;
+}
+
+export default class TemplateGenerateButtonComponent extends Component<
+  Arguments
+> {
+  @service store!: Store;
 
   @computed()
   get config() {
@@ -29,7 +31,7 @@ export default class TemplateGenerateButtonComponent extends Component {
   *generatePdf() {
     let digest = null;
 
-    yield this.template
+    yield this.args.template
       // @ts-ignore
       .generateDigest({ id: this.model.id })
       .then((results: any) => {
@@ -39,9 +41,9 @@ export default class TemplateGenerateButtonComponent extends Component {
     window.open(
       // @ts-ignore
       `${this.apiEndpoint}template/generate/${this.template.key}?id=${
-        this.model.id
+        this.args.model.id
       }&digest=${digest}${
-        !isBlank(this.language) ? `&lang=${this.language}` : ""
+        this.args.language ? `&lang=${this.args.language}` : ""
       }`,
       "_blank"
     );

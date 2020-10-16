@@ -1,34 +1,38 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { action, computed } from "@ember/object";
-import { tagName } from "@ember-decorators/component";
 // @ts-ignore
 import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { guidFor } from "@ember/object/internals";
 import { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 export interface YieldedComponent {
   close: CallableFunction;
   show: CallableFunction;
-  status: "visible" | "hidden"
+  status: "visible" | "hidden";
 }
 
-@tagName("")
-export default class ModalComponent extends Component {
+interface Arguments {
+  dialogClass?: string;
+  closeOnRouteChange?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+}
+
+export default class ModalComponent extends Component<Arguments> {
   @service router!: any;
 
-  modalVisible: boolean = false;
-  closeOnRouteChange: boolean = false;
-  modal?: bsn.Modal;
+  @tracked private modalVisible: boolean = false;
+  @tracked private modal?: bsn.Modal;
 
-  dialogClass = "modal-dialog-centered";
-  onOpen() {}
-  onClose() {}
+  constructor(owner: any, args: Arguments) {
+    super(owner, args);
 
-  didReceiveAttrs() {
-    // @ts-ignore
-    super.didReceiveAttrs(...arguments);
+    if (!args.dialogClass) {
+      args.dialogClass = "modal-dialog-centered";
+    }
 
-    if (this.closeOnRouteChange) {
+    if (this.args.closeOnRouteChange) {
       this.router.on("routeWillChange", (_: TransitionEvent) => {
         this.closeModal();
       });
@@ -40,27 +44,22 @@ export default class ModalComponent extends Component {
     return `${guidFor(this)}-modal`;
   }
 
-  @computed("modalId")
   get modalBodyId(): string {
     return `${this.modalId}-body`;
   }
 
-  @computed("modalId")
   get modalHeaderId(): string {
     return `${this.modalId}-header`;
   }
 
-  @computed("modalId")
   get modalFooterId(): string {
     return `${this.modalId}-footer`;
   }
 
-  @computed("modalId")
   get modalContentId(): string {
     return `${this.modalId}-content`;
   }
 
-  @computed("modalId")
   get modalTriggerId(): string {
     return `${this.modalId}-trigger`;
   }
@@ -79,7 +78,7 @@ export default class ModalComponent extends Component {
           "hidden.bs.modal",
           this.hideModalListener.bind(this)
         );
-        this.set("modal", modal);
+        this.modal = modal;
       }
     }
 
@@ -87,8 +86,10 @@ export default class ModalComponent extends Component {
   }
 
   hideModalListener() {
-    this.set("modalVisible", false);
-    this.onClose();
+    this.modalVisible = false;
+    if (this.args.onClose) {
+      this.args.onClose();
+    }
   }
 
   @action
@@ -101,19 +102,15 @@ export default class ModalComponent extends Component {
   @action
   showModal() {
     if (!this.modalVisible) {
-      this.set("modalVisible", true);
+      this.modalVisible = true;
       this.getModal().show();
-      this.onOpen();
+      if (this.args.onOpen) {
+        this.args.onOpen();
+      }
     }
   }
 
-  willDestroyElement() {
-    const element = document.getElementById(this.modalId);
-    if (element) {
-      element.removeEventListener("hidden.bs.modal", this.hideModalListener);
-    }
-
-    // @ts-ignore
-    super.willDestroyElement(...arguments);
+  elementWillBeRemovedFromDOM(element: Element) {
+    element.removeEventListener("hidden.bs.modal", this.hideModalListener);
   }
 }

@@ -1,19 +1,18 @@
-import Component from "@ember/component";
-import { computed, action } from "@ember/object";
+import Component from "@glimmer/component";
+import { action } from "@ember/object";
 import { isBlank } from "@ember/utils";
-import { tagName } from "@ember-decorators/component";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 
-@tagName("")
-export default class ModelTableControlsComponent extends Component {
-  lastPage: number = 0;
-  rows: number = 0;
+interface Arguments {
+  lastPage: number;
+  rows: number;
+  nextPage: () => void;
+  prevPage: () => void;
+  pageSelected: (page: number) => void;
+  rowsSelected: (page: number) => void;
+}
 
-  nextPage() {}
-  prevPage() {}
-  pageSelected(_: number) {}
-  rowsSelected(_: number) {}
-
+export default class ModelTableControlsComponent extends Component<Arguments> {
   rowSelectOptions: SelectOption[] = [
     {
       value: "10",
@@ -37,7 +36,6 @@ export default class ModelTableControlsComponent extends Component {
     },
   ];
 
-  @computed("lastPage")
   get pageSelectOptions(): SelectOption[] {
     let selectOptions = [
       {
@@ -46,8 +44,8 @@ export default class ModelTableControlsComponent extends Component {
       },
     ];
 
-    if (!isBlank(this.lastPage)) {
-      for (let i = 2; i <= this.lastPage; i++) {
+    if (!isBlank(this.args.lastPage)) {
+      for (let i = 2; i <= this.args.lastPage; i++) {
         selectOptions.push({
           value: i.toString(),
           label: i.toString(),
@@ -58,28 +56,27 @@ export default class ModelTableControlsComponent extends Component {
     return selectOptions;
   }
 
-  @computed("rows")
   get rowsValue(): string {
-    return this.rows.toString();
+    return this.args.rows.toString();
   }
 
   @action
   goToNextPage() {
-    this.nextPage();
+    this.args.nextPage();
   }
 
   @action
   goToPrevPage() {
-    this.prevPage();
+    this.args.prevPage();
   }
 
   @action
   didSelectPage(page: string) {
-    this.pageSelected(parseInt(page));
+    this.args.pageSelected(parseInt(page));
   }
 
   @action
   didSelectRows(rows: string) {
-    this.rowsSelected(parseInt(rows));
+    this.args.rowsSelected(parseInt(rows));
   }
 }

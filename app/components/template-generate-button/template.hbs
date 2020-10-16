@@ -1,8 +1,8 @@
-<button type="button" class="btn btn-primary" {{on "click" (perform this.generatePdf)}}>
+<button type="button" class="btn btn-primary" {{on "click" (perform this.generatePdf)}} ...attributes>
   {{#if hasBlock}}
     {{yield this.generatePdf}}
   {{else}}
-    {{#if generatePdf.isIdle}}
+    {{#if this.generatePdf.isIdle}}
       Generate
     {{else}}
       Generating <Loading />
