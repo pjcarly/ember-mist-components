@@ -1,6 +1,6 @@
-<div class="input-multi-field" {{sortable-group onChange=(action this.reorderLines)}}>
+<div class="input-multi-field" {{sortable-group groupName=this.calculatedInputId onChange=(action this.reorderLines)}}>
   {{#each this.items as |item index|}}
-    <div class="input-multi-field__item" {{sortable-item model=item}}>
+    <div class="input-multi-field__item" {{sortable-item groupName=this.calculatedInputId model=item}}>
       <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
       {{component 
         @inputComponent 

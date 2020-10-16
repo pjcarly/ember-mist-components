@@ -3,9 +3,9 @@
     <Loading />
   {{else}}
     {{#if this.value}}
-      <div class="input-multi-field" {{sortable-group onChange=(action this.reorderedValues)}}>
+      <div class="input-multi-field" {{sortable-group groupName=this.calculatedInputId onChange=(action this.reorderedValues)}}>
         {{#each this.value as |model index|}}
-          <div class="input-multi-field__item{{if readOnly ' read-only' ' read-write'}}" {{sortable-item model=item}}>
+          <div class="input-multi-field__item{{if readOnly ' read-only' ' read-write'}}" {{sortable-item groupName=this.calculatedInputId model=item}}>
             <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
             {{#if this.isSelect}}
                 <InputSelect
