@@ -50,9 +50,9 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
       let selectOptions = [];
 
       if (
-        this.baseQuery.conditions ||
-        this.baseQuery.conditionLogic ||
-        this.baseQuery.orders
+        this.baseQuery.hasConditions ||
+        this.baseQuery.hasConditionLogic ||
+        this.baseQuery.hasOrders
       ) {
         selectOptions = yield taskFor(
           this.dynamicSelectOptions.getModelSelectOptions

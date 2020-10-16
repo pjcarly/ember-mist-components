@@ -245,6 +245,27 @@ export default class Query {
   }
 
   /**
+   * Checks if the query has conditions
+   */
+  get hasConditions(): boolean {
+    return this.conditions.length > 0;
+  }
+
+  /**
+   * Checks if the query has orders
+   */
+  get hasOrders(): boolean {
+    return this.orders.length > 0;
+  }
+
+  /**
+   * Checks if the query has condition logic
+   */
+  get hasConditionLogic(): boolean {
+    return this.conditionLogic ? true : false;
+  }
+
+  /**
    * Increments the page by 1
    */
   nextPage() {
