@@ -1,5 +1,4 @@
-import Component from "@ember/component";
-import { tagName } from "@ember-decorators/component";
+import Component from "@glimmer/component";
 import ToastMessage, {
   MessageType,
 } from "@getflights/ember-mist-components/objects/toast-message";
@@ -10,29 +9,17 @@ import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import ToastService from "@getflights/ember-mist-components/services/toast";
+import { tracked } from "@glimmer/tracking";
 
-@tagName("")
-export default class ToastMessageComponent extends Component {
+interface Arguments {
+  toast: ToastMessage;
+}
+
+export default class ToastMessageComponent extends Component<Arguments> {
   // @ts-ignore
   @service("toast") toastService!: ToastService;
 
-  toast!: ToastMessage;
-  bootstrapToast!: bsn.Toast;
-
-  didInsertElement() {
-    // @ts-ignore
-    super.didInsertElement(...arguments);
-
-    const element = document.getElementById(this.toastId);
-    if (element) {
-      const bootstrapToast = new bsn.Toast(element, {
-        animation: true,
-        autohide: false,
-      });
-      bootstrapToast.show();
-      this.set("bootstrapToast", bootstrapToast);
-    }
-  }
+  @tracked bootstrapToast!: bsn.Toast;
 
   @computed()
   get toastId(): string {
@@ -43,13 +30,13 @@ export default class ToastMessageComponent extends Component {
     const classes: string[] = [];
     classes.push("toast");
 
-    if (this.toast.type === MessageType.SUCCESS) {
+    if (this.args.toast.type === MessageType.SUCCESS) {
       classes.push("toast-success");
-    } else if (this.toast.type === MessageType.ERROR) {
+    } else if (this.args.toast.type === MessageType.ERROR) {
       classes.push("toast-error");
-    } else if (this.toast.type === MessageType.INFO) {
+    } else if (this.args.toast.type === MessageType.INFO) {
       classes.push("toast-info");
-    } else if (this.toast.type === MessageType.WARNING) {
+    } else if (this.args.toast.type === MessageType.WARNING) {
       classes.push("toast-warning");
     }
 
@@ -57,22 +44,31 @@ export default class ToastMessageComponent extends Component {
   }
 
   get ariaLive(): string {
-    if (this.toast.type === MessageType.ERROR) {
+    if (this.args.toast.type === MessageType.ERROR) {
       return "assertive";
     } else {
       return "polite";
     }
   }
 
-  willDestroyElement() {
+  @action
+  elementInsertedInDOM(element: Element) {
+    const bootstrapToast = new bsn.Toast(element, {
+      animation: true,
+      autohide: false,
+    });
+    bootstrapToast.show();
+    this.bootstrapToast = bootstrapToast;
+  }
+
+  @action
+  elementWillBeRemovedFromDOM() {
     this.bootstrapToast.hide();
-    this.set("bootstrapToast", null);
-    // @ts-ignore
-    super.willDestroyElement(...arguments);
+    this.bootstrapToast = null;
   }
 
   @action
   close() {
-    this.toastService.removeToast(this.toast);
+    this.toastService.removeToast(this.args.toast);
   }
 }

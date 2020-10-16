@@ -3,7 +3,6 @@ import ToastMessage, {
   MessageType,
 } from "@getflights/ember-mist-components/objects/toast-message";
 import { A } from "@ember/array";
-import { getOwner, setOwner } from "@ember/application";
 import { task } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
 import { taskFor } from "ember-concurrency-ts";
@@ -32,7 +31,6 @@ export default class ToastService extends Service {
   }
 
   private addToast(toast: ToastMessage) {
-    setOwner(toast, getOwner(this));
     this.toasts.pushObject(toast);
     taskFor(this.removeToastTimer).perform(toast);
   }
