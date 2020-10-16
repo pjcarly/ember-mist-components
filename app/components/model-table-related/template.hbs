@@ -6,7 +6,7 @@
   @listViewGrouping={{@listViewGrouping}} ...attributes as |Table|>
   {{#if (not @hideNew)}}
     <Table.actions>
-      <MenuItem @class="model-table__new__wrapper">
+      <MenuItem class="model-table__new__wrapper">
         <button class="btn btn-primary model-table__new__trigger action-menu__link" {{on "click" this.newFromRelated}}>
           <IconPlus />
         </button>
