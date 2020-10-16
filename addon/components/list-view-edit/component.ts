@@ -1,17 +1,15 @@
-import Component from "@ember/component";
-import { tagName } from "@ember-decorators/component";
+import Component from "@glimmer/component";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import Query from "@getflights/ember-mist-components/query/Query";
-import { computed } from "@ember/object";
 import Condition from "@getflights/ember-mist-components/query/Condition";
 
-@tagName("")
-export default class ListViewEditComponent extends Component {
-  model!: ListViewModel;
+interface Arguments {
+  model: ListViewModel;
+}
 
-  @computed("model.model")
+export default class ListViewEditComponent extends Component<Arguments> {
   get fieldQuery(): Query {
-    const model = this.model.model;
+    const model = this.args.model.model;
     const query = new Query("field");
 
     if (model) {

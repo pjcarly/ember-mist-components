@@ -1,26 +1,25 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
-import { tagName } from "@ember-decorators/component";
 import Store from "@ember-data/store";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import SortOrderModel from "@getflights/ember-mist-components/models/order";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
 
-@tagName("")
-export default class SortOrdersEditComponent extends Component {
-  @service
-  store!: Store;
+interface Arguments {
+  model: ListViewModel;
+}
 
-  model!: ListViewModel;
+export default class SortOrdersEditComponent extends Component<Arguments> {
+  @service store!: Store;
 
   setAllOrdersSort() {
     // This function sets the order of the sort variables on the items correctly. If 1 item gets inserted in the list,
     // this function will preserve the new order, but make sure no sort value will be the same over all the types
     let topSort = 1;
 
-    this.model.orders.toArray().forEach((order) => {
+    this.args.model.orders.toArray().forEach((order) => {
       // @ts-ignore
       if (!order.isDeleted) {
         order.set("sort", topSort);
@@ -29,9 +28,8 @@ export default class SortOrdersEditComponent extends Component {
     });
   }
 
-  @computed("model.model")
   get fieldQuery(): Query {
-    const model = this.model.model;
+    const model = this.args.model.model;
     const query = new Query("field");
 
     if (model) {
@@ -44,14 +42,14 @@ export default class SortOrdersEditComponent extends Component {
   @action
   addNewOrder() {
     const order = <SortOrderModel>this.store.createRecord("order");
-    order.set("parent", this.model);
-    order.set("sort", this.model.orders.length);
-    this.model.orders.pushObject(order);
+    order.set("parent", this.args.model);
+    order.set("sort", this.args.model.orders.length);
+    this.args.model.orders.pushObject(order);
   }
 
   @action
   deleteOrder(orderToDelete: SortOrderModel) {
-    this.model.orders.toArray().forEach((order) => {
+    this.args.model.orders.toArray().forEach((order) => {
       if (order.sort && orderToDelete.sort && order.sort > orderToDelete.sort) {
         order.set("sort", order.sort - 1);
       }

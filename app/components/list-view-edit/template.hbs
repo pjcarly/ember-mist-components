@@ -1,32 +1,39 @@
 <div class="row">
   <div class="col-6">
-    <InputField @model={{this.model}} @field="name" />
-    <InputField @model={{this.model}} @field="grouping" />
-    <InputField @model={{this.model}} @field="rows" />
+    <InputField @model={{@model}} @field="name" />
+    <InputField @model={{@model}} @field="grouping" />
+    <InputField @model={{@model}} @field="rows" />
   </div>
   <div class="col-6">
-    <InputField @model={{this.model}} @field="model" />
-    <InputField @model={{this.model}} @field="sort" />
+    <InputField @model={{@model}} @field="model" />
+    <InputField @model={{@model}} @field="sort" />
   </div>
-  {{#if this.model.model}}
+  {{#if @model.model}}
     <div class="col-12">
-      <InputField @model={{this.model}} @field="columns" @options={{hash baseQuery=this.fieldQuery nameField="label"}}/>
+      <InputField 
+        @model={{@model}} 
+        @field="columns" 
+        @options={{hash baseQuery=this.fieldQuery nameField="label"}}/>
     </div>
     <div class="col-12">
       <div class="card-header">
-        <h2>Conditions</h2>
+        <h5>Conditions</h5>
       </div>
     </div>
     <div class="col-12">
-      <ConditionsEdit @model={{this.model}} @field="conditions" />
+      <ConditionsEdit 
+        @model={{@model}} 
+        @field="conditions" />
     </div>
     <div class="col-12">
       <div class="card-header">
-        <h2>Sort Order</h2>
+        <h5>Sort Order</h5>
       </div>
     </div>
     <div class="col-12">
-      <SortOrdersEdit @model={{this.model}} @field="orders" />
+      <SortOrdersEdit 
+        @model={{@model}} 
+        @field="orders" />
     </div>
   {{/if}}
 </div>

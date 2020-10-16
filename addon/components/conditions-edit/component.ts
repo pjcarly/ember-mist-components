@@ -1,23 +1,23 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
-import { tagName } from "@ember-decorators/component";
 import Store from "@ember-data/store";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import ConditionModel from "@getflights/ember-mist-components/models/condition";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
 
-@tagName("")
-export default class ConditionsEditComponent extends Component {
-  @service store!: Store;
+interface Arguments {
+  model: ListViewModel;
+}
 
-  model!: ListViewModel;
+export default class ConditionsEditComponent extends Component<Arguments> {
+  @service store!: Store;
 
   setAllConditionsSort() {
     // This function sets the order of the sort variables on the items correctly. If 1 item gets inserted in the list,
     // this function will preserve the new order, but make sure no sort value will be the same over all the types
-    const conditions = this.model.conditions;
+    const conditions = this.args.model.conditions;
     let topSort = 1;
 
     conditions.toArray().forEach((condition) => {
@@ -28,9 +28,8 @@ export default class ConditionsEditComponent extends Component {
     });
   }
 
-  @computed("model.model")
   get fieldQuery(): Query {
-    const model = this.model.model;
+    const model = this.args.model.model;
     const query = new Query("field");
 
     if (model) {
@@ -43,14 +42,14 @@ export default class ConditionsEditComponent extends Component {
   @action
   addNewCondition() {
     const condition = this.store.createRecord("condition");
-    condition.set("parent", this.model);
-    condition.set("sort", this.model.conditions.length);
-    this.model.conditions.pushObject(condition);
+    condition.set("parent", this.args.model);
+    condition.set("sort", this.args.model.conditions.length);
+    this.args.model.conditions.pushObject(condition);
   }
 
   @action
   deleteCondition(conditionToDelete: ConditionModel) {
-    this.model.conditions.toArray().forEach((condition) => {
+    this.args.model.conditions.toArray().forEach((condition) => {
       if (
         condition.sort &&
         conditionToDelete.sort &&

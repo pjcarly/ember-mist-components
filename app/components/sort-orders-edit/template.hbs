@@ -1,37 +1,46 @@
-<div class="orders-edit">
-  <div class="button-bar">
-    <a role="button" {{action this.addNewOrder}} class="btn btn-default btn-xs">
-      Add
-    </a>
-  </div>
-
+<div class="order__edit__wrapper">  
   {{#if @model.orders}}
-    {{#sortable-group model=@model.orders onChange=(action this.reorderOrders) class=(if isOdd "is-odd" "is-even") as |group|}}
-      {{#each (sort-by "sort" group.model) as |order|}}
-        {{#if (not order.isDeleted)}}
-          {{#group.item model=order class=(if readOnly "read-only" "read-write") as |sortableItem|}}
-            {{#sortableItem.handle}}
-              <div class="b-0 sort-handle" sort={{order.sort}}>
-                <i class="zmdi zmdi-unfold-more"></i>
-              </div>
-            {{/sortableItem.handle}}
-
-            <div class="sort-col">
-              <InputField @model={{order}} @field="field" @inline={{true}} @placeholder="Field" @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
-            </div>
-            <div class="sort-col">
-              <InputField @model={{order}} @field="direction" @inline={{true}} />
-            </div>
-            <div class="b-0 action-column">
-              <ul class="action-menu">
-                <MenuDropdown>
-                  <MenuItem @itemClicked={{action this.deleteOrder order}}>Delete <i class="zmdi zmdi-delete"></i></MenuItem>
-                </MenuDropdown>
-              </ul>
-            </div>
-          {{/group.item}}
-        {{/if}}
-      {{/each}}
-    {{/sortable-group}}
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Field</th>
+          <th>Direction</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class={{if @isOdd "is-odd" "is-even"}} {{sortable-group groupName="orders" onChange=(action this.reorderOrders)}}>
+        {{#each (filter-by "isDeleted" false (sort-by "sort" @model.orders)) as |order index|}}
+          <tr class="order__edit__line" {{sortable-item groupName="orders" model=order}}>
+            <td><div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /> {{add index 1}}</div></td>
+            <td>
+              <InputField 
+                @model={{order}} 
+                @field="field" 
+                @inline={{true}} 
+                @placeholder="Field" 
+                @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
+            </td>
+            <td>
+              <InputField 
+                @model={{order}} 
+                @field="direction" 
+                @inline={{true}} />
+            </td>
+            <td>
+              <button class="btn btn-icon">
+                <IconRemove />
+              </button>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
   {{/if}}
+
+  <div class="order__edit__button-bar">
+    <button role="button" {{on "click" this.addNewOrder}} class="btn btn-pink">
+      Add <IconPlus />
+    </button>
+  </div>
 </div>
