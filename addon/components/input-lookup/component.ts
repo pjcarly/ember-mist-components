@@ -1,52 +1,46 @@
-import BaseInput from "@getflights/ember-field-components/components/BaseInput";
+import BaseInput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseInput";
 import FieldInformationService from "@getflights/ember-field-components/services/field-information";
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isArray } from "@ember/array";
 import { action } from "@ember/object";
-import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import Query from "@getflights/ember-mist-components/query/Query";
 
-export default class InputLookup extends BaseInput {
+export interface LookupArguments extends Arguments {
+  /**
+   * The name of the model, this can either be 1 or multiple
+   */
+  modelName: string | string[];
+  baseQuery?: Query;
+}
+
+export default class InputLookup extends BaseInput<LookupArguments> {
   @service intl!: any;
   @service fieldInformation!: FieldInformationService;
 
   type = "lookup";
-
-  /**
-   * The name of the model, this can either be 1 or multiple
-   */
-  modelName!: string | string[];
-  modalVisible: boolean = false;
   inputGroup: boolean = true;
-  baseQuery?: Query;
 
-  @computed("value", "modelName")
   get activeModelName(): string {
     // needed for polymorphic relationships
-    if (isArray(this.modelName)) {
-      if (this.value) {
-        return this.fieldInformation.getModelName(this.value);
+    if (isArray(this.args.modelName)) {
+      if (this.args.value) {
+        return this.fieldInformation.getModelName(this.args.value);
       } else {
-        return this.modelName[0];
+        return this.args.modelName[0];
       }
     } else {
-      return this.modelName;
+      return this.args.modelName;
     }
   }
 
-  @computed("activeModelName", "intl.locale")
   get modelTitle(): string {
     return this.fieldInformation.getTranslatedPlural(this.activeModelName);
   }
 
   @action
   clearLookup() {
-    this.set("computedValue", null);
-  }
-
-  @action
-  doChangeValue(model: DrupalModel) {
-    this.set("computedValue", model);
+    this.valueChanged(null);
   }
 }

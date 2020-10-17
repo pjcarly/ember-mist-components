@@ -28,15 +28,15 @@ export default class ModalComponent extends Component<Arguments> {
   constructor(owner: any, args: Arguments) {
     super(owner, args);
 
-    if (!args.dialogClass) {
-      args.dialogClass = "modal-dialog-centered";
-    }
-
     if (this.args.closeOnRouteChange) {
       this.router.on("routeWillChange", (_: TransitionEvent) => {
         this.closeModal();
       });
     }
+  }
+
+  get dialogClass(): string {
+    return this.args.dialogClass ?? "modal-dialog-centered";
   }
 
   @computed()

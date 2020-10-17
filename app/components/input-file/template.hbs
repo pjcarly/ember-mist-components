@@ -9,7 +9,7 @@
     @name={{this.inputIdComputed}}
     @class="form-control browse"
     @multiple={{@multiple}}
-    @onfileadd={{action this.filesSelected}} as |queue|>
+    @onfileadd={{action this.filesSelected}} ...attributes as |queue|>
     {{#if queue.files.length}}
       {{t 'ember-mist-components.labels.uploading'}} <Loading />
     {{else}}  

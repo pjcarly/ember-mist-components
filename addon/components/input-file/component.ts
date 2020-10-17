@@ -1,23 +1,23 @@
-import BaseInput from "@getflights/ember-field-components/components/BaseInput";
+import BaseInput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseInput";
 import File from "ember-file-upload/file";
-import { isEmpty } from "@ember/utils";
 import { action } from "@ember/object";
-import { computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 
-export default class InputFileComponent extends BaseInput {
-  type = "file";
-  multiple: boolean = false;
+export interface FileArguments extends Arguments {
+  multiple?: boolean;
+}
 
-  @computed("inputId")
-  get inputIdComputed() {
-    return this.inputId ?? `${guidFor(this)}-queue`;
+export default class InputFileComponent extends BaseInput<FileArguments> {
+  type = "file";
+
+  get inputIdComputed(): string {
+    return this.args.inputId ?? `${guidFor(this)}-queue`;
   }
 
   @action
-  filesSelected(file: File) {
-    if (!isEmpty(file)) {
-      this.set("computedValue", file);
-    }
+  filesSelected(file?: File) {
+    this.valueChanged(file);
   }
 }

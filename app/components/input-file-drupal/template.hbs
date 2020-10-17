@@ -1,8 +1,8 @@
 <span class="input file-drupal{{if @multiple ' file-drupal__multiple' ' file-drupal__single'}}">
-  {{#if this.computedValue}}
+  {{#if @value}}
     {{#if @multiple}}
       <ul class="file-drupal__list">
-        {{#each this.computedValue as |file|}}
+        {{#each @value as |file|}}
           <li>
             <OutputImageLink @value={{file}} />
             <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile file)}}>{{t 'ember-mist-components.labels.remove'}}</button>
@@ -12,7 +12,7 @@
     {{else}}
       <ul class="file-drupal__list">
         <li>
-          <OutputImageLink @value={{this.computedValue}} />
+          <OutputImageLink @value={{@value}} />
           <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile computedValue)}}>{{t 'ember-mist-components.labels.remove'}}</button>
         </li>
       </ul>
@@ -26,7 +26,7 @@
   {{/if}}
   
   {{#if this.uploadFile.isIdle}}
-    {{#if (or @multiple (not this.computedValue))}}
+    {{#if (or @multiple (not @value))}}
       <InputFile
         @multiple={{this.multiple}}
         @inputId={{@inputId}}

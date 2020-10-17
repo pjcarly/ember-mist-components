@@ -1,10 +1,12 @@
 import { task } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
 import { inject as service } from "@ember/service";
-import { isEmpty } from "@ember/utils";
 import { dasherize } from "@ember/string";
 import { htmlSafe } from "@ember/template";
-import BaseInput from "@getflights/ember-field-components/components/BaseInput";
+import BaseInput, {
+  Arguments,
+  OptionsArgument,
+} from "@getflights/ember-field-components/components/BaseInput";
 import FileModel from "@getflights/ember-mist-components/interfaces/file";
 import File from "ember-file-upload/file";
 import { taskFor } from "ember-concurrency-ts";
@@ -13,7 +15,21 @@ import ToastService from "@getflights/ember-mist-components/services/toast";
 import FileQueueService from "ember-file-upload/services/file-queue";
 import Queue from "ember-file-upload/queue";
 
-export default class InputFileDrupalComponent extends BaseInput {
+export interface FileDrupalArguments extends Arguments {
+  multiple?: boolean;
+  modelName: string;
+  field: string;
+  options?: FileDrupalOptionsArgument;
+}
+
+export interface FileDrupalOptionsArgument extends OptionsArgument {
+  headers?: [key: string, value: string];
+  endpoint?: string;
+}
+
+export default class InputFileDrupalComponent extends BaseInput<
+  FileDrupalArguments
+> {
   @service http!: HttpService;
   @service toast!: ToastService;
   @service fileQueue!: FileQueueService;
@@ -23,15 +39,9 @@ export default class InputFileDrupalComponent extends BaseInput {
   /**
    * The last active ember-file-upload queue that was used uploading files, null when nothing has been uploaded
    */
-  lastActiveQueue?: string;
+  private lastActiveQueue?: string;
+  private activeFile?: File;
 
-  activeFile?: File;
-
-  multiple: boolean = false;
-  modelName!: string;
-  field!: string;
-
-  @computed("lastActiveQueue")
   get queue(): Queue | null {
     if (this.lastActiveQueue) {
       return this.fileQueue.find(this.lastActiveQueue);
@@ -40,7 +50,6 @@ export default class InputFileDrupalComponent extends BaseInput {
     return null;
   }
 
-  @computed("queue")
   get totalFiles(): number {
     if (this.queue) {
       return <number>this.queue.files.length;
@@ -49,7 +58,6 @@ export default class InputFileDrupalComponent extends BaseInput {
     return 0;
   }
 
-  @computed("queue", "activeFile")
   get activeFilePositionInQueue(): number {
     if (this.activeFile && this.queue) {
       const position = this.queue.files.indexOf(this.activeFile);
@@ -62,30 +70,27 @@ export default class InputFileDrupalComponent extends BaseInput {
     return -1;
   }
 
-  @computed("modelName", "field")
   get mistFieldTarget(): string | undefined {
-    return this.modelName && this.field
-      ? dasherize(`${this.modelName}.${this.field}`)
+    return this.args.modelName && this.args.field
+      ? dasherize(`${this.args.modelName}.${this.args.field}`)
       : undefined;
   }
 
-  @computed("options.headers")
   get fieldHeaders(): Map<string, string> {
     const returnValue = new Map();
 
-    if (this.options && this.options.headers) {
-      for (const key in this.options.headers) {
-        returnValue.set(key, this.options.headers[key]);
+    if (this.args.options && this.args.options.headers) {
+      for (const key in this.args.options.headers) {
+        returnValue.set(key, this.args.options.headers[key]);
       }
     }
 
     return returnValue;
   }
 
-  @computed("options.endpoint", "http.endpoint")
   get uploadEndpoint(): string {
-    if (this.options && this.options.endpoint) {
-      return `${this.http.endpoint}${this.options.endpoint}`;
+    if (this.args.options && this.args.options.endpoint) {
+      return `${this.http.endpoint}${this.args.options.endpoint}`;
     } else {
       return `${this.http.endpoint}file/files`;
     }
@@ -105,7 +110,6 @@ export default class InputFileDrupalComponent extends BaseInput {
     return returnValue;
   }
 
-  @computed("fieldHeaders", "httpHeaders", "mistFieldTarget")
   get headers(): { [s: string]: string } {
     const headers = new Map([...this.fieldHeaders, ...this.httpHeaders]);
 
@@ -122,13 +126,13 @@ export default class InputFileDrupalComponent extends BaseInput {
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
-  *uploadFile(file: File) {
-    this.set("activeFile", file);
+  async uploadFile(file: File) {
+    this.activeFile = file;
 
-    if (!isEmpty(file)) {
-      this.set("lastActiveQueue", file.queue.name);
+    if (file) {
+      this.lastActiveQueue = file.queue.name;
 
-      yield file
+      await file
         .upload(this.uploadEndpoint, { headers: this.headers })
         .then((response: any) => {
           // @ts-ignore
@@ -142,14 +146,14 @@ export default class InputFileDrupalComponent extends BaseInput {
             hash: response.body.data.attributes.hash,
           };
 
-          let fieldValue = this.computedValue;
-          if (this.multiple) {
+          let fieldValue = this.args.value;
+          if (this.args.multiple) {
             fieldValue = [...fieldValue, fileObject];
           } else {
             fieldValue = fileObject;
           }
 
-          this.set("computedValue", fieldValue);
+          this.valueChanged(fieldValue);
         })
         .catch((error: any) => {
           file.queue.remove(file);
@@ -171,21 +175,21 @@ export default class InputFileDrupalComponent extends BaseInput {
 
   @action
   deleteFile(file: FileModel) {
-    if (this.multiple) {
-      const values = <FileModel[]>this.computedValue;
+    if (this.args.multiple) {
+      const values = <FileModel[]>this.args.value;
       const indexOfValue = values.indexOf(file);
 
       if (indexOfValue !== -1) {
         values.splice(indexOfValue, 1);
 
         if (values.length === 0) {
-          this.set("computedValue", null);
+          this.valueChanged(null);
         } else {
-          this.set("computedValue", [...values]);
+          this.valueChanged([...values]);
         }
       }
     } else {
-      this.set("computedValue", null);
+      this.valueChanged(null);
     }
   }
 
