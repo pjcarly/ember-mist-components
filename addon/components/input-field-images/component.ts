@@ -44,6 +44,6 @@ export default class InputFieldImagesComponent extends InputFieldImageComponent 
       });
     }
 
-    this.set("value", newValues);
+    this.setNewValue(newValues);
   }
 }

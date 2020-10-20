@@ -1,9 +1,11 @@
-import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
+import InputFieldComponent, {
+  InputFieldArguments,
+} from "@getflights/ember-field-components/components/input-field/component";
 import Condition, {
   Operator,
 } from "@getflights/ember-mist-components/query/Condition";
 import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import Query from "@getflights/ember-mist-components/query/Query";
@@ -13,30 +15,40 @@ import MutableArray from "@ember/array/mutable";
 import { dropTask } from "ember-concurrency-decorators";
 import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
-import { isBlank } from "@ember/utils";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 import Model from "@ember-data/model";
 import { taskFor } from "ember-concurrency-ts";
+import { tracked } from "@glimmer/tracking";
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
   polymorphic: boolean;
 }
 
-export default class InputFieldHasManyComponent extends InputFieldComponent {
+export interface InputFieldHasManyArguments extends InputFieldArguments {
+  options?: InputFieldHasManyOptionsArgument;
+}
+
+export interface InputFieldHasManyOptionsArgument {
+  nameField?: string;
+  baseQuery?: Query;
+}
+
+export default class InputFieldHasManyComponent extends InputFieldComponent<
+  InputFieldHasManyArguments
+> {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
-  selectOptions: SelectOption[] = [];
+  @tracked selectOptions: SelectOption[] = [];
 
-  didReceiveAttrs() {
-    // @ts-ignore
-    super.didReceiveAttrs(...arguments);
+  constructor(owner: any, args: InputFieldHasManyArguments) {
+    super(owner, args);
     taskFor(this.setSelectOptions).perform();
   }
 
   @dropTask
-  *setSelectOptions() {
+  async setSelectOptions() {
     if (this.isSelect) {
       assert(
         "Select widget is not supported for polymorphic relationships",
@@ -54,7 +66,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
         this.baseQuery.hasConditionLogic ||
         this.baseQuery.hasOrders
       ) {
-        selectOptions = yield taskFor(
+        selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
           <string>this.relationshipModelName,
@@ -62,7 +74,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
           this.nameField
         );
       } else {
-        selectOptions = yield taskFor(
+        selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
           <string>this.relationshipModelName,
@@ -71,42 +83,36 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
         );
       }
 
-      this.set("selectOptions", selectOptions);
+      this.selectOptions = selectOptions;
     }
   }
 
-  @computed("options.nameField")
   get nameField(): string {
     let nameField = "name";
 
-    if (this.options && this.options.nameField) {
-      nameField = this.options.nameField;
+    if (this.args.options && this.args.options.nameField) {
+      nameField = this.args.options.nameField;
     }
 
     return nameField;
   }
 
-  @computed("fieldOptions")
   get isPolymorphic(): boolean {
     const options = <HasManyFieldOptionsInterface>this.fieldOptions;
     return (
-      !isBlank(options) &&
-      options.hasOwnProperty("polymorphic") &&
-      options.polymorphic
+      options && options.hasOwnProperty("polymorphic") && options.polymorphic
     );
   }
 
-  @computed("model", "field")
   get relationshipModelName(): string | string[] {
     // @ts-ignore
     return this.fieldInformation.getHasManyModelName(
       // @ts-ignore
       this.modelName,
-      this.field
+      this.args.field
     );
   }
 
-  @computed("fieldOptions.filters", "options.baseQuery")
   get baseQuery(): Query {
     // Lets first check for passed in query
     const modelName = isArray(this.relationshipModelName)
@@ -114,13 +120,13 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
       : this.relationshipModelName;
     const query = new Query(modelName);
 
-    if (this.options && this.options.baseQuery) {
+    if (this.args.options && this.args.options.baseQuery) {
       assert(
         "baseQuery option  must be of type: ember-mist-components/query/Query",
-        this.options.baseQuery instanceof Query
+        this.args.options.baseQuery instanceof Query
       );
 
-      query.copyFrom(this.options.baseQuery);
+      query.copyFrom(this.args.options.baseQuery);
     }
 
     // And also add conditions defined on the field options
@@ -156,14 +162,13 @@ export default class InputFieldHasManyComponent extends InputFieldComponent {
     return query;
   }
 
-  @computed("widgetName")
   get isSelect(): boolean {
     return this.widgetName === "select";
   }
 
   @action
   reorderedValues(values: MutableArray<MistModel>) {
-    this.set("value", values);
+    this.setNewValue(values);
   }
 
   @action

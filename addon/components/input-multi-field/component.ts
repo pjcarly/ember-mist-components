@@ -1,7 +1,9 @@
 import { A } from "@ember/array";
 import MutableArray from "@ember/array/mutable";
 import { computed, action } from "@ember/object";
-import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
+import InputFieldComponent, {
+  InputFieldArguments,
+} from "@getflights/ember-field-components/components/input-field/component";
 // TODO: fix bug, when pushing new object on the array, for some reason the object in the template isnt pushed to the end of the array, but instead to the end-1 position
 /**
  * Workaround for https://github.com/adopted-ember-addons/ember-sortable/issues/234:

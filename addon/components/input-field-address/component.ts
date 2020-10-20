@@ -1,35 +1,38 @@
-import InputFieldComponent from "@getflights/ember-field-components/components/input-field/component";
+import InputFieldComponent, {
+  InputFieldArguments,
+} from "@getflights/ember-field-components/components/input-field/component";
 import Address from "@getflights/ember-mist-components/models/address";
 import AddressService from "@getflights/ember-mist-components/services/address";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { task, taskGroup } from "ember-concurrency-decorators";
-import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { isNone } from "@ember/utils";
 import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
 import { taskFor } from "ember-concurrency-ts";
+import { tracked } from "@glimmer/tracking";
 
-export default class InputFieldAddressComponent extends InputFieldComponent {
+export default class InputFieldAddressComponent extends InputFieldComponent<
+  InputFieldArguments
+> {
   // @ts-ignore
   @service("address") addressing!: AddressService;
 
   @taskGroup addressLoading!: any;
-  displayRows: any[] = [];
+  @tracked displayRows: any[] = [];
 
-  didReceiveAttrs() {
-    // @ts-ignore
-    super.didReceiveAttrs(...arguments);
+  constructor(owner: any, args: InputFieldArguments) {
+    super(owner, args);
     taskFor(this.setAddressFormat).perform();
   }
 
-  @computed("model", "field")
   get address(): Address {
-    const model = this.model;
-    // @ts-ignore
-    let address = model.get(this.field);
+    const model = this.args.model;
+    let address = model
+      // @ts-ignore
+      .get(this.args.field);
 
-    if (isBlank(address)) {
+    if (!address) {
       // @ts-ignore
       address = this.store.createFragment("address", {});
       // @ts-ignore
@@ -41,7 +44,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
   }
 
   @task({ group: "addressLoading" })
-  *setAddressFormat() {
+  async setAddressFormat() {
     const countryCode = this.address.countryCode;
 
     if (!countryCode) {
@@ -52,14 +55,13 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
         this.address.set("format", null);
         // @ts-ignore
         this.address.notifyPropertyChange("format");
-        this.notifyPropertyChange("field");
       }
     } else {
       if (
         !this.address.format ||
         this.address.format.data.id !== this.address.countryCode
       ) {
-        const format = yield taskFor(this.addressing.getAddressFormat).perform(
+        const format = await taskFor(this.addressing.getAddressFormat).perform(
           countryCode
         );
         // @ts-ignore
@@ -67,7 +69,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       }
     }
 
-    yield taskFor(this.setDisplayRows).perform();
+    await taskFor(this.setDisplayRows).perform();
   }
 
   /**
@@ -79,7 +81,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
    * - depending on the country some parts have a different label (state, province, region, island, ...)
    */
   @task({ group: "addressLoading" })
-  *setDisplayRows() {
+  async setDisplayRows() {
     const addressFormat = this.address.format;
     const rows = [];
 
@@ -99,7 +101,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
         for (let rawColumn of rawColumns) {
           rawColumn = rawColumn.replace(/[^0-9a-z]/gi, ""); // we remove all none alpha numeric characters
           if (!isBlank(rawColumn)) {
-            let column = yield taskFor(this.getDisplayColumnnForField).perform(
+            let column = await taskFor(this.getDisplayColumnnForField).perform(
               rawColumn,
               addressFormat
             );
@@ -118,11 +120,11 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
       }
     }
 
-    this.set("displayRows", rows);
+    this.displayRows = rows;
   }
 
   @task({ group: "addressLoading" })
-  *getDisplayColumnnForField(field: string, format: any) {
+  async getDisplayColumnnForField(field: string, format: any) {
     if (
       field !== "familyName" &&
       field !== "givenName" &&
@@ -180,7 +182,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
 
             if (isNone(subdivisionSelectOptions)) {
               const parentGrouping = this.getParentGroupingForField(field);
-              subdivisionSelectOptions = yield taskFor(
+              subdivisionSelectOptions = await taskFor(
                 this.getSubdivisionSelectOptions
               ).perform(parentGrouping);
             }
@@ -209,9 +211,9 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
   }
 
   @task({ group: "addressLoading" })
-  *getSubdivisionSelectOptions(parentGrouping: string) {
+  async getSubdivisionSelectOptions(parentGrouping: string) {
     // a subdivision is basically a generic name for an address component which has selectoptions that need to be fetched
-    const selectoptions: SelectOption[] = yield taskFor(
+    const selectoptions: SelectOption[] | undefined = await taskFor(
       this.addressing.getSubdivisionSelectOptions
     ).perform(parentGrouping);
     return selectoptions;
@@ -276,30 +278,22 @@ export default class InputFieldAddressComponent extends InputFieldComponent {
    * Removes the errors on the model address field
    */
   removeAddressErrors() {
-    // @ts-ignore
-    this.model.errors.remove(this.field);
+    this.args.model.errors
+      // @ts-ignore
+      .remove(this.field);
   }
 
   cancelAllTasks() {
-    this.getSubdivisionSelectOptions
-      // @ts-ignore
-      .cancelAll();
-    this.getDisplayColumnnForField
-      // @ts-ignore
-      .cancelAll();
-    this.setDisplayRows
-      // @ts-ignore
-      .cancelAll();
-    this.setAddressFormat
-      // @ts-ignore
-      .cancelAll();
+    taskFor(this.getSubdivisionSelectOptions).cancelAll();
+    taskFor(this.getDisplayColumnnForField).cancelAll();
+    taskFor(this.setDisplayRows).cancelAll();
+    taskFor(this.setAddressFormat).cancelAll();
   }
 
   @action
   countryCodeChanged(value: string) {
     this.address.clearExceptAddressLines();
     this.cancelAllTasks();
-    this.notifyPropertyChange("field");
     // @ts-ignore
     this.address.set("countryCode", value);
     taskFor(this.setAddressFormat).perform();

@@ -3,29 +3,29 @@ import DynamicSelectOptionService from "@getflights/ember-mist-components/servic
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
+import { InputFieldArguments } from "@getflights/ember-field-components/addon/components/input-field/component";
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
-  didReceiveAttrs() {
-    // @ts-ignore
-    super.didReceiveAttrs(...arguments);
+  constructor(owner: any, args: InputFieldArguments) {
+    super(owner, args);
     taskFor(this.loadSelectOptions).perform();
   }
 
   @task
-  *loadSelectOptions() {
+  async loadSelectOptions() {
     // If selectOptions were defined, we dont load anything
     if (
       !this.selectOptions &&
       this.widgetName !== "country-select" &&
       !(this.fieldOptions && this.fieldOptions.selectOptions)
     ) {
-      const selectOptions = yield taskFor(
+      const selectOptions = await taskFor(
         this.dynamicSelectOptions.getSelectOptions
-      ).perform(<string>this.modelName, this.field);
+      ).perform(<string>this.modelName, this.args.field);
 
-      this.set("selectOptions", this.getAllowedSelectOptions(selectOptions));
+      this.selectOptions = this.getAllowedSelectOptions(selectOptions);
     }
   }
 }
