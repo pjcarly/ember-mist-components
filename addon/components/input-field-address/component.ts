@@ -12,6 +12,22 @@ import { action } from "@ember/object";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
 
+class DisplayRow {
+  columns: DisplayColumn[] = [];
+  amountOfColumns!: number;
+  columnClassName!: string;
+  @tracked emptyRow = false;
+}
+
+class DisplayColumn {
+  label!: string;
+  field!: string;
+  component!: string;
+  none?: string;
+  selectOptions?: SelectOption[];
+  disabled?: boolean;
+}
+
 export default class InputFieldAddressComponent extends InputFieldComponent<
   InputFieldArguments
 > {
@@ -19,7 +35,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   @service("address") addressing!: AddressService;
 
   @taskGroup addressLoading!: any;
-  @tracked displayRows: any[] = [];
+  @tracked displayRows: DisplayRow[] = [];
 
   constructor(owner: any, args: InputFieldArguments) {
     super(owner, args);
@@ -83,7 +99,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   @task({ group: "addressLoading" })
   async setDisplayRows() {
     const addressFormat = this.address.format;
-    const rows = [];
+    const rows: DisplayRow[] = [];
 
     if (
       !isBlank(addressFormat) &&
@@ -95,17 +111,17 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
       for (let rawLine of rawStructurePerLine) {
         let rawColumns = rawLine.split("%");
-        let row: any = {};
+        let row = new DisplayRow();
         row.columns = [];
 
         for (let rawColumn of rawColumns) {
           rawColumn = rawColumn.replace(/[^0-9a-z]/gi, ""); // we remove all none alpha numeric characters
-          if (!isBlank(rawColumn)) {
+          if (rawColumn) {
             let column = await taskFor(this.getDisplayColumnnForField).perform(
               rawColumn,
               addressFormat
             );
-            if (!isBlank(column)) {
+            if (column) {
               row.columns.push(column);
             }
           }
@@ -124,7 +140,10 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   }
 
   @task({ group: "addressLoading" })
-  async getDisplayColumnnForField(field: string, format: any) {
+  async getDisplayColumnnForField(
+    field: string,
+    format: any
+  ): Promise<DisplayColumn | undefined> {
     if (
       field !== "familyName" &&
       field !== "givenName" &&
@@ -134,7 +153,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       const selectlistDepth = format.data.attributes["subdivision-depth"];
       const requiredFields = format.data.attributes["required-fields"];
 
-      let column: any = {};
+      let column = new DisplayColumn();
       column.label = format.data.attributes.labels[field];
       column.field = field;
 
@@ -147,7 +166,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       // Here we must figure out what type of component to use to display the input field
       if (selectlistDepth === 0) {
         // No depth, so everything in the format is just plain text
-        column.component = "input-text";
+        column.component = "text";
       } else {
         // We have a depth, meaning there are select options available, so now we must figure out:
         // - if this field is a select field or a plain text field
@@ -159,7 +178,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
         if (positionOfField > selectlistDepth) {
           // the position is larger than the depth, this is a plain text field
-          column.component = "input-text";
+          column.component = "text";
         } else {
           // position is within the depth, now we must figure out if it parent values are filled in so we can display this field
           // and if this field is a plain text field, or a select
@@ -189,17 +208,17 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
             if (isBlank(subdivisionSelectOptions)) {
               // no select options found, this is just a plain text field
-              column.component = "input-text";
+              column.component = "text";
             } else {
               column.none = `-- ${column.label} --`;
-              column.component = "input-select";
+              column.component = "select";
               column.selectOptions = subdivisionSelectOptions;
               column.disabled = isDisabled;
             }
           } else {
             // a disabled field, lets only display 1 option, as they will be rerendered anyway
             column.none = `-- ${column.label} --`;
-            column.component = "input-select";
+            column.component = "select";
             column.selectOptions = [];
             column.disabled = isDisabled;
           }
@@ -208,6 +227,8 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
       return column;
     }
+
+    return;
   }
 
   @task({ group: "addressLoading" })

@@ -14,7 +14,7 @@
       <div class="row">
         {{#each row.columns as |column|}}
           <div class={{row.columnClassName}}>
-            {{component column.component
+            {{component (concat 'input-' column.component)
               value=(get this.address column.field)
               valueChanged=(action (fn this.addressFieldChanged column.field))
               placeholder=column.label

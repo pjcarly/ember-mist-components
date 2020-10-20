@@ -1,17 +1,31 @@
-import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
+import OutputFieldComponent, {
+  OutputFieldArguments,
+  OutputFieldOptionsArgument,
+} from "@getflights/ember-field-components/components/output-field/component";
 import Image from "@getflights/ember-mist-components/interfaces/image";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 
-export default class OutputFieldImageComponent extends OutputFieldComponent {
-  imageClicked(_: Image) {}
+export interface OutputFieldImageArguments extends OutputFieldArguments {
+  options?: OutputFieldImageOptionsArgument;
+  imageClicked?: (image: Image) => void;
+}
 
-  @computed("options", "options.style")
-  get style(): string {
-    return this.options ? this.options.style : "";
+export interface OutputFieldImageOptionsArgument
+  extends OutputFieldOptionsArgument {
+  style?: string;
+}
+
+export default class OutputFieldImageComponent extends OutputFieldComponent<
+  OutputFieldImageArguments
+> {
+  get style(): string | undefined {
+    return this.args.options ? this.args.options.style : "";
   }
 
   @action
   didClickImage(image: Image) {
-    this.imageClicked(image);
+    if (this.args.imageClicked) {
+      this.args.imageClicked(image);
+    }
   }
 }

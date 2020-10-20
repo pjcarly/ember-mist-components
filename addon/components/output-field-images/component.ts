@@ -4,18 +4,19 @@ import { computed, action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 // @ts-ignore
 import bsn from "bootstrap.native/dist/bootstrap-native-v4";
+import { OutputFieldImageArguments } from "../output-field-image/component";
 
-export default class OutputFieldImagesComponent extends OutputFieldComponent {
-  imageClicked(_: Image) {}
+export default class OutputFieldImagesComponent extends OutputFieldComponent<
+  OutputFieldImageArguments
+> {
   carousel!: bsn.Carousel;
 
-  didInsertElement() {
-    // @ts-ignore
-    super.didInsertElement(...arguments);
+  constructor(owner: any, args: OutputFieldImageArguments) {
+    super(owner, args);
     const element = document.getElementById(this.carouselName);
     if (element) {
       const carousel = new bsn.Carousel(element);
-      this.set("carousel", carousel);
+      this.carousel = carousel;
     }
   }
 
@@ -26,6 +27,8 @@ export default class OutputFieldImagesComponent extends OutputFieldComponent {
 
   @action
   didClickImage(image: Image) {
-    this.imageClicked(image);
+    if (this.args.imageClicked) {
+      this.args.imageClicked(image);
+    }
   }
 }

@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-12">
             {{#each row.columns as |column|}}
-              {{component column.component
+              {{component (concat 'output-' column.component)
                 value=(get this.address column.field)
                 valueChanged=(action (fn this.addressFieldChanged column.field))
                 placeholder=column.label
