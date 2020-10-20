@@ -1,8 +1,8 @@
-{{#if loadSelectOptions.isIdle}}
+{{#if this.loadSelectOptions.isIdle}}
   <InputMultiSelect
     @selectOptions={{this.selectOptionsComputed}}
     @value={{this.computedValue}}
-    @valueChanged={{action (mut this.value)}}
+    @valueChanged={{this.setNewValue}}
     @class={{@inputClass}}
     @inputId={{this.inputId}}
     @noneLabel={{this.noneLabel}}

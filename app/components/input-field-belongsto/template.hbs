@@ -10,7 +10,7 @@
       required=this.isRequired
       options=this.inputOptions}}
 {{else if this.isSelect}}
-  {{#if setSelectOptions.isRunning}}
+  {{#if this.setSelectOptions.isRunning}}
     <Loading />
   {{else if this.noChoiceAvailable}}
     <OutputText

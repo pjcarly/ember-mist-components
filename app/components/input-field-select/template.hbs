@@ -1,10 +1,10 @@
-{{#if loadSelectOptions.isIdle}}
+{{#if this.loadSelectOptions.isIdle}}
   {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
   {{#if (eq this.widgetName 'button-group')}}
     <InputButtonGroup
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.computedValue}}
-      @valueChanged={{action (mut this.value)}}
+      @valueChanged={{this.setNewValue}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
       @noneLabel={{this.noneLabel}}
@@ -14,7 +14,7 @@
     <InputRadioButtonList
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.computedValue}}
-      @valueChanged={{action (mut this.value)}}
+      @valueChanged={{this.setNewValue}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
       @noneLabel={{this.noneLabel}}
@@ -23,7 +23,7 @@
   {{else if (eq this.widgetName 'country-select')}}
     <InputSelectCountry
       @value={{this.computedValue}}
-      @valueChanged={{action (mut this.value)}}
+      @valueChanged={{this.setNewValue}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
       @noneLabel={{this.noneLabel}}
@@ -33,7 +33,7 @@
     <InputSelect
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.computedValue}}
-      @valueChanged={{action (mut this.value)}}
+      @valueChanged={{this.setNewValue}}
       @class={{@inputClass}}
       @inputId={{this.inputId}}
       @noneLabel={{this.noneLabel}}

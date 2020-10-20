@@ -26,7 +26,7 @@
         @multiple={{false}}
         @modelName={{this.modelName}}
         @options={{this.modifiedOptions}}
-        @valueChanged={{action (mut this.value)}} />
+        @valueChanged={{this.setNewValue}} />
       {{#if this.value.id}}
         <OutputImage
           @value={{this.value}}
