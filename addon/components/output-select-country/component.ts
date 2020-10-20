@@ -1,30 +1,39 @@
 import AddressService from "@getflights/ember-mist-components/services/address";
-import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
+import BaseOutput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseOutput";
 import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { taskFor } from "ember-concurrency-ts";
 
-export default class OutputSelectCountryComponent extends BaseOutput {
+export interface SelectCountryArguments extends Arguments {
+  value?: string;
+}
+
+export default class OutputSelectCountryComponent extends BaseOutput<
+  Arguments
+> {
   @service address!: AddressService;
 
+  type = "select-country";
   selectOptions?: SelectOption[];
 
-  didReceiveAttrs() {
-    super.didReceiveAttrs();
+  constructor(owner: any, args: SelectCountryArguments) {
+    super(owner, args);
     taskFor(this.setCountrySelectOptions).perform();
   }
 
   @task
-  *setCountrySelectOptions() {
-    const selectOptions = yield taskFor(
+  async setCountrySelectOptions() {
+    const selectOptions = await taskFor(
       this.address.getCountrySelectOptions
     ).perform();
 
     if (selectOptions) {
-      this.set("selectOptions", selectOptions);
+      this.selectOptions = selectOptions;
     } else {
-      this.set("selectOptions", []);
+      this.selectOptions = [];
     }
   }
 }

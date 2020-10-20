@@ -1,5 +1,12 @@
-import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
+import BaseOutput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseOutput";
+import File from "@getflights/ember-mist-components/interfaces/file";
 
-export default class OutputFileComponent extends BaseOutput {
+export interface FileArguments extends Arguments {
+  value?: File;
+}
+
+export default class OutputFileComponent extends BaseOutput<FileArguments> {
   type = "file";
 }

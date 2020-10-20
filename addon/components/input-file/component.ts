@@ -18,6 +18,6 @@ export default class InputFileComponent extends BaseInput<FileArguments> {
 
   @action
   filesSelected(file?: File) {
-    this.valueChanged(file);
+    this.setNewValue(file);
   }
 }

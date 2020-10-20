@@ -4,16 +4,16 @@
       {{@prefix}}
     </span>
   {{/if}}
-  {{#if value.id}}
-    <a class="value" href={{if @options.filename (concat value.url '&filename=' @options.filename) value.url}} target="_blank">
+  {{#if @value.id}}
+    <a class="value" href={{if @options.filename (concat value.url '&filename=' @options.filename) @value.url}} target="_blank" ...attributes>
       {{#if @options.filename}}
         {{@options.filename}} <IconDownload />
       {{else}}
-        {{value.filename}} <IconDownload />
+        {{@value.filename}} <IconDownload />
       {{/if}}
     </a>
   {{else}}
-    <span class="value empty"></span>
+    <span class="value empty" ...attributes></span>
   {{/if}}
   {{#if (and @value @suffix)}}
     <span class="suffix">

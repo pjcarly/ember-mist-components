@@ -1,14 +1,14 @@
-import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
-import { computed } from "@ember/object";
+import BaseOutput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseOutput";
 import { htmlSafe } from "@ember/string";
 // @ts-ignore
 import { SafeString } from "@ember/string/-private/handlebars";
 
-export default class OutputHtmlComponent extends BaseOutput {
+export default class OutputHtmlComponent extends BaseOutput<Arguments> {
   type = "html";
 
-  @computed("value")
   get html(): SafeString {
-    return htmlSafe(this.value);
+    return htmlSafe(this.args.value);
   }
 }

@@ -13,7 +13,7 @@
       <ul class="file-drupal__list">
         <li>
           <OutputImageLink @value={{@value}} />
-          <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile computedValue)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+          <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile @value)}}>{{t 'ember-mist-components.labels.remove'}}</button>
         </li>
       </ul>
     {{/if}}

@@ -23,7 +23,7 @@ export interface FileDrupalArguments extends Arguments {
 }
 
 export interface FileDrupalOptionsArgument extends OptionsArgument {
-  headers?: [key: string, value: string];
+  headers?: { [key: string]: string };
   endpoint?: string;
 }
 
@@ -153,7 +153,7 @@ export default class InputFileDrupalComponent extends BaseInput<
             fieldValue = fileObject;
           }
 
-          this.valueChanged(fieldValue);
+          this.setNewValue(fieldValue);
         })
         .catch((error: any) => {
           file.queue.remove(file);
@@ -183,13 +183,13 @@ export default class InputFileDrupalComponent extends BaseInput<
         values.splice(indexOfValue, 1);
 
         if (values.length === 0) {
-          this.valueChanged(null);
+          this.setNewValue(null);
         } else {
-          this.valueChanged([...values]);
+          this.setNewValue([...values]);
         }
       }
     } else {
-      this.valueChanged(null);
+      this.setNewValue(null);
     }
   }
 

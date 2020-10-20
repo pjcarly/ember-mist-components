@@ -5,9 +5,9 @@
     </span>
   {{/if}}
   {{#if (and @value @value.url)}}
-    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{on "click" (fn didClickImage @value)}}/>
+    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{on "click" (fn this.didClickImage @value)}} ...attributes/>
   {{else}}
-    <span class='value empty'></span>
+    <span class="value empty" ...attributes></span>
   {{/if}}
   {{#if (and @value @suffix)}}
     <span class="suffix">

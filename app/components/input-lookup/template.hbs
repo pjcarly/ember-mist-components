@@ -14,7 +14,7 @@
     @baseQuery={{@baseQuery}} />
 
   <div class="input-group-append">
-    {{#if this.computedValue}}
+    {{#if @value}}
       <button type="button" class="btn btn-default" {{on "click" this.clearLookup}}>
         <IconRemove />
       </button>
@@ -24,7 +24,7 @@
       @baseQuery={{@baseQuery}}
       @modelName={{@modelName}}
       @activeModelName={{this.activeModelName}}
-      @valueChanged={{action this.doChangeValue}} />
+      @valueChanged={{action this.valueChanged}} />
     {{#if @suffix}}
       <span class="input-group-text suffix">{{@suffix}}</span>
     {{/if}}

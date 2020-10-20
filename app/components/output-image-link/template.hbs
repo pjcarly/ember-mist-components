@@ -4,12 +4,12 @@
       {{@prefix}}
     </span>
   {{/if}}
-  {{#if value.url}}
-    <a class="value" href={{image-url value style}} target="_blank">
-      {{value.filename}} <IconNewWindow />
+  {{#if @value.url}}
+    <a class="value" href={{image-url @value @style}} target="_blank" ...attributes>
+      {{@value.filename}} <IconNewWindow />
     </a>
   {{else}}
-    <span class="'value empty"></span>
+    <span class="'value empty" ...attributes></span>
   {{/if}}
   {{#if (and @value @suffix)}}
     <span class="suffix">

@@ -1,11 +1,11 @@
-{{#if setCountrySelectOptions.isIdle}}
+{{#if this.setCountrySelectOptions.isIdle}}
   <OutputSelect
     @value={{@value}}
     @selectOptions={{this.selectOptions}}
     @prefix={{@prefix}}
     @suffix={{@suffix}}
     @class={{@class}}
-    @options={{@options}} />
+    @options={{@options}} ...attributes/>
 {{else}}
   <Loading />
 {{/if}}

@@ -1,5 +1,13 @@
-import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
+import BaseOutput, {
+  Arguments,
+} from "@getflights/ember-field-components/components/BaseOutput";
 
-export default class OutputStringsComponent extends BaseOutput {
+export interface StringsArguments extends Arguments {
+  value?: string[];
+}
+
+export default class OutputStringsComponent extends BaseOutput<
+  StringsArguments
+> {
   type = "strings";
 }
