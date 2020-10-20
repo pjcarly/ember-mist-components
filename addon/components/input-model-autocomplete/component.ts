@@ -1,4 +1,3 @@
-import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { action } from "@ember/object";
@@ -9,8 +8,12 @@ import Store from "@ember-data/store";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { Operator } from "@getflights/ember-mist-components/query/Condition";
 import Query from "@getflights/ember-mist-components/query/Query";
+import BaseInput, {
+  Arguments,
+  OptionsArgument,
+} from "@getflights/ember-field-components/components/BaseInput";
 
-interface Arguments {
+interface ModelAutocompleteArguments extends Arguments {
   /**
    * The passed in name of the model
    */
@@ -21,41 +24,27 @@ interface Arguments {
    */
   baseQuery?: Query;
 
+  value?: DrupalModel;
+
   /**
    * Options that can be passed in.
    * `hideClear` see this.shouldHideClear
    * `searchQuery` see this.shouldUseSearchQuery
    */
   options?: InputOptionsArgument;
-
-  /**
-   * The passed in inputId that will be used
-   */
-  inputId?: string;
-
-  /**
-   * The passed in placeholder for the autocomplete component
-   */
-  placeholder?: string;
-
-  /**
-   * The passed in value that will be used as the selected value in the autocomplete component
-   */
-  value?: DrupalModel;
-
-  /* Closure Actions */
-  valueChanged?: (model?: DrupalModel) => void;
 }
 
-interface InputOptionsArgument {
+interface InputOptionsArgument extends OptionsArgument {
   hideClear: boolean;
   searchQuery: boolean;
 }
 
-export default class InputModelAutocompleteComponent extends Component<
-  Arguments
+export default class InputModelAutocompleteComponent extends BaseInput<
+  ModelAutocompleteArguments
 > {
   @service store!: Store;
+
+  type = "model-autocomplete";
 
   @task
   async searchTask(searchQuery: string) {

@@ -6,6 +6,7 @@ import { inject as service } from "@ember/service";
 import { isArray } from "@ember/array";
 import { action } from "@ember/object";
 import Query from "@getflights/ember-mist-components/query/Query";
+import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 
 export interface LookupArguments extends Arguments {
   /**
@@ -41,6 +42,11 @@ export default class InputLookup extends BaseInput<LookupArguments> {
 
   @action
   clearLookup() {
-    this.valueChanged(null);
+    this.setNewValue(null);
+  }
+
+  @action
+  valueSelected(model?: DrupalModel) {
+    this.setNewValue(model);
   }
 }

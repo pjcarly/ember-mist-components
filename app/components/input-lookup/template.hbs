@@ -9,7 +9,7 @@
     @value={{@value}}
     @inputId={{@inputId}}
     @placeholder={{@placeholder}}
-    @valueChanged={{action this.valueChanged}}
+    @valueChanged={{action this.valueSelected}}
     @options={{hash hideClear=true}}
     @baseQuery={{@baseQuery}} />
 
@@ -24,7 +24,7 @@
       @baseQuery={{@baseQuery}}
       @modelName={{@modelName}}
       @activeModelName={{this.activeModelName}}
-      @valueChanged={{action this.valueChanged}} />
+      @valueChanged={{action this.valueSelected}} />
     {{#if @suffix}}
       <span class="input-group-text suffix">{{@suffix}}</span>
     {{/if}}
