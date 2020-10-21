@@ -1,1 +1,1 @@
-export { default } from "@getflights/ember-mist-components/components/mist-print-button/component";
+export { default } from "@getflights/ember-mist-components/components/template-generate-button/component";

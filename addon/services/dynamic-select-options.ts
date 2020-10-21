@@ -28,7 +28,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param field The name of the field
    */
   @task({ enqueue: true, maxConcurrency: 4 })
-  *getSelectOptions(modelName: string, field: string) {
+  async getSelectOptions(modelName: string, field: string) {
     let cachedSelectOptions: SelectOption[] = [];
 
     const id = `${modelName}.${dasherize(field)}`;
@@ -54,7 +54,7 @@ export default class DynamicSelectOptionService extends Service {
       );
     } else {
       // not yet loaded, let's do a callout
-      yield this.store
+      await this.store
         // @ts-ignore
         .loadRecord("field", id)
         .then((fieldModel: FieldModel) => {
@@ -78,7 +78,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param nameField The nameField to be used when populating the label part of the selectOption
    */
   @task({ enqueue: true, maxConcurrency: 4 })
-  *getModelSelectOptions(
+  async getModelSelectOptions(
     modelName: string,
     query: Query | undefined,
     nameField: string | undefined
@@ -91,12 +91,12 @@ export default class DynamicSelectOptionService extends Service {
 
     if (query) {
       // @ts-ignore
-      models = yield query.fetch(this.store);
+      models = await query.fetch(this.store);
     } else if (this.loadedModelNames.includes(modelName)) {
       models = this.store.peekAll(modelName);
     } else {
       // @ts-ignore
-      models = yield this.store.loadAll(modelName);
+      models = await this.store.loadAll(modelName);
       this.loadedModelNames.push(modelName);
     }
 

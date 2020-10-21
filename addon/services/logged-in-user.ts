@@ -26,7 +26,7 @@ export default class LoggedInUserService extends Service {
    * @param query Query Params where possible include query parameter will be taken from
    */
   @dropTask
-  *loadCurrentUser(query?: Query) {
+  async loadCurrentUser(query?: Query) {
     const userId = this.session.data?.authenticated.user_id;
 
     if (userId) {
@@ -40,7 +40,7 @@ export default class LoggedInUserService extends Service {
         this.user.rollback();
       }
 
-      yield this.store
+      await this.store
         // @ts-ignore
         .loadRecord("user", userId, options)
         .then((user: UserModel) => {
@@ -54,9 +54,9 @@ export default class LoggedInUserService extends Service {
   }
 
   @dropTask
-  *signOut() {
+  async signOut() {
     this.websocket.closeConnection();
-    yield this.session.invalidate();
+    await this.session.invalidate();
     this.set("user", null);
     this.store.unloadAll("user");
   }

@@ -42,7 +42,7 @@ export default class AddressService extends Service {
    * Returns the different countries in a select option format
    */
   @enqueueTask
-  *getCountrySelectOptions() {
+  async getCountrySelectOptions() {
     // We first check in this service
     let countrySelectOptions = this.countrySelectOptions;
     if (countrySelectOptions) {
@@ -59,7 +59,7 @@ export default class AddressService extends Service {
       }
     }
 
-    yield this.http
+    await this.http
       .fetch(`${this.http.endpoint}address/address/countries/selectoptions`)
       .then((response) => {
         return response.json().then((data) => {
@@ -84,7 +84,7 @@ export default class AddressService extends Service {
    * @param countryCode The countrycode you want the format for
    */
   @enqueueTask
-  *getAddressFormat(countryCode: string): any {
+  async getAddressFormat(countryCode: string): any {
     const storageKey = `addressFormat${countryCode}`;
 
     // We might have already fetched this, so lets check here
@@ -104,7 +104,7 @@ export default class AddressService extends Service {
       }
     }
 
-    yield this.http
+    await this.http
       .fetch(`${this.http.endpoint}address/address/format/${countryCode}`)
       .then((response) => {
         return response.json().then((data) => {
@@ -129,7 +129,7 @@ export default class AddressService extends Service {
    * @param parentGrouping The grouping you want the subdivision for. This can be the Country code, the city code, the state code, ... You can find this in the format
    */
   @enqueueTask
-  *getSubdivisionSelectOptions(parentGrouping: string) {
+  async getSubdivisionSelectOptions(parentGrouping: string) {
     const cacheKey =
       "addressSubdivisionSelectOptions" + replaceAll(parentGrouping, ",", "");
 
@@ -151,7 +151,7 @@ export default class AddressService extends Service {
       }
     }
 
-    yield this.http
+    await this.http
       .fetch(
         `${this.http.endpoint}address/address/subdivisions/${parentGrouping}`
       )

@@ -28,19 +28,19 @@ export default class TemplateGenerateButtonComponent extends Component<
   apiEndpoint!: string;
 
   @dropTask
-  *generatePdf() {
+  async generatePdf() {
     let digest = null;
 
-    yield this.args.template
+    await this.args.template
       // @ts-ignore
-      .generateDigest({ id: this.model.id })
+      .generateDigest({ id: this.args.model.id })
       .then((results: any) => {
         digest = results.digest;
       });
 
     window.open(
       // @ts-ignore
-      `${this.apiEndpoint}template/generate/${this.template.key}?id=${
+      `${this.apiEndpoint}template/generate/${this.args.template.key}?id=${
         this.args.model.id
       }&digest=${digest}${
         this.args.language ? `&lang=${this.args.language}` : ""
