@@ -1,3 +1,8 @@
 import Component from "@glimmer/component";
 
-export default class ModelIconComponent extends Component {}
+export interface Arguments {
+  modelName: string;
+}
+
+export default class ModelIconComponent extends Component<Arguments> {
+}
