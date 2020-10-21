@@ -1,4 +1,4 @@
-{{#if loadSelectOptions.isIdle}}
+{{#if this.loadSelectOptions.isIdle}}
   <OutputMultiSelect
     @value={{this.value}}
     @selectOptions={{this.selectOptions}}
@@ -7,5 +7,7 @@
     @class={{@outputClass}}
     @options={{this.outputOptions}} />
 {{else}}
-  <Loading />
+  <span class="output loader">
+    <Loading />
+  </span>
 {{/if}}

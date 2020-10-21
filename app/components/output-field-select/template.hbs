@@ -1,4 +1,4 @@
-{{#if loadSelectOptions.isIdle}}
+{{#if this.loadSelectOptions.isRunning}}
   {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
   {{#if (eq this.widgetName 'country-select')}}
     <OutputSelectCountry
@@ -17,5 +17,7 @@
       @options={{this.outputOptions}} />
   {{/if}}
 {{else}}
-  <Loading />
+  <span class="output loader">
+    <Loading />
+  </span>
 {{/if}}

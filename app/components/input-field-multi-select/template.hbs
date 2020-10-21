@@ -9,5 +9,7 @@
     @required={{this.isRequired}}
     @options={{this.inputOptions}} />
 {{else}}
-  <Loading />
+  <span class="input loader">
+    <Loading />
+  </span>
 {{/if}}
