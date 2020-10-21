@@ -3,8 +3,8 @@ import DynamicSelectOptionService from "@getflights/ember-mist-components/servic
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
-import SelectOption from "@getflights/ember-field-components/addon/interfaces/SelectOption";
-import { OutputFieldArguments } from "@getflights/ember-field-components/addon/components/output-field/component";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
+import { OutputFieldArguments } from "@getflights/ember-field-components/components/output-field/component";
 import { tracked } from "@glimmer/tracking";
 
 export default class DynamicOutputFieldSelectComponent extends OutputFieldSelectComponent {

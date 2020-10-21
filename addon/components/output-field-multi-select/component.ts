@@ -4,7 +4,7 @@ import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
 import { OutputFieldArguments } from "@getflights/ember-field-components/components/output-field/component";
-import SelectOption from "@getflights/ember-field-components/addon/interfaces/SelectOption";
+import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { tracked } from "@glimmer/tracking";
 
 export default class DynamicOutputFieldMultiSelectComponent extends OutputFieldMultiSelectComponent {
