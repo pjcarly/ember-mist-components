@@ -52,7 +52,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       // @ts-ignore
       address = this.store.createFragment("address", {});
       // @ts-ignore
-      model.set(this.field, address);
+      model.set(this.args.field, address);
     }
 
     // @ts-ignore
