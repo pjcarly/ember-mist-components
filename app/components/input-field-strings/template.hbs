@@ -1,13 +1,18 @@
-<InputMultiField 
+<InputMulti 
   @inputComponent="input-text"
-  @value={{this.value}}
+  @value={{this.items}}
   @field={{@field}}
   @model={{@model}}
-  @valueChanged={{this.setNewValue}}
+  @modelName={{this.modelName}}
   @preSetHook={{@preSetHook}}
   @placeholder={{@placeholder}}
   @prefix={{@prefix}}
   @suffix={{@suffix}}
   @inputClass={{@inputClass}}
   @inputId={{@inputId}}
-  @inputOptions={{this.inputOptions}}/>
+  @inputOptions={{this.inputOptions}}
+  @addNewItem={{this.addNewItem}}
+  @removeItem={{this.removeItem}}
+  @itemChanged={{this.itemChanged}}
+  @reorderItems={{this.reorderItems}}
+  />

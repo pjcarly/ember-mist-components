@@ -1,0 +1,28 @@
+<div class="input-multi" {{sortable-group groupName=(concat @inputId '-group') onChange=@reorderItems}}>
+  {{#each @value as |item index|}}
+    <div class="input-multi__item" {{sortable-item groupName=(concat @inputId '-group') model=item}}>
+      <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
+      {{component 
+        @inputComponent 
+        value=item.value
+        field=field
+        modelName=@modelName
+        valueChanged=(action @itemChanged index)
+        placeholder=@placeholder
+        prefix=@prefix
+        suffix=@suffix
+        inputClass=@inputClass
+        inputId=(concat @inputId '-' index)
+        options=@inputOptions}}
+      <button class="btn input-multi__item__remove" {{on "click" (fn @removeItem index)}}>
+        <IconRemove />
+      </button>
+    </div>
+  {{/each}}
+
+  <div class="input-multi__button__wrapper">
+    <button class="btn input-multi__button" {{on "click" @addNewItem}}>
+      <IconPlus />
+    </button>
+  </div>
+</div>

@@ -1,12 +1,14 @@
 import { A } from "@ember/array";
+import NativeArray from "@ember/array/-private/native-array";
 import MutableArray from "@ember/array/mutable";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import InputFieldComponent, {
   InputFieldArguments,
 } from "@getflights/ember-field-components/components/input-field/component";
+import { tracked } from "@glimmer/tracking";
 // TODO: fix bug, when pushing new object on the array, for some reason the object in the template isnt pushed to the end of the array, but instead to the end-1 position
 /**
- * Workaround for https://github.com/adopted-ember-addons/ember-sortable/issues/234:
+ * Workaround for https://github.com/adopted-ember-addons/ember-sortable/issues/234
  * Add this to your app CSS
  *
  * .sortable-item {
@@ -17,43 +19,80 @@ import InputFieldComponent, {
  * }
 }
  */
-export default class InputMultiFieldComponent extends InputFieldComponent {
-  value?: any[];
 
-  @computed("value.@each")
-  get items(): MutableArray<any> {
-    return A(this.value);
+export class MultiFieldItem<T> {
+  @tracked value: T | null;
+
+  constructor(value: T | null) {
+    this.value = value;
+  }
+}
+
+export default abstract class InputMultiFieldComponent<
+  T1 extends InputFieldArguments<(T2 | null)[]>,
+  T2
+> extends InputFieldComponent<T1, (T2 | null)[]> {
+  private _items!: NativeArray<MultiFieldItem<T2>>;
+
+  get items(): MutableArray<MultiFieldItem<T2>> {
+    const items = A<MultiFieldItem<T2>>();
+    const values = this.value;
+
+    if (Array.isArray(values)) {
+      values.forEach((value) => {
+        const item = new MultiFieldItem<T2>(value ?? null);
+        items.pushObject(item);
+      });
+    }
+
+    this._items = items;
+    return items;
   }
 
   syncValue() {
-    this.set("value", this.items.toArray());
+    const value: (T2 | null)[] = [];
+
+    this._items.forEach((item) => {
+      value.push(item.value ?? null);
+    });
+
+    this.setNewValue(value);
   }
 
   @action
-  itemValueChanged(index: number, value: any) {
-    this.setArrayValue(index, value);
-  }
-
-  @action
-  reorderLines(reorderedLines: string[]) {
-    this.set("value", reorderedLines);
-  }
-
-  @action
-  setArrayValue(index: number, newValue: string) {
-    this.items.replace(index, 1, A([newValue]));
+  addNewItem() {
+    this._items.pushObject(new MultiFieldItem<T2>(null));
     this.syncValue();
   }
 
   @action
-  removeIndexFromValue(indexToRemove: number) {
-    this.items.removeAt(indexToRemove);
+  removeItem(index: number) {
+    this._items.removeAt(index);
     this.syncValue();
   }
 
   @action
-  addNewValue() {
-    this.items.pushObject("");
-    this.syncValue();
+  itemChanged(index: number, newValue: T2 | null) {
+    const value = this.value;
+
+    if (value) {
+      value[index] = newValue;
+    }
+
+    const item = this._items.objectAt(index);
+    if (item) {
+      item.value = newValue;
+    }
+  }
+
+  @action
+  reorderItems(reorderedItems: MultiFieldItem<T2 | null>[]) {
+    const newValue: (T2 | null)[] = [];
+
+    reorderedItems.forEach((item) => {
+      newValue.push(item.value);
+    });
+
+    this.setNewValue(newValue);
   }
 }
