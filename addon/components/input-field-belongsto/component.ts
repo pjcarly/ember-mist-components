@@ -6,7 +6,6 @@ import Condition, {
 } from "@getflights/ember-mist-components/query/Condition";
 import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import Model from "@ember-data/model";
 import { dropTask } from "ember-concurrency-decorators";
 import { computed, action } from "@ember/object";
@@ -25,7 +24,8 @@ export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
   polymorphic: boolean;
 }
 
-export interface InputFieldBelongsToArguments extends InputFieldArguments {
+export interface InputFieldBelongsToArguments
+  extends InputFieldArguments<Model> {
   options?: InputFieldBelongsToOptionsArgument;
 }
 
@@ -35,13 +35,14 @@ export interface InputFieldBelongsToOptionsArgument {
 }
 
 export default class InputFieldBelongsToComponent extends InputFieldComponent<
-  InputFieldArguments
+  InputFieldBelongsToArguments,
+  Model
 > {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
   @tracked selectOptions: SelectOption[] = [];
 
-  constructor(owner: any, args: InputFieldArguments) {
+  constructor(owner: any, args: InputFieldArguments<Model>) {
     super(owner, args);
     taskFor(this.setSelectOptions).perform();
   }
@@ -202,7 +203,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
   }
 
   @action
-  doChangeValue(value: DrupalModel | string) {
+  doChangeValue(value: Model | string) {
     if (value) {
       if (!(value instanceof Model)) {
         // In case a Select widget was used, the returned value is not the Model itself, but the ID of the model,
@@ -213,9 +214,11 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
           !this.isPolymorphic
         );
 
-        const foundModel = this.store.peekRecord(
-          <string>this.relationshipModelName,
-          <string>value
+        const foundModel = <Model>(
+          this.store.peekRecord(
+            <string>this.relationshipModelName,
+            <string>value
+          )
         );
         assert(
           `Model with id: ${value} and type: ${this.relationshipModelName} not found in store`,
@@ -226,6 +229,6 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
       }
     }
 
-    this.setNewValue(value);
+    this.setNewValue(<Model | undefined>value);
   }
 }

@@ -7,7 +7,8 @@ import AutonumberService, {
 import { inject as service } from "@ember/service";
 
 export default class InputFieldAutonumberComponent extends InputFieldComponent<
-  InputFieldArguments
+  InputFieldArguments<number>,
+  number
 > {
   @service autonumber!: AutonumberService;
 

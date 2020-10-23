@@ -1,14 +1,15 @@
-import InputFieldSelectComponent from "@getflights/ember-field-components/components/input-field-select/component";
+import InputFieldSelectComponent, {
+  InputFieldSelectArguments,
+} from "@getflights/ember-field-components/components/input-field-select/component";
 import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
-import { InputFieldArguments } from "@getflights/ember-field-components/components/input-field/component";
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
-  constructor(owner: any, args: InputFieldArguments) {
+  constructor(owner: any, args: InputFieldSelectArguments) {
     super(owner, args);
     taskFor(this.loadSelectOptions).perform();
   }

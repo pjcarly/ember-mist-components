@@ -29,7 +29,8 @@ class DisplayColumn {
 }
 
 export default class InputFieldAddressComponent extends InputFieldComponent<
-  InputFieldArguments
+  InputFieldArguments<Address>,
+  Address
 > {
   // @ts-ignore
   @service("address") addressing!: AddressService;
@@ -37,16 +38,14 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   @taskGroup addressLoading!: any;
   @tracked displayRows: DisplayRow[] = [];
 
-  constructor(owner: any, args: InputFieldArguments) {
+  constructor(owner: any, args: InputFieldArguments<Address>) {
     super(owner, args);
     taskFor(this.setAddressFormat).perform();
   }
 
   get address(): Address {
     const model = this.args.model;
-    let address = model
-      // @ts-ignore
-      .get(this.args.field);
+    let address = this.value;
 
     if (!address) {
       // @ts-ignore

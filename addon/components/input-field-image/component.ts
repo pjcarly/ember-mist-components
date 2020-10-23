@@ -1,8 +1,8 @@
 import InputFieldFileComponent from "../input-field-file/component";
-import { isBlank } from "@ember/utils";
 import { InputFieldArguments } from "@getflights/ember-field-components/components/input-field/component";
+import Image from "@getflights/ember-mist-components/interfaces/image";
 
-export interface InputFieldImageArguments extends InputFieldArguments {
+export interface InputFieldImageArguments extends InputFieldArguments<Image> {
   options?: InputFieldImageOptionsArgument;
 }
 
@@ -10,11 +10,14 @@ export interface InputFieldImageOptionsArgument {
   endpoint?: string;
 }
 
-export default class InputFieldImageComponent extends InputFieldFileComponent {
+export default class InputFieldImageComponent extends InputFieldFileComponent<
+  InputFieldImageArguments,
+  Image
+> {
   get modifiedOptions() {
     let options = this.args.options;
 
-    if (isBlank(options)) {
+    if (!options) {
       options = {};
     }
 

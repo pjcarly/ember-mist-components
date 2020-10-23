@@ -10,8 +10,6 @@ import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import Query from "@getflights/ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
-import MistModel from "@getflights/ember-mist-components/models/mist-model";
-import MutableArray from "@ember/array/mutable";
 import { dropTask } from "ember-concurrency-decorators";
 import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
@@ -20,13 +18,15 @@ import { FieldOptionsInterface } from "@getflights/ember-field-components/servic
 import Model from "@ember-data/model";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
+import NativeArray from "@ember/array/-private/native-array";
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
   polymorphic: boolean;
 }
 
-export interface InputFieldHasManyArguments extends InputFieldArguments {
+export interface InputFieldHasManyArguments
+  extends InputFieldArguments<NativeArray<Model>> {
   options?: InputFieldHasManyOptionsArgument;
 }
 
@@ -36,7 +36,8 @@ export interface InputFieldHasManyOptionsArgument {
 }
 
 export default class InputFieldHasManyComponent extends InputFieldComponent<
-  InputFieldHasManyArguments
+  InputFieldHasManyArguments,
+  NativeArray<Model>
 > {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
@@ -167,12 +168,12 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   }
 
   @action
-  reorderedValues(values: MutableArray<MistModel>) {
+  reorderedValues(values: NativeArray<Model>) {
     this.setNewValue(values);
   }
 
   @action
-  doChangeValue(index: number, value: MistModel | string) {
+  doChangeValue(index: number, value: Model | string) {
     if (value) {
       if (!(value instanceof Model)) {
         // In case a Select widget was used, the returned value is not the Model itself, but the ID of the model,
@@ -195,14 +196,20 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         value = foundModel;
       }
 
-      this.value.replace(index, 1, [value]);
+      if (this.value) {
+        this.value.replace(index, 1, [value]);
+      }
     } else {
-      this.value.removeAt(index, 1);
+      if (this.value) {
+        this.value.removeAt(index, 1);
+      }
     }
   }
 
   @action
-  newValue(value: MistModel) {
-    this.value.pushObject(value);
+  newValue(value: Model) {
+    if (this.value) {
+      this.value.pushObject(value);
+    }
   }
 }
