@@ -11,18 +11,15 @@ export default class OutputFieldImagesComponent extends OutputFieldComponent<
 > {
   carousel!: bsn.Carousel;
 
-  constructor(owner: any, args: OutputFieldImageArguments) {
-    super(owner, args);
-    const element = document.getElementById(this.carouselName);
-    if (element) {
-      const carousel = new bsn.Carousel(element);
-      this.carousel = carousel;
-    }
-  }
-
   @computed()
   get carouselName(): string {
     return guidFor(this) + "-carousel";
+  }
+
+  @action
+  initializeCarousel(element: HTMLElement) {
+    const carousel = new bsn.Carousel(element);
+    this.carousel = carousel;
   }
 
   @action

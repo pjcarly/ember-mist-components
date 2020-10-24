@@ -32,7 +32,7 @@ export default abstract class InputMultiFieldComponent<
   T1 extends InputFieldArguments<(T2 | null)[]>,
   T2
 > extends InputFieldComponent<T1, (T2 | null)[]> {
-  private _items!: NativeArray<MultiFieldItem<T2>>;
+  protected _items!: NativeArray<MultiFieldItem<T2>>;
 
   get items(): MutableArray<MultiFieldItem<T2>> {
     const items = A<MultiFieldItem<T2>>();

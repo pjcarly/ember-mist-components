@@ -1,5 +1,5 @@
 {{#if this.value}}
-  <div id={{this.carouselName}} class="carousel slide" data-ride="carousel">
+  <div id={{this.carouselName}} class="carousel slide" data-ride="carousel" {{did-insert this.initializeCarousel}}>
     <ol class="carousel-indicators">
       {{#each this.value as |imageValue index|}}
         <li data-target={{concat '#' this.carouselName}} data-slide-to={{index}} class={{if (eq index 0) " active" }}></li>
@@ -8,7 +8,7 @@
 
     <div class="carousel-inner" role="listbox">
       {{#each this.value as |imageValue index|}}
-        <div class="item{{if (eq index 0) " active" }}">
+        <div class="carousel-item{{if (eq index 0) " active" }}">
           <OutputImage
             @value={{imageValue}}
             @style={{this.style}}

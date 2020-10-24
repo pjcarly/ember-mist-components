@@ -1,14 +1,22 @@
-<InputMultiField 
-  @inputComponent="input-file-drupal"
-  @value={{this.value}}
-  @field={{@field}}
-  @model={{@model}}
-  @valueChanged={{this.setNewValue}}
-  @preSetHook={{@preSetHook}}
-  @placeholder={{@placeholder}}
-  @prefix={{@prefix}}
-  @suffix={{@suffix}}
-  @inputClass={{@inputClass}}
-  @inputId={{@inputId}}
-  @inputOptions={{this.inputOptions}}/>
+<span class="input files">
+  <InputMulti 
+    @inputComponent="output-file"
+    @value={{this.items}}
+    @preSetHook={{@preSetHook}}
+    @placeholder={{@placeholder}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @inputClass={{@inputClass}}
+    @inputId={{@inputId}}
+    @inputOptions={{this.inputOptions}}
+    @addNewItem={{this.addNewItem}}
+    @removeItem={{this.removeItem}}
+    @itemChanged={{this.itemChanged}}
+    @reorderItems={{this.reorderItems}}
+    @hideNew={{true}}
+    />
 
+  <InputFileDrupal
+    @options={{this.inputOptions}}
+    @valueChanged={{this.addNewImage}} />
+</span>

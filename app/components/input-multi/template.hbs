@@ -5,8 +5,6 @@
       {{component 
         @inputComponent 
         value=item.value
-        field=field
-        modelName=@modelName
         valueChanged=(action @itemChanged index)
         placeholder=@placeholder
         prefix=@prefix
@@ -20,9 +18,11 @@
     </div>
   {{/each}}
 
-  <div class="input-multi__button__wrapper">
-    <button class="btn input-multi__button" {{on "click" @addNewItem}}>
-      <IconPlus />
-    </button>
-  </div>
+  {{#if (not @hideNew)}}
+    <div class="input-multi__button__wrapper">
+      <button class="btn input-multi__button" {{on "click" @addNewItem}}>
+        <IconPlus />
+      </button>
+    </div>
+  {{/if}}
 </div>

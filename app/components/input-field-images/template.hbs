@@ -1,15 +1,22 @@
-<InputMulti 
-  @inputComponent="input-file-drupal"
-  @value={{this.items}}
-  @preSetHook={{@preSetHook}}
-  @placeholder={{@placeholder}}
-  @prefix={{@prefix}}
-  @suffix={{@suffix}}
-  @inputClass={{@inputClass}}
-  @inputId={{@inputId}}
-  @inputOptions={{this.inputOptions}}
-  @addNewItem={{this.addNewItem}}
-  @removeItem={{this.removeItem}}
-  @itemChanged={{this.itemChanged}}
-  @reorderItems={{this.reorderItems}}
-  />
+<span class="input images">
+  <InputMulti 
+    @inputComponent="output-image"
+    @value={{this.items}}
+    @preSetHook={{@preSetHook}}
+    @placeholder={{@placeholder}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @inputClass={{@inputClass}}
+    @inputId={{@inputId}}
+    @inputOptions={{this.inputOptions}}
+    @addNewItem={{this.addNewItem}}
+    @removeItem={{this.removeItem}}
+    @itemChanged={{this.itemChanged}}
+    @reorderItems={{this.reorderItems}}
+    @hideNew={{true}}
+    />
+
+  <InputFileDrupal
+    @options={{this.inputOptions}}
+    @valueChanged={{this.addNewImage}} />
+</span>
