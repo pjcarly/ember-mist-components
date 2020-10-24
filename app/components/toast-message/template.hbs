@@ -1,4 +1,4 @@
-<div id={{this.toastId}} class={{this.class}} role="alert" aria-live={{this.ariaLive}} aria-atomic="true" ...attributes {{did-insert (action this.elementInsertedInDOM)}} {{will-destroy (action this.elementWillBeRemovedFromDOM)}}>
+<div id={{this.toastId}} class={{this.class}} role="alert" aria-live={{this.ariaLive}} aria-atomic="true" ...attributes {{did-insert this.elementInsertedInDOM}} {{will-destroy this.elementWillBeRemovedFromDOM}}>
   <div class="toast-header">
     <strong class="toast-subject">{{@toast.subject}}</strong>
     {{!-- <small>11 mins ago</small> --}}
