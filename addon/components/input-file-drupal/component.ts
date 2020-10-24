@@ -14,15 +14,16 @@ import HttpService from "@getflights/ember-mist-components/services/http";
 import ToastService from "@getflights/ember-mist-components/services/toast";
 import FileQueueService from "ember-file-upload/services/file-queue";
 import Queue from "ember-file-upload/queue";
+import { assert } from "@ember/debug";
 
 export interface FileDrupalArguments extends Arguments {
-  multiple?: boolean;
-  modelName: string;
-  field: string;
-  options?: FileDrupalOptionsArgument;
+  options: FileDrupalOptionsArgument;
 }
 
 export interface FileDrupalOptionsArgument extends OptionsArgument {
+  field: string;
+  modelName: string;
+  multiple?: boolean;
   headers?: { [key: string]: string };
   endpoint?: string;
 }
@@ -41,6 +42,14 @@ export default class InputFileDrupalComponent extends BaseInput<
    */
   private lastActiveQueue?: string;
   private activeFile?: File;
+
+  constructor(owner: any, args: FileDrupalArguments) {
+    super(owner, args);
+    assert(
+      "input-file-drupal.options 'field' and 'modelName' are required",
+      args.options && args.options.field && args.options.modelName
+    );
+  }
 
   get queue(): Queue | null {
     if (this.lastActiveQueue) {
@@ -71,8 +80,8 @@ export default class InputFileDrupalComponent extends BaseInput<
   }
 
   get mistFieldTarget(): string | undefined {
-    return this.args.modelName && this.args.field
-      ? dasherize(`${this.args.modelName}.${this.args.field}`)
+    return this.args.options.modelName && this.args.options.field
+      ? dasherize(`${this.args.options.modelName}.${this.args.options.field}`)
       : undefined;
   }
 
@@ -110,11 +119,16 @@ export default class InputFileDrupalComponent extends BaseInput<
     return returnValue;
   }
 
+  get multipleUploads(): boolean {
+    return this.args.options.multiple ?? false;
+  }
+
   get headers(): { [s: string]: string } {
     const headers = new Map([...this.fieldHeaders, ...this.httpHeaders]);
+    const mistFieldTarget = this.mistFieldTarget;
 
-    if (this.mistFieldTarget) {
-      headers.set("X-Mist-Field-Target", this.mistFieldTarget);
+    if (mistFieldTarget) {
+      headers.set("X-Mist-Field-Target", mistFieldTarget);
     }
 
     const returnValue: { [s: string]: string } = {};
@@ -125,12 +139,12 @@ export default class InputFileDrupalComponent extends BaseInput<
     return returnValue;
   }
 
-  @task({ enqueue: true, maxConcurrency: 3 })
+  @task({ enqueue: true, maxConcurrency: 1 })
   async uploadFile(file: File) {
     this.activeFile = file;
 
     if (file) {
-      this.lastActiveQueue = file.queue.name;
+      this.lastActiveQueue = file.queue?.name;
 
       await file
         .upload(this.uploadEndpoint, { headers: this.headers })
@@ -146,17 +160,12 @@ export default class InputFileDrupalComponent extends BaseInput<
             hash: response.body.data.attributes.hash,
           };
 
-          let fieldValue = this.args.value;
-          if (this.args.multiple) {
-            fieldValue = [...fieldValue, fileObject];
-          } else {
-            fieldValue = fileObject;
-          }
-
-          this.setNewValue(fieldValue);
+          this.setNewValue(fileObject);
         })
         .catch((error: any) => {
-          file.queue.remove(file);
+          if (file.queue) {
+            file.queue.remove(file);
+          }
 
           let errorMessage = "File upload failed";
           if (error.responseJSON) {
@@ -175,7 +184,7 @@ export default class InputFileDrupalComponent extends BaseInput<
 
   @action
   deleteFile(file: FileModel) {
-    if (this.args.multiple) {
+    if (this.multipleUploads) {
       const values = <FileModel[]>this.args.value;
       const indexOfValue = values.indexOf(file);
 

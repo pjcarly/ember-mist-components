@@ -1,49 +1,22 @@
-import InputFieldImageComponent from "../input-field-image/component";
-import { isBlank } from "@ember/utils";
-import { computed, action } from "@ember/object";
-import { guidFor } from "@ember/object/internals";
+import { InputFieldArguments } from "@getflights/ember-field-components/components/input-field/component";
 import Image from "@getflights/ember-mist-components/interfaces/image";
+import InputMultiFieldComponent from "../input-multi-field/component";
 
-export default class InputFieldImagesComponent extends InputFieldImageComponent {
-  @computed()
-  get carouselName(): string {
-    return `${guidFor(this)}-carousel`;
-  }
+export default class InputFieldImagesComponent extends InputMultiFieldComponent<
+  InputFieldArguments<(Image | null)[]>,
+  Image
+> {
+  get inputOptions(): any {
+    let options = super.inputOptions;
 
-  @action
-  didChangeValue(changedIndex: number, changedValue: any) {
-    const oldValues = <Image[]>this.value;
-    const newValues: Image[] = [];
-
-    oldValues.forEach((value: Image, index: number) => {
-      if (index === changedIndex) {
-        if (isBlank(changedValue)) {
-          // Can only be used if value must be deleted, if a value is added, it is an array, and added to the end
-          value = changedValue;
-        }
-      }
-
-      if (!isBlank(value) && value.hasOwnProperty("id") && value.id) {
-        newValues.push(value);
-      }
-    });
-
-    if (
-      isBlank(changedIndex) &&
-      !isBlank(changedValue) &&
-      changedValue.constructor === Array
-    ) {
-      changedValue.forEach((newValue: Image) => {
-        if (
-          !isBlank(newValue) &&
-          newValue.hasOwnProperty("id") &&
-          newValue.id
-        ) {
-          newValues.push(newValue);
-        }
-      });
+    if (!options) {
+      options = {};
     }
 
-    this.setNewValue(newValues);
+    options.field = this.fieldComputed;
+    options.modelName = this.modelName;
+    options.multiple = true;
+
+    return options;
   }
 }

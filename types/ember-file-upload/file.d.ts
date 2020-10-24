@@ -19,7 +19,7 @@ declare module "ember-file-upload/file" {
       | `uploaded`
       | `failed`;
     source: `browse` | `drag-and-drop` | `web` | `data-url` | `blob`;
-    queue: Queue;
+    queue?: Queue;
     uploadBinary(url: string, opts: any): RSVP.Promise<any>;
     upload(url: string, opts: any): RSVP.Promise<any>;
     readAsArrayBuffer(): RSVP.Promise<ArrayBuffer>;

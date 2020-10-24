@@ -1,46 +1,15 @@
-{{#if this.value}}
-  <div id={{this.carouselName}} class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-      {{#each this.value as |imageValue index|}}
-        <li data-target={{concat '#' this.carouselName}} data-slide-to={{index}} class={{if (eq index 0) " active" }}></li>
-      {{/each}}
-    </ol>
-
-    <div class="carousel-inner" role="listbox">
-      {{#each this.value as |imageValue index|}}
-        <div class="item{{if (eq index 0) " active" }}">
-          <InputFileDrupal
-            @value={{imageValue}}
-            @field={{@field}}
-            @multiple={{true}}
-            @modelName={{this.modelName}}
-            @options={{this.modifiedOptions}}
-            @valueChanged={{action this.didChangeValue index}} />
-          <OutputImage
-            @value={{imageValue}}
-            @style={{this.style}}
-            @class={{this.options.style}} />
-        </div>
-      {{/each}}
-    </div>
-
-    <a class="left carousel-control" href={{concat '#' this.carouselName}} role="button" data-slide="prev">
-      <IconArrowLeft />
-      <span class="sr-only">{{t 'ember-mist-components.labels.previous'}}</span>
-    </a>
-    <a class="right carousel-control" href={{concat '#' this.carouselName}} role="button" data-slide="next">
-      <IconArrowRight />
-      <span class="sr-only">{{t 'ember-mist-components.labels.next'}}</span>
-    </a>
-  </div>
-{{/if}}
-
-<div class="input-field-images-browse">
-  {{t 'ember-mist-components.labels.add_images'}}:
-  <InputFileDrupal
-    @field={{@field}}
-    @multiple={{true}}
-    @modelName={{this.modelName}}
-    @options={{this.modifiedOptions}}
-    @valueChanged={{action this.didChangeValue null}} />
-</div>
+<InputMulti 
+  @inputComponent="input-file-drupal"
+  @value={{this.items}}
+  @preSetHook={{@preSetHook}}
+  @placeholder={{@placeholder}}
+  @prefix={{@prefix}}
+  @suffix={{@suffix}}
+  @inputClass={{@inputClass}}
+  @inputId={{@inputId}}
+  @inputOptions={{this.inputOptions}}
+  @addNewItem={{this.addNewItem}}
+  @removeItem={{this.removeItem}}
+  @itemChanged={{this.itemChanged}}
+  @reorderItems={{this.reorderItems}}
+  />

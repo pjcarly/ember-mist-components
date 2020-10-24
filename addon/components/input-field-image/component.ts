@@ -14,8 +14,8 @@ export default class InputFieldImageComponent extends InputFieldFileComponent<
   InputFieldImageArguments,
   Image
 > {
-  get modifiedOptions() {
-    let options = this.args.options;
+  get modifiedInputOptions() {
+    let options = super.inputOptions;
 
     if (!options) {
       options = {};

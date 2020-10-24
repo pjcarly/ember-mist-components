@@ -22,10 +22,7 @@
     <div class="input-field-image__body">
       <InputFileDrupal
         @value={{this.value}}
-        @field={{@field}}
-        @multiple={{false}}
-        @modelName={{this.modelName}}
-        @options={{this.modifiedOptions}}
+        @options={{this.modifiedInputOptions}}
         @valueChanged={{this.setNewValue}} />
       {{#if this.value.id}}
         <OutputImage
