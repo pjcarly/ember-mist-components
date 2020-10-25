@@ -57,7 +57,7 @@
         <IconSearch />
       </MenuItem>
 
-      <MenuDropdown @class="action-menu__dropdown">
+      <MenuDropdown class="action-menu__dropdown">
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
           {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
             <MenuItem @targetRoute={{href-to "list-view.edit" this.activeListViewKey}}>
