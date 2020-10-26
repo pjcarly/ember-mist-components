@@ -38,24 +38,44 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   @taskGroup addressLoading!: any;
   @tracked displayRows: DisplayRow[] = [];
 
+  protected fragment!: Address;
+
   constructor(owner: any, args: InputFieldArguments<Address>) {
     super(owner, args);
     taskFor(this.setAddressFormat).perform();
   }
 
   get address(): Address {
-    const model = this.args.model;
     let address = this.value;
 
-    if (!address) {
-      // @ts-ignore
-      address = this.store.createFragment("address", {});
-      // @ts-ignore
-      model.set(this.args.field, address);
+    if (!this.fragment) {
+      if (!address) {
+        // @ts-ignore
+        address = <Address>this.store.createFragment("address", {});
+      }
+
+      this.fragment = address;
+    } else {
+      // this could be a rerender, check if the fragment has been set
+      if (address) {
+        this.fragment = address;
+      }
     }
 
-    // @ts-ignore
-    return address;
+    return this.fragment;
+  }
+
+  /**
+   * In case the value of the address is null, no fragment exists yet on the model
+   * but a fragment has been created in this component, on a change, we check if a fragment exits
+   * if not, we set the fragment on the model, before setting the value of the fragment
+   */
+  setFragmentIfNeeded(): void {
+    if (!this.value) {
+      this.args.model
+        // @ts-ignore
+        .set(this.args.field, this.fragment);
+    }
   }
 
   @task({ group: "addressLoading" })
@@ -312,6 +332,8 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
   @action
   countryCodeChanged(value: string) {
+    this.setFragmentIfNeeded();
+
     this.address.clearExceptAddressLines();
     this.cancelAllTasks();
     // @ts-ignore
@@ -322,6 +344,8 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
   @action
   addressFieldChanged(field: string, value: any) {
+    this.setFragmentIfNeeded();
+
     // @ts-ignore
     this.address.set(field, value);
     this.resetValues(field);
