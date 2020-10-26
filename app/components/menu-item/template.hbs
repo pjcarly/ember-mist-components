@@ -1,0 +1,30 @@
+<li class="action-menu__item" ...attributes>
+  {{#if @itemClicked}}
+    {{! template-lint-disable no-invalid-interactive }}
+    <a id={{@id}} class="action-menu__link" role={{if @role @role "button"}} {{on "click" @itemClicked}}>
+      {{#if @iconComponent}}
+        {{component @iconComponent}}
+      {{else}}
+        {{yield}}
+      {{/if}}
+
+      {{#if (gt @count 0)}}
+        <i class="action-menu__item__count">{{@count}}</i>
+      {{/if}}
+    </a>
+  {{else if @targetRoute}}
+    <a id={{@id}} class="action-menu__link" role={{if @role @role "button"}} href={{@targetRoute}}>
+      {{#if @iconComponent}}
+        {{component @iconComponent}}
+      {{else}}
+        {{yield}}
+      {{/if}}
+
+      {{#if (gt @count 0)}}
+        <i class="action-menu__item__count">{{@count}}</i>
+      {{/if}}
+    </a>
+  {{else}}
+    {{yield}}
+  {{/if}}
+</li>
