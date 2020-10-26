@@ -4,12 +4,11 @@ import ToastMessage, {
 } from "@getflights/ember-mist-components/objects/toast-message";
 import { computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
-// @ts-ignore
-import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import ToastService from "@getflights/ember-mist-components/services/toast";
 import { tracked } from "@glimmer/tracking";
+import Toast from "bootstrap.native/dist/components/toast-native.esm.js";
 
 interface Arguments {
   toast: ToastMessage;
@@ -19,7 +18,7 @@ export default class ToastMessageComponent extends Component<Arguments> {
   // @ts-ignore
   @service("toast") toastService!: ToastService;
 
-  @tracked bootstrapToast!: bsn.Toast;
+  @tracked bootstrapToast?: Toast;
 
   @computed()
   get toastId(): string {
@@ -53,7 +52,7 @@ export default class ToastMessageComponent extends Component<Arguments> {
 
   @action
   elementInsertedInDOM(element: Element) {
-    const bootstrapToast = new bsn.Toast(element, {
+    const bootstrapToast = new Toast(element, {
       animation: true,
       autohide: false,
     });
@@ -63,8 +62,10 @@ export default class ToastMessageComponent extends Component<Arguments> {
 
   @action
   elementWillBeRemovedFromDOM() {
-    this.bootstrapToast.hide();
-    this.bootstrapToast = null;
+    if (this.bootstrapToast) {
+      this.bootstrapToast.hide();
+    }
+    this.bootstrapToast = undefined;
   }
 
   @action

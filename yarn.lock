@@ -4604,10 +4604,13 @@ body@^5.1.0:
     raw-body "~1.1.0"
     safe-json-parse "~1.0.1"
 
-bootstrap.native@^2.0.27:
-  version "2.0.27"
-  resolved "https://registry.yarnpkg.com/bootstrap.native/-/bootstrap.native-2.0.27.tgz#c0978d372cde1bd9f06d015985e99ae7af44f816"
-  integrity sha512-gv2eN4zXHOLN/oPotTxb8CJr9Dk0xlM9YURyHCWjq1Lyt2I669bri/Bp8b0HPOKX7JqRVh+Sk/VwEe0OcQN2fw==
+bootstrap.native@^3.0.10:
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/bootstrap.native/-/bootstrap.native-3.0.13.tgz#95c6ed59c3dcb180643d140a1e9095d35a246c9d"
+  integrity sha512-8df8/6+zXDxolYCIn7QNsQ+3NozgNmMfBgSyOolhs0GDUWyG6MfM3oGv7GsOfFbQRjBL7VFqQ1KJuBb/uW/HXA==
+  dependencies:
+    minifill "^0.0.8"
+    shorter-js "^0.1.7"
 
 bops@0.0.3:
   version "0.0.3"
@@ -10687,6 +10690,11 @@ min-document@^2.19.0:
   dependencies:
     dom-walk "^0.1.0"
 
+minifill@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/minifill/-/minifill-0.0.8.tgz#c6ecef302bee672352986d89257b3c18fc7a9ce5"
+  integrity sha512-DOw02Fev6xB40wyie/YJtnIhY0eI+iQ7aBQlSVkOy5OKlFAxob6uG301uvJyMT7F1OeMGfbDexOTabL3uLid1g==
+
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.1.tgz#2e194de044626d4a10e7f7fbc00ce73e83e4d5c7"
@@ -12456,6 +12464,11 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
+
+shorter-js@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/shorter-js/-/shorter-js-0.1.7.tgz#e02ca55838fa4841553d0fdc49870adde7f5cb19"
+  integrity sha512-H7dO5P4a0LndmaRgTsRTHn3Rf2Oy7ocVf6M1ZvYJIIAtOcEnE7lmhQ7bnDzoU22JbN6KR+VgLzhuuSAhMpoxrQ==
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"

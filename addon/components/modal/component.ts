@@ -1,14 +1,24 @@
 import Component from "@glimmer/component";
 import { action, computed } from "@ember/object";
-// @ts-ignore
-import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { guidFor } from "@ember/object/internals";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
+import Modal from "bootstrap.native/dist/components/modal-native.esm.js";
 
 export interface YieldedComponent {
+  /**
+   * Close the modal window
+   */
   close: CallableFunction;
+
+  /**
+   * Open the modal window
+   */
   show: CallableFunction;
+
+  /**
+   * Status of the Modal window, "visible" when it is shown, "hidden" when it is not shown
+   */
   status: "visible" | "hidden";
 }
 
@@ -23,7 +33,7 @@ export default class ModalComponent extends Component<Arguments> {
   @service router!: any;
 
   @tracked private modalVisible: boolean = false;
-  @tracked private modal?: bsn.Modal;
+  @tracked private modal?: Modal;
 
   constructor(owner: any, args: Arguments) {
     super(owner, args);
@@ -69,11 +79,11 @@ export default class ModalComponent extends Component<Arguments> {
     return this.modalVisible ? "visible" : "hidden";
   }
 
-  getModal(): bsn.Modal {
+  getModal(): Modal {
     if (!this.modal) {
       const element = document.getElementById(this.modalId);
       if (element) {
-        const modal = new bsn.Modal(element);
+        const modal = new Modal(element);
         element.addEventListener(
           "hidden.bs.modal",
           this.hideModalListener.bind(this)
@@ -82,7 +92,7 @@ export default class ModalComponent extends Component<Arguments> {
       }
     }
 
-    return this.modal;
+    return <Modal>this.modal;
   }
 
   hideModalListener() {

@@ -2,14 +2,13 @@ import OutputFieldComponent from "@getflights/ember-field-components/components/
 import Image from "@getflights/ember-mist-components/interfaces/image";
 import { computed, action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
-// @ts-ignore
-import bsn from "bootstrap.native/dist/bootstrap-native-v4";
 import { OutputFieldImageArguments } from "../output-field-image/component";
+import Carousel from "bootstrap.native/dist/components/carousel-native.esm.js";
 
 export default class OutputFieldImagesComponent extends OutputFieldComponent<
   OutputFieldImageArguments
 > {
-  carousel!: bsn.Carousel;
+  carousel!: Carousel;
 
   @computed()
   get carouselName(): string {
@@ -18,7 +17,7 @@ export default class OutputFieldImagesComponent extends OutputFieldComponent<
 
   @action
   initializeCarousel(element: HTMLElement) {
-    const carousel = new bsn.Carousel(element);
+    const carousel = new Carousel(element);
     this.carousel = carousel;
   }
 
