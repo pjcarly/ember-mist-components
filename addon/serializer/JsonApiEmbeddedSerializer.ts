@@ -23,6 +23,7 @@ import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
   EmbeddedRecordsMixin
 ) {
+  isEmbeddedRecordsMixinCompatible = true;
   attrs: any;
 
   serialize(snapshot: any /*, options*/) {
