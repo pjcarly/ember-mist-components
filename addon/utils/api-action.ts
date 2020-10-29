@@ -5,7 +5,7 @@ import HttpService from "@getflights/ember-mist-components/services/http";
 import Store from "@ember-data/store";
 
 export default function apiAction(path: string) {
-  return function runInstanceOp(this: Model, payload?: any): Promise<any> {
+  return function runInstanceOp(this: Model, payload?: any): Promise<Response> {
     const container = getOwner(this);
     const fieldInformation = <FieldInformationService>(
       container.lookup(`service:field-information`)

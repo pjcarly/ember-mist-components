@@ -34,8 +34,10 @@ export default class TemplateGenerateButtonComponent extends Component<
     await this.args.template
       // @ts-ignore
       .generateDigest({ id: this.args.model.id })
-      .then((results: any) => {
-        digest = results.digest;
+      .then((response: Response) => {
+        return response.json().then(payload => {
+          digest = payload.digest;
+        });
       });
 
     window.open(
