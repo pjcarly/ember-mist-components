@@ -144,6 +144,20 @@ export default class Query {
   }
 
   /**
+   * Check if a query has a limit
+   */
+  hasLimit(): boolean {
+    return this.limit !== undefined;
+  }
+
+  /**
+   * Get the limit
+   */
+  getLimit(): number | undefined {
+    return this.limit;
+  }
+
+  /**
    * Set the condition logic. For example AND(1,2, OR(3, 4)). The number being the position of the codntion in the condtions array
    * If this value is undefined, AND() will be used for everything
    * @param conditionLogic the logic you want to set

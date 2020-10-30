@@ -135,9 +135,14 @@ export default class ModelTableComponent extends Component<Arguments> {
     if (this.args.baseQuery) {
       query.copyFrom(this.args.baseQuery);
       query.setModelName(this.activeModelName);
+
+      if (!this.args.baseQuery.hasLimit()) {
+        query.setLimit(10);
+      }
+    } else {
+      query.setLimit(10);
     }
 
-    query.setLimit(10);
     return query;
   }
 
@@ -401,7 +406,9 @@ export default class ModelTableComponent extends Component<Arguments> {
 
     const listViewSort = get(this.selectedListView, "sortOrder");
 
-    this.query.setLimit(this.selectedListView.rows ?? 10);
+    this.query.setLimit(
+      this.selectedListView.rows ?? this.args.baseQuery?.getLimit() ?? 10
+    );
 
     if (this.selectedListView.sortOrder) {
       this.query.clearOrders();
