@@ -2,7 +2,6 @@ import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
-// @ts-ignore
 import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
@@ -27,12 +26,14 @@ export default class HttpService extends Service {
       | ReadableStream<Uint8Array>
       | null
       | undefined,
-    queryParams?: any
+    queryParams?: any,
+    abortController?: AbortController
   ): Promise<Response> {
     const options: RequestInit = {
       headers: this.headers,
       method: method,
       body: body,
+      signal: abortController?.signal
     };
 
     const endpoint = queryParams
