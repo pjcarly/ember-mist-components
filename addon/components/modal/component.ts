@@ -22,23 +22,28 @@ export interface YieldedComponent {
   status: "visible" | "hidden";
 }
 
-interface Arguments {
+export interface Arguments {
   dialogClass?: string;
   closeOnRouteChange?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
 }
 
-export default class ModalComponent extends Component<Arguments> {
+export default class ModalComponent<T extends Arguments> extends Component<T> {
   @service router!: any;
 
   @tracked private modalVisible: boolean = false;
   @tracked private modal?: Modal;
+  @tracked protected closeOnRouteChange = false;
 
-  constructor(owner: any, args: Arguments) {
+  constructor(owner: any, args: T) {
     super(owner, args);
 
-    if (this.args.closeOnRouteChange) {
+    if(args.closeOnRouteChange) {
+      this.closeOnRouteChange = args.closeOnRouteChange;
+    }
+
+    if (this.closeOnRouteChange) {
       this.router.on("routeWillChange", (_: TransitionEvent) => {
         this.closeModal();
       });
