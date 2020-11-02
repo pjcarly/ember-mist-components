@@ -1,4 +1,5 @@
 import Service from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 export interface Headers {
   "X-Mist-Auth-Token": string;
@@ -6,11 +7,11 @@ export interface Headers {
 }
 
 export default class AuthStoreService extends Service {
-  authId?: string;
-  authToken?: string;
+  @tracked authId?: string;
+  @tracked authToken?: string;
 
   clear() {
-    this.set("authId", undefined);
-    this.set("authToken", undefined);
+    this.authId = undefined;
+    this.authToken = undefined;
   }
 }

@@ -8,6 +8,7 @@ import { dropTask } from "ember-concurrency-decorators";
 import WebsocketService from "./websocket";
 import { taskFor } from "ember-concurrency-ts";
 import SessionService from "ember-simple-auth/services/session";
+import { tracked } from "@glimmer/tracking";
 
 export default class LoggedInUserService extends Service {
   @service session!: SessionService;
@@ -17,7 +18,7 @@ export default class LoggedInUserService extends Service {
   /**
    * A reference to the logged in user model
    */
-  user?: UserModel;
+  @tracked user?: UserModel;
 
   @alias("session.isAuthenticated") isAuthenticated!: boolean;
 
