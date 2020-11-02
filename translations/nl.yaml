@@ -13,6 +13,7 @@ ember-mist-components:
     uploading: "Aan het uploaden"
     remove: Verwijderen
     delete: Verwijderen
+    edit: Aanpassen
     add_images: Afbeeldingen toevoegen
     previous: Vorige
     next: Volgende

@@ -3,6 +3,7 @@ import { action, computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
+// @ts-ignore
 import Modal from "bootstrap.native/dist/components/modal-native.esm.js";
 
 export interface YieldedComponent {
@@ -39,7 +40,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
   constructor(owner: any, args: T) {
     super(owner, args);
 
-    if(args.closeOnRouteChange) {
+    if (args.closeOnRouteChange) {
       this.closeOnRouteChange = args.closeOnRouteChange;
     }
 

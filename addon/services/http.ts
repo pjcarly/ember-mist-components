@@ -2,6 +2,7 @@ import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
+// @ts-ignore
 import fetch from "fetch";
 import { Promise } from "rsvp";
 import qs from "qs";
@@ -33,7 +34,7 @@ export default class HttpService extends Service {
       headers: this.headers,
       method: method,
       body: body,
-      signal: abortController?.signal
+      signal: abortController?.signal,
     };
 
     const endpoint = queryParams
