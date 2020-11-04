@@ -126,6 +126,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
     }
   }
 
+  @action
   elementWillBeRemovedFromDOM(element: Element) {
     element.removeEventListener("hidden.bs.modal", this.hideModalListener);
   }
