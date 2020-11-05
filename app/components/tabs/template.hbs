@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs" role="tablist">
+  {{yield (hash component=this activeTab=this.activeTab Body=(component "ember-wormhole" to=this.bodyId))}}
+</ul>
+
+<div id={{this.bodyId}} class="tabs-body">
+
+</div>

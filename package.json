@@ -106,7 +106,8 @@
     "mock-socket": "^9.0.3",
     "qs": "^6.9.4",
     "query": "^0.2.0",
-    "sweetalert2": "^9.14.4"
+    "sweetalert2": "^9.14.4",
+    "tracked-maps-and-sets": "^2.1.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
