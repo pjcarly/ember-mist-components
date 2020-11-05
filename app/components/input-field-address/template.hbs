@@ -3,7 +3,7 @@
     <div class="col-12 country-select">
       <InputSelectCountry
         @value={{this.address.countryCode}}
-        @valueChanged={{action this.countryCodeChanged}}
+        @valueChanged={{this.countryCodeChanged}}
         @inputId={{this.inputId}}
         @required={{this.isRequired}} />
     </div>
@@ -16,7 +16,7 @@
           <div class={{row.columnClassName}}>
             {{component (concat 'input-' column.component)
               value=(get this.address column.field)
-              valueChanged=(action (fn this.addressFieldChanged column.field))
+              valueChanged=(fn this.addressFieldChanged column.field)
               placeholder=column.label
               none=column.none
               selectOptions=column.selectOptions

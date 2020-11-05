@@ -4,8 +4,8 @@
   @placeholder={{@placeholder}}
   @search={{perform this.searchTask}}
   @selected={{@value}}
-  @onChange={{action this.formValueChanged}}
-  @onFocus={{action this.handleFocus}}
+  @onChange={{this.formValueChanged}}
+  @onFocus={{this.handleFocus}}
   @searchEnabled={{true}}
   @disabled={{@disabled}}
   @allowClear={{not this.shouldHideClear}} as |model|>

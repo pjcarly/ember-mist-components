@@ -7,7 +7,7 @@
             {{#each row.columns as |column|}}
               {{component (concat 'output-' column.component)
                 value=(get this.address column.field)
-                valueChanged=(action (fn this.addressFieldChanged column.field))
+                valueChanged=(fn this.addressFieldChanged column.field)
                 placeholder=column.label
                 none=column.none
                 selectOptions=column.selectOptions

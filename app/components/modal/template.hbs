@@ -13,7 +13,7 @@
 <div id={{this.modalTriggerId}} class="modal-trigger"></div>
 
 <EmberWormhole @to="ember-mist-modal-wormhole">
-  <div id={{this.modalId}} class="modal" tabindex="-1" role="dialog" ...attributes {{will-destroy (action this.elementWillBeRemovedFromDOM)}}>
+  <div id={{this.modalId}} class="modal" tabindex="-1" role="dialog" ...attributes {{will-destroy this.elementWillBeRemovedFromDOM}}>
     <div class="modal-dialog {{this.dialogClass}}">
       <div class="modal-content">
         <div id={{this.modalHeaderId}} class="modal-header {{@modalHeaderClass}}"></div>

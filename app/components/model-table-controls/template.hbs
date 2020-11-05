@@ -15,7 +15,7 @@
         <InputSelect @class="plain-select" 
           @selectOptions={{this.rowSelectOptions}} 
           @value={{this.rowsValue}}
-          @valueChanged={{action this.didSelectRows}} 
+          @valueChanged={{this.didSelectRows}} 
           @required={{true}} />
       </li>
       <li>
@@ -27,7 +27,7 @@
           @class="plain-select" 
           @selectOptions={{this.pageSelectOptions}} 
           @value={{@currentPage}}
-          @valueChanged={{action this.didSelectPage}} 
+          @valueChanged={{this.didSelectPage}} 
           @required={{true}} />
 
         <button class="btn btn-link btn-icon" {{on "click" this.goToNextPage}}>

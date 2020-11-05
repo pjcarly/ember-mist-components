@@ -9,7 +9,7 @@
           <th></th>
         </tr>
       </thead>
-      <tbody class={{if @isOdd "is-odd" "is-even"}} {{sortable-group groupName="orders" onChange=(action this.reorderOrders)}}>
+      <tbody class={{if @isOdd "is-odd" "is-even"}} {{sortable-group groupName="orders" onChange=this.reorderOrders}}>
         {{#each (filter-by "isDeleted" false (sort-by "sort" @model.orders)) as |order index|}}
           <tr class="order__edit__line" {{sortable-item groupName="orders" model=order}}>
             <td><div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /> {{add index 1}}</div></td>

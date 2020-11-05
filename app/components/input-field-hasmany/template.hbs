@@ -3,7 +3,7 @@
     <Loading />
   {{else}}
     {{#if this.value}}
-      <div class="input-multi-field" {{sortable-group groupName=this.calculatedInputId onChange=(action this.reorderedValues)}}>
+      <div class="input-multi-field" {{sortable-group groupName=this.calculatedInputId onChange=this.reorderedValues}}>
         {{#each this.value as |model index|}}
           <div class="input-multi-field__item{{if readOnly ' read-only' ' read-write'}}" {{sortable-item groupName=this.calculatedInputId model=item}}>
             <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
@@ -12,7 +12,7 @@
                   @selectOptions={{this.selectOptions}}
                   @value={{model.id}}
                   @required={{this.isRequired}}
-                  @valueChanged={{action this.doChangeValue index}}
+                  @valueChanged={{fn this.doChangeValue index}}
                   @class={{this.inputClass}}
                   @inputId={{this.caluclatedInputId}} />
               {{else}}
@@ -20,7 +20,7 @@
                   @baseQuery={{this.baseQuery}}
                   @value={{model}}
                   @modelName={{model-class-name model}}
-                  @valueChanged={{action this.doChangeValue index}}
+                  @valueChanged={{fn this.doChangeValue index}}
                   @placeholder={{@placeholder}}
                   @class={{this.inputClass}}
                   @inputId={{this.caluclatedInputId}} />
@@ -34,14 +34,14 @@
         <InputSelect
           @selectOptions={{this.selectOptions}}
           @required={{this.isRequired}}
-          @valueChanged={{action this.doChangeValue index}}
+          @valueChanged={{fn this.doChangeValue index}}
           @class={{this.inputClass}}
           @inputId={{this.caluclatedInputId}} />
       {{else}}
         <InputLookup
           @baseQuery={{this.baseQuery}}
           @modelName={{this.relationshipModelName}}
-          @valueChanged={{action this.doChangeValue index}}
+          @valueChanged={{fn this.doChangeValue index}}
           @placeholder={{@placeholder}}
           @class={{this.inputClass}}
           @inputId={{this.caluclatedInputId}} />

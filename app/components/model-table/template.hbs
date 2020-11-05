@@ -33,7 +33,7 @@
                 @inputId={{this.searchInputId}} 
                 @value={{this.query.search}} 
                 @placeholder="Search..." 
-                @valueChanged={{action this.searchValueChanged}} />
+                @valueChanged={{this.searchValueChanged}} />
               <div class="input-group-append">
                 <ul class="action-menu model-table__actions">
                   <MenuItem @itemClicked={{this.search}} @role="submit">
@@ -93,7 +93,7 @@
           @selectOptions={{this.modelNameSelectOptions}}
           @value={{this.activeModelName}}
           @required={{true}}
-          @valueChanged={{action this.activeModelNameChanged}} />
+          @valueChanged={{this.activeModelNameChanged}} />
       </div>
     {{/if}}
 
@@ -153,10 +153,10 @@
         @firstRow={{this.resultRowFirst}}
         @lastRow={{this.resultRowLast}}
         @totalCount={{this.resultTotalCount}}
-        @nextPage={{action this.nextPage}}
-        @prevPage={{action this.prevPage}}
-        @pageSelected={{action this.pageSelected}}
-        @rowsSelected={{action this.limitChanged}} />
+        @nextPage={{this.nextPage}}
+        @prevPage={{this.prevPage}}
+        @pageSelected={{this.pageSelected}}
+        @rowsSelected={{this.limitChanged}} />
     </div>
   {{/if}}
 </div>
