@@ -1,11 +1,11 @@
-<span class={{this.computedClass}}>
+<span class="input-field-hasmany__wrapper">
   {{#if (and this.isSelect this.setSelectOptions.isRunning)}}
     <Loading />
   {{else}}
     {{#if this.value}}
-      <div class="input-multi-field" {{sortable-group groupName=this.calculatedInputId onChange=this.reorderedValues}}>
+      <div class="input-multi" {{sortable-group groupName=this.calculatedInputId onChange=this.reorderedValues}}>
         {{#each this.value as |model index|}}
-          <div class="input-multi-field__item{{if readOnly ' read-only' ' read-write'}}" {{sortable-item groupName=this.calculatedInputId model=item}}>
+          <div class="input-multi__item{{if this.isReadOnly ' read-only' ' read-write'}}" {{sortable-item groupName=this.calculatedInputId model=model}}>
             <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
             {{#if this.isSelect}}
                 <InputSelect
@@ -29,7 +29,7 @@
         {{/each}}
       </div>
     {{/if}}
-    <div class="input-multi-field__item">
+    <div class="input-multi__item">
       {{#if this.isSelect}}
         <InputSelect
           @selectOptions={{this.selectOptions}}
