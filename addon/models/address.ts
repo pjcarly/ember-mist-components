@@ -5,6 +5,7 @@ import { attr } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 export default class Address extends Fragment {
   @service store!: Store;
@@ -14,7 +15,7 @@ export default class Address extends Fragment {
    * This checks on the requied fields (depending on the country)
    * The format of postal codes, ...
    */
-  format!: any;
+  @tracked format?: any;
 
   @attr("string")
   countryCode?: string;

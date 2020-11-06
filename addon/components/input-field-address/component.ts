@@ -37,8 +37,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
   @taskGroup addressLoading!: any;
   @tracked displayRows: DisplayRow[] = [];
-
-  protected fragment!: Address;
+  @tracked protected fragment!: Address;
 
   constructor(owner: any, args: InputFieldArguments<Address>) {
     super(owner, args);
@@ -57,7 +56,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       this.fragment = address;
     } else {
       // this could be a rerender, check if the fragment has been set
-      if (address) {
+      if (address && !this.fragment) {
         this.fragment = address;
       }
     }
@@ -86,10 +85,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       if (!this.address.isBlankModel) {
         // no country code is chosen, the address must be cleared
         this.address.clear();
-        // @ts-ignore
-        this.address.set("format", null);
-        // @ts-ignore
-        this.address.notifyPropertyChange("format");
+        this.address.format = undefined;
       }
     } else {
       if (
@@ -99,8 +95,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
         const format = await taskFor(this.addressing.getAddressFormat).perform(
           countryCode
         );
-        // @ts-ignore
-        this.address.set("format", format);
+        this.address.format = format;
       }
     }
 

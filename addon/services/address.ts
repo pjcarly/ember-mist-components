@@ -84,7 +84,7 @@ export default class AddressService extends Service {
    * @param countryCode The countrycode you want the format for
    */
   @enqueueTask
-  async getAddressFormat(countryCode: string): any {
+  async getAddressFormat(countryCode: string): Promise<any> {
     const storageKey = `addressFormat${countryCode}`;
 
     // We might have already fetched this, so lets check here
