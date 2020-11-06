@@ -216,7 +216,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
           if (!isDisabled) {
             // @ts-ignore
-            let subdivisionSelectOptions = this.get(`${field}SelectOptions`);
+            let subdivisionSelectOptions = this[`${field}SelectOptions`];
 
             if (isNone(subdivisionSelectOptions)) {
               const parentGrouping = this.getParentGroupingForField(field);
