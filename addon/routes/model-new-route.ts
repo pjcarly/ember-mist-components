@@ -11,7 +11,7 @@ export default abstract class ModelNewRoute extends ResetModelRoute {
   @service entityCache!: EntityCacheService;
   @service session!: SessionService;
 
-  modelName!: string;
+  abstract modelName: string;
 
   beforeModel(transition: Transition) {
     this.session.requireAuthentication(transition, "login");

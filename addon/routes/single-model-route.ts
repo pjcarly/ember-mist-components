@@ -11,12 +11,12 @@ export interface SingleModelRouteModelParams {
   id: string;
 }
 
-export default class SingleModelRoute extends ResetModelRoute {
+export default abstract class SingleModelRoute extends ResetModelRoute {
   @service fieldInformation!: FieldInformationService;
   @service recentlyViewed!: RecentlyViewedService;
   @service session!: SessionService;
 
-  modelName!: string;
+  abstract modelName: string;
   defaultIncludes: string[] = [];
 
   beforeModel(transition: Transition) {
@@ -64,7 +64,7 @@ export default class SingleModelRoute extends ResetModelRoute {
    * If an error is triggered on the transition, we remove the Model from the Recently viewed
    */
   @action
-  error(_: any, transition: Transition) {
+  error(error: any, transition: Transition) {
     if (!isBlank(this.modelName)) {
       if (
         transition.to &&
@@ -77,6 +77,11 @@ export default class SingleModelRoute extends ResetModelRoute {
           this.recentlyViewed.removeRecentlyViewed(this.modelName, id);
         }
       }
+    }
+
+    if (error?.errors?.[0]?.status === "404") {
+      this.transitionTo("error");
+      return false;
     }
 
     return true;

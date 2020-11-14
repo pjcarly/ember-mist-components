@@ -10,7 +10,7 @@ export default abstract class ModelIndexRoute extends Route {
   @service entityCache!: EntityCacheService;
   @service session!: SessionService;
 
-  modelName!: string;
+  abstract modelName: string;
   listViewGrouping?: string;
   hideNew: boolean = false;
 
