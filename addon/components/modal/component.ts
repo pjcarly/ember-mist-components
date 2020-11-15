@@ -90,10 +90,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
       const element = document.getElementById(this.modalId);
       if (element) {
         const modal = new Modal(element);
-        element.addEventListener(
-          "hidden.bs.modal",
-          this.hideModalListener.bind(this)
-        );
+        element.addEventListener("hidden.bs.modal", this.hideModalListener);
         this.modal = modal;
       }
     }
@@ -101,6 +98,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
     return <Modal>this.modal;
   }
 
+  @action
   hideModalListener() {
     this.modalVisible = false;
     if (this.args.onClose) {
