@@ -1651,6 +1651,11 @@
   resolved "https://registry.yarnpkg.com/@types/htmlbars-inline-precompile/-/htmlbars-inline-precompile-1.0.1.tgz#de564513fabb165746aecd76369c87bd85e5bbb4"
   integrity sha512-sVD2e6QAAHW0Y6Btse+tTA9k9g0iKm87wjxRsgZRU5EwSooz80tenbV+fA+f2BI2g0G2CqxsS1rIlwQCtPRQow==
 
+"@types/intl-tel-input@^14.0.1":
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/@types/intl-tel-input/-/intl-tel-input-14.0.1.tgz#f38f78b67823e79f31c7630ec7922410ef484119"
+  integrity sha512-1capY11Or9BlC9vqzPBYMVvn0sVSyzPb/dO0RcudX0nOS1WZ2VkhdZupHj7SwsKlcn7/L8xpKg+IlPpayJMcmA==
+
 "@types/jquery@*":
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.3.tgz#adcc647e4c675bd9ebae7fb980e9ca75d58ee8c7"
@@ -7826,6 +7831,11 @@ intl-messageformat@^9.3.6:
     fast-memoize "^2.5.2"
     intl-messageformat-parser "^6.0.11"
     tslib "^2.0.1"
+
+intl-tel-input@^17.0.8:
+  version "17.0.8"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.8.tgz#e1b38e27a6c941b713b757ecf7b1f9f345f88c80"
+  integrity sha512-Jf7IdNCSJrWMBbcLQJ8I3nVYnJ5xRODJhPa+0QFcTsg82E332DbMDKnzTBkEID4Q1I7Nf8+96WzmMveadRbxxg==
 
 into-stream@^3.1.0:
   version "3.1.0"

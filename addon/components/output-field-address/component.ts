@@ -11,7 +11,7 @@ export default class OutputFieldAddressComponent extends InputFieldAddressCompon
         for (const column of row.columns) {
           if (emptyRow) {
             // @ts-ignore
-            emptyRow = isBlank(this.address.get(column.field));
+            emptyRow = isBlank(this.value.get(column.field));
           }
         }
 
