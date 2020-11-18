@@ -7,11 +7,16 @@ import { getOwner } from "@ember/application";
 import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 import { isBlank } from "@ember/utils";
 import HttpService from "./http";
+import { tracked } from "@glimmer/tracking";
 
 export default class AddressService extends Service {
   @service storage!: any;
   @service http!: HttpService;
 
+  /**
+   * Define a default country that can be used in input forms throughout your application
+   */
+  @tracked defaultCountry?: string;
   countrySelectOptions?: SelectOption[];
   addressFormats: Map<string, any> = new Map();
   subdivisionSelectOptions: Map<string, SelectOption[]> = new Map();
