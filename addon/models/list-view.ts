@@ -1,6 +1,6 @@
 import QueryModel from "../models/query";
 import { isBlank } from "@ember/utils";
-import { field } from "@getflights/ember-field-components/model/attribute";
+import { field } from "@getflights/ember-mist-components/decorators/attribute";
 import { attr, hasMany, belongsTo } from "@ember-data/model";
 import MutableArray from "@ember/array/mutable";
 import FieldModel from "./field";

@@ -1,6 +1,6 @@
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import Image from "@getflights/ember-mist-components/interfaces/image";
-import { field } from "@getflights/ember-field-components/model/attribute";
+import { field } from "@getflights/ember-mist-components/decorators/attribute";
 import { assert } from "@ember/debug";
 
 export default class UserModel extends DrupalModel {
