@@ -1,30 +1,43 @@
-import Validator from "@getflights/ember-attribute-validations/validator";
+import Validator, {
+  AttributeInterface,
+  ValidatorOptions,
+} from "@getflights/ember-attribute-validations/base-validator";
 import Model from "@ember-data/model";
 import {
   hasValue,
   hasBelongsToValue,
 } from "@getflights/ember-attribute-validations/utils";
+import { tracked } from "@glimmer/tracking";
 
-export default class ConditionalRequiredValidator extends Validator {
+export interface ConditionalRequiredValidatorOptions extends ValidatorOptions {
+  conditionalRequired: string;
+}
+
+export default class ConditionalRequiredValidator extends Validator<ConditionalRequiredValidatorOptions> {
   name = "conditionalRequired";
 
-  validate(
-    _: string,
-    value: any,
-    attribute: any,
-    model: Model
-  ): string | boolean {
-    const requiredField = attribute.options.validation.conditionalRequired;
+  @tracked requiredField: string;
 
-    if (attribute.isAttribute) {
-      if (model.get(requiredField) && !hasValue(value)) {
+  constructor(
+    attribute: AttributeInterface,
+    options: ConditionalRequiredValidatorOptions
+  ) {
+    super(attribute, options);
+    this.requiredField = options.conditionalRequired;
+  }
+
+  validate(value: any, model: Model): string | boolean {
+    if (this.attribute.isAttribute) {
+      // @ts-ignore
+      if (model.get(this.requiredField) && !hasValue(value)) {
         return this.format();
       }
     } else if (
-      attribute.meta.isRelationship &&
-      attribute.kind === "belongsTo"
+      this.attribute.meta?.isRelationship &&
+      this.attribute.meta?.kind === "belongsTo"
     ) {
-      if (model.get(requiredField) && !hasBelongsToValue(value)) {
+      // @ts-ignore
+      if (model.get(this.requiredField) && !hasBelongsToValue(value)) {
         return this.format();
       }
     }
