@@ -1,0 +1,17 @@
+{{#if (eq this.widgetName 'intl')}}
+  <OutputPhoneIntl
+    @value={{this.value}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}}
+    @showButton={{not @inline}} />
+{{else}}
+  <OutputPhone
+    @value={{this.value}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@outputClass}}
+    @options={{this.outputOptions}}
+    @showButton={{not @inline}} />
+{{/if}}

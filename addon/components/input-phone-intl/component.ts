@@ -9,6 +9,7 @@ import PhoneIntlService from "dummy/services/phone-intl";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
 import AddressService from "dummy/services/address";
+import { tracked } from "@glimmer/tracking";
 
 export interface PhoneOptionsArgument extends OptionsArgument {
   initialCountry?: string;
@@ -24,17 +25,18 @@ export interface Arguments extends PhoneArguments {
   options?: PhoneOptionsArgument;
 }
 
-export default class InputPhoneIntlComponent extends InputPhoneComponent<
-  Arguments
-> {
+export default class InputPhoneIntlComponent extends InputPhoneComponent<Arguments> {
   @service phoneIntl!: PhoneIntlService;
   @service address!: AddressService;
 
   type = "phone-intl";
   instance?: intlTelInput.Plugin;
 
+  @tracked value?: string;
+
   constructor(owner: any, args: Arguments) {
     super(owner, args);
+    this.value = args.value;
     taskFor(this.initialize).perform();
   }
 
@@ -53,6 +55,11 @@ export default class InputPhoneIntlComponent extends InputPhoneComponent<
   @task
   async initialize() {
     await taskFor(this.phoneIntl.loadUtils).perform();
+  }
+
+  @action
+  valueChanged(_event: Event) {
+    this.setNewValue(this.instance?.getNumber());
   }
 
   @action

@@ -3,7 +3,7 @@
     <Loading />
   </span>
 {{else}}
-  <span class={{this.computedClass}} data-country={{this.initialCountry}}>
+  <span class={{this.computedClass}} data-country={{this.initialCountry}} data-number={{@value}}>
     {{#if @prefix}}
       <div class="input-group-prepend">
         <span class="input-group-text prefix">{{@prefix}}</span>
@@ -12,7 +12,7 @@
     <Input
       @id={{@inputId}}
       @type="tel"
-      @value={{@value}}
+      @value={{this.value}}
       class="form-control"
       disabled={{@disabled}}
       placeholder={{@placeholder}} 
