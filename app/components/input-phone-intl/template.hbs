@@ -1,0 +1,27 @@
+{{#if this.initialize.isRunning}}
+  <span class="input loader">
+    <Loading />
+  </span>
+{{else}}
+  <span class={{this.computedClass}} data-country={{this.initialCountry}} data-number={{@value}}>
+    {{#if @prefix}}
+      <div class="input-group-prepend">
+        <span class="input-group-text prefix">{{@prefix}}</span>
+      </div>
+    {{/if}}
+    <Input
+      @id={{@inputId}}
+      @type="tel"
+      @value={{this.value}}
+      class="form-control"
+      disabled={{@disabled}}
+      placeholder={{@placeholder}} 
+      {{on "input" this.valueChanged}}
+      ...attributes {{did-insert this.elementInsertedInDOM}} {{will-destroy this.elementWillBeRemovedFromDOM}}/>
+    {{#if @suffix}}
+      <div class="input-group-append">
+        <span class="input-group-text suffix">{{@suffix}}</span>
+      </div>
+    {{/if}}
+  </span>
+{{/if}}

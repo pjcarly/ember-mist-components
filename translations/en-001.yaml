@@ -1,5 +1,6 @@
 ember-attribute-validations:
   validAddress: "{label} is an invalid address for the selected country, fill in the required fields"
+  validPhone: "{label} is an invalid phone number"
   requiredAddress: "{label} is required"
   conditionalRequired: "{label} is required"
 ember-mist-components:

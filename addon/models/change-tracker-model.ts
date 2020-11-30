@@ -1,11 +1,11 @@
-import Model from "@ember-data/model";
+import ValidationModel from "@getflights/ember-attribute-validations/model/validation-model";
 // @ts-ignore
 import Tracker from "ember-data-change-tracker/tracker";
 import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
 
-export default abstract class ChangeTrackerModel extends Model {
+export default abstract class ChangeTrackerModel extends ValidationModel {
   @service store!: Store;
 
   init() {

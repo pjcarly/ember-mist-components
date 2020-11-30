@@ -96,7 +96,7 @@ export default class DynamicSelectOptionService extends Service {
       models = this.store.peekAll(modelName);
     } else {
       // @ts-ignore
-      models = await this.store.loadAll(modelName);
+      models = await this.store.loadRecords(modelName);
       this.loadedModelNames.push(modelName);
     }
 

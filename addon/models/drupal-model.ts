@@ -1,5 +1,5 @@
 import MistModel from "./mist-model";
-import { field } from "@getflights/ember-field-components/model/attribute";
+import { field } from "@getflights/ember-mist-components/decorators/attribute";
 import DrupalModelInterface from "@getflights/ember-mist-components/interfaces/drupal-model";
 
 // @ts-ignore

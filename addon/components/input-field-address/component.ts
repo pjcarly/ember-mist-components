@@ -28,8 +28,17 @@ class DisplayColumn {
   disabled?: boolean;
 }
 
+export interface InputFieldAddressArguments
+  extends InputFieldArguments<Address> {
+  options?: InputFieldAddressOptionsArgument;
+}
+
+export interface InputFieldAddressOptionsArgument {
+  countryChanged?: (countryCode?: string) => void;
+}
+
 export default class InputFieldAddressComponent extends InputFieldComponent<
-  InputFieldArguments<Address>,
+  InputFieldAddressArguments,
   Address
 > {
   // @ts-ignore
@@ -41,64 +50,29 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 
   constructor(owner: any, args: InputFieldArguments<Address>) {
     super(owner, args);
-    taskFor(this.setAddressFormat).perform();
+    taskFor(this.initialize).perform();
   }
 
-  get address(): Address {
-    let address = this.value;
-
-    if (!this.fragment) {
-      if (!address) {
-        // @ts-ignore
-        address = <Address>this.store.createFragment("address", {});
-      }
-
-      this.fragment = address;
-    } else {
-      // this could be a rerender, check if the fragment has been set
-      if (address && !this.fragment) {
-        this.fragment = address;
-      }
-    }
-
-    return this.fragment;
-  }
-
-  /**
-   * In case the value of the address is null, no fragment exists yet on the model
-   * but a fragment has been created in this component, on a change, we check if a fragment exits
-   * if not, we set the fragment on the model, before setting the value of the fragment
-   */
-  setFragmentIfNeeded(): void {
+  @task({ group: "addressLoading" })
+  async initialize() {
     if (!this.value) {
-      this.args.model
+      const address = <Address>this.store
         // @ts-ignore
-        .set(this.args.field, this.fragment);
+        .createFragment("address", {});
+
+      this.setNewValue(address);
     }
+
+    await taskFor(this.setAddressFormat).perform();
   }
 
   @task({ group: "addressLoading" })
   async setAddressFormat() {
-    const countryCode = this.address.countryCode;
-
-    if (!countryCode) {
-      if (!this.address.isBlankModel) {
-        // no country code is chosen, the address must be cleared
-        this.address.clear();
-        this.address.format = undefined;
-      }
-    } else {
-      if (
-        !this.address.format ||
-        this.address.format.data.id !== this.address.countryCode
-      ) {
-        const format = await taskFor(this.addressing.getAddressFormat).perform(
-          countryCode
-        );
-        this.address.format = format;
-      }
+    if (!this.value) {
+      return;
     }
 
+    await taskFor(this.value.loadFormat).perform();
     await taskFor(this.setDisplayRows).perform();
   }
 
@@ -112,7 +86,12 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
    */
   @task({ group: "addressLoading" })
   async setDisplayRows() {
-    const addressFormat = this.address.format;
+    if (!this.value) {
+      this.displayRows = [];
+      return;
+    }
+
+    const addressFormat = this.value.format;
     const rows: DisplayRow[] = [];
 
     if (
@@ -255,7 +234,11 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   }
 
   reRenderRows(editedField: string): void {
-    const format = this.address.format;
+    if (!this.value) {
+      return;
+    }
+
+    const format = this.value.format;
     const selectlistDepth = format.data.attributes["subdivision-depth"];
 
     if (selectlistDepth !== 0) {
@@ -292,7 +275,12 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   }
 
   getParentGroupingForField(field: string): string {
-    const address = this.address;
+    const address = this.value;
+
+    if (!address) {
+      return "";
+    }
+
     const addressFormat = address.format;
     const usedFields = addressFormat.data.attributes["used-fields"]; // this is an array, containing the used fields in the addressFormat, sorted from big to small
     const zeroBasedPositionOfField = usedFields.indexOf(field);
@@ -326,23 +314,41 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
   }
 
   @action
-  countryCodeChanged(value: string) {
-    this.setFragmentIfNeeded();
+  countryCodeChanged(value?: string) {
+    if (!this.value) {
+      return;
+    }
 
-    this.address.clearExceptAddressLines();
     this.cancelAllTasks();
-    // @ts-ignore
-    this.address.set("countryCode", value);
+
+    this.value.clearExceptAddressLines();
+    this.value.countryCode = value;
     taskFor(this.setAddressFormat).perform();
     this.removeAddressErrors();
+
+    if (this.args.options?.countryChanged) {
+      this.args.options.countryChanged(value);
+    }
   }
 
   @action
-  addressFieldChanged(field: string, value: any) {
-    this.setFragmentIfNeeded();
+  addressFieldChanged(
+    field:
+      | "countryCode"
+      | "administrativeArea"
+      | "locality"
+      | "dependentLocality"
+      | "postalCode"
+      | "sortingCode"
+      | "addressLine1"
+      | "addressLine2",
+    value: any
+  ) {
+    if (!this.value) {
+      return;
+    }
 
-    // @ts-ignore
-    this.address.set(field, value);
+    this.value[field] = value;
     this.resetValues(field);
     this.reRenderRows(field);
     this.removeAddressErrors();

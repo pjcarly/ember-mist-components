@@ -2,20 +2,20 @@
   <div class="row">
     <div class="col-12 country-select">
       <InputSelectCountry
-        @value={{this.address.countryCode}}
+        @value={{this.value.countryCode}}
         @valueChanged={{this.countryCodeChanged}}
         @inputId={{this.inputId}}
         @required={{this.isRequired}} />
     </div>
   </div>
 
-  {{#if this.address.format}}
+  {{#if this.value.format}}
     {{#each this.displayRows as |row|}}
       <div class="row">
         {{#each row.columns as |column|}}
           <div class={{row.columnClassName}}>
             {{component (concat 'input-' column.component)
-              value=(get this.address column.field)
+              value=(get this.value column.field)
               valueChanged=(fn this.addressFieldChanged column.field)
               placeholder=column.label
               none=column.none

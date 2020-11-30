@@ -4,12 +4,10 @@ import { isBlank } from "@ember/utils";
 import { or } from "@ember/object/computed";
 import { getOwner } from "@ember/application";
 import { inject as service } from "@ember/service";
-import { validationModel } from "@getflights/ember-attribute-validations/decorators/validation-model";
 import { loadableModel } from "@getflights/ember-mist-components/decorators/loadable-model";
 import ChangeTrackerModel from "./change-tracker-model";
 import JSONAPISerializer from "@ember-data/serializer/json-api";
 
-@validationModel
 @loadableModel
 export default abstract class MistModel extends ChangeTrackerModel {
   @service fieldInformation!: FieldInformationService;

@@ -1,12 +1,12 @@
-{{#if this.address.countryCode}}
-  {{#if this.address.format}}
+{{#if this.value.countryCode}}
+  {{#if this.value.format}}
     {{#each this.outputDisplayRows as |row|}}
       {{#if (not row.emptyRow)}}
         <div class="row">
           <div class="col-12">
             {{#each row.columns as |column|}}
               {{component (concat 'output-' column.component)
-                value=(get this.address column.field)
+                value=(get this.value column.field)
                 valueChanged=(fn this.addressFieldChanged column.field)
                 placeholder=column.label
                 none=column.none
@@ -21,7 +21,7 @@
 
   <div class="row">
     <div class="col-12">
-      <OutputSelectCountry @value={{this.address.countryCode}} />
+      <OutputSelectCountry @value={{this.value.countryCode}} />
     </div>
   </div>
 {{else}}

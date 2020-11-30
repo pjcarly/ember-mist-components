@@ -1,6 +1,6 @@
 import { belongsTo } from "@ember-data/model";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
-import { field } from "@getflights/ember-field-components/model/attribute";
+import { field } from "@getflights/ember-mist-components/decorators/attribute";
 import QueryModel from "./query";
 import FieldModel from "@getflights/ember-mist-components/models/field";
 

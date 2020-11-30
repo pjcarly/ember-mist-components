@@ -4,10 +4,15 @@ import Store from "@ember-data/store";
 import { attr } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
+import { task } from "ember-concurrency-decorators";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
+import { taskFor } from "ember-concurrency-ts";
+import AddressService from "../services/address";
 
 export default class Address extends Fragment {
+  // @ts-ignore
+  @service("address") addressing!: AddressService;
   @service store!: Store;
 
   /**
@@ -44,42 +49,37 @@ export default class Address extends Fragment {
   copyAddress(): Address {
     // @ts-ignore
     const newAddress = <Address>this.store.createFragment("address");
-    // @ts-ignore
-    newAddress.set("countryCode", this.countryCode);
-    // @ts-ignore
-    newAddress.set("administrativeArea", this.administrativeArea);
-    // @ts-ignore
-    newAddress.set("locality", this.locality);
-    // @ts-ignore
-    newAddress.set("dependentLocality", this.dependentLocality);
-    // @ts-ignore
-    newAddress.set("postalCode", this.postalCode);
-    // @ts-ignore
-    newAddress.set("sortingCode", this.sortingCode);
-    // @ts-ignore
-    newAddress.set("addressLine1", this.addressLine1);
-    // @ts-ignore
-    newAddress.set("addressLine2", this.addressLine2);
+    newAddress.countryCode = this.countryCode;
+    newAddress.administrativeArea = this.administrativeArea;
+    newAddress.locality = this.locality;
+    newAddress.dependentLocality = this.dependentLocality;
+    newAddress.postalCode = this.postalCode;
+    newAddress.sortingCode = this.sortingCode;
+    newAddress.addressLine1 = this.addressLine1;
+    newAddress.addressLine2 = this.addressLine2;
     return newAddress;
   }
 
+  setAllFromAddress(address: Address) {
+    this.countryCode = address.countryCode;
+    this.administrativeArea = address.administrativeArea;
+    this.locality = address.locality;
+    this.dependentLocality = address.dependentLocality;
+    this.postalCode = address.postalCode;
+    this.sortingCode = address.sortingCode;
+    this.addressLine1 = address.addressLine1;
+    this.addressLine2 = address.addressLine2;
+  }
+
   clear() {
-    // @ts-ignore
-    this.set("countryCode", null);
-    // @ts-ignore
-    this.set("administrativeArea", null);
-    // @ts-ignore
-    this.set("locality", null);
-    // @ts-ignore
-    this.set("dependentLocality", null);
-    // @ts-ignore
-    this.set("postalCode", null);
-    // @ts-ignore
-    this.set("sortingCode", null);
-    // @ts-ignore
-    this.set("addressLine1", null);
-    // @ts-ignore
-    this.set("addressLine2", null);
+    this.countryCode = undefined;
+    this.administrativeArea = undefined;
+    this.locality = undefined;
+    this.dependentLocality = undefined;
+    this.postalCode = undefined;
+    this.sortingCode = undefined;
+    this.addressLine1 = undefined;
+    this.addressLine2 = undefined;
   }
 
   /**
@@ -101,18 +101,12 @@ export default class Address extends Fragment {
   }
 
   clearExceptAddressLines() {
-    // @ts-ignore
-    this.set("countryCode", null);
-    // @ts-ignore
-    this.set("administrativeArea", null);
-    // @ts-ignore
-    this.set("locality", null);
-    // @ts-ignore
-    this.set("dependentLocality", null);
-    // @ts-ignore
-    this.set("postalCode", null);
-    // @ts-ignore
-    this.set("sortingCode", null);
+    this.countryCode = undefined;
+    this.administrativeArea = undefined;
+    this.locality = undefined;
+    this.dependentLocality = undefined;
+    this.postalCode = undefined;
+    this.sortingCode = undefined;
   }
 
   @computed(
@@ -173,5 +167,23 @@ export default class Address extends Fragment {
     }
 
     return returnValue;
+  }
+
+  @task
+  async loadFormat(): Promise<void> {
+    if (!this.countryCode) {
+      if (!this.isBlankModel) {
+        // no country code is chosen, the address must be cleared
+        this.clear();
+        this.format = undefined;
+      }
+    } else {
+      if (!this.format || this.format.data.id !== this.countryCode) {
+        const format = await taskFor(this.addressing.getAddressFormat).perform(
+          this.countryCode
+        );
+        this.format = format;
+      }
+    }
   }
 }

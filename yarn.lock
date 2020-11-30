@@ -1222,22 +1222,23 @@
   dependencies:
     tslib "^2.0.1"
 
-"@getflights/ember-attribute-validations@^1.0.0":
-  version "1.1.0"
-  resolved "https://gitlab.com/api/v4/projects/20773295/packages/npm/@getflights/ember-attribute-validations/-/@getflights/ember-attribute-validations-1.1.0.tgz#9784dc823013b78376c520a6b206022e60e745b3"
-  integrity sha1-l4TcgjATt4N2xSCmsgYCLmDnRbM=
+"@getflights/ember-attribute-validations@^2.0.0":
+  version "2.0.0"
+  resolved "https://gitlab.com/api/v4/projects/20773295/packages/npm/@getflights/ember-attribute-validations/-/@getflights/ember-attribute-validations-2.0.0.tgz#ad0675756640f33b4b559edccde2bc5a5b402b2f"
+  integrity sha1-rQZ1dWZA8ztLVZ7czeK8WltAKy8=
   dependencies:
+    "@glimmer/tracking" "^1.0.2"
     ember-cli-babel "^7.19.0"
     ember-cli-htmlbars "~3.0.1"
     ember-cli-typescript "^4.0.0"
     ember-data "~3.20.0"
 
-"@getflights/ember-field-components@^2.0.0":
-  version "2.0.0"
-  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-2.0.0.tgz#bd25e81212997b7629f3ad131fb66acd3e24ddb9"
-  integrity sha1-vSXoEhKZe3Yp860TH7ZqzT4k3bk=
+"@getflights/ember-field-components@^3.0.0":
+  version "3.0.0"
+  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-3.0.0.tgz#8d58e7d9d68fd2cbdeef1167270eff5c019c3de1"
+  integrity sha1-jVjn2daP0sve7xFnJw7/XAGcPeE=
   dependencies:
-    "@getflights/ember-attribute-validations" "^1.0.0"
+    "@getflights/ember-attribute-validations" "^2.0.0"
     "@glimmer/component" "^1.0.2"
     "@glimmer/tracking" "^1.0.2"
     ember-cli-babel "^7.19.0"
@@ -1650,6 +1651,11 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/htmlbars-inline-precompile/-/htmlbars-inline-precompile-1.0.1.tgz#de564513fabb165746aecd76369c87bd85e5bbb4"
   integrity sha512-sVD2e6QAAHW0Y6Btse+tTA9k9g0iKm87wjxRsgZRU5EwSooz80tenbV+fA+f2BI2g0G2CqxsS1rIlwQCtPRQow==
+
+"@types/intl-tel-input@^14.0.1":
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/@types/intl-tel-input/-/intl-tel-input-14.0.1.tgz#f38f78b67823e79f31c7630ec7922410ef484119"
+  integrity sha512-1capY11Or9BlC9vqzPBYMVvn0sVSyzPb/dO0RcudX0nOS1WZ2VkhdZupHj7SwsKlcn7/L8xpKg+IlPpayJMcmA==
 
 "@types/jquery@*":
   version "3.5.3"
@@ -7826,6 +7832,11 @@ intl-messageformat@^9.3.6:
     fast-memoize "^2.5.2"
     intl-messageformat-parser "^6.0.11"
     tslib "^2.0.1"
+
+intl-tel-input@^17.0.8:
+  version "17.0.8"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.8.tgz#e1b38e27a6c941b713b757ecf7b1f9f345f88c80"
+  integrity sha512-Jf7IdNCSJrWMBbcLQJ8I3nVYnJ5xRODJhPa+0QFcTsg82E332DbMDKnzTBkEID4Q1I7Nf8+96WzmMveadRbxxg==
 
 into-stream@^3.1.0:
   version "3.1.0"

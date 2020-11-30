@@ -1,0 +1,20 @@
+<span class={{this.computedClass}}>
+  {{#if (and @value @prefix)}}
+    <span class="prefix">
+      {{@prefix}}
+    </span>
+  {{/if}}
+  <span class={{if @value "value" "value empty"}} ...attributes>
+    {{this.formattedNumber}}
+  </span>
+  {{#if (and @value @suffix)}}
+    <span class="suffix">
+      {{@suffix}}
+    </span>
+  {{/if}}
+  {{#if (and this.showButton @value @showButton)}}
+    <a class="btn btn-default phone-button" href="tel:{{@value}}">
+      <IconPhone />
+    </a>
+  {{/if}}
+</span>
