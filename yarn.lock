@@ -1222,22 +1222,23 @@
   dependencies:
     tslib "^2.0.1"
 
-"@getflights/ember-attribute-validations@^1.0.0":
-  version "1.1.0"
-  resolved "https://gitlab.com/api/v4/projects/20773295/packages/npm/@getflights/ember-attribute-validations/-/@getflights/ember-attribute-validations-1.1.0.tgz#9784dc823013b78376c520a6b206022e60e745b3"
-  integrity sha1-l4TcgjATt4N2xSCmsgYCLmDnRbM=
+"@getflights/ember-attribute-validations@^2.0.0":
+  version "2.0.0"
+  resolved "https://gitlab.com/api/v4/projects/20773295/packages/npm/@getflights/ember-attribute-validations/-/@getflights/ember-attribute-validations-2.0.0.tgz#ad0675756640f33b4b559edccde2bc5a5b402b2f"
+  integrity sha1-rQZ1dWZA8ztLVZ7czeK8WltAKy8=
   dependencies:
+    "@glimmer/tracking" "^1.0.2"
     ember-cli-babel "^7.19.0"
     ember-cli-htmlbars "~3.0.1"
     ember-cli-typescript "^4.0.0"
     ember-data "~3.20.0"
 
-"@getflights/ember-field-components@^2.0.0":
-  version "2.0.0"
-  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-2.0.0.tgz#bd25e81212997b7629f3ad131fb66acd3e24ddb9"
-  integrity sha1-vSXoEhKZe3Yp860TH7ZqzT4k3bk=
+"@getflights/ember-field-components@^3.0.0":
+  version "3.0.0"
+  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-3.0.0.tgz#8d58e7d9d68fd2cbdeef1167270eff5c019c3de1"
+  integrity sha1-jVjn2daP0sve7xFnJw7/XAGcPeE=
   dependencies:
-    "@getflights/ember-attribute-validations" "^1.0.0"
+    "@getflights/ember-attribute-validations" "^2.0.0"
     "@glimmer/component" "^1.0.2"
     "@glimmer/tracking" "^1.0.2"
     ember-cli-babel "^7.19.0"
