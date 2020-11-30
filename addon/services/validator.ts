@@ -24,6 +24,15 @@ export default class ValidatorService extends Service {
           })
         );
         break;
+      case "phone":
+        validators.push(
+          this.lookupValidator({
+            type: "validPhone",
+            value: true,
+            attribute: attribute,
+          })
+        );
+        break;
       case "string":
         validators.push(
           this.lookupValidator({
