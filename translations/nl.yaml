@@ -1,6 +1,7 @@
 ember-attribute-validations:
   validAddress: "{label} is een ongeldig adres voor het geselecteerde land, vul alle verplichte velden in"
   requiredAddress: "{label} is verplicht"
+  validPhone: "{label} is een ongeldig telefoonnummer"
   conditionalRequired: "{label} is verplicht"
 ember-mist-components:
   labels:
