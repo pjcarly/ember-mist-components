@@ -21,6 +21,6 @@ export function field(type: string, options?: any) {
       };
     }
 
-    return attr(...arguments);
+    return attr(type, options);
   }
 }
