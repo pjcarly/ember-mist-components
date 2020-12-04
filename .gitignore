@@ -7,6 +7,10 @@
 # dependencies
 /node_modules
 
+# Logs
+logs
+*.log
+
 # misc
 /.sass-cache
 /connect.lock
