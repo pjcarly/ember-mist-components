@@ -22,7 +22,7 @@ export default class ConditionsEditComponent extends Component<Arguments> {
 
     conditions.toArray().forEach((condition) => {
       if (!condition.isDeleted) {
-        condition.set("sort", topSort);
+        condition.sort = topSort;
         topSort++;
       }
     });
@@ -42,8 +42,8 @@ export default class ConditionsEditComponent extends Component<Arguments> {
   @action
   addNewCondition() {
     const condition = this.store.createRecord("condition");
-    condition.set("parent", this.args.model);
-    condition.set("sort", this.args.model.conditions.length);
+    condition.parent = this.args.model;
+    condition.sort = this.args.model.conditions.length;
     this.args.model.conditions.pushObject(condition);
   }
 
@@ -55,7 +55,7 @@ export default class ConditionsEditComponent extends Component<Arguments> {
         conditionToDelete.sort &&
         condition.sort > conditionToDelete.sort
       ) {
-        condition.set("sort", condition.sort - 1);
+        condition.sort = condition.sort - 1;
       }
     });
 
@@ -66,7 +66,7 @@ export default class ConditionsEditComponent extends Component<Arguments> {
   @action
   reorderConditions(reorderedConditions: Array<ConditionModel>) {
     reorderedConditions.forEach((condition, index) => {
-      condition.set("sort", index);
+      condition.sort = index;
     });
   }
 }

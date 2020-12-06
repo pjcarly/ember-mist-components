@@ -45,7 +45,7 @@ export default class LoggedInUserService extends Service {
         // @ts-ignore
         .loadRecord("user", userId, options)
         .then((user: UserModel) => {
-          this.set("user", user);
+          this.user = user;
           taskFor(this.websocket.startConnecting).perform();
         })
         .catch((_: any) => {
@@ -58,7 +58,7 @@ export default class LoggedInUserService extends Service {
   async signOut() {
     this.websocket.closeConnection();
     await this.session.invalidate();
-    this.set("user", null);
+    this.user = undefined;
     this.store.unloadAll("user");
   }
 

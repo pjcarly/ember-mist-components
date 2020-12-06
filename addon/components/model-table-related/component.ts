@@ -78,8 +78,8 @@ export default class ModelTableRelatedComponent extends Component<Arguments> {
     cachedModel.set(this.inverseRelationship, this.args.model);
     cachedModel = this.preProcessNewHook(cachedModel);
 
-    this.entityCache.set("cachedModel", cachedModel);
-    this.entityCache.set("returnToModel", this.args.model);
+    this.entityCache.cachedModel = cachedModel;
+    this.entityCache.returnToModel = this.args.model;
 
     this.entityRouter.transitionToCreate(this.hasManyModelName);
   }

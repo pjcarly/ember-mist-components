@@ -22,7 +22,7 @@ export default class SortOrdersEditComponent extends Component<Arguments> {
     this.args.model.orders.toArray().forEach((order) => {
       // @ts-ignore
       if (!order.isDeleted) {
-        order.set("sort", topSort);
+        order.sort = topSort;
         topSort++;
       }
     });
@@ -42,8 +42,8 @@ export default class SortOrdersEditComponent extends Component<Arguments> {
   @action
   addNewOrder() {
     const order = <SortOrderModel>this.store.createRecord("order");
-    order.set("parent", this.args.model);
-    order.set("sort", this.args.model.orders.length);
+    order.parent = this.args.model;
+    order.sort = <number>(<unknown>this.args.model.orders.length);
     this.args.model.orders.pushObject(order);
   }
 
@@ -51,7 +51,7 @@ export default class SortOrdersEditComponent extends Component<Arguments> {
   deleteOrder(orderToDelete: SortOrderModel) {
     this.args.model.orders.toArray().forEach((order) => {
       if (order.sort && orderToDelete.sort && order.sort > orderToDelete.sort) {
-        order.set("sort", order.sort - 1);
+        order.sort = order.sort - 1;
       }
     });
 
@@ -62,7 +62,7 @@ export default class SortOrdersEditComponent extends Component<Arguments> {
   @action
   reorderOrders(reorderedOrders: Array<SortOrderModel>) {
     reorderedOrders.forEach((order, index) => {
-      order.set("sort", index);
+      order.sort = index;
     });
   }
 }

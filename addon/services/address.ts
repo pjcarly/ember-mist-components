@@ -17,7 +17,7 @@ export default class AddressService extends Service {
    * Define a default country that can be used in input forms throughout your application
    */
   @tracked defaultCountry?: string;
-  countrySelectOptions?: SelectOption[];
+  @tracked countrySelectOptions?: SelectOption[];
   addressFormats: Map<string, any> = new Map();
   subdivisionSelectOptions: Map<string, SelectOption[]> = new Map();
 
@@ -59,7 +59,7 @@ export default class AddressService extends Service {
       countrySelectOptions = this.storage.get("addressCountrySelectOptions");
 
       if (countrySelectOptions) {
-        this.set("countrySelectOptions", countrySelectOptions);
+        this.countrySelectOptions = countrySelectOptions;
         return countrySelectOptions;
       }
     }
@@ -75,7 +75,7 @@ export default class AddressService extends Service {
         console.log(error);
       });
 
-    this.set("countrySelectOptions", countrySelectOptions);
+    this.countrySelectOptions = countrySelectOptions;
 
     if (this.shouldCache) {
       this.storage.set("addressCountrySelectOptions", countrySelectOptions);
