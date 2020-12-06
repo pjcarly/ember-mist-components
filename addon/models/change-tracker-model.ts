@@ -9,6 +9,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
   @service store!: Store;
 
   init() {
+    // @ts-ignore
     super.init();
 
     if (Tracker.isAutoSaveEnabled(this)) {
