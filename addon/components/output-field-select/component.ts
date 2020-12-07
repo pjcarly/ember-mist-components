@@ -23,6 +23,12 @@ export default class DynamicOutputFieldSelectComponent extends OutputFieldSelect
 
   @task
   async loadSelectOptions() {
+    const selectOptionsOption = super.selectOptions;
+
+    if (selectOptionsOption) {
+      this._selectOptions = selectOptionsOption;
+    }
+
     // If selectOptions were defined, we dont load anything
     if (
       (!this.selectOptions || this.selectOptions.length === 0) &&
