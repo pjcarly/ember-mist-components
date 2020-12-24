@@ -23,7 +23,7 @@ export default class PhoneIntlService extends Service {
 
   @dropTask
   async loadUtils(): Promise<void> {
-    const src = this.config?.["ember-mist-components"]?.phoneIntlUtilsSource;
+    let src = this.config?.["ember-mist-components"]?.phoneIntlUtilsSource;
 
     if (!window.intlTelInputGlobals) {
       // The global is only set, when any component was initialized
@@ -34,9 +34,11 @@ export default class PhoneIntlService extends Service {
     }
 
     if (!this.utilsLoaded) {
-      await window.intlTelInputGlobals.loadUtils(
-        src ?? "assets/phone-utils.js"
-      );
+      if (!src) {
+        src = "/assets/phone-utils.js";
+      }
+
+      await window.intlTelInputGlobals.loadUtils(src);
     }
   }
 
