@@ -1,4 +1,5 @@
 import { getOwner } from "@ember/application";
+import { assert } from "@ember/debug";
 import { computed } from "@ember/object";
 import Service from "@ember/service";
 import { dropTask } from "ember-concurrency-decorators";
@@ -23,7 +24,19 @@ export default class PhoneIntlService extends Service {
 
   @dropTask
   async loadUtils(): Promise<void> {
-    let src = this.config?.["ember-mist-components"]?.phoneIntlUtilsSource;
+    // The utils script of the phone-intl package must be loaded seperatly.
+    // You can choose to load it from a CDN or host it  yourself.
+    // For your ease, the script is automatically added to the build at /assets/phone-utils.js
+    // However, you must explicitly define it in your environment.js to make a decision
+    // Keep in mind that Ember automatically fingerprints assets files on build
+    // Should you choose to host it yourself, disable the fingerprinting on the phone-utils.js in ember-cli build
+    // and then put /assets/phone-utils.js in the config under ember-mist-components.phoneIntlUtilsSource
+
+    const src = this.config?.["ember-mist-components"]?.phoneIntlUtilsSource;
+    assert(
+      "config ember-mist-components.phoneIntlUtilsSource is not defined",
+      src
+    );
 
     if (!window.intlTelInputGlobals) {
       // The global is only set, when any component was initialized
@@ -34,10 +47,6 @@ export default class PhoneIntlService extends Service {
     }
 
     if (!this.utilsLoaded) {
-      if (!src) {
-        src = "/assets/phone-utils.js";
-      }
-
       await window.intlTelInputGlobals.loadUtils(src);
     }
   }
