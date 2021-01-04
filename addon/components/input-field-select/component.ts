@@ -24,7 +24,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
   @task
   async loadSelectOptions() {
-    const selectOptionsOption = super.selectOptions;
+    const selectOptionsOption = super.selectOptionsComputed;
 
     if (selectOptionsOption) {
       this._selectOptions = selectOptionsOption;
@@ -32,7 +32,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
     // If selectOptions were defined, we dont load anything
     if (
-      (!this.selectOptions || this.selectOptions.length === 0) &&
+      (!this._selectOptions || this._selectOptions.length === 0) &&
       this.widgetName !== "country-select"
     ) {
       const selectOptions = await taskFor(
