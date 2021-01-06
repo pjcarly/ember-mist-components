@@ -6,15 +6,15 @@ import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency-decorators";
 import { taskFor } from "ember-concurrency-ts";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { tracked } from "@glimmer/tracking";
+import { isArray } from "@ember/array";
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
 
-  @tracked _selectOptions!: SelectOption[];
+  _selectOptions!: SelectOption[];
 
   get selectOptionsComputed(): SelectOption[] {
-    return this._selectOptions;
+    return this.getAllowedSelectOptions(this._selectOptions);
   }
 
   constructor(owner: any, args: InputFieldSelectArguments) {
@@ -24,10 +24,16 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
   @task
   async loadSelectOptions() {
-    const selectOptionsOption = super.selectOptionsComputed;
+    const fieldOptions = this.fieldOptions;
 
-    if (selectOptionsOption) {
-      this._selectOptions = selectOptionsOption;
+    if (this.selectOptions) {
+      this._selectOptions = this.selectOptions;
+    } else if (
+      fieldOptions &&
+      fieldOptions.hasOwnProperty("selectOptions") &&
+      isArray(fieldOptions.selectOptions)
+    ) {
+      this._selectOptions = fieldOptions.selectOptions;
     }
 
     // If selectOptions were defined, we dont load anything
@@ -39,7 +45,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
         this.dynamicSelectOptions.getSelectOptions
       ).perform(<string>this.modelName, this.args.field);
 
-      this._selectOptions = this.getAllowedSelectOptions(selectOptions);
+      this._selectOptions = selectOptions;
     }
   }
 }
