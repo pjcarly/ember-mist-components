@@ -183,7 +183,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
             // now it gets really tricky, we must check parents have values before we can make this field editable
             const parentField = usedFields[positionOfField - 2]; // remember 0-based
             // @ts-ignore
-            isDisabled = isBlank(this.address.get(parentField));
+            isDisabled = isBlank(this.value.get(parentField));
           }
 
           // this is the top most field, we don't need to mind parent values
@@ -257,7 +257,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
    */
   resetValues(editedField: string) {
     // @ts-ignore
-    const addressFormat = this.address.get("format");
+    const addressFormat = this.value.get("format");
     const selectlistDepth = addressFormat.data.attributes["subdivision-depth"];
 
     if (selectlistDepth !== 0) {
@@ -268,7 +268,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
       if (zeroBasedPositionOfField + 1 < selectlistDepth) {
         for (let i = zeroBasedPositionOfField + 1; i < selectlistDepth; i++) {
           // @ts-ignore
-          this.address.set(usedFields[i], null);
+          this.value.set(usedFields[i], null);
         }
       }
     }
