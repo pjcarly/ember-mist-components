@@ -39,9 +39,7 @@ interface InputOptionsArgument extends OptionsArgument {
   searchQuery: boolean;
 }
 
-export default class InputModelAutocompleteComponent extends BaseInput<
-  ModelAutocompleteArguments
-> {
+export default class InputModelAutocompleteComponent extends BaseInput<ModelAutocompleteArguments> {
   @service store!: Store;
 
   type = "model-autocomplete";
@@ -119,7 +117,7 @@ export default class InputModelAutocompleteComponent extends BaseInput<
    */
   @action
   handleFocus(select: any, e: any) {
-    if (this.focusComesFromOutside(e)) {
+    if (select && this.focusComesFromOutside(e)) {
       select.actions.open();
     }
   }

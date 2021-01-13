@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -54,7 +54,7 @@
     "@types/ws": "^7.2.3",
     "babel-eslint": "~8.0.0",
     "broccoli-asset-rev": "~3.0.0",
-    "ember-cli": "~3.20.0",
+    "ember-cli": "~3.24.0",
     "ember-cli-dependency-checker": "~3.2.0",
     "ember-cli-eslint": "~5.1.0",
     "ember-cli-htmlbars-inline-precompile": "~3.0.0",
@@ -66,7 +66,7 @@
     "ember-load-initializers": "^2.0.0",
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^8.0.2",
-    "ember-source": "~3.20.0",
+    "ember-source": "~3.24.0",
     "ember-try": "~1.1.0",
     "loader.js": "~4.7.0",
     "typescript": "^4.0.0"
@@ -91,7 +91,7 @@
     "ember-concurrency-async": "^0.3.2",
     "ember-concurrency-decorators": "^2.0.1",
     "ember-concurrency-ts": "^0.1.1",
-    "ember-data": "~3.20.0",
+    "ember-data": "~3.24.0",
     "ember-data-change-tracker": "^0.10.1",
     "ember-data-model-fragments": "~5.0.0-beta.0",
     "ember-data-storefront": "^0.17.1",
