@@ -18,6 +18,15 @@ export enum Status {
   ONLINE = "ONLINE",
 }
 
+export interface MessageBodyInterface {}
+
+export interface MessageInterface {
+  meta: {
+    type: string;
+  };
+  data?: MessageBodyInterface;
+}
+
 export default class WebsocketService extends Service.extend(Evented) {
   @service websockets!: any;
   @service session!: SessionService;
@@ -27,7 +36,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   @tracked manuallyClosed: boolean = false;
   @tracked reconnectAttempts: number = 0;
 
-  @alias("session.data.authenticated.access_token") 
+  @alias("session.data.authenticated.access_token")
   accessToken!: string;
 
   @computed()
@@ -129,7 +138,7 @@ export default class WebsocketService extends Service.extend(Evented) {
     taskFor(this.startConnecting).perform();
   }
 
-  sendMessage(message: any) {
-    this.socket.send(message);
+  sendMessage(message: MessageInterface) {
+    this.socket.send(JSON.stringify(message));
   }
 }
