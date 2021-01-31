@@ -10,6 +10,7 @@ export interface QueryParams {
   limit?: number;
   filter?: { [key: string]: QueryFilter | number | string };
   _single?: boolean;
+  fields?: { [key: string]: string };
 }
 
 export default class Query {
@@ -23,6 +24,7 @@ export default class Query {
   private searchQuery?: string | null; // The search query you want to search with
   private listView?: number; // Which list view was selected
   private includeDefaultIncludes = true;
+  private fields = new Map<string, string[]>();
 
   @tracked private limit?: number; // The limit of records you want the result to have
   @tracked private page: number = 1; // The page of results you want to be on
@@ -246,6 +248,47 @@ export default class Query {
   }
 
   /**
+   * Add a field for a certain type to limit the query by
+   * @param type The type to set a field for
+   * @param field The field to set
+   */
+  addField(type: string, field: string): Query {
+    if (!this.fields.has(type)) {
+      this.fields.set(type, []);
+    }
+
+    this.fields.get(type)?.push(field);
+    return this;
+  }
+
+  /**
+   * Set fields for a certain type
+   * @param type The type to set the fields for
+   * @param fields Which fields to set
+   */
+  setFields(type: string, fields: string[]): Query {
+    this.fields.set(type, fields);
+    return this;
+  }
+
+  /**
+   * Clear any fields for a possible type
+   * @param type The type to clear
+   */
+  clearFieldsForType(type: string): Query {
+    this.fields.delete(type);
+    return this;
+  }
+
+  /**
+   * Clear all the fields
+   */
+  clearFields(): Query {
+    this.fields = new Map<string, string[]>();
+    return this;
+  }
+
+  /**
    * Returns the field where the search should be performed on
    */
   get searchFieldComputed(): string {
@@ -437,6 +480,15 @@ export default class Query {
       filterParam["_logic"] = alteredLogic;
     } else if (this.conditionLogic) {
       filterParam["_logic"] = this.conditionLogic;
+    }
+
+    if (this.fields.size > 0) {
+      const fieldsParam: { [key: string]: string } = {};
+      for (const [key, value] of this.fields.entries()) {
+        fieldsParam[key] = value.join(",");
+      }
+
+      queryParams.fields = fieldsParam;
     }
 
     // And finally, if there were conditions, we add them to the query params
