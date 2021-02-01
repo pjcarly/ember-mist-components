@@ -4,9 +4,9 @@
       {{@prefix}}
     </span>
   {{/if}}
-  <span class={{if @value 'value' 'value empty'}} ...attributes>
+  <span class={{if @value "value" "value empty"}} ...attributes>
     {{#if (not @value)}}
-     {{!-- Show nothing --}}
+      {{!-- Show nothing --}}
     {{else if (or @inline (not @value.hasViewRoute))}}
       {{#if hasBlock}}
         {{yield @value}}
