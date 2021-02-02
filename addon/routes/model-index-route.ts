@@ -20,7 +20,7 @@ export default abstract class ModelIndexRoute extends Route {
     super.beforeModel(...arguments);
   }
 
-  afterModel() {
+  afterModel(_model: Model, _transition: Transition) {
     // @ts-ignore
     super.afterModel(...arguments);
     this.entityCache.clearReturnToModel();
