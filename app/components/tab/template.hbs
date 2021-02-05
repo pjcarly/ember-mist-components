@@ -1,5 +1,5 @@
 <li class={{if this.isActive "nav-item active" "nav-item"}}>
-  <a role="tab" class="nav-link" data-toggle="tab" aria-expanded={{this.isActive}} {{on "click" (fn this.setActive)}}>
+  <a role="tab" class="nav-link{{if @disabled " disabled"}}" data-toggle="tab" aria-disabled={{@disabled}} aria-expanded={{this.isActive}} {{on "click" (fn this.setActive)}}>
     {{yield}}
   </a>
 </li>

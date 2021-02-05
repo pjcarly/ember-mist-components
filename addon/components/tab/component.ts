@@ -6,6 +6,7 @@ import TabsComponent from "../tabs/component";
 export interface Arguments {
   tabs: TabsComponent;
   id: string;
+  disabled ?: boolean;
 }
 
 export default class TabComponent extends Component<Arguments> {
