@@ -1,0 +1,4 @@
+<a class="accordion-button" data-toggle="collapse" data-parent="#{{@accordion.id}}" id={{this.headingId}} role="button" href="#{{this.bodyId}}" aria-expanded={{this.visible}} aria-controls={{this.bodyId}} {{did-insert this.elementInsertedInDOM}}>
+  {{yield (hash Body=(component "ember-wormhole" to=this.bodyId))}}
+</a>
+<div id={{this.bodyId}} class="accordion-item-body panel-collapse collapse" aria-labelledby={{this.headingId}} aria-expanded={{this.visible}}></div>
