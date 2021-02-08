@@ -1,6 +1,6 @@
 import Model, { attr } from "@ember-data/model";
 import { getOwner } from "@ember/application";
-import FieldInformationService from "@getflights/ember-field-components/addon/services/field-information";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 // @ts-ignore
 import { fragment } from "ember-data-model-fragments/attributes";
 
