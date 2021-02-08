@@ -1,10 +1,9 @@
 import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
-import { computed } from "@ember/object";
+import { action, computed } from "@ember/object";
 import { dropTask } from "ember-concurrency-decorators";
 import { timeout } from "ember-concurrency";
-import Evented from "@ember/object/evented";
 import { debug } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
@@ -18,6 +17,12 @@ export enum Status {
   ONLINE = "ONLINE",
 }
 
+export enum Event {
+  OPEN = "open",
+  CLOSE = "close",
+  ERROR = "error",
+}
+
 export interface MessageBodyInterface {}
 
 export interface MessageInterface {
@@ -27,7 +32,7 @@ export interface MessageInterface {
   data?: MessageBodyInterface;
 }
 
-export default class WebsocketService extends Service.extend(Evented) {
+export default class WebsocketService extends Service {
   @service websockets!: any;
   @service session!: SessionService;
 
@@ -35,6 +40,12 @@ export default class WebsocketService extends Service.extend(Evented) {
   @tracked status: string = Status.OFFLINE;
   @tracked manuallyClosed: boolean = false;
   @tracked reconnectAttempts: number = 0;
+
+  private subscriptions = new Map<Event, Set<() => void>>();
+  private messageSubscriptions = new Map<
+    string,
+    Set<(message: MessageInterface) => void>
+  >();
 
   @alias("session.data.authenticated.access_token")
   accessToken!: string;
@@ -49,7 +60,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   }
 
   @dropTask
-  async startConnecting() {
+  public async startConnecting() {
     this.manuallyClosed = false;
 
     if (this.endpoint) {
@@ -80,7 +91,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   /**
    * Opens the connection to the websocket endpoint
    */
-  openConnection() {
+  public openConnection() {
     this.status = Status.CONNECTING;
     let socket = this.socket;
 
@@ -92,10 +103,10 @@ export default class WebsocketService extends Service.extend(Evented) {
       } else {
         socket = this.websockets.socketFor(this.endpoint);
       }
-      socket.on("open", this.connectionOpened, this);
-      socket.on("message", this.messageReceived, this);
-      socket.on("close", this.connectionClosed, this);
-      socket.on("error", this.connectionErrored, this);
+      socket.on("open", this.connectionOpened);
+      socket.on("message", this.messageReceived);
+      socket.on("close", this.connectionClosed);
+      socket.on("error", this.connectionErrored);
     } else {
       socket.reconnect();
     }
@@ -106,7 +117,7 @@ export default class WebsocketService extends Service.extend(Evented) {
   /**
    * Closes the connection to the websocket endpoint
    */
-  closeConnection() {
+  public closeConnection() {
     if (this.endpoint && this.socket) {
       this.manuallyClosed = true;
       this.status = Status.CONNECTING;
@@ -114,31 +125,113 @@ export default class WebsocketService extends Service.extend(Evented) {
     }
   }
 
-  connectionOpened(_: OpenEvent) {
-    this.status = Status.ONLINE;
-    this.reconnectAttempts = 0;
+  /**
+   * Send a message over the socket
+   * @param message What message to send over the socket, this will be Json serialized
+   */
+  public sendMessage(message: MessageInterface) {
+    this.socket.send(JSON.stringify(message));
   }
 
-  messageReceived(event: MessageEvent) {
-    if (event.data) {
-      // @ts-ignore
-      this.trigger("message", event.data);
+  /**
+   * Subscribe on a certain event with your provided callback, for message use subscribeForMessage()
+   * @param event Which event do you want to subscribe for, this can either be Open, Close or Error
+   * @param callback What callback to call on the event
+   */
+  public subscribe(event: Event, callback: () => void) {
+    if (!this.subscriptions.has(event)) {
+      this.subscriptions.set(event, new Set<() => void>());
+    }
+
+    this.subscriptions.get(event)?.add(callback);
+  }
+
+  /**
+   * Unsubscribe a callback for a Topic, this is no websocket message, for the message use unsubscribeForMessage()
+   * @param event Which event do you want to unsubscribe for this can either be Open, Close or Error
+   * @param callback What callback to unsubscribe
+   */
+  public unsubscribe(event: Event, callback: () => void) {
+    if (this.subscriptions.has(event)) {
+      this.subscriptions.get(event)?.delete(callback);
     }
   }
 
-  connectionClosed(_: CloseEvent) {
+  /**
+   * Subscribe your callback for a certain message-type
+   * @param messageType The message type to subscribe for, this is the information in { meta: type }
+   * @param callback The Function to subscribe
+   */
+  public subscribeForMessage(
+    messageType: string,
+    callback: (message: MessageInterface) => void
+  ) {
+    if (!this.messageSubscriptions.get(messageType)) {
+      this.messageSubscriptions.set(
+        messageType,
+        new Set<(message?: MessageInterface) => void>()
+      );
+    }
+
+    this.messageSubscriptions.get(messageType)?.add(callback);
+  }
+
+  /**
+   * Unsubscribe your callback for a certain message-type
+   * @param messageType The message type to unsubscribe for, this is the information in { meeta: type }
+   * @param callback The function to unsubscribe
+   */
+  public unsubscribeForMessage(
+    messageType: string,
+    callback: (message: MessageBodyInterface) => void
+  ) {
+    if (this.messageSubscriptions.has(messageType)) {
+      this.messageSubscriptions.get(messageType)?.delete(callback);
+    }
+  }
+
+  @action
+  protected messageReceived(event: MessageEvent) {
+    if (event.data) {
+      const message = <MessageInterface>JSON.parse(<string>event.data);
+
+      if (message?.meta?.type) {
+        this.messageSubscriptions
+          .get(message.meta.type)
+          ?.forEach((callback) => {
+            callback(message);
+          });
+      }
+    }
+  }
+
+  @action
+  protected connectionOpened(_: OpenEvent) {
+    this.status = Status.ONLINE;
+    this.reconnectAttempts = 0;
+    this.subscriptions.get(Event.OPEN)?.forEach((callback) => {
+      callback();
+    });
+  }
+
+  @action
+  protected connectionClosed(_: CloseEvent) {
     this.status = Status.OFFLINE;
     if (!this.manuallyClosed) {
       taskFor(this.startConnecting).perform();
     }
+    this.subscriptions.get(Event.CLOSE)?.forEach((callback) => {
+      callback();
+    });
   }
 
-  connectionErrored(_: ErrorEvent) {
+  @action
+  protected connectionErrored(_: ErrorEvent) {
     this.status = Status.OFFLINE;
     taskFor(this.startConnecting).perform();
-  }
 
-  sendMessage(message: MessageInterface) {
-    this.socket.send(JSON.stringify(message));
+    this.subscriptions.get(Event.ERROR)?.forEach((callback) => {
+      callback();
+    });
   }
 }
