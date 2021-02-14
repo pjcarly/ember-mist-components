@@ -4,7 +4,7 @@ export interface QueryFilter {
   field: string;
   operator: string | undefined;
   value: string | number | boolean | null | undefined;
-  id: string | number | undefined;
+  id: string | number | (string|number)[] | undefined;
 }
 
 export enum Operator {
@@ -27,7 +27,7 @@ export default class Condition {
   field!: string;
   operator: string = "=";
   value: string | number | boolean | string[] | number[] | null | undefined;
-  id: string | number | undefined;
+  id: string | number | (string|number)[] | undefined;
 
   constructor(
     field: string,
@@ -40,7 +40,7 @@ export default class Condition {
       | number[]
       | null
       | undefined = undefined,
-    id: string | number | undefined = undefined
+    id: string | number | (string|number)[] | undefined = undefined
   ) {
     this.field = field;
     this.operator = operator;
@@ -49,7 +49,7 @@ export default class Condition {
   }
 
   parseValue(
-    value: string | number | boolean | string[] | number[] | null | undefined
+    value: string | number | boolean | (string|number)[] | null | undefined
   ): string {
     let returnValue = "null";
 
@@ -77,7 +77,7 @@ export default class Condition {
 
     if (this.id) {
       // an ID was passed, we use it over value
-      if (this.operator || this.operator === Operator.EQUALS) {
+      if (!this.operator || this.operator === Operator.EQUALS) {
         // equals is the default operator, and doesnt need to be explicitly passed
         filter.id = this.parseValue(this.id);
       } else {
