@@ -229,7 +229,7 @@ export default class ModelTableComponent extends Component<Arguments> {
       columns.pushObject(column);
     }
 
-    // here we loop over every column in the listview, ans format it for ember light table
+    // here we loop over every column in the listview, ans format it for the table
     let listViewColumns: string[] = [];
     if (this.selectedListView instanceof Model) {
       this.selectedListView
@@ -259,7 +259,7 @@ export default class ModelTableComponent extends Component<Arguments> {
         this.query.getOrders()[0].field === dasherize(modelColumn);
 
       // Now that we know the column, lets see if it actually exists as a field on the modelclass
-      if (this.allActiveModelClassColums.has(camelizedColumn)) {
+      if (this.allActiveModelClassColums.has(splittedColumns[0])) {
         // And finally build the structure for the table
         const column = new Column();
 
