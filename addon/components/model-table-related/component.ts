@@ -74,13 +74,25 @@ export default class ModelTableRelatedComponent extends Component<Arguments> {
 
   @action
   newFromRelated() {
-    let cachedModel = this.store.createRecord(this.hasManyModelName);
-    cachedModel.set(this.inverseRelationship, this.args.model);
-    cachedModel = this.preProcessNewHook(cachedModel);
+    const hasManyModelName = this.hasManyModelName;
+    const inverseRelationship = <string>this.inverseRelationship;
 
+    let cachedModel = this.store.createRecord(hasManyModelName);
+
+    const relationshipType = this.fieldInformation.getRelationshipType(
+      hasManyModelName,
+      inverseRelationship
+    );
+
+    if (relationshipType === "belongsTo") {
+      cachedModel.set(inverseRelationship, this.args.model);
+    } else {
+      cachedModel.get(inverseRelationship).pushObject(this.args.model);
+    }
+
+    cachedModel = this.preProcessNewHook(cachedModel);
     this.entityCache.cachedModel = cachedModel;
     this.entityCache.returnToModel = this.args.model;
-
-    this.entityRouter.transitionToCreate(this.hasManyModelName);
+    this.entityRouter.transitionToCreate(hasManyModelName);
   }
 }
