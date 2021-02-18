@@ -174,6 +174,8 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
 
   @action
   doChangeValue(index: number, value: Model | string) {
+    const oldValue = this.value;
+
     if (value) {
       if (!(value instanceof Model)) {
         // In case a Select widget was used, the returned value is not the Model itself, but the ID of the model,
@@ -204,6 +206,8 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         this.value.removeAt(index, 1);
       }
     }
+
+    this.notifyExternalAction(this.value, oldValue);
   }
 
   @action
