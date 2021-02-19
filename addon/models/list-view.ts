@@ -7,7 +7,7 @@ import FieldModel from "./field";
 import MetaModelModel from "./meta-model";
 
 export default class ListViewModel extends QueryModel {
-  changeTracker = { trackHasMany: true };
+  changeTracker = { only: ["columns"] };
 
   @field("string", { validation: { required: true } })
   name!: string;
