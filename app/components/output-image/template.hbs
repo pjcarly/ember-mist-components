@@ -5,7 +5,15 @@
     </span>
   {{/if}}
   {{#if (and @value @value.url)}}
-    <img src={{image-url @value @style}} alt={{@value.alt}} title={{@value.title}} class="value {{@class}}" {{on "click" (fn this.didClickImage @value)}} ...attributes/>
+    <img
+      src={{image-url @value @style}}
+      alt={{@value.alt}}
+      title={{@value.title}}
+      class="value {{@class}}"
+      role="button"
+      ...attributes
+      {{on "click" (fn this.didClickImage @value)}}
+    />
   {{else}}
     <span class="value empty" ...attributes></span>
   {{/if}}

@@ -2,21 +2,28 @@
   <ul>
     {{#each this.value as |relatedModel|}}
       <li>
-        {{#let (concat "output-model-" (model-class-name relatedModel)) as |dynamicComponentName|}}
+        {{#let
+          (concat
+            "output-model-" (model-class-name relatedModel)
+          ) as |dynamicComponentName|
+        }}
           {{#if (component-exists dynamicComponentName)}}
-            {{component dynamicComponentName
+            {{component
+              dynamicComponentName
               value=relatedModel
               prefix=@prefix
               suffix=@suffix
               class=@outputClass
-              options=this.outputOptions}}
+              options=this.outputOptions
+            }}
           {{else}}
             <OutputModel
               @value={{relatedModel}}
               @prefix={{@prefix}}
               @suffix={{@suffix}}
               @class={{@outputClass}}
-              @options={{this.outputOptions}} />
+              @options={{this.outputOptions}}
+            />
           {{/if}}
         {{/let}}
       </li>
@@ -28,5 +35,6 @@
     @prefix={{@prefix}}
     @suffix={{@suffix}}
     @class={{@outputClass}}
-    @options={{this.outputOptions}} />
+    @options={{this.outputOptions}}
+  />
 {{/if}}

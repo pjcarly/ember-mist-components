@@ -1,24 +1,24 @@
 import InputFieldComponent, {
   InputFieldArguments,
-} from "@getflights/ember-field-components/components/input-field/component";
+} from '@getflights/ember-field-components/components/input-field/component';
 import Condition, {
   Operator,
-} from "@getflights/ember-mist-components/query/Condition";
-import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
-import { action } from "@ember/object";
-import { assert } from "@ember/debug";
-import { dasherize } from "@ember/string";
-import Query from "@getflights/ember-mist-components/query/Query";
-import { isArray } from "@ember/array";
-import { dropTask } from "ember-concurrency-decorators";
-import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
-import { inject as service } from "@ember/service";
-import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
-import Model from "@ember-data/model";
-import { taskFor } from "ember-concurrency-ts";
-import { tracked } from "@glimmer/tracking";
-import NativeArray from "@ember/array/-private/native-array";
+} from '@getflights/ember-mist-components/query/Condition';
+import BelongsToFilterInterface from '@getflights/ember-mist-components/interfaces/belongs-to-filters';
+import { action } from '@ember/object';
+import { assert } from '@ember/debug';
+import { dasherize } from '@ember/string';
+import Query from '@getflights/ember-mist-components/query/Query';
+import { isArray } from '@ember/array';
+import { dropTask } from 'ember-concurrency-decorators';
+import DynamicSelectOptionService from '@getflights/ember-mist-components/services/dynamic-select-options';
+import { inject as service } from '@ember/service';
+import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
+import { FieldOptionsInterface } from '@getflights/ember-field-components/services/field-information';
+import Model from '@ember-data/model';
+import { taskFor } from 'ember-concurrency-ts';
+import { tracked } from '@glimmer/tracking';
+import NativeArray from '@ember/array/-private/native-array';
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -52,7 +52,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   async setSelectOptions() {
     if (this.isSelect) {
       assert(
-        "Select widget is not supported for polymorphic relationships",
+        'Select widget is not supported for polymorphic relationships',
         !this.isPolymorphic
       );
 
@@ -89,7 +89,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   }
 
   get nameField(): string {
-    let nameField = "name";
+    let nameField = 'name';
 
     if (this.args.options && this.args.options.nameField) {
       nameField = this.args.options.nameField;
@@ -101,7 +101,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   get isPolymorphic(): boolean {
     const options = <HasManyFieldOptionsInterface>this.fieldOptions;
     return (
-      options && options.hasOwnProperty("polymorphic") && options.polymorphic
+      options && options.hasOwnProperty('polymorphic') && options.polymorphic
     );
   }
 
@@ -123,7 +123,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
 
     if (this.args.options && this.args.options.baseQuery) {
       assert(
-        "baseQuery option  must be of type: ember-mist-components/query/Query",
+        'baseQuery option  must be of type: ember-mist-components/query/Query',
         this.args.options.baseQuery instanceof Query
       );
 
@@ -164,7 +164,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   }
 
   get isSelect(): boolean {
-    return this.widgetName === "select";
+    return this.widgetName === 'select';
   }
 
   @action
@@ -173,7 +173,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   }
 
   @action
-  doChangeValue(index: number, value: Model | string) {
+  doChangeValue(index: number | undefined, value: Model | string) {
     const oldValue = this.value;
 
     if (value) {
@@ -182,7 +182,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         // We must find that model in the store by the ID (which should be loaded in the store already because of the setSelectOptions function above)
         // This isnt possible with polymorphic relationships
         assert(
-          "Select widget is not supported for polymorphic relationships",
+          'Select widget is not supported for polymorphic relationships',
           !this.isPolymorphic
         );
 
@@ -199,10 +199,10 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
       }
 
       if (this.value) {
-        this.value.replace(index, 1, [value]);
+        this.value.replace(index ?? this.value.length, 1, [value]);
       }
     } else {
-      if (this.value) {
+      if (this.value && index) {
         this.value.removeAt(index, 1);
       }
     }

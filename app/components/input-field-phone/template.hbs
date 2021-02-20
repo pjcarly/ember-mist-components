@@ -1,23 +1,25 @@
-{{#if (eq this.widgetName 'intl')}}
+{{#if (eq this.widgetName "intl")}}
   <InputPhoneIntl
-    @value={{this.value}} 
+    @value={{this.value}}
     @valueChanged={{this.setNewValue}}
-    @preSetHook={{@preSetHook}} 
-    @placeholder={{@placeholder}} 
-    @prefix={{@prefix}} 
-    @suffix={{@suffix}} 
-    @class={{@inputClass}} 
-    @inputId={{@inputId}} 
-    @options={{this.inputOptions}} />
+    @preSetHook={{@preSetHook}}
+    @placeholder={{@placeholder}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@inputClass}}
+    @inputId={{@inputId}}
+    @options={{this.inputOptions}}
+  />
 {{else}}
   <InputPhone
-    @value={{this.value}} 
+    @value={{this.value}}
     @valueChanged={{this.setNewValue}}
-    @preSetHook={{@preSetHook}} 
-    @placeholder={{@placeholder}} 
-    @prefix={{@prefix}} 
-    @suffix={{@suffix}} 
-    @class={{@inputClass}} 
-    @inputId={{@inputId}} 
-    @options={{this.inputOptions}} />
+    @preSetHook={{@preSetHook}}
+    @placeholder={{@placeholder}}
+    @prefix={{@prefix}}
+    @suffix={{@suffix}}
+    @class={{@inputClass}}
+    @inputId={{@inputId}}
+    @options={{this.inputOptions}}
+  />
 {{/if}}

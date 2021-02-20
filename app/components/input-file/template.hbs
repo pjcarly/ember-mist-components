@@ -1,25 +1,33 @@
 <span class={{this.computedClass}}>
-    {{#if @prefix}}
+  {{#if @prefix}}
     <div class="input-group-prepend">
-      <span class="input-group-text prefix">{{@prefix}}</span>
+      <span class="input-group-text prefix">
+        {{@prefix}}
+      </span>
     </div>
   {{/if}}
 
-  <FileUpload 
+  <FileUpload
     @name={{this.inputIdComputed}}
     @class="form-control browse"
     @multiple={{@multiple}}
-    @onfileadd={{this.filesSelected}} ...attributes as |queue|>
+    @onfileadd={{this.filesSelected}}
+    ...attributes as |queue|
+  >
     {{#if queue.files.length}}
-      {{t 'ember-mist-components.labels.uploading'}} <Loading />
-    {{else}}  
-      {{t 'ember-mist-components.labels.browse'}} <IconPaperclip />
+      {{t "ember-mist-components.labels.uploading"}}
+      <Loading />
+    {{else}}
+      {{t "ember-mist-components.labels.browse"}}
+      <IconPaperclip />
     {{/if}}
   </FileUpload>
 
   {{#if @suffix}}
     <div class="input-group-append">
-      <span class="input-group-text suffix">{{@suffix}}</span>
+      <span class="input-group-text suffix">
+        {{@suffix}}
+      </span>
     </div>
   {{/if}}
 </span>

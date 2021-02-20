@@ -3,14 +3,20 @@
   @modelName={{this.hasManyModelName}}
   @baseQuery={{this.baseQuery}}
   @modelListView={{@modelListView}}
-  @listViewGrouping={{@listViewGrouping}} ...attributes as |Table|>
-  {{#if (not @hideNew)}}
+  @listViewGrouping={{@listViewGrouping}}
+  ...attributes as |Table|
+>
+  {{#unless @hideNew}}
     <Table.actions>
       <MenuItem class="model-table__new__wrapper">
-        <button class="btn btn-primary model-table__new__trigger action-menu__link" {{on "click" this.newFromRelated}}>
+        <button
+          class="btn btn-primary model-table__new__trigger action-menu__link"
+          type="button"
+          {{on "click" this.newFromRelated}}
+        >
           <IconPlus />
         </button>
       </MenuItem>
     </Table.actions>
-  {{/if}}
+  {{/unless}}
 </ModelTable>

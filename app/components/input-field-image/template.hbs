@@ -5,12 +5,15 @@
         {{yield Element.show this.value}}
       {{else}}
         {{#if this.value.id}}
-          <OutputImageLink
-            @value={{this.value}} />
+          <OutputImageLink @value={{this.value}} />
 
-          <button class="btn btn-xs" {{on "click" Element.show}}>Edit Image</button>
+          <button class="btn btn-xs" type="button" {{on "click" Element.show}}>
+            Edit Image
+          </button>
         {{else}}
-          <button class="btn btn-xs" {{on "click" Element.show}}>Upload Image</button>
+          <button class="btn btn-xs" type="button" {{on "click" Element.show}}>
+            Upload Image
+          </button>
         {{/if}}
       {{/if}}
     </div>
@@ -23,15 +26,16 @@
       <InputFileDrupal
         @value={{this.value}}
         @options={{this.modifiedInputOptions}}
-        @valueChanged={{this.setNewValue}} />
+        @valueChanged={{this.setNewValue}}
+      />
       {{#if this.value.id}}
-        <OutputImage
-          @value={{this.value}}
-          @class="image-preview" />
+        <OutputImage @value={{this.value}} @class="image-preview" />
       {{/if}}
     </div>
   </Element.body>
   <Element.footer>
-    <button type="button" class="btn btn-white" {{on "click" Element.close}}>{{t "label.close"}}</button>
+    <button type="button" class="btn btn-white" {{on "click" Element.close}}>
+      {{t "label.close"}}
+    </button>
   </Element.footer>
 </Modal>

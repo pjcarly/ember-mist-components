@@ -1,4 +1,8 @@
-<Modal @dialogClass="modal-lg" @modalBodyClass="lookup-window__wrapper" @closeOnRouteChange={{true}} as |Element|>
+<Modal
+  @dialogClass="modal-lg"
+  @modalBodyClass="lookup-window__wrapper"
+  @closeOnRouteChange={{true}} as |Element|
+>
   <Element.trigger>
     {{#if hasBlock}}
       {{yield Element.show}}
@@ -9,7 +13,7 @@
     {{/if}}
   </Element.trigger>
   <Element.header>
-    <button class="btn btn-icon" {{on "click" Element.close}}>
+    <button class="btn btn-icon" type="button" {{on "click" Element.close}}>
       <i class="icon-cancel"></i>
     </button>
   </Element.header>
@@ -24,11 +28,18 @@
           @searchFixed={{true}}
           @modelListView={{@modelListView}}
           @listViewGrouping={{@listViewGrouping}}
-          @onRowSelected={{fn this.didSelectRow Element}}
-          as |Table| >
-
+          @onRowSelected={{fn this.didSelectRow Element}} as |Table|
+        >
           <Table.actions>
-            <MenuItem><a {{on "click" Element.close}} class="action-menu__link" role="button"><IconClose /></a></MenuItem>
+            <MenuItem>
+              <button
+                class="btn btn-link action-menu__link"
+                type="button"
+                {{on "click" Element.close}}
+              >
+                <IconClose />
+              </button>
+            </MenuItem>
           </Table.actions>
         </ModelTable>
       {{/if}}

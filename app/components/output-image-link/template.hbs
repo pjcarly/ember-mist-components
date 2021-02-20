@@ -5,8 +5,15 @@
     </span>
   {{/if}}
   {{#if @value.url}}
-    <a class="value" href={{image-url @value @style}} target="_blank" ...attributes>
-      {{@value.filename}} <IconNewWindow />
+    <a
+      class="value"
+      href={{image-url @value @style}}
+      target="_blank"
+      ...attributes
+      rel="noopener noreferrer"
+    >
+      {{@value.filename}}
+      <IconNewWindow />
     </a>
   {{else}}
     <span class="'value empty" ...attributes></span>

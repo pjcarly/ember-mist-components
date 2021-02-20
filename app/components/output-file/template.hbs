@@ -5,13 +5,27 @@
     </span>
   {{/if}}
   {{#if @value.id}}
-    <a class="value" href={{if @options.filename (concat value.url '&filename=' @options.filename) @value.url}} target="_blank" ...attributes>
+    <button
+      class="value"
+      type="button"
+      href={{
+        if
+        @options.filename
+        (concat @value.url "&filename=" @options.filename)
+        @value.url
+      }}
+      target="_blank"
+      ...attributes
+      rel="noopener noreferrer"
+    >
       {{#if @options.filename}}
-        {{@options.filename}} <IconDownload />
+        {{@options.filename}}
+        <IconDownload />
       {{else}}
-        {{@value.filename}} <IconDownload />
+        {{@value.filename}}
+        <IconDownload />
       {{/if}}
-    </a>
+    </button>
   {{else}}
     <span class="value empty" ...attributes></span>
   {{/if}}

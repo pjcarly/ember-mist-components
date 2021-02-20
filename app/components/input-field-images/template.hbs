@@ -1,5 +1,5 @@
 <span class="input images">
-  <InputMulti 
+  <InputMulti
     @inputComponent="output-image"
     @value={{this.items}}
     @preSetHook={{@preSetHook}}
@@ -14,9 +14,10 @@
     @itemChanged={{this.itemChanged}}
     @reorderItems={{this.reorderItems}}
     @hideNew={{true}}
-    />
+  />
 
   <InputFileDrupal
     @options={{this.inputOptions}}
-    @valueChanged={{this.addNewImage}} />
+    @valueChanged={{this.addNewImage}}
+  />
 </span>

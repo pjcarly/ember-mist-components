@@ -4,44 +4,69 @@
       <thead>
         <tr>
           <th></th>
-          <th>Field</th>
-          <th>Operator</th>
-          <th>Value</th>
+          <th>
+            Field
+          </th>
+          <th>
+            Operator
+          </th>
+          <th>
+            Value
+          </th>
           <th></th>
         </tr>
       </thead>
-      <tbody class={{if @isOdd "is-odd" "is-even"}} {{sortable-group groupName="conditions" onChange=this.reorderConditions}}>
-        {{#each (filter-by "isDeleted" false (sort-by "sort" @model.conditions)) as |condition index|}}
-          <tr class="condition__edit__line" {{sortable-item groupName="conditions" model=condition}}>
-            <td><div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /> {{add index 1}}</div></td>
+      <tbody
+        class={{if @isOdd "is-odd" "is-even"}}
+        {{sortable-group groupName="conditions" onChange=this.reorderConditions
+        }}
+      >
+        {{#each
+          (filter-by
+            "isDeleted" false (sort-by "sort" @model.conditions)
+          ) as |condition index|
+        }}
+          <tr
+            class="condition__edit__line"
+            {{sortable-item groupName="conditions" model=condition}}
+          >
             <td>
-              <InputField 
-                @model={{condition}} 
-                @field="field" 
-                @inline={{true}} 
-                @placeholder="Field" 
-                @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
+              <div class="sort-handle" sort={{index}} {{sortable-handle}}>
+                <IconDraggable />
+                {{add index 1}}
+              </div>
             </td>
             <td>
-              <InputField 
-                @model={{condition}} 
-                @field="operator" 
-                @inline={{true}} />
+              <InputField
+                @model={{condition}}
+                @field="field"
+                @inline={{true}}
+                @placeholder="Field"
+                @options={{hash baseQuery=this.fieldQuery nameField="label"}}
+              />
             </td>
             <td>
-              <InputField 
-                @model={{condition}} 
-                @field="value" 
-                @inline={{true}} 
-                @placeholder="Value" />
+              <InputField
+                @model={{condition}}
+                @field="operator"
+                @inline={{true}}
+              />
             </td>
             <td>
-              <button class="btn btn-icon">
+              <InputField
+                @model={{condition}}
+                @field="value"
+                @inline={{true}}
+                @placeholder="Value"
+              />
+            </td>
+            <td>
+              <button class="btn btn-icon" type="button">
                 <IconRemove />
               </button>
             </td>
           </tr>
-        {{/each}}   
+        {{/each}}
       </tbody>
     </table>
   {{/if}}
@@ -50,7 +75,13 @@
 <InputField @model={{@model}} @field="conditionLogic" />
 
 <div class="condition__edit__button-bar">
-  <button role="button" {{on "click" this.addNewCondition}} class="btn btn-pink">
-    Add <IconPlus />
+  <button
+    role="button"
+    class="btn btn-pink"
+    type="button"
+    {{on "click" this.addNewCondition}}
+  >
+    Add
+    <IconPlus />
   </button>
 </div>

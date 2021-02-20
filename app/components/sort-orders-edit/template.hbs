@@ -1,34 +1,55 @@
-<div class="order__edit__wrapper">  
+<div class="order__edit__wrapper">
   {{#if @model.orders}}
     <table class="table">
       <thead>
         <tr>
           <th></th>
-          <th>Field</th>
-          <th>Direction</th>
+          <th>
+            Field
+          </th>
+          <th>
+            Direction
+          </th>
           <th></th>
         </tr>
       </thead>
-      <tbody class={{if @isOdd "is-odd" "is-even"}} {{sortable-group groupName="orders" onChange=this.reorderOrders}}>
-        {{#each (filter-by "isDeleted" false (sort-by "sort" @model.orders)) as |order index|}}
-          <tr class="order__edit__line" {{sortable-item groupName="orders" model=order}}>
-            <td><div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /> {{add index 1}}</div></td>
+      <tbody
+        class={{if @isOdd "is-odd" "is-even"}}
+        {{sortable-group groupName="orders" onChange=this.reorderOrders}}
+      >
+        {{#each
+          (filter-by
+            "isDeleted" false (sort-by "sort" @model.orders)
+          ) as |order index|
+        }}
+          <tr
+            class="order__edit__line"
+            {{sortable-item groupName="orders" model=order}}
+          >
             <td>
-              <InputField 
-                @model={{order}} 
-                @field="field" 
-                @inline={{true}} 
-                @placeholder="Field" 
-                @options={{hash baseQuery=this.fieldQuery nameField="label"}} />
+              <div class="sort-handle" sort={{index}} {{sortable-handle}}>
+                <IconDraggable />
+                {{add index 1}}
+              </div>
             </td>
             <td>
-              <InputField 
-                @model={{order}} 
-                @field="direction" 
-                @inline={{true}} />
+              <InputField
+                @model={{order}}
+                @field="field"
+                @inline={{true}}
+                @placeholder="Field"
+                @options={{hash baseQuery=this.fieldQuery nameField="label"}}
+              />
             </td>
             <td>
-              <button class="btn btn-icon">
+              <InputField
+                @model={{order}}
+                @field="direction"
+                @inline={{true}}
+              />
+            </td>
+            <td>
+              <button class="btn btn-icon" type="button">
                 <IconRemove />
               </button>
             </td>
@@ -39,8 +60,14 @@
   {{/if}}
 
   <div class="order__edit__button-bar">
-    <button role="button" {{on "click" this.addNewOrder}} class="btn btn-pink">
-      Add <IconPlus />
+    <button
+      role="button"
+      class="btn btn-pink"
+      type="button"
+      {{on "click" this.addNewOrder}}
+    >
+      Add
+      <IconPlus />
     </button>
   </div>
 </div>

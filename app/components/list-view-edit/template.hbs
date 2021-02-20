@@ -10,30 +10,31 @@
   </div>
   {{#if @model.model}}
     <div class="col-12">
-      <InputField 
-        @model={{@model}} 
-        @field="columns" 
-        @options={{hash baseQuery=this.fieldQuery nameField="label"}}/>
+      <InputField
+        @model={{@model}}
+        @field="columns"
+        @options={{hash baseQuery=this.fieldQuery nameField="label"}}
+      />
     </div>
     <div class="col-12">
       <div class="card-header">
-        <h5>Conditions</h5>
+        <h5>
+          Conditions
+        </h5>
       </div>
     </div>
     <div class="col-12">
-      <ConditionsEdit 
-        @model={{@model}} 
-        @field="conditions" />
+      <ConditionsEdit @model={{@model}} @field="conditions" />
     </div>
     <div class="col-12">
       <div class="card-header">
-        <h5>Sort Order</h5>
+        <h5>
+          Sort Order
+        </h5>
       </div>
     </div>
     <div class="col-12">
-      <SortOrdersEdit 
-        @model={{@model}} 
-        @field="orders" />
+      <SortOrdersEdit @model={{@model}} @field="orders" />
     </div>
   {{/if}}
 </div>

@@ -1,49 +1,63 @@
-<div class="model-table" {{did-update this.refresh @modelName @baseQuery}} ...attributes>
-  {{#if (and @listViewGrouping @listViewsAsTabs (or (eq @tabPosition "top") (not @tabPosition)))}}
-    <ListViewTabs 
-      @modelName={{this.activeModelName}} 
-      @grouping={{@listViewGrouping}} 
-      @valueChanged={{this.listViewChanged}} />
+<div
+  class="model-table"
+  ...attributes
+  {{did-update this.refresh @modelName @baseQuery}}
+>
+  {{#if
+    (and
+      @listViewGrouping
+      @listViewsAsTabs
+      (or (eq @tabPosition "top") (not @tabPosition))
+    )
+  }}
+    <ListViewTabs
+      @modelName={{this.activeModelName}}
+      @grouping={{@listViewGrouping}}
+      @valueChanged={{this.listViewChanged}}
+    />
   {{/if}}
 
   <div class="model-table__header{{if this.searchVisible " search-toggled"}}">
     <div class="model-table__title__wrapper">
-      <h5 class="model-table__title">{{this.titleComputed}}</h5>
+      <h5 class="model-table__title">
+        {{this.titleComputed}}
+      </h5>
       <span class="model-table__title__loading">
         {{#if this.fetchRecords.isRunning}}
           <Loading />
-        {{/if}} 
+        {{/if}}
       </span>
 
       {{#if (and @listViewGrouping (not @listViewsAsTabs))}}
-        <ListViewSelect 
-          @modelName={{this.activeModelName}} 
-          @grouping={{@listViewGrouping}} 
-          @valueChanged={{this.listViewChanged}} />
+        <ListViewSelect
+          @modelName={{this.activeModelName}}
+          @grouping={{@listViewGrouping}}
+          @valueChanged={{this.listViewChanged}}
+        />
       {{/if}}
     </div>
 
     <div class="model-table__search__wrapper">
       <div class="model-table__search__wrapper__inner">
-
         <form class="model-table__search__form" {{on "submit" this.search}}>
           <div class="form-group">
             <div class="input-container">
-              <InputSearch 
-                @inputId={{this.searchInputId}} 
-                @value={{this.query.search}} 
-                @placeholder="Search..." 
-                @valueChanged={{this.searchValueChanged}} />
+              <InputSearch
+                @inputId={{this.searchInputId}}
+                @value={{this.query.search}}
+                @placeholder="Search..."
+                @valueChanged={{this.searchValueChanged}}
+              />
               <div class="input-group-append">
                 <ul class="action-menu model-table__actions">
                   <MenuItem @itemClicked={{this.search}} @role="submit">
                     <IconSearch />
                   </MenuItem>
-                  {{#if (not @searchFixed)}}
+                  {{#unless @searchFixed}}
                     <MenuItem @itemClicked={{this.toggleSearch}}>
                       <IconClose />
                     </MenuItem>
-                  {{/if}}
+                  {{/unless}}
                 </ul>
               </div>
             </div>
@@ -52,39 +66,53 @@
       </div>
     </div>
 
-    <ul id={{concat this.guid "-actions"}} class="model-table__actions action-menu">
+    <ul
+      id={{concat this.guid "-actions"}}
+      class="model-table__actions action-menu"
+    >
       <MenuItem @itemClicked={{this.toggleSearch}}>
         <IconSearch />
       </MenuItem>
 
       <MenuDropdown class="action-menu__dropdown">
         {{#if (and @listViewGrouping this.displayListViewLinks)}}
-          {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))}}
-            <MenuItem @targetRoute={{href-to "list-view.edit" this.activeListViewKey}}>
-              {{t "ember-mist-components.list-view.edit"}} <IconListViewEdit />
+          {{#if (and this.activeListViewKey (is-numeric this.activeListViewKey))
+          }}
+            <MenuItem
+              @targetRoute={{href-to "list-view.edit" this.activeListViewKey}}
+            >
+              {{t "ember-mist-components.list-view.edit"}}
+              <IconListViewEdit />
             </MenuItem>
           {{/if}}
           <MenuItem @targetRoute="list-view.new">
-            {{t "ember-mist-components.list-view.new"}} <IconListViewNew />
+            {{t "ember-mist-components.list-view.new"}}
+            <IconListViewNew />
           </MenuItem>
-          <hr>
+          <hr />
         {{/if}}
         <MenuItem @itemClicked={{this.refresh}}>
-          {{t "ember-mist-components.labels.refresh"}} <IconRefresh />
+          {{t "ember-mist-components.labels.refresh"}}
+          <IconRefresh />
         </MenuItem>
       </MenuDropdown>
     </ul>
   </div>
 
   {{#if (and @listViewGrouping @listViewsAsTabs (eq @tabPosition "bottom"))}}
-    <ListViewTabs 
-      @modelName={{this.activeModelName}} 
-      @grouping={{@listViewGrouping}} 
-      @valueChanged={{this.listViewChanged}} />
+    <ListViewTabs
+      @modelName={{this.activeModelName}}
+      @grouping={{@listViewGrouping}}
+      @valueChanged={{this.listViewChanged}}
+    />
   {{/if}}
 
   {{#if this.fetchRecords.last}}
-    {{yield (hash actions=(component "ember-wormhole" to=(concat this.guid "-actions")) )}}
+    {{yield
+      (hash
+        actions=(component "ember-wormhole" to=(concat this.guid "-actions"))
+      )
+    }}
 
     {{#if this.isMultiModelNames}}
       <div class="model-table__type-selector">
@@ -93,17 +121,30 @@
           @selectOptions={{this.modelNameSelectOptions}}
           @value={{this.activeModelName}}
           @required={{true}}
-          @valueChanged={{this.activeModelNameChanged}} />
+          @valueChanged={{this.activeModelNameChanged}}
+        />
       </div>
     {{/if}}
 
     <div class="table-responsive">
-      <table class="table table-hover{{if this.fetchRecords.isRunning " is-busy"}}">
+      <table
+        class="table table-hover{{if this.fetchRecords.isRunning " is-busy"}}"
+      >
         <thead class="model-table__head">
           <tr>
             {{#each this.columns as |column|}}
-              <th role="button" class="model-table__column{{if column.selectAll " model-table__select-all"}}{{if column.sorted " model-table__column__sorted"}}{{if column.ascending " model-table__column__sorted__asc" " model-table__column__sorted__desc"}}"
-                {{on "click" (fn this.onColumnClick column)}}>
+              <th
+                role="button"
+                class="model-table__column{{
+                  if column.selectAll " model-table__select-all"
+                }}{{if column.sorted " model-table__column__sorted"}}{{
+                  if
+                  column.ascending
+                  " model-table__column__sorted__asc"
+                  " model-table__column__sorted__desc"
+                }}"
+                {{on "click" (fn this.onColumnClick column)}}
+              >
                 {{#if column.selectAll}}
                   <OutputCheckbox @value={{this.allRowsSelected}} />
                 {{else}}
@@ -122,10 +163,13 @@
             </tr>
           {{else}}
             {{#each this.table.rows as |row|}}
-              <tr class="model-table__row is-selectable" role="button"
-                {{on "click" (fn this.rowSelected row)}} 
-                {{on "mouseenter" (fn this.rowMouseEnter row)}} 
-                {{on "mouseleave" (fn this.rowMouseLeave row)}}>
+              <tr
+                class="model-table__row is-selectable"
+                role="button"
+                {{on "click" (fn this.rowSelected row)}}
+                {{on "mouseenter" (fn this.rowMouseEnter row)}}
+                {{on "mouseleave" (fn this.rowMouseLeave row)}}
+              >
                 {{#each this.columns as |column|}}
                   <td class="model-table__cell {{column.cellComponent}}">
                     {{component column.cellComponent row=row column=column}}
@@ -156,8 +200,8 @@
         @nextPage={{this.nextPage}}
         @prevPage={{this.prevPage}}
         @pageSelected={{this.pageSelected}}
-        @rowsSelected={{this.limitChanged}} />
+        @rowsSelected={{this.limitChanged}}
+      />
     </div>
   {{/if}}
 </div>
-

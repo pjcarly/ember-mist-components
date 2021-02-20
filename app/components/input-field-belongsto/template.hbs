@@ -1,21 +1,24 @@
 {{#if (component-exists this.dynamicComponentName)}}
-  {{component this.dynamicComponentName
-      baseQuery=this.baseQuery
-      value=this.value
-      modelName=this.relationshipModelName
-      valueChanged=this.doChangeValue
-      placeholder=@placeholder
-      class=this.inputClass
-      inputId=this.caluclatedInputId
-      required=this.isRequired
-      options=this.inputOptions}}
+  {{component
+    this.dynamicComponentName
+    baseQuery=this.baseQuery
+    value=this.value
+    modelName=this.relationshipModelName
+    valueChanged=this.doChangeValue
+    placeholder=@placeholder
+    class=this.inputClass
+    inputId=this.caluclatedInputId
+    required=this.isRequired
+    options=this.inputOptions
+  }}
 {{else if this.isSelect}}
   {{#if this.setSelectOptions.isRunning}}
     <Loading />
   {{else if this.noChoiceAvailable}}
     <OutputText
       @value={{this.selectOptions.firstObject.label}}
-      @class="read-only-output-text" />
+      @class="read-only-output-text"
+    />
   {{else}}
     <InputSelect
       @selectOptions={{this.selectOptions}}
@@ -23,7 +26,8 @@
       @required={{this.isRequired}}
       @valueChanged={{this.doChangeValue}}
       @class={{this.inputClass}}
-      @inputId={{this.caluclatedInputId}} />
+      @inputId={{this.caluclatedInputId}}
+    />
   {{/if}}
 {{else}}
   <InputLookup
@@ -33,5 +37,6 @@
     @valueChanged={{this.doChangeValue}}
     @placeholder={{@placeholder}}
     @class={{this.inputClass}}
-    @inputId={{this.caluclatedInputId}} />
+    @inputId={{this.caluclatedInputId}}
+  />
 {{/if}}

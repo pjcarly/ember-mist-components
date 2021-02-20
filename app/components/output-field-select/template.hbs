@@ -1,12 +1,13 @@
 {{#if this.loadSelectOptions.isIdle}}
-  {{!-- If selectOptions are available they come from the attribute, and must be used instead --}}
-  {{#if (eq this.widgetName 'country-select')}}
+  {{! If selectOptions are available they come from the attribute, and must be used instead }}
+  {{#if (eq this.widgetName "country-select")}}
     <OutputSelectCountry
       @value={{this.value}}
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}
-      @options={{this.outputOptions}} />
+      @options={{this.outputOptions}}
+    />
   {{else}}
     <OutputSelect
       @value={{this.value}}
@@ -14,7 +15,8 @@
       @prefix={{@prefix}}
       @suffix={{@suffix}}
       @class={{@outputClass}}
-      @options={{this.outputOptions}} />
+      @options={{this.outputOptions}}
+    />
   {{/if}}
 {{else}}
   <span class="output loader">

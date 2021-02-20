@@ -1,13 +1,19 @@
 {{#if this.value}}
-  {{#let (concat "output-model-" (model-class-name this.value)) as |dynamicComponentName|}}
+  {{#let
+    (concat
+      "output-model-" (model-class-name this.value)
+    ) as |dynamicComponentName|
+  }}
     {{#if (component-exists dynamicComponentName)}}
-      {{component dynamicComponentName
+      {{component
+        dynamicComponentName
         value=this.value
         prefix=@prefix
         suffix=@suffix
         class=@outputClass
         inline=@inline
-        options=this.outputOptions}}
+        options=this.outputOptions
+      }}
     {{else}}
       <OutputModel
         @value={{this.value}}
@@ -15,7 +21,8 @@
         @suffix={{@suffix}}
         @class={{@outputClass}}
         @inline={{@inline}}
-        @options={{this.outputOptions}} />
+        @options={{this.outputOptions}}
+      />
     {{/if}}
   {{/let}}
 {{else}}
@@ -25,5 +32,6 @@
     @suffix={{@suffix}}
     @class={{@outputClass}}
     @inline={{@inline}}
-    @options={{this.outputOptions}} />
+    @options={{this.outputOptions}}
+  />
 {{/if}}

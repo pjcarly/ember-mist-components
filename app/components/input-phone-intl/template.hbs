@@ -3,10 +3,16 @@
     <Loading />
   </span>
 {{else}}
-  <span class={{this.computedClass}} data-country={{this.initialCountry}} data-number={{@value}}>
+  <span
+    class={{this.computedClass}}
+    data-country={{this.initialCountry}}
+    data-number={{@value}}
+  >
     {{#if @prefix}}
       <div class="input-group-prepend">
-        <span class="input-group-text prefix">{{@prefix}}</span>
+        <span class="input-group-text prefix">
+          {{@prefix}}
+        </span>
       </div>
     {{/if}}
     <Input
@@ -15,12 +21,17 @@
       @value={{this.value}}
       class="form-control"
       disabled={{@disabled}}
-      placeholder={{@placeholder}} 
+      placeholder={{@placeholder}}
+      ...attributes
       {{on "input" this.valueChanged}}
-      ...attributes {{did-insert this.elementInsertedInDOM}} {{will-destroy this.elementWillBeRemovedFromDOM}}/>
+      {{did-insert this.elementInsertedInDOM}}
+      {{will-destroy this.elementWillBeRemovedFromDOM}}
+    />
     {{#if @suffix}}
       <div class="input-group-append">
-        <span class="input-group-text suffix">{{@suffix}}</span>
+        <span class="input-group-text suffix">
+          {{@suffix}}
+        </span>
       </div>
     {{/if}}
   </span>

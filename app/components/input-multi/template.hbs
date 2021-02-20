@@ -1,28 +1,45 @@
-<div class="input-multi" {{sortable-group groupName=(concat @inputId '-group') onChange=@reorderItems}}>
+<div
+  class="input-multi"
+  {{sortable-group groupName=(concat @inputId "-group") onChange=@reorderItems}}
+>
   {{#each @value as |item index|}}
-    <div class="input-multi__item" {{sortable-item groupName=(concat @inputId '-group') model=item}}>
-      <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
-      {{component 
-        @inputComponent 
+    <div
+      class="input-multi__item"
+      {{sortable-item groupName=(concat @inputId "-group") model=item}}
+    >
+      <div class="sort-handle" sort={{index}} {{sortable-handle}}>
+        <IconDraggable />
+      </div>
+      {{component
+        @inputComponent
         value=item.value
         valueChanged=(fn @itemChanged index)
         placeholder=@placeholder
         prefix=@prefix
         suffix=@suffix
         inputClass=@inputClass
-        inputId=(concat @inputId '-' index)
-        options=@inputOptions}}
-      <button class="btn input-multi__item__remove" {{on "click" (fn @removeItem index)}}>
+        inputId=(concat @inputId "-" index)
+        options=@inputOptions
+      }}
+      <button
+        class="btn input-multi__item__remove"
+        type="button"
+        {{on "click" (fn @removeItem index)}}
+      >
         <IconRemove />
       </button>
     </div>
   {{/each}}
 
-  {{#if (not @hideNew)}}
+  {{#unless @hideNew}}
     <div class="input-multi__button__wrapper">
-      <button class="btn input-multi__button" {{on "click" @addNewItem}}>
+      <button
+        class="btn input-multi__button"
+        type="button"
+        {{on "click" @addNewItem}}
+      >
         <IconPlus />
       </button>
     </div>
-  {{/if}}
+  {{/unless}}
 </div>

@@ -5,7 +5,8 @@
         @value={{this.value.countryCode}}
         @valueChanged={{this.countryCodeChanged}}
         @inputId={{this.inputId}}
-        @required={{this.isRequired}} />
+        @required={{this.isRequired}}
+      />
     </div>
   </div>
 
@@ -14,13 +15,15 @@
       <div class="row">
         {{#each row.columns as |column|}}
           <div class={{row.columnClassName}}>
-            {{component (concat 'input-' column.component)
+            {{component
+              (concat "input-" column.component)
               value=(get this.value column.field)
               valueChanged=(fn this.addressFieldChanged column.field)
               placeholder=column.label
               none=column.none
               selectOptions=column.selectOptions
-              disabled=column.disabled }}
+              disabled=column.disabled
+            }}
           </div>
         {{/each}}
       </div>

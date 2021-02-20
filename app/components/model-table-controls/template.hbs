@@ -7,30 +7,42 @@
         {{#if @isBusy}}
           <Loading />
         {{else}}
-          {{@firstRow}} - {{@lastRow}} {{t 'ember-mist-components.labels.of'}} {{@totalCount}}
+          {{@firstRow}} - {{@lastRow}} {{t "ember-mist-components.labels.of"
+          }} {{@totalCount}}
         {{/if}}
       </li>
       <li>
-        {{t 'ember-mist-components.table.rows'}}:
-        <InputSelect @class="plain-select" 
-          @selectOptions={{this.rowSelectOptions}} 
+        {{t "ember-mist-components.table.rows"}}:
+        <InputSelect
+          @class="plain-select"
+          @selectOptions={{this.rowSelectOptions}}
           @value={{this.rowsValue}}
-          @valueChanged={{this.didSelectRows}} 
-          @required={{true}} />
+          @valueChanged={{this.didSelectRows}}
+          @required={{true}}
+        />
       </li>
       <li>
-        <button class="btn btn-link btn-icon" {{on "click" this.goToPrevPage}}>
+        <button
+          class="btn btn-link btn-icon"
+          type="button"
+          {{on "click" this.goToPrevPage}}
+        >
           <IconChevronLeft />
         </button>
 
-        <InputSelect 
-          @class="plain-select" 
-          @selectOptions={{this.pageSelectOptions}} 
+        <InputSelect
+          @class="plain-select"
+          @selectOptions={{this.pageSelectOptions}}
           @value={{@currentPage}}
-          @valueChanged={{this.didSelectPage}} 
-          @required={{true}} />
+          @valueChanged={{this.didSelectPage}}
+          @required={{true}}
+        />
 
-        <button class="btn btn-link btn-icon" {{on "click" this.goToNextPage}}>
+        <button
+          class="btn btn-link btn-icon"
+          type="button"
+          {{on "click" this.goToNextPage}}
+        >
           <IconChevronRight />
         </button>
       </li>

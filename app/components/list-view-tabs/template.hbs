@@ -1,8 +1,19 @@
-{{#if setListViews.isIdle}}
+{{#if this.setListViews.isIdle}}
   <ul class="list-view-tabs nav nav-tabs" role="tablist">
     {{#each this.listViewSelectOptions as |listView|}}
-      <li class="{{if (eq listView.value this.selectedValue) 'active'}} nav-item">
-        <a class="{{if (eq listView.value this.selectedValue) 'active'}} nav-link" role="tab" {{on "click" (fn this.selectionChanged listView.value)}}>{{listView.label}}</a>
+      <li
+        class="{{if (eq listView.value this.selectedValue) "active"}} nav-item"
+      >
+        <button
+          class="{{
+            if (eq listView.value this.selectedValue) "active"
+          }} nav-link"
+          role="tab"
+          type="button"
+          {{on "click" (fn this.selectionChanged listView.value)}}
+        >
+          {{listView.label}}
+        </button>
       </li>
     {{/each}}
   </ul>

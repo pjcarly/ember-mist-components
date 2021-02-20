@@ -3,28 +3,43 @@
     <Loading />
   {{else}}
     {{#if this.value}}
-      <div class="input-multi" {{sortable-group groupName=this.calculatedInputId onChange=this.reorderedValues}}>
+      <div
+        class="input-multi"
+        {{sortable-group
+          groupName=this.calculatedInputId
+          onChange=this.reorderedValues
+        }}
+      >
         {{#each this.value as |model index|}}
-          <div class="input-multi__item{{if this.isReadOnly ' read-only' ' read-write'}}" {{sortable-item groupName=this.calculatedInputId model=model}}>
-            <div class="sort-handle" {{sortable-handle}} sort={{index}}><IconDraggable /></div>
+          <div
+            class="input-multi__item{{
+              if this.isReadOnly " read-only" " read-write"
+            }}"
+            {{sortable-item groupName=this.calculatedInputId model=model}}
+          >
+            <div class="sort-handle" sort={{index}} {{sortable-handle}}>
+              <IconDraggable />
+            </div>
             {{#if this.isSelect}}
-                <InputSelect
-                  @selectOptions={{this.selectOptions}}
-                  @value={{model.id}}
-                  @required={{this.isRequired}}
-                  @valueChanged={{fn this.doChangeValue index}}
-                  @class={{this.inputClass}}
-                  @inputId={{this.caluclatedInputId}} />
-              {{else}}
-                <InputLookup
-                  @baseQuery={{this.baseQuery}}
-                  @value={{model}}
-                  @modelName={{model-class-name model}}
-                  @valueChanged={{fn this.doChangeValue index}}
-                  @placeholder={{@placeholder}}
-                  @class={{this.inputClass}}
-                  @inputId={{this.caluclatedInputId}} />
-              {{/if}}
+              <InputSelect
+                @selectOptions={{this.selectOptions}}
+                @value={{model.id}}
+                @required={{this.isRequired}}
+                @valueChanged={{fn this.doChangeValue index}}
+                @class={{this.inputClass}}
+                @inputId={{this.caluclatedInputId}}
+              />
+            {{else}}
+              <InputLookup
+                @baseQuery={{this.baseQuery}}
+                @value={{model}}
+                @modelName={{model-class-name model}}
+                @valueChanged={{fn this.doChangeValue index}}
+                @placeholder={{@placeholder}}
+                @class={{this.inputClass}}
+                @inputId={{this.caluclatedInputId}}
+              />
+            {{/if}}
           </div>
         {{/each}}
       </div>
@@ -34,17 +49,19 @@
         <InputSelect
           @selectOptions={{this.selectOptions}}
           @required={{this.isRequired}}
-          @valueChanged={{fn this.doChangeValue index}}
+          @valueChanged={{fn this.doChangeValue undefined}}
           @class={{this.inputClass}}
-          @inputId={{this.caluclatedInputId}} />
+          @inputId={{this.caluclatedInputId}}
+        />
       {{else}}
         <InputLookup
           @baseQuery={{this.baseQuery}}
           @modelName={{this.relationshipModelName}}
-          @valueChanged={{fn this.doChangeValue index}}
+          @valueChanged={{fn this.doChangeValue undefined}}
           @placeholder={{@placeholder}}
           @class={{this.inputClass}}
-          @inputId={{this.caluclatedInputId}} />
+          @inputId={{this.caluclatedInputId}}
+        />
       {{/if}}
     </div>
   {{/if}}

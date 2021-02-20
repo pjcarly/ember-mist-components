@@ -1,21 +1,23 @@
 {{#if this.value.countryCode}}
   {{#if this.value.format}}
     {{#each this.outputDisplayRows as |row|}}
-      {{#if (not row.emptyRow)}}
+      {{#unless row.emptyRow}}
         <div class="row">
           <div class="col-12">
             {{#each row.columns as |column|}}
-              {{component (concat 'output-' column.component)
+              {{component
+                (concat "output-" column.component)
                 value=(get this.value column.field)
                 valueChanged=(fn this.addressFieldChanged column.field)
                 placeholder=column.label
                 none=column.none
                 selectOptions=column.selectOptions
-                disabled=column.disabled}}
+                disabled=column.disabled
+              }}
             {{/each}}
           </div>
         </div>
-      {{/if}}
+      {{/unless}}
     {{/each}}
   {{/if}}
 

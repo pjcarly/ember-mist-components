@@ -1,15 +1,17 @@
-{{#if (or model.isNew (not value))}}
+{{#if (or @model.isNew (not @value))}}
   <OutputText
-    @value={{t 'ember-mist-components.labels.automatically_generated'}}
+    @value={{t "ember-mist-components.labels.automatically_generated"}}
     @prefix={{@prefix}}
     @suffix={{@suffix}}
     @class={{@outputClass}}
-    @options={{this.outputOptions}} />
+    @options={{this.outputOptions}}
+  />
 {{else}}
   <OutputText
     @value={{this.computedValue}}
     @prefix={{@prefix}}
     @suffix={{@suffix}}
     @class={{@outputClass}}
-    @options={{this.outputOptions}} />
+    @options={{this.outputOptions}}
+  />
 {{/if}}

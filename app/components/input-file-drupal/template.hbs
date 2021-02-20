@@ -1,11 +1,21 @@
-<span class="input file-drupal{{if this.multipleUploads ' file-drupal__multiple' ' file-drupal__single'}}">
+<span
+  class="input file-drupal{{
+    if this.multipleUploads " file-drupal__multiple" " file-drupal__single"
+  }}"
+>
   {{#if @value}}
     {{#if this.multipleUploads}}
       <ul class="file-drupal__list">
         {{#each @value as |file|}}
           <li>
             <OutputFile @value={{file}} />
-            <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile file)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+            <button
+              class="btn btn-xs btn-default remove"
+              type="button"
+              {{on "click" (fn this.deleteFile file)}}
+            >
+              {{t "ember-mist-components.labels.remove"}}
+            </button>
           </li>
         {{/each}}
       </ul>
@@ -13,24 +23,36 @@
       <ul class="file-drupal__list">
         <li>
           <OutputFile @value={{@value}} />
-          <button class="btn btn-xs btn-default remove" {{on "click" (fn this.deleteFile @value)}}>{{t 'ember-mist-components.labels.remove'}}</button>
+          <button
+            class="btn btn-xs btn-default remove"
+            type="button"
+            {{on "click" (fn this.deleteFile @value)}}
+          >
+            {{t "ember-mist-components.labels.remove"}}
+          </button>
         </li>
       </ul>
     {{/if}}
   {{/if}}
-  
+
   {{#if this.uploadFile.isRunning}}
     <span class="file-drupal__uploading">
-      {{t 'ember-mist-components.labels.uploading'}} <Loading /> <span class="file-drupal__progress">({{this.activeFilePositionInQueue}}/{{this.totalFiles}})</span>
+      {{t "ember-mist-components.labels.uploading"}}
+      <Loading />
+
+      <span class="file-drupal__progress">
+        ({{this.activeFilePositionInQueue}}/{{this.totalFiles}})
+      </span>
     </span>
   {{/if}}
-  
+
   {{#if this.uploadFile.isIdle}}
     {{#if (or this.multipleUploads (not @value))}}
       <InputFile
         @multiple={{this.multipleUploads}}
         @inputId={{@inputId}}
-        @valueChanged={{this.fileSelected}} />
+        @valueChanged={{this.fileSelected}}
+      />
     {{/if}}
   {{/if}}
 </span>
