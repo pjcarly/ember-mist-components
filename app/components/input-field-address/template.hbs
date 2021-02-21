@@ -1,4 +1,7 @@
-<div class="input-address">
+<div
+  class="input-address"
+  {{did-update (perform this.setAddressFormat) this.value}}
+>
   <div class="row">
     <div class="col-12 country-select">
       <InputSelectCountry
