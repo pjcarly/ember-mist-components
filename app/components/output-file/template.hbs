@@ -5,7 +5,7 @@
     </span>
   {{/if}}
   {{#if @value.id}}
-    <button
+    <a
       class="value"
       type="button"
       href={{
@@ -25,7 +25,7 @@
         {{@value.filename}}
         <IconDownload />
       {{/if}}
-    </button>
+    </a>
   {{else}}
     <span class="value empty" ...attributes></span>
   {{/if}}
