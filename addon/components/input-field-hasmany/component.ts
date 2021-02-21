@@ -202,18 +202,11 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         this.value.replace(index ?? this.value.length, 1, [value]);
       }
     } else {
-      if (this.value && index) {
+      if (this.value && (index || index === 0)) {
         this.value.removeAt(index, 1);
       }
     }
 
     this.notifyExternalAction(this.value, oldValue);
-  }
-
-  @action
-  newValue(value: Model) {
-    if (this.value) {
-      this.value.pushObject(value);
-    }
   }
 }
