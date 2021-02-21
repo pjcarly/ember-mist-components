@@ -3,7 +3,7 @@
     {{! template-lint-disable no-invalid-interactive }}
     <button
       id={{@id}}
-      class="btn btn-link action-menu__link"
+      class="action-menu__link"
       type="button"
       role={{if @role @role "button"}}
       {{on "click" @itemClicked}}
@@ -23,7 +23,7 @@
   {{else if @targetRoute}}
     <button
       id={{@id}}
-      class="btn btn-link action-menu__link"
+      class="action-menu__link"
       type="button"
       role={{if @role @role "button"}}
       href={{@targetRoute}}
