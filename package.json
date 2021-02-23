@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -84,9 +84,6 @@
     "ember-addon",
     "ember-mist-components"
   ],
-  "ember": {
-    "edition": "octane"
-  },
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
     "@getflights/ember-attribute-validations": "^2.0.0",

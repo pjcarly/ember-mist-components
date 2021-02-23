@@ -1,20 +1,20 @@
-import { task } from "ember-concurrency-decorators";
-import { computed, action } from "@ember/object";
-import { inject as service } from "@ember/service";
-import { dasherize } from "@ember/string";
-import { htmlSafe } from "@ember/template";
+import { task } from 'ember-concurrency-decorators';
+import { computed, action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { dasherize } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 import BaseInput, {
   Arguments,
   OptionsArgument,
-} from "@getflights/ember-field-components/components/BaseInput";
-import FileModel from "@getflights/ember-mist-components/interfaces/file";
-import File from "ember-file-upload/file";
-import { taskFor } from "ember-concurrency-ts";
-import HttpService from "@getflights/ember-mist-components/services/http";
-import ToastService from "@getflights/ember-mist-components/services/toast";
-import FileQueueService from "ember-file-upload/services/file-queue";
-import Queue from "ember-file-upload/queue";
-import { assert } from "@ember/debug";
+} from '@getflights/ember-field-components/components/BaseInput';
+import FileModel from '@getflights/ember-mist-components/interfaces/file';
+import File from 'ember-file-upload/file';
+import { taskFor } from 'ember-concurrency-ts';
+import HttpService from '@getflights/ember-mist-components/services/http';
+import ToastService from '@getflights/ember-mist-components/services/toast';
+import FileQueueService from 'ember-file-upload/services/file-queue';
+import Queue from 'ember-file-upload/queue';
+import { assert } from '@ember/debug';
 
 export interface FileDrupalArguments extends Arguments {
   options: FileDrupalOptionsArgument;
@@ -28,14 +28,12 @@ export interface FileDrupalOptionsArgument extends OptionsArgument {
   endpoint?: string;
 }
 
-export default class InputFileDrupalComponent extends BaseInput<
-  FileDrupalArguments
-> {
+export default class InputFileDrupalComponent extends BaseInput<FileDrupalArguments> {
   @service http!: HttpService;
   @service toast!: ToastService;
   @service fileQueue!: FileQueueService;
 
-  type = "file-drupal";
+  type = 'file-drupal';
 
   /**
    * The last active ember-file-upload queue that was used uploading files, null when nothing has been uploaded
@@ -128,7 +126,7 @@ export default class InputFileDrupalComponent extends BaseInput<
     const mistFieldTarget = this.mistFieldTarget;
 
     if (mistFieldTarget) {
-      headers.set("X-Mist-Field-Target", mistFieldTarget);
+      headers.set('X-Mist-Field-Target', mistFieldTarget);
     }
 
     const returnValue: { [s: string]: string } = {};
@@ -151,6 +149,7 @@ export default class InputFileDrupalComponent extends BaseInput<
         .then((response: any) => {
           // @ts-ignore
           const fileObject: FileModel = {
+            /** @ts-ignore */
             id: response.body.data.id,
             filename: response.body.data.attributes.filename,
             uri: response.body.data.attributes.uri,
@@ -167,11 +166,11 @@ export default class InputFileDrupalComponent extends BaseInput<
             file.queue.remove(file);
           }
 
-          let errorMessage = "File upload failed";
+          let errorMessage = 'File upload failed';
           if (error.responseJSON) {
-            if ("error_description" in error.responseJSON) {
+            if ('error_description' in error.responseJSON) {
               errorMessage = error.responseJSON.error_description;
-            } else if ("error" in error.responseJSON) {
+            } else if ('error' in error.responseJSON) {
               errorMessage = error.responseJSON.error;
             }
           }
