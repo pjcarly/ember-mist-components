@@ -1,9 +1,10 @@
-import { getOwner } from "@ember/application";
-import { assert } from "@ember/debug";
-import { computed } from "@ember/object";
-import Service from "@ember/service";
-import { dropTask } from "ember-concurrency-decorators";
-import intlTelInput from "intl-tel-input";
+import { getOwner } from '@ember/application';
+import { assert } from '@ember/debug';
+import { computed } from '@ember/object';
+import Service from '@ember/service';
+import { dropTask } from 'ember-concurrency-decorators';
+import { taskFor } from 'ember-concurrency-ts';
+import intlTelInput from 'intl-tel-input';
 
 export interface intlTelInputUtils {
   isValidNumber(number: string, countryCode?: string): boolean;
@@ -19,7 +20,7 @@ export default class PhoneIntlService extends Service {
 
   @computed()
   get config(): any {
-    return getOwner(this).resolveRegistration("config:environment");
+    return getOwner(this).resolveRegistration('config:environment');
   }
 
   @dropTask
@@ -32,16 +33,16 @@ export default class PhoneIntlService extends Service {
     // Should you choose to host it yourself, disable the fingerprinting on the phone-utils.js in ember-cli build
     // and then put /assets/phone-utils.js in the config under ember-mist-components.phoneIntlUtilsSource
 
-    const src = this.config?.["ember-mist-components"]?.phoneIntlUtilsSource;
+    const src = this.config?.['ember-mist-components']?.phoneIntlUtilsSource;
     assert(
-      "config ember-mist-components.phoneIntlUtilsSource is not defined",
+      'config ember-mist-components.phoneIntlUtilsSource is not defined',
       src
     );
 
     if (!window.intlTelInputGlobals) {
       // The global is only set, when any component was initialized
       // In case that had not happened yet, lets create an element, initialize it, and remove it
-      const element = document.createElement("input");
+      const element = document.createElement('input');
       intlTelInput(element);
       element.remove();
     }
@@ -68,7 +69,9 @@ export default class PhoneIntlService extends Service {
    * @param number Number in international format
    */
   formatNumber(number?: string): string | undefined {
-    if (number) {
+    if (taskFor(this.loadUtils).isRunning) {
+      return number;
+    } else if (number) {
       return this.getUtils().formatNumber(
         number,
         undefined,
