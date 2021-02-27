@@ -1,7 +1,7 @@
-import Store from "@ember-data/store";
-import { tracked } from "@glimmer/tracking";
-import Condition, { QueryFilter, Operator } from "./Condition";
-import Order from "./Order";
+import Store from '@ember-data/store';
+import { tracked } from '@glimmer/tracking';
+import Condition, { QueryFilter, Operator } from './Condition';
+import Order from './Order';
 
 export interface QueryParams {
   page?: number;
@@ -29,6 +29,7 @@ export default class Query {
   @tracked private limit?: number; // The limit of records you want the result to have
   @tracked private page: number = 1; // The page of results you want to be on
   @tracked private search?: string;
+  @tracked public results = new QueryResults();
 
   constructor(modelName: string) {
     this.modelName = modelName;
@@ -297,7 +298,7 @@ export default class Query {
     } else if (this.orders && this.orders.length > 0) {
       return this.orders[0].field;
     } else {
-      return "name";
+      return 'name';
     }
   }
 
@@ -351,7 +352,18 @@ export default class Query {
       }
     }
 
-    return store.query(this.modelName, this.queryParams);
+    return store.query(this.modelName, this.queryParams).then((results) => {
+      const meta = results.get('meta');
+      this.results.resetValues();
+      this.results.pageCurrent = meta['page-current'] ?? 1;
+      this.results.pageCount = meta['page-count'] ?? 1;
+      this.results.pageSize = meta['page-size'] ?? 1;
+      this.results.resultRowFirst = meta['result-row-first'] ?? 0;
+      this.results.resultRowLast = meta['result-row-last'] ?? 0;
+      this.results.totalCount = meta['total-count'] ?? 0;
+      this.results.count = <number>results.length;
+      return results;
+    });
   }
 
   /**
@@ -368,7 +380,21 @@ export default class Query {
     const queryParams = this.queryParams;
     queryParams._single = true;
 
-    return store.queryRecord(this.modelName, queryParams);
+    return store.queryRecord(this.modelName, queryParams).then((result) => {
+      this.results.resetValues();
+
+      if (result) {
+        this.results.pageCurrent = 1;
+        this.results.pageCount = 1;
+        this.results.pageSize = 1;
+        this.results.resultRowFirst = 1;
+        this.results.resultRowLast = 1;
+        this.results.totalCount = 1;
+        this.results.count = 1;
+      }
+
+      return result;
+    });
   }
 
   /**
@@ -379,8 +405,8 @@ export default class Query {
     const modelClass = store.modelFor(this.modelName);
 
     if (
-      modelClass.hasOwnProperty("settings") &&
-      modelClass.settings.hasOwnProperty("defaultIncludes")
+      modelClass.hasOwnProperty('settings') &&
+      modelClass.settings.hasOwnProperty('defaultIncludes')
     ) {
       return modelClass.settings.defaultIncludes;
     }
@@ -425,7 +451,7 @@ export default class Query {
 
     // Any related entities we want to receive
     if (this.includes && this.includes.length > 0) {
-      queryParams.include = this.includes.join(",");
+      queryParams.include = this.includes.join(',');
     }
 
     // The sort order of the results
@@ -435,7 +461,7 @@ export default class Query {
         orders.push(order.orderParam);
       }
 
-      queryParams.sort = orders.join(",");
+      queryParams.sort = orders.join(',');
     }
 
     // Now the filters
@@ -469,23 +495,23 @@ export default class Query {
     }
 
     if (this.listView) {
-      filterParam["_listview"] = this.listView;
+      filterParam['_listview'] = this.listView;
     }
 
     if (this.searchQuery) {
-      filterParam["_query"] = this.searchQuery;
+      filterParam['_query'] = this.searchQuery;
     }
 
     if (alteredLogic) {
-      filterParam["_logic"] = alteredLogic;
+      filterParam['_logic'] = alteredLogic;
     } else if (this.conditionLogic) {
-      filterParam["_logic"] = this.conditionLogic;
+      filterParam['_logic'] = this.conditionLogic;
     }
 
     if (this.fields.size > 0) {
       const fieldsParam: { [key: string]: string } = {};
       for (const [key, value] of this.fields.entries()) {
-        fieldsParam[key] = value.join(",");
+        fieldsParam[key] = value.join(',');
       }
 
       queryParams.fields = fieldsParam;
@@ -497,5 +523,52 @@ export default class Query {
     }
 
     return queryParams;
+  }
+}
+
+export class QueryResults {
+  /**
+   * Amount of results
+   */
+  @tracked count = 0;
+
+  /**
+   * Total amount in all the pages
+   */
+  @tracked totalCount = 0;
+
+  /**
+   * How many pages
+   */
+  @tracked pageCount = 1;
+
+  /**
+   * How big the page is
+   */
+  @tracked pageSize = 1;
+
+  /**
+   * What page the query is currently on
+   */
+  @tracked pageCurrent = 1;
+
+  /**
+   * What result of the total count is displayed as the first record in this page
+   */
+  @tracked resultRowFirst = 0;
+
+  /**
+   * What result of the total count is displayed as the last record in this page
+   */
+  @tracked resultRowLast = 0;
+
+  resetValues() {
+    this.count = 0;
+    this.totalCount = 0;
+    this.pageCount = 1;
+    this.pageSize = 1;
+    this.pageCurrent = 1;
+    this.resultRowFirst = 0;
+    this.resultRowLast = 0;
   }
 }
