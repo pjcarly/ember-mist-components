@@ -352,7 +352,7 @@ export default class Query {
       }
     }
 
-    return store.query(this.modelName, this.queryParams).then((results) => {
+    return store.query(this.modelName, this.queryParams).then((results: any) => {
       const meta = results.get('meta');
       this.results.resetValues();
       this.results.pageCurrent = meta['page-current'] ?? 1;
@@ -380,7 +380,7 @@ export default class Query {
     const queryParams = this.queryParams;
     queryParams._single = true;
 
-    return store.queryRecord(this.modelName, queryParams).then((result) => {
+    return store.queryRecord(this.modelName, queryParams).then((result: any) => {
       this.results.resetValues();
 
       if (result) {
