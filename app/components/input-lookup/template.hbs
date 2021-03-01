@@ -15,28 +15,4 @@
     @options={{hash hideClear=true}}
     @baseQuery={{@baseQuery}}
   />
-
-  <div class="input-group-append">
-    {{#if @value}}
-      <button
-        type="button"
-        class="btn btn-default"
-        {{on "click" this.clearLookup}}
-      >
-        <IconRemove />
-      </button>
-    {{/if}}
-    <InputLookupWindow
-      @title={{this.modelTitle}}
-      @baseQuery={{@baseQuery}}
-      @modelName={{@modelName}}
-      @activeModelName={{this.activeModelName}}
-      @valueChanged={{this.valueSelected}}
-    />
-    {{#if @suffix}}
-      <span class="input-group-text suffix">
-        {{@suffix}}
-      </span>
-    {{/if}}
-  </div>
 </span>
