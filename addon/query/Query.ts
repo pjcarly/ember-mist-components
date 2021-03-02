@@ -4,10 +4,12 @@ import Condition, { QueryFilter, Operator } from './Condition';
 import Order from './Order';
 
 export interface QueryParams {
-  page?: number;
+  page?: {
+    number?: number;
+    limit?: number;
+  };
   include?: string;
   sort?: string;
-  limit?: number;
   filter?: { [key: string]: QueryFilter | number | string };
   _single?: boolean;
   fields?: { [key: string]: string };
@@ -352,18 +354,20 @@ export default class Query {
       }
     }
 
-    return store.query(this.modelName, this.queryParams).then((results: any) => {
-      const meta = results.get('meta');
-      this.results.resetValues();
-      this.results.pageCurrent = meta['page-current'] ?? 1;
-      this.results.pageCount = meta['page-count'] ?? 1;
-      this.results.pageSize = meta['page-size'] ?? 1;
-      this.results.resultRowFirst = meta['result-row-first'] ?? 0;
-      this.results.resultRowLast = meta['result-row-last'] ?? 0;
-      this.results.totalCount = meta['total-count'] ?? 0;
-      this.results.count = <number>results.length;
-      return results;
-    });
+    return store
+      .query(this.modelName, this.queryParams)
+      .then((results: any) => {
+        const meta = results.get('meta');
+        this.results.resetValues();
+        this.results.pageCurrent = meta['page-current'] ?? 1;
+        this.results.pageCount = meta['page-count'] ?? 1;
+        this.results.pageSize = meta['page-size'] ?? 1;
+        this.results.resultRowFirst = meta['result-row-first'] ?? 0;
+        this.results.resultRowLast = meta['result-row-last'] ?? 0;
+        this.results.totalCount = meta['total-count'] ?? 0;
+        this.results.count = <number>results.length;
+        return results;
+      });
   }
 
   /**
@@ -380,21 +384,23 @@ export default class Query {
     const queryParams = this.queryParams;
     queryParams._single = true;
 
-    return store.queryRecord(this.modelName, queryParams).then((result: any) => {
-      this.results.resetValues();
+    return store
+      .queryRecord(this.modelName, queryParams)
+      .then((result: any) => {
+        this.results.resetValues();
 
-      if (result) {
-        this.results.pageCurrent = 1;
-        this.results.pageCount = 1;
-        this.results.pageSize = 1;
-        this.results.resultRowFirst = 1;
-        this.results.resultRowLast = 1;
-        this.results.totalCount = 1;
-        this.results.count = 1;
-      }
+        if (result) {
+          this.results.pageCurrent = 1;
+          this.results.pageCount = 1;
+          this.results.pageSize = 1;
+          this.results.resultRowFirst = 1;
+          this.results.resultRowLast = 1;
+          this.results.totalCount = 1;
+          this.results.count = 1;
+        }
 
-      return result;
-    });
+        return result;
+      });
   }
 
   /**
@@ -441,12 +447,17 @@ export default class Query {
     const queryParams: QueryParams = {};
 
     if (this.page > 1) {
-      queryParams.page = this.page;
+      queryParams.page = {
+        number: this.page,
+      };
     }
 
     // The limit of amount of results we want to receive
     if (this.limit) {
-      queryParams.limit = this.limit;
+      if (!queryParams.page) {
+        queryParams.page = {};
+      }
+      queryParams.page.limit = this.limit;
     }
 
     // Any related entities we want to receive
