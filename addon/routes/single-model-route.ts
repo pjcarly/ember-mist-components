@@ -1,11 +1,11 @@
-import ResetModelRoute from "./reset-model-route";
-import RecentlyViewedService from "@getflights/ember-mist-components/services/recently-viewed";
-import FieldInformationService from "@getflights/ember-field-components/services/field-information";
-import { inject as service } from "@ember/service";
-import { isBlank } from "@ember/utils";
-import { action } from "@ember/object";
-import Transition from "@ember/routing/-private/transition";
-import SessionService from "ember-simple-auth/services/session";
+import ResetModelRoute from './reset-model-route';
+import RecentlyViewedService from '@getflights/ember-mist-components/services/recently-viewed';
+import FieldInformationService from '@getflights/ember-field-components/services/field-information';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { action } from '@ember/object';
+import Transition from '@ember/routing/-private/transition';
+import SessionService from 'ember-simple-auth/services/session';
 
 export interface SingleModelRouteModelParams {
   id: string;
@@ -18,9 +18,10 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
 
   abstract modelName: string;
   defaultIncludes: string[] = [];
+  includeLimits?: Map<string, number>;
 
   beforeModel(transition: Transition) {
-    this.session.requireAuthentication(transition, "login");
+    this.session.requireAuthentication(transition, 'login');
     // @ts-ignore
     super.beforeModel(...arguments);
   }
@@ -53,7 +54,19 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
     // And now construct the options hash
     const options: any = {};
     if (uniqueIncludes.length > 0) {
-      options["include"] = uniqueIncludes.join(",");
+      options['include'] = uniqueIncludes.join(',');
+    }
+
+    if (this.includeLimits && this.includeLimits.size > 0) {
+      if (!options.adapterOptions) {
+        options['adapterOptions'] = {};
+      }
+
+      options.adapterOptions.includeLimits = {};
+
+      this.includeLimits.forEach((limit, relationshipName) => {
+        options.adapterOptions.includeLimits[relationshipName] = limit;
+      });
     }
 
     // @ts-ignore
@@ -69,7 +82,7 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
       if (
         transition.to &&
         transition.to.params &&
-        transition.to.params.hasOwnProperty("id")
+        transition.to.params.hasOwnProperty('id')
       ) {
         const id = transition.to.params.id;
 
@@ -79,8 +92,8 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
       }
     }
 
-    if (error?.errors?.[0]?.status === "404") {
-      this.transitionTo("error");
+    if (error?.errors?.[0]?.status === '404') {
+      this.transitionTo('error');
       return false;
     }
 
