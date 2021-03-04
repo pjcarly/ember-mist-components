@@ -1,44 +1,44 @@
-import QueryModel from "../models/query";
-import { isBlank } from "@ember/utils";
-import { field } from "@getflights/ember-mist-components/decorators/attribute";
-import { attr, hasMany, belongsTo } from "@ember-data/model";
-import MutableArray from "@ember/array/mutable";
-import FieldModel from "./field";
-import MetaModelModel from "./meta-model";
+import QueryModel from '../models/query';
+import { isBlank } from '@ember/utils';
+import { field } from '@getflights/ember-mist-components/decorators/attribute';
+import { attr, hasMany, belongsTo } from '@ember-data/model';
+import MutableArray from '@ember/array/mutable';
+import FieldModel from './field';
+import MetaModelModel from './meta-model';
 
 export default class ListViewModel extends QueryModel {
-  changeTracker = { only: ["columns"] };
+  changeTracker = { trackHasMany: true };
 
-  @field("string", { validation: { required: true } })
+  @field('string', { validation: { required: true } })
   name!: string;
 
-  @field("string")
+  @field('string')
   grouping?: string;
 
-  @field("string")
+  @field('string')
   conditionLogic?: string;
 
-  @field("number", { precision: 10, decimals: 0, defaultValue: 10 })
+  @field('number', { precision: 10, decimals: 0, defaultValue: 10 })
   rows?: number;
 
-  @field("number", { precision: 10, decimals: 0 })
+  @field('number', { precision: 10, decimals: 0 })
   sort?: number;
 
   @attr()
   sortOrder: any; // pseudo attribute which will contain an object with the sort order. This is only serialized by the back-end. And cant be updated. Use the hasMany relationship sortOrders instead
 
   // @ts-ignore
-  @belongsTo("meta-model", {
-    widget: "select",
+  @belongsTo('meta-model', {
+    widget: 'select',
     async: false,
     validation: { required: true },
   })
   model!: MetaModelModel;
 
   // @ts-ignore
-  @hasMany("field", {
+  @hasMany('field', {
     async: false,
-    widget: "select",
+    widget: 'select',
     rollback: true,
     validation: { required: true },
   })
@@ -74,11 +74,11 @@ export default class ListViewModel extends QueryModel {
   static settings = {
     listViews: {
       default: {
-        columns: ["name", "grouping"],
+        columns: ['name', 'grouping'],
         rows: 10,
         sortOrder: {
-          field: "created",
-          dir: "desc",
+          field: 'created',
+          dir: 'desc',
         },
       },
     },
