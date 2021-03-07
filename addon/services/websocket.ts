@@ -1,26 +1,26 @@
-import Service from "@ember/service";
-import { inject as service } from "@ember/service";
-import { alias } from "@ember/object/computed";
-import { action, computed } from "@ember/object";
-import { dropTask } from "ember-concurrency-decorators";
-import { timeout } from "ember-concurrency";
-import { debug } from "@ember/debug";
-import { getOwner } from "@ember/application";
-import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from "ws";
-import { taskFor } from "ember-concurrency-ts";
-import SessionService from "ember-simple-auth/services/session";
-import { tracked } from "@glimmer/tracking";
+import Service from '@ember/service';
+import { inject as service } from '@ember/service';
+import { alias } from '@ember/object/computed';
+import { action, computed } from '@ember/object';
+import { dropTask } from 'ember-concurrency-decorators';
+import { timeout } from 'ember-concurrency';
+import { debug } from '@ember/debug';
+import { getOwner } from '@ember/application';
+import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from 'ws';
+import { taskFor } from 'ember-concurrency-ts';
+import SessionService from 'ember-simple-auth/services/session';
+import { tracked } from '@glimmer/tracking';
 
 export enum Status {
-  OFFLINE = "OFFLINE",
-  CONNECTING = "CONNECTING",
-  ONLINE = "ONLINE",
+  OFFLINE = 'OFFLINE',
+  CONNECTING = 'CONNECTING',
+  ONLINE = 'ONLINE',
 }
 
 export enum Event {
-  OPEN = "open",
-  CLOSE = "close",
-  ERROR = "error",
+  OPEN = 'open',
+  CLOSE = 'close',
+  ERROR = 'error',
 }
 
 export interface MessageBodyInterface {}
@@ -36,7 +36,7 @@ export default class WebsocketService extends Service {
   @service websockets!: any;
   @service session!: SessionService;
 
-  @tracked socket!: any;
+  @tracked socket?: any;
   @tracked status: string = Status.OFFLINE;
   @tracked manuallyClosed: boolean = false;
   @tracked reconnectAttempts: number = 0;
@@ -47,12 +47,12 @@ export default class WebsocketService extends Service {
     Set<(message: MessageInterface) => void>
   >();
 
-  @alias("session.data.authenticated.access_token")
+  @alias('session.data.authenticated.access_token')
   accessToken!: string;
 
   @computed()
   get config(): any {
-    return getOwner(this).resolveRegistration("config:environment");
+    return getOwner(this).resolveRegistration('config:environment');
   }
 
   get endpoint(): string | undefined | null {
@@ -103,10 +103,10 @@ export default class WebsocketService extends Service {
       } else {
         socket = this.websockets.socketFor(this.endpoint);
       }
-      socket.on("open", this.connectionOpened);
-      socket.on("message", this.messageReceived);
-      socket.on("close", this.connectionClosed);
-      socket.on("error", this.connectionErrored);
+      socket.on('open', this.connectionOpened);
+      socket.on('message', this.messageReceived);
+      socket.on('close', this.connectionClosed);
+      socket.on('error', this.connectionErrored);
     } else {
       socket.reconnect();
     }
@@ -130,7 +130,9 @@ export default class WebsocketService extends Service {
    * @param message What message to send over the socket, this will be Json serialized
    */
   public sendMessage(message: MessageInterface) {
-    this.socket.send(JSON.stringify(message));
+    if (this.socket) {
+      this.socket.send(JSON.stringify(message));
+    }
   }
 
   /**
