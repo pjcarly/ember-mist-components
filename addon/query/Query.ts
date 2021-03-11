@@ -5,6 +5,7 @@ import HttpService from '@getflights/ember-mist-components/services/http';
 import { tracked } from '@glimmer/tracking';
 import Condition, { QueryFilter, Operator } from './Condition';
 import Order from './Order';
+import NativeArray from '@ember/array/-private/native-array';
 
 export interface QueryParams {
   page?: {
@@ -462,16 +463,18 @@ export default class Query {
   fetchFromEndpoint(
     http: HttpService,
     store: Store,
-    endpoint: string
-  ): Promise<any> {
+    endpoint: string,
+    abortController?: AbortController
+  ): Promise<NativeArray<Model>> {
     return http
-      .fetch(endpoint, 'GET', undefined, this.queryParams)
+      .fetch(endpoint, 'GET', undefined, this.queryParams, abortController)
       .then((response: Response) => {
         this.results.resetValues();
 
         return response.json().then((results) => {
+          const models = A<Model>();
+
           if (results.data) {
-            const models = A<Model>();
             // Lets push the results in the store
             store.pushPayload(results);
 
@@ -485,13 +488,15 @@ export default class Query {
               this.results.pageCurrent = results.meta['page-current'] ?? 1;
               this.results.pageCount = results.meta['page-count'] ?? 1;
               this.results.pageSize = results.meta['page-size'] ?? 1;
-              this.results.resultRowFirst = results.meta['result-row-first'] ?? 0;
+              this.results.resultRowFirst =
+                results.meta['result-row-first'] ?? 0;
               this.results.resultRowLast = results.meta['result-row-last'] ?? 0;
               this.results.totalCount = results.meta['total-count'] ?? 0;
               this.results.count = <number>results.data.length;
-              return results;
             }
           }
+
+          return models;
         });
       });
   }
