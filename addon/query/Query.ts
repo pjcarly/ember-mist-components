@@ -1,4 +1,7 @@
 import Store from '@ember-data/store';
+import Model from '@ember-data/model';
+import { A } from '@ember/array';
+import HttpService from '@getflights/ember-mist-components/services/http';
 import { tracked } from '@glimmer/tracking';
 import Condition, { QueryFilter, Operator } from './Condition';
 import Order from './Order';
@@ -415,10 +418,12 @@ export default class Query {
    */
   fetchSingle(store: Store): Promise<any> {
     // First we lookup the default includes and add them to the query
-    const defaultIncludes = this.getDefaultIncludes(store);
+    if (this.includeDefaultIncludes) {
+      const defaultIncludes = this.getDefaultIncludes(store);
 
-    for (const defaultInclude of defaultIncludes) {
-      this.addInclude(defaultInclude);
+      for (const defaultInclude of defaultIncludes) {
+        this.addInclude(defaultInclude);
+      }
     }
 
     const queryParams = this.queryParams;
@@ -440,6 +445,54 @@ export default class Query {
         }
 
         return result;
+      });
+  }
+
+  /**
+   * This method can be called when you want to fetch records from an endpoint different than
+   * the model endpoint. using fetch or fetchRecord the ModelStore is used to define the endpoint
+   * But this method you can use a custom endpoint. This can be useful for:
+   *  - An model that can be queried from 2 different endpoints
+   *  - An endpoint returning multiple types of models
+   *
+   * @param http The HTTP service to use for the fetch
+   * @param store The store you want to push the results in
+   * @param endpoint The endpoint you want to fetch from
+   */
+  fetchFromEndpoint(
+    http: HttpService,
+    store: Store,
+    endpoint: string
+  ): Promise<any> {
+    return http
+      .fetch(endpoint, 'GET', undefined, this.queryParams)
+      .then((response: Response) => {
+        this.results.resetValues();
+
+        return response.json().then((results) => {
+          if (results.data) {
+            const models = A<Model>();
+            // Lets push the results in the store
+            store.pushPayload(results);
+
+            // And now get each result from the Store
+            results.data.forEach((result: any) => {
+              const model = <Model>store.peekRecord(result.type, result.id);
+              models.pushObject(model);
+            });
+
+            if (results.meta) {
+              this.results.pageCurrent = results.meta['page-current'] ?? 1;
+              this.results.pageCount = results.meta['page-count'] ?? 1;
+              this.results.pageSize = results.meta['page-size'] ?? 1;
+              this.results.resultRowFirst = results.meta['result-row-first'] ?? 0;
+              this.results.resultRowLast = results.meta['result-row-last'] ?? 0;
+              this.results.totalCount = results.meta['total-count'] ?? 0;
+              this.results.count = <number>results.data.length;
+              return results;
+            }
+          }
+        });
       });
   }
 
