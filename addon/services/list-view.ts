@@ -7,15 +7,13 @@ import { isBlank } from "@ember/utils";
 import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 
 // A ModelListview is an object that can be defined as a static POJO on the Model itself
-export interface ModelListView {
+export interface ListViewInterface {
   rows?: number;
   columns: string[];
-  sortOrder: ModelListViewSort;
-}
-
-export interface ModelListViewSort {
-  field: string;
-  dir: "ASC" | "DESC";
+  sortOrder?: {
+    field: string;
+    dir: "ASC" | "DESC";
+  };
 }
 
 export default class ListViewService extends Service {
@@ -33,7 +31,7 @@ export default class ListViewService extends Service {
   getListViewByKey(
     modelName: string,
     key: string | number
-  ): ListViewModel | ModelListView {
+  ): ListViewModel | ListViewInterface {
     if (this.store.hasRecordForId("list-view", key)) {
       return this.store.peekRecord("list-view", key);
     }
@@ -45,7 +43,7 @@ export default class ListViewService extends Service {
    * Returns the default list view for the model
    * @param modelName For the model
    */
-  getDefaultListView(modelName: string): ModelListView {
+  getDefaultListView(modelName: string): ListViewInterface {
     return this.getModelListView(modelName, "default");
   }
 
@@ -53,7 +51,7 @@ export default class ListViewService extends Service {
    * Returns a  model list view by name
    * @param modelName For the model
    */
-  getModelListView(modelName: string, listViewName: string): ModelListView {
+  getModelListView(modelName: string, listViewName: string): ListViewInterface {
     const modelClass = this.fieldInformation.getModelClass(modelName);
 
     assert(
@@ -70,7 +68,7 @@ export default class ListViewService extends Service {
    */
   getActiveListViewForCurrentRoute(
     modelName: string
-  ): ListViewModel | ModelListView {
+  ): ListViewModel | ListViewInterface {
     const key = this.getActiveListViewKeyForCurrentRoute(modelName);
     return this.getListViewByKey(modelName, key);
   }
