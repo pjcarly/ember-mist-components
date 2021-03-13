@@ -43,6 +43,10 @@
       ],
       "ember-data-storefront": ["node_modules/ember-data-storefront/addon"],
       "ember-data-storefront/*": ["node_modules/ember-data-storefront/addon/*"],
+      "@glimmer/tracking": [
+        "node_modules/ember-cached-decorator-polyfill",
+        "node_modules/@glimmer/tracking/dist/types"
+      ],
       "fetch": ["node_modules/ember-fetch"],
       "*": ["types/*"]
     },
