@@ -1,34 +1,42 @@
-import FieldInformationService from "@getflights/ember-field-components/services/field-information";
-import { computed } from "@ember/object";
-import { isBlank } from "@ember/utils";
-import { or } from "@ember/object/computed";
-import { getOwner } from "@ember/application";
-import { inject as service } from "@ember/service";
-import { loadableModel } from "@getflights/ember-mist-components/decorators/loadable-model";
-import ChangeTrackerModel from "./change-tracker-model";
-import JSONAPISerializer from "@ember-data/serializer/json-api";
+import FieldInformationService from '@getflights/ember-field-components/services/field-information';
+import { computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { or } from '@ember/object/computed';
+import { getOwner } from '@ember/application';
+import { inject as service } from '@ember/service';
+import { loadableModel } from '@getflights/ember-mist-components/decorators/loadable-model';
+import ChangeTrackerModel from './change-tracker-model';
+import JSONAPISerializer from '@ember-data/serializer/json-api';
 
 @loadableModel
 export default abstract class MistModel extends ChangeTrackerModel {
   @service fieldInformation!: FieldInformationService;
 
+  /**
+   * The Base route that can be used over the model-name route.
+   * If this property returns a string, it will be used, if not, model-name will be used
+   */
+  get baseRoute(): string | undefined {
+    return;
+  }
+
   @computed()
   get hasViewRoute(): boolean {
-    return this.hasRoute("view");
+    return this.hasRoute('view');
   }
 
   @computed()
   get viewRouteName(): string {
-    return this.getRouteName("view");
+    return this.getRouteName('view');
   }
 
-  @computed("isNew")
+  @computed('isNew')
   get isExisting(): boolean {
     // @ts-ignore
     return !this.isNew;
   }
 
-  @computed("errors.[]")
+  @computed('errors.[]')
   get hasErrors(): boolean {
     // @ts-ignore
     return this.errors.length > 0;
@@ -54,7 +62,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
     return embeddedRelationships;
   }
 
-  @or("isDirty", "isDeleted")
+  @or('isDirty', 'isDeleted')
   isDirtyOrDeleted!: boolean;
 
   /**
@@ -66,7 +74,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
     // @ts-ignore
     this.eachRelationship((name: string, descriptor: any) => {
       if (
-        descriptor.options.hasOwnProperty("rollback") &&
+        descriptor.options.hasOwnProperty('rollback') &&
         descriptor.options.rollback
       ) {
         // @ts-ignore
@@ -109,7 +117,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
       // @ts-ignore
       const relationship = this.get(relationshipName);
 
-      if (meta.kind === "belongsTo") {
+      if (meta.kind === 'belongsTo') {
         copy.set(relationshipName, relationship);
       }
     });
@@ -124,7 +132,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
   clearRelationships() {
     // @ts-ignore
     this.eachRelationship((relationshipName: string, descriptor: any) => {
-      if (descriptor.kind === "belongsTo") {
+      if (descriptor.kind === 'belongsTo') {
         // @ts-ignore
         this.set(relationshipName, null);
         // @ts-ignore
@@ -175,12 +183,12 @@ export default abstract class MistModel extends ChangeTrackerModel {
     // @ts-ignore
     this.eachRelationship((relationshipName: string, meta: any) => {
       if (relationshipName === relationshipNameToValidate) {
-        if (meta.kind === "belongsTo") {
+        if (meta.kind === 'belongsTo') {
           // @ts-ignore
           const relatedModel = this.get(relationshipName);
           // @ts-ignore
           isValid = relatedModel ? relatedModel.validate() : true;
-        } else if (meta.kind === "hasMany") {
+        } else if (meta.kind === 'hasMany') {
           // @ts-ignore
           const relatedModels = this.get(relationshipName);
           if (relatedModels) {
@@ -222,9 +230,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
   hasRoute(routeName: string): boolean {
     // This property will check if a route exists for this model type based on the name of the model type
     return !isBlank(
-      getOwner(this).lookup(
-        `route:${this.fieldInformation.getModelName(this)}.${routeName}`
-      )
+      getOwner(this).lookup(`route:${this.getRouteName(routeName)}`)
     );
   }
 
@@ -233,6 +239,8 @@ export default abstract class MistModel extends ChangeTrackerModel {
    * @param routeName
    */
   getRouteName(routeName: string): string {
-    return `${this.fieldInformation.getModelName(this)}.${routeName}`;
+    return `${
+      this.baseRoute ?? this.fieldInformation.getModelName(this)
+    }.${routeName}`;
   }
 }
