@@ -388,7 +388,7 @@ export default class Query {
   /**
    * Executes the query, and returns a Promise. Native Ember Data store is used, all fetched models will be loaded in the store
    */
-  fetch(store: Store): Promise<any> {
+  async fetch(store: Store): Promise<any> {
     // First we lookup the default includes and add them to the query
     if (this.includeDefaultIncludes) {
       const defaultIncludes = this.getDefaultIncludes(store);
@@ -417,7 +417,7 @@ export default class Query {
   /**
    * Executes the query for a single record, and returns a Promise. Native Ember Data store is used, all fetched models will be loaded in the store
    */
-  fetchSingle(store: Store): Promise<any> {
+  async fetchRecord(store: Store): Promise<any> {
     // First we lookup the default includes and add them to the query
     if (this.includeDefaultIncludes) {
       const defaultIncludes = this.getDefaultIncludes(store);
@@ -460,7 +460,7 @@ export default class Query {
    * @param store The store you want to push the results in
    * @param endpoint The endpoint you want to fetch from
    */
-  fetchFromEndpoint(
+  async fetchFromEndpoint(
     http: HttpService,
     store: Store,
     endpoint: string,
@@ -497,6 +497,43 @@ export default class Query {
           }
 
           return models;
+        });
+      });
+  }
+  
+  /**
+   * This method can be called when you want to fetch a single record from an endpoint different than
+   * the model endpoint. using fetch or fetchRecord the ModelStore is used to define the endpoint
+   * But this method you can use a custom endpoint. This can be useful for:
+   *  - An model that can be queried from 2 different endpoints
+   *  - An endpoint returning multiple types of models
+   * The difference beweteen fetchFromEndpoint and fetchRecordFromEndpoint is that this method returns a single model
+   * instead of an Array of models
+   *
+   * @param http The HTTP service to use for the fetch
+   * @param store The store you want to push the results in
+   * @param endpoint The endpoint you want to fetch from
+   */
+  async fetchRecordFromEndpoint(
+    http: HttpService,
+    store: Store,
+    endpoint: string,
+    abortController?: AbortController
+  ): Promise<Model|null> {
+    return http
+      .fetch(endpoint, 'GET', undefined, this.queryParams, abortController)
+      .then((response: Response) => {
+        this.results.resetValues();
+
+        return response.json().then((results) => {
+          if (results.data?.id && results.data?.type) {
+            // Lets push the results in the store
+            store.pushPayload(results);
+
+            return <Model>store.peekRecord(results.data.type, results.data.id);
+          }
+
+          return null;
         });
       });
   }
