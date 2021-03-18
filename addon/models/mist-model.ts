@@ -7,6 +7,7 @@ import { inject as service } from '@ember/service';
 import { loadableModel } from '@getflights/ember-mist-components/decorators/loadable-model';
 import ChangeTrackerModel from './change-tracker-model';
 import JSONAPISerializer from '@ember-data/serializer/json-api';
+import Route from '@ember/routing/route';
 
 @loadableModel
 export default abstract class MistModel extends ChangeTrackerModel {
@@ -229,9 +230,15 @@ export default abstract class MistModel extends ChangeTrackerModel {
    */
   hasRoute(routeName: string): boolean {
     // This property will check if a route exists for this model type based on the name of the model type
-    return !isBlank(
-      getOwner(this).lookup(`route:${this.getRouteName(routeName)}`)
-    );
+    return !isBlank(this.getRoute(routeName));
+  }
+
+  /**
+   * Lookup a route in the DI container
+   * @param routeName the sub route for this model you want to lookup
+   */
+  getRoute(routeName: string): Route | undefined {
+    return getOwner(this).lookup(`route:${this.getRouteName(routeName)}`);
   }
 
   /**
