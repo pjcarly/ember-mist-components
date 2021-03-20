@@ -1,6 +1,6 @@
-import Route from "@ember/routing/route";
-import Controller from "@ember/controller";
-import Transition from "@ember/routing/-private/transition";
+import Route from '@ember/routing/route';
+import Controller from '@ember/controller';
+import Transition from '@ember/routing/-private/transition';
 
 export default class ResetModelRoute extends Route {
   // @ts-ignore
