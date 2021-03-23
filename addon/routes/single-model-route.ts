@@ -20,17 +20,16 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
   defaultIncludes: string[] = [];
   includeLimits?: Map<string, number>;
 
-  beforeModel(transition: Transition) {
+  async beforeModel(transition: Transition) {
     this.session.requireAuthentication(transition, 'login');
-    // @ts-ignore
-    super.beforeModel(...arguments);
+    return super.beforeModel(transition);
   }
 
   /**
    * The model hook with functionality for single entities
    * @param params The router params
    */
-  model(params: SingleModelRouteModelParams) {
+  async model(params: SingleModelRouteModelParams) {
     const modelDefaultIncludes = this.fieldInformation.getDefaultIncludes(
       this.modelName
     );

@@ -1,5 +1,5 @@
 import Service from "@ember/service";
-import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import Model from "@ember-data/model";
 import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
@@ -48,7 +48,7 @@ export default class RecentlyViewedService extends Service {
    * Add a model to the recently viewed records
    * @param model The model you want to add
    */
-  addRecentlyViewed(model: DrupalModel): void {
+  addRecentlyViewed(model: Model): void {
     if (!isBlank(model)) {
       let newRecentlyViewedRecord = {
         type: this.fieldInformation.getModelName(model),
