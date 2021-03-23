@@ -49,7 +49,11 @@
               />
             </td>
             <td>
-              <button class="btn btn-icon" type="button">
+              <button
+                class="btn btn-icon"
+                type="button"
+                {{on "click" (fn this.deleteOrder order)}}
+              >
                 <IconRemove />
               </button>
             </td>
