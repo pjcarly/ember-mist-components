@@ -21,7 +21,7 @@
       {{/if}}
     </button>
   {{else if @targetRoute}}
-    <button
+    <a
       id={{@id}}
       class="action-menu__link"
       type="button"
@@ -39,7 +39,7 @@
           {{@count}}
         </i>
       {{/if}}
-    </button>
+    </a>
   {{else}}
     {{yield}}
   {{/if}}
