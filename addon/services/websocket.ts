@@ -96,13 +96,7 @@ export default class WebsocketService extends Service {
     let socket = this.socket;
 
     if (!socket) {
-      if (this.accessToken) {
-        socket = this.websockets.socketFor(
-          `${this.endpoint}?access_token=${this.accessToken}`
-        );
-      } else {
-        socket = this.websockets.socketFor(this.endpoint);
-      }
+      socket = this.websockets.socketFor(this.endpoint);
       socket.on('open', this.connectionOpened);
       socket.on('message', this.messageReceived);
       socket.on('close', this.connectionClosed);
