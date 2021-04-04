@@ -45,7 +45,7 @@ export interface MessageInterface {
   meta: {
     type: string;
   };
-  data?: MessageBodyInterface;
+  data?: MessageBodyInterface | MessageBodyInterface[];
 }
 
 export default class WebsocketService extends Service {

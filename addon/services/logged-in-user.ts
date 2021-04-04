@@ -46,7 +46,6 @@ export default class LoggedInUserService extends Service {
         .loadRecord("user", userId, options)
         .then((user: UserModel) => {
           this.user = user;
-          taskFor(this.websocket.startConnecting).perform();
         })
         .catch((_: any) => {
           this.logOut();
@@ -56,7 +55,7 @@ export default class LoggedInUserService extends Service {
 
   @dropTask
   async signOut() {
-    this.websocket.closeConnection();
+    this.websocket.unauthenticate();
     await this.session.invalidate();
     this.user = undefined;
     this.store.unloadAll("user");
