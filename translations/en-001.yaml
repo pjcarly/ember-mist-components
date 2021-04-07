@@ -3,6 +3,9 @@ ember-attribute-validations:
   validPhone: "{label} is an invalid phone number"
   requiredAddress: "{label} is required"
   conditionalRequired: "{label} is required"
+label:
+  generate: Generate
+  generating: Generating
 ember-mist-components:
   labels:
     automatically_generated: "Automatically generated"

@@ -8,9 +8,9 @@
     {{yield this.generatePdf}}
   {{else}}
     {{#if this.generatePdf.isIdle}}
-      Generate
+      {{t "label.generate"}}
     {{else}}
-      Generating
+      {{t "label.generating"}}
       <Loading />
     {{/if}}
   {{/if}}
