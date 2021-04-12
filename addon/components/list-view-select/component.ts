@@ -1,18 +1,18 @@
-import Component from "@glimmer/component";
-import Store from "@ember-data/store";
-import Query from "@getflights/ember-mist-components/query/Query";
-import Condition from "@getflights/ember-mist-components/query/Condition";
-import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import ListViewService from "@getflights/ember-mist-components/services/list-view";
-import MutableArray from "@ember/array/mutable";
-import { dropTask } from "ember-concurrency-decorators";
-import { inject as service } from "@ember/service";
-import { action } from "@ember/object";
-import { assert } from "@ember/debug";
-import { isBlank } from "@ember/utils";
-import { A } from "@ember/array";
-import { taskFor } from "ember-concurrency-ts";
-import { tracked } from "@glimmer/tracking";
+import Component from '@glimmer/component';
+import Store from '@ember-data/store';
+import Query from '@getflights/ember-mist-components/query/Query';
+import Condition from '@getflights/ember-mist-components/query/Condition';
+import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
+import ListViewService from '@getflights/ember-mist-components/services/list-view';
+import MutableArray from '@ember/array/mutable';
+import { dropTask } from 'ember-concurrency-decorators';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
+import { assert } from '@ember/debug';
+import { isBlank } from '@ember/utils';
+import { A } from '@ember/array';
+import { taskFor } from 'ember-concurrency-ts';
+import { tracked } from '@glimmer/tracking';
 
 interface Arguments {
   modelName: string;
@@ -30,7 +30,7 @@ export default class ListViewSelectComponent extends Component<Arguments> {
 
   constructor(owner: any, args: Arguments) {
     super(owner, args);
-    assert("Grouping cannot be blank", !isBlank(args.grouping));
+    assert('Grouping cannot be blank', !isBlank(args.grouping));
     taskFor(this.setListViews).perform();
   }
 
@@ -44,11 +44,11 @@ export default class ListViewSelectComponent extends Component<Arguments> {
     );
 
     const foundSelectOption = this.listViewSelectOptionsComputed.findBy(
-      "value",
+      'value',
       selection
     );
     if (isBlank(foundSelectOption)) {
-      selection = "All";
+      selection = 'All';
     }
 
     return selection;
@@ -68,12 +68,13 @@ export default class ListViewSelectComponent extends Component<Arguments> {
 
     // Lets add the default List View
     foundListViews.push({
-      label: this.intl.t("label.all"),
-      value: "All",
+      label: this.intl.t('label.all'),
+      value: 'All',
     });
 
-    const query = new Query("list-view");
-    query.addCondition(new Condition("grouping", "=", this.args.grouping));
+    const query = new Query('list-view');
+    query.addCondition(new Condition('grouping', '=', this.args.grouping));
+    query.setLimit(50);
 
     await query.fetch(this.store).then((listViews) => {
       listViews.forEach((listView: any) => {

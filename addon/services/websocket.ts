@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { alias } from '@ember/object/computed';
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency-decorators';
 import { timeout } from 'ember-concurrency';
 import { debug } from '@ember/debug';
@@ -9,27 +8,44 @@ import { getOwner } from '@ember/application';
 import { OpenEvent, CloseEvent, ErrorEvent, MessageEvent } from 'ws';
 import { taskFor } from 'ember-concurrency-ts';
 import SessionService from 'ember-simple-auth/services/session';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 
 export enum Status {
   OFFLINE = 'OFFLINE',
   CONNECTING = 'CONNECTING',
   ONLINE = 'ONLINE',
+  AUTHENTICATED = 'AUTHENTICATED'
 }
 
 export enum Event {
   OPEN = 'open',
   CLOSE = 'close',
   ERROR = 'error',
+  AUTHENTICATED = 'authenticated',
+  UNAUTHENTICATED = 'unauthenticated',
 }
 
-export interface MessageBodyInterface {}
+export interface MessageBodyInterface {
+  type: string;
+  id?: string | number;
+  attributes?: {
+    [key: string]: any;
+  };
+  relationships?: {
+    [key: string]: {
+      data: {
+        type: string;
+        id: string | number;
+      };
+    };
+  };
+}
 
 export interface MessageInterface {
   meta: {
     type: string;
   };
-  data?: MessageBodyInterface;
+  data?: MessageBodyInterface | MessageBodyInterface[];
 }
 
 export default class WebsocketService extends Service {
@@ -39,6 +55,7 @@ export default class WebsocketService extends Service {
   @tracked socket?: any;
   @tracked status: string = Status.OFFLINE;
   @tracked manuallyClosed: boolean = false;
+  @tracked authenticateAutomatically = true;
   @tracked reconnectAttempts: number = 0;
 
   private subscriptions = new Map<Event, Set<() => void>>();
@@ -47,10 +64,16 @@ export default class WebsocketService extends Service {
     Set<(message: MessageInterface) => void>
   >();
 
-  @alias('session.data.authenticated.access_token')
-  accessToken!: string;
+  constructor() {
+    super(...arguments);
 
-  @computed()
+    this.session.on('authenticationSucceeded', this.sessionAuthenticated);
+    this.subscribe(Event.OPEN, this.sessionAuthenticated);
+    this.subscribeForMessage('authenticated', this.websocketAuthenticated);
+    this.subscribeForMessage('unauthenticated', this.websocketUnAuthenticated);
+  }
+
+  @cached
   get config(): any {
     return getOwner(this).resolveRegistration('config:environment');
   }
@@ -96,22 +119,15 @@ export default class WebsocketService extends Service {
     let socket = this.socket;
 
     if (!socket) {
-      if (this.accessToken) {
-        socket = this.websockets.socketFor(
-          `${this.endpoint}?access_token=${this.accessToken}`
-        );
-      } else {
-        socket = this.websockets.socketFor(this.endpoint);
-      }
+      socket = this.websockets.socketFor(this.endpoint);
       socket.on('open', this.connectionOpened);
       socket.on('message', this.messageReceived);
       socket.on('close', this.connectionClosed);
       socket.on('error', this.connectionErrored);
+      this.socket = socket;
     } else {
       socket.reconnect();
     }
-
-    this.socket = socket;
   }
 
   /**
@@ -185,10 +201,78 @@ export default class WebsocketService extends Service {
    */
   public unsubscribeForMessage(
     messageType: string,
-    callback: (message: MessageBodyInterface) => void
+    callback: (message: MessageInterface) => void
   ) {
     if (this.messageSubscriptions.has(messageType)) {
       this.messageSubscriptions.get(messageType)?.delete(callback);
+    }
+  }
+
+  /**
+   * This method sends the authenticate message over the socket
+   * In order to have the connection authenticated.
+   * This only works when an authenticated session & access_token is present
+   * And the websocket connection is open
+   */
+  public authenticate(): void {
+    if (
+      this.session.data?.authenticated.access_token &&
+      this.status === Status.ONLINE
+    ) {
+      const message: AuthenticateMessage = {
+        meta: {
+          type: 'authenticate',
+        },
+        data: {
+          type: 'authentication-message',
+          attributes: {
+            type: 'bearer',
+            authorization: this.session.data.authenticated.access_token,
+          },
+        },
+      };
+
+      this.sendMessage(message);
+    }
+  }
+
+  /**
+   * Unauthenticates the websocket connection
+   */
+  public unauthenticate(): void {
+    const message: UnAuthenticateMessage = {
+      meta: {
+        type: 'unauthenticate',
+      },
+    };
+
+    this.sendMessage(message);
+  }
+
+  @action
+  protected websocketAuthenticated(_message: AuthenticatedMessage) {
+    this.status = Status.AUTHENTICATED;
+    this.subscriptions.get(Event.AUTHENTICATED)?.forEach((callback) => {
+      callback();
+    });
+  }
+
+  @action
+  protected websocketUnAuthenticated(_message: UnAuthenticatedMessage) {
+    this.status = Status.ONLINE;
+    this.subscriptions.get(Event.UNAUTHENTICATED)?.forEach((callback) => {
+      callback();
+    });
+  }
+
+  /**
+   * Callback that will be invoked when the session service successfully authenticates
+   * This way we can check if we need to authenticate over the socket
+   */
+  @action
+  protected sessionAuthenticated() {
+    if (this.authenticateAutomatically) {
+      this.authenticate();
     }
   }
 
@@ -236,4 +320,36 @@ export default class WebsocketService extends Service {
       callback();
     });
   }
+}
+
+export interface UnAuthenticateMessage extends MessageInterface {
+  meta: {
+    type: 'unauthenticate';
+  };
+}
+
+export interface AuthenticateMessage extends MessageInterface {
+  data: AuthenticateMessageBody;
+  meta: {
+    type: 'authenticate';
+  };
+}
+
+export interface AuthenticateMessageBody extends MessageBodyInterface {
+  attributes: {
+    authorization: string;
+    type: 'bearer';
+  };
+}
+
+export interface AuthenticatedMessage extends MessageInterface {
+  meta: {
+    type: 'authenticated';
+  };
+}
+
+export interface UnAuthenticatedMessage extends MessageInterface {
+  meta: {
+    type: 'unauthenticated';
+  };
 }
