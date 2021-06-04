@@ -65,7 +65,7 @@ export default class AddressService extends Service {
     }
 
     await this.http
-      .fetch(`${this.http.endpoint}address/address/countries/selectoptions`)
+      .fetch(`${this.http.endpoint}address/countries/selectoptions`)
       .then((response) => {
         return response.json().then((data) => {
           countrySelectOptions = <SelectOption[]>data;
@@ -110,7 +110,7 @@ export default class AddressService extends Service {
     }
 
     await this.http
-      .fetch(`${this.http.endpoint}address/address/format/${countryCode}`)
+      .fetch(`${this.http.endpoint}address/format/${countryCode}`)
       .then((response) => {
         return response.json().then((data) => {
           foundAddressFormat = data;
@@ -158,7 +158,7 @@ export default class AddressService extends Service {
 
     await this.http
       .fetch(
-        `${this.http.endpoint}address/address/subdivisions/${parentGrouping}`
+        `${this.http.endpoint}address/subdivisions/${parentGrouping}`
       )
       .then((response) => {
         return response.json().then((body) => {
