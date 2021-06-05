@@ -167,11 +167,11 @@ export default class InputFileDrupalComponent extends BaseInput<FileDrupalArgume
           }
 
           let errorMessage = 'File upload failed';
-          if (error.responseJSON) {
-            if ('error_description' in error.responseJSON) {
-              errorMessage = error.responseJSON.error_description;
-            } else if ('error' in error.responseJSON) {
-              errorMessage = error.responseJSON.error;
+          if (error?.body?.errors && Array.isArray(error.body.errors) && error.body.errors.length > 0) {
+            if ('detail' in error.body.errors[0]) {
+              errorMessage = error.body.errors[0].detail;
+            } else if ('code' in error.body.errors[0]) {
+              errorMessage = error.body.errors[0].code;
             }
           }
 
