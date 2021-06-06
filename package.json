@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -88,7 +88,7 @@
     "@getflights/ember-field-components": "^3.0.0",
     "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.2",
-    "bootstrap.native": "^3.0.10",
+    "bootstrap.native": "3.0.14",
     "ember-auto-import": "^1.5.3",
     "ember-cached-decorator-polyfill": "^0.1.1",
     "ember-cli-babel": "^7.19.0",
