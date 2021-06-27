@@ -14,6 +14,10 @@ export default class ValidatorService extends Service {
   validatorsFor(attribute: AttributeInterface) {
     const validators = super.validatorsFor(attribute);
 
+    if(!attribute.isAttribute) {
+      return validators;
+    }
+
     switch (attribute.type) {
       case "url":
         validators.push(
