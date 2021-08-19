@@ -71,32 +71,35 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
     // Only if this serializer has attrs (needed by EmbeddedRecordsMixin)
     // If the payload doesn't include anything, we ignore this (just the model was returned, no includes)
     if (!isBlank(attrs)) {
-      // If the ID was provided, it means that it is an update, and we must do some logic.
-      if (!isBlank(id)) {
-        // We check the relationships that should be embedded, when they are of type hasMany
-        // We will check the response, and unload all missing models in the response from the store
-        // Models who aren't present are considered deleted in the backend, and should be removed locally
-        let relationshipsToCheck: any = {};
-        const relationshipsByName = get(
-          primaryModelClass,
-          "relationshipsByName"
-        );
-        for (const relationshipName in attrs) {
-          if (
-            attrs.hasOwnProperty(relationshipName) &&
-            attrs[relationshipName].hasOwnProperty("embedded") &&
-            attrs[relationshipName].embedded === "always" &&
-            relationshipsByName.has(relationshipName)
-          ) {
-            const relationship = relationshipsByName.get(relationshipName);
+      // We check the relationships that should be embedded, when they are of type hasMany
+      // We will check the response, and unload all missing models in the response from the store
+      // Models who aren't present are considered deleted in the backend, and should be removed locally
+      let relationshipsToCheck: any = {};
+      const relationshipsByName = get(
+        primaryModelClass,
+        "relationshipsByName"
+      );
+      for (const relationshipName in attrs) {
+        if (
+          attrs.hasOwnProperty(relationshipName) &&
+          attrs[relationshipName].hasOwnProperty("embedded") &&
+          attrs[relationshipName].embedded === "always" &&
+          relationshipsByName.has(relationshipName)
+        ) {
+          const relationship = relationshipsByName.get(relationshipName);
 
-            // Only hasMany are checked, this has no meaning for belongsTo
-            if (relationship.kind === "hasMany") {
-              relationshipsToCheck[relationship.type] = relationship;
-            }
+          // Only hasMany are checked, this has no meaning for belongsTo
+          if (relationship.kind === "hasMany") {
+            relationshipsToCheck[relationship.type] = relationship;
+
+            // Fix for when initial saves causes errors in the fragment adapter.
+            store.unloadAll(relationship.type);
           }
         }
+      }
 
+      // If the ID was provided, it means that it is an update, and we must do some logic.
+      if (!isBlank(id)) {
         // Now we'll get the ids included per type from the response
         let idsPerType: any = {};
         if (payload.hasOwnProperty("included")) {
