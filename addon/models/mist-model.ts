@@ -68,6 +68,8 @@ export default abstract class MistModel extends ChangeTrackerModel {
 
   /**
    * Rollbacks all dirty attributes, and possible child models that are dirty
+   * @important See the commennts on change-tracker-model to fully understand 
+   *            how rollback and change tracking relationships work together.
    */
   rollback() {
     // We override the rollback method provided by the ember-data-change-tracker

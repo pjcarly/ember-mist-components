@@ -5,6 +5,16 @@ import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
 
+// @important Change Tracking hasMany is tricky
+// Default it is disabled, so you have to explicitly turn on tracking for hasMany, but keep in mind the following gotchas
+// - If you have a multi-entity-reference field on an entity, that field is a hasMany relationship in Ember
+//   because it is not tracked by default, if you navigate away from an edit, any dirty changes on that field will not be rolled back
+// - If you enable hasMany tracking, all hasMany relationships will be tracked on that model, and will thus be rolled back if you navigate away
+//   this also means that if for example you have a modelTableRelated, on a object, and you click on the "new" button, because you navigate to 
+//   the new edit page, the hasMany of that modelTableRelated will also be rolled back, and the new relationship will not be filled in,
+// - There is another final option in changeTracker, "only", with only you must explicitly define which relationships to track,
+//   that way you can define which hasMany relationship to keep track of, but very important, you must also include all the belongsTo relationships
+//   on that object, because belongsTo is tracked by default, but when you use "only", it only tracks the belongsTo relationships defined in "only"
 export default abstract class ChangeTrackerModel extends ValidationModel {
   @service store!: Store;
 
