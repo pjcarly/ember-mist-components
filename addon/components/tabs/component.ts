@@ -32,7 +32,7 @@ export default class TabsComponent extends Component<Arguments> {
     return this.tabs.getSelectedTabFor(this.args.id) ?? this.args.default;
   }
 
-  setAactiveTab(activeTab: string) : void {
+  setActiveTab(activeTab: string) : void {
     return this.tabs.setSelectedTabFor(this.args.id, activeTab);
   }
 }

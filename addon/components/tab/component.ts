@@ -23,6 +23,6 @@ export default class TabComponent extends Component<Arguments> {
 
   @action
   setActive() {
-    this.args.tabs.setAactiveTab(this.args.id);
+    this.args.tabs.setActiveTab(this.args.id);
   }
 }
