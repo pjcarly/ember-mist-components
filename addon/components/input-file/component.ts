@@ -7,6 +7,10 @@ import { guidFor } from "@ember/object/internals";
 
 export interface FileArguments extends Arguments {
   multiple?: boolean;
+  /**
+   * HTML attribute accept: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept
+   */
+  accept?: string;
 }
 
 export default class InputFileComponent extends BaseInput<FileArguments> {
