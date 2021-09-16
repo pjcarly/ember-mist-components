@@ -5,6 +5,8 @@ import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 // @ts-ignore
 import Modal from "bootstrap.native/dist/components/modal-native.esm.js";
+import type RouterService from '@ember/routing/router-service';
+import Transition from "@ember/routing/-private/transition";
 
 export interface YieldedComponent {
   /**
@@ -31,7 +33,7 @@ export interface Arguments {
 }
 
 export default class ModalComponent<T extends Arguments> extends Component<T> {
-  @service router!: any;
+  @service router!: RouterService;
 
   @tracked private modalVisible: boolean = false;
   @tracked private modal?: Modal;
@@ -45,7 +47,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
     }
 
     if (this.closeOnRouteChange) {
-      this.router.on("routeWillChange", (_: TransitionEvent) => {
+      this.router.on("routeWillChange", (_: Transition) => {
         this.closeModal();
       });
     }

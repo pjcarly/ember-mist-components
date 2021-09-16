@@ -1,9 +1,10 @@
 import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import swal from "sweetalert2";
+import type IntlService from 'ember-intl/services/intl';
 
 export default class DialogService extends Service {
-  @service intl!: any;
+  @service intl!: IntlService;
 
   async confirm(message?: string, title?: string): Promise<boolean> {
     return swal

@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
 import ListViewModel from '@getflights/ember-mist-components/models/list-view';
+import type RouterService from '@ember/routing/router-service';
 
 // A ModelListview is an object that can be defined as a static POJO on the Model itself
 export interface ListViewInterface {
@@ -19,7 +20,7 @@ export interface ListViewInterface {
 export default class ListViewService extends Service {
   @service store!: Store;
   @service storage!: any;
-  @service router!: any;
+  @service router!: RouterService;
   @service fieldInformation!: FieldInformationService;
 
   /**
@@ -80,8 +81,8 @@ export default class ListViewService extends Service {
     assert(
       `No list view (${listViewName}) defined on the modelclass ${modelName}`,
       modelClass.hasOwnProperty('settings') &&
-        modelClass.settings.hasOwnProperty('listViews') &&
-        modelClass.settings.listViews.hasOwnProperty(listViewName)
+      modelClass.settings.hasOwnProperty('listViews') &&
+      modelClass.settings.listViews.hasOwnProperty(listViewName)
     );
     return modelClass.settings.listViews[listViewName];
   }

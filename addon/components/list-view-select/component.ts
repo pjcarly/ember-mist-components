@@ -13,6 +13,8 @@ import { isBlank } from '@ember/utils';
 import { A } from '@ember/array';
 import { taskFor } from 'ember-concurrency-ts';
 import { tracked } from '@glimmer/tracking';
+import type IntlService from 'ember-intl/services/intl';
+import type RouterService from '@ember/routing/router-service';
 
 interface Arguments {
   modelName: string;
@@ -22,8 +24,8 @@ interface Arguments {
 
 export default class ListViewSelectComponent extends Component<Arguments> {
   @service store!: Store;
-  @service router!: any;
-  @service intl!: any;
+  @service router!: RouterService;
+  @service intl!: IntlService;
   @service listView!: ListViewService;
 
   @tracked listViewSelectOptions: SelectOption[] = [];

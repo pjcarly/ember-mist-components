@@ -7,6 +7,7 @@ import { isArray } from "@ember/array";
 import { action } from "@ember/object";
 import Query from "@getflights/ember-mist-components/query/Query";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
+import type IntlService from 'ember-intl/services/intl';
 
 export interface LookupArguments extends Arguments {
   /**
@@ -17,7 +18,7 @@ export interface LookupArguments extends Arguments {
 }
 
 export default class InputLookup extends BaseInput<LookupArguments> {
-  @service intl!: any;
+  @service intl!: IntlService;
   @service fieldInformation!: FieldInformationService;
 
   type = "lookup";
