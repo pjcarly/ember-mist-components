@@ -1,8 +1,8 @@
 import { assert } from "@ember/debug";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import Collapse from "bootstrap.native/dist/components/collapse-native.esm.js";
 
 export interface Arguments {
@@ -18,12 +18,12 @@ export default class AccordionComponent extends Component<Arguments> {
     assert(`Accordion is required on Accorion Item`, args.accordion);
   }
 
-  @computed()
+  @cached
   get bodyId(): string {
     return `${guidFor(this)}-body`;
   }
 
-  @computed()
+  @cached
   get headingId(): string {
     return `${guidFor(this)}-heading`;
   }

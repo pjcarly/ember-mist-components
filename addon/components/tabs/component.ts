@@ -1,9 +1,9 @@
 import { assert } from "@ember/debug";
-import { computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import TabsService from "@getflights/ember-mist-components/services/tabs";
+import { cached } from "@glimmer/tracking";
 
 export interface Arguments {
   default: string;
@@ -23,7 +23,7 @@ export default class TabsComponent extends Component<Arguments> {
     }
   }
 
-  @computed()
+  @cached
   get bodyId(): string {
     return `${guidFor(this)}-body`;
   }
@@ -32,7 +32,7 @@ export default class TabsComponent extends Component<Arguments> {
     return this.tabs.getSelectedTabFor(this.args.id) ?? this.args.default;
   }
 
-  setActiveTab(activeTab: string) : void {
+  setActiveTab(activeTab: string): void {
     return this.tabs.setSelectedTabFor(this.args.id, activeTab);
   }
 }

@@ -8,6 +8,7 @@ import { loadableModel } from '@getflights/ember-mist-components/decorators/load
 import ChangeTrackerModel from './change-tracker-model';
 import JSONAPISerializer from '@ember-data/serializer/json-api';
 import Route from '@ember/routing/route';
+import { cached } from '@glimmer/tracking';
 
 @loadableModel
 export default abstract class MistModel extends ChangeTrackerModel {
@@ -21,12 +22,12 @@ export default abstract class MistModel extends ChangeTrackerModel {
     return;
   }
 
-  @computed()
+  @cached
   get hasViewRoute(): boolean {
     return this.hasRoute('view');
   }
 
-  @computed()
+  @cached
   get viewRouteName(): string {
     return this.getRouteName('view');
   }
@@ -43,7 +44,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
     return this.errors.length > 0;
   }
 
-  @computed()
+  @cached
   get embeddedRelationships(): string[] {
     const embeddedRelationships: string[] = [];
 
@@ -248,8 +249,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
    * @param routeName
    */
   getRouteName(routeName: string): string {
-    return `${
-      this.baseRoute ?? this.fieldInformation.getModelName(this)
-    }.${routeName}`;
+    return `${this.baseRoute ?? this.fieldInformation.getModelName(this)
+      }.${routeName}`;
   }
 }

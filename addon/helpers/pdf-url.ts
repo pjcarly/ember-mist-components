@@ -1,9 +1,9 @@
 import Helper from "@ember/component/helper";
-import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
+import { cached } from "@glimmer/tracking";
 
 export default class ImageURLHelper extends Helper {
-  @computed()
+  @cached
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }

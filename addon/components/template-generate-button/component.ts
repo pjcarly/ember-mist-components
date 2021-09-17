@@ -1,12 +1,12 @@
 /* global window */
 import Component from "@glimmer/component";
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { getOwner } from "@ember/application";
 import Store from "@ember-data/store";
 import { dropTask } from "ember-concurrency-decorators";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { alias } from "@ember/object/computed";
+import { cached } from "@glimmer/tracking";
 
 interface Arguments {
   model: DrupalModel;
@@ -19,7 +19,7 @@ export default class TemplateGenerateButtonComponent extends Component<
 > {
   @service store!: Store;
 
-  @computed()
+  @cached
   get config() {
     return getOwner(this).resolveRegistration("config:environment");
   }
@@ -42,10 +42,8 @@ export default class TemplateGenerateButtonComponent extends Component<
 
     window.open(
       // @ts-ignore
-      `${this.apiEndpoint}template/generate/${this.args.template.key}?id=${
-        this.args.model.id
-      }&digest=${digest}${
-        this.args.language ? `&lang=${this.args.language}` : ""
+      `${this.apiEndpoint}template/generate/${this.args.template.key}?id=${this.args.model.id
+      }&digest=${digest}${this.args.language ? `&lang=${this.args.language}` : ""
       }`,
       "_blank"
     );

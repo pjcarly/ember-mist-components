@@ -1,8 +1,8 @@
 import Component from "@glimmer/component";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { inject as service } from "@ember/service";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 // @ts-ignore
 import Modal from "bootstrap.native/dist/components/modal-native.esm.js";
 import type RouterService from '@ember/routing/router-service';
@@ -57,7 +57,7 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
     return this.args.dialogClass ?? "modal-dialog-centered";
   }
 
-  @computed()
+  @cached
   get modalId(): string {
     return `${guidFor(this)}-modal`;
   }
@@ -82,7 +82,6 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
     return `${this.modalId}-trigger`;
   }
 
-  @computed("modalVisible")
   get status(): string {
     return this.modalVisible ? "visible" : "hidden";
   }

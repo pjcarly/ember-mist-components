@@ -1,5 +1,5 @@
 import { task } from 'ember-concurrency-decorators';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { dasherize } from '@ember/string';
 import { htmlSafe } from '@ember/template';
@@ -15,6 +15,7 @@ import ToastService from '@getflights/ember-mist-components/services/toast';
 import FileQueueService from 'ember-file-upload/services/file-queue';
 import Queue from 'ember-file-upload/queue';
 import { assert } from '@ember/debug';
+import { cached } from '@glimmer/tracking';
 
 export interface FileDrupalArguments extends Arguments {
   options: FileDrupalOptionsArgument;
@@ -103,7 +104,7 @@ export default class InputFileDrupalComponent extends BaseInput<FileDrupalArgume
     }
   }
 
-  @computed()
+  @cached
   get httpHeaders(): Map<string, string> {
     const returnValue = new Map();
     const httpHeaders = this.http.headers;

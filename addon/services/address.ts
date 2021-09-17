@@ -2,12 +2,11 @@ import Service from "@ember/service";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { inject as service } from "@ember/service";
 import { enqueueTask } from "ember-concurrency-decorators";
-import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
 import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 import { isBlank } from "@ember/utils";
 import HttpService from "./http";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 
 export default class AddressService extends Service {
   @service storage!: any;
@@ -21,17 +20,16 @@ export default class AddressService extends Service {
   addressFormats: Map<string, any> = new Map();
   subdivisionSelectOptions: Map<string, SelectOption[]> = new Map();
 
-  @computed("config")
   get apiEndpoint(): string {
     return this.config.apiEndpoint;
   }
 
-  @computed()
+  @cached
   get config(): any {
     return getOwner(this).resolveRegistration("config:environment");
   }
 
-  @computed("config")
+  @cached
   get shouldCache(): boolean {
     if (
       this.config.hasOwnProperty("ember-mist-components") &&

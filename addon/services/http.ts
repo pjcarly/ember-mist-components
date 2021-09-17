@@ -9,6 +9,7 @@ import qs from "qs";
 import AuthStoreService from "@getflights/ember-mist-components/services/auth-store";
 import SessionService from "ember-simple-auth/services/session";
 import JSONAPIAdapter from "@ember-data/adapter/json-api";
+import { cached } from "@glimmer/tracking";
 
 export default class HttpService extends Service {
   @service session!: SessionService;
@@ -72,7 +73,7 @@ export default class HttpService extends Service {
   /**
    * We set the host from the config
    */
-  @computed()
+  @cached
   get host() {
     const config = getOwner(this).resolveRegistration("config:environment");
     return config.apiHost;
@@ -81,7 +82,7 @@ export default class HttpService extends Service {
   /**
    * Get the endpoint from the config
    */
-  @computed()
+  @cached
   get endpoint() {
     const config = getOwner(this).resolveRegistration("config:environment");
     return config.apiEndpoint;

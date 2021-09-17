@@ -8,7 +8,7 @@ import BelongsToFilterInterface from "@getflights/ember-mist-components/interfac
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import Model from "@ember-data/model";
 import { dropTask } from "ember-concurrency-decorators";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";
 import { inject as service } from "@ember/service";
@@ -17,7 +17,7 @@ import Query from "@getflights/ember-mist-components/query/Query";
 import { isArray } from "@ember/array";
 import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 import { taskFor } from "ember-concurrency-ts";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 
 export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -64,7 +64,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
     );
   }
 
-  @computed()
+  @cached
   get isPolymorphic(): boolean {
     const options = <BelongsToFieldOptionsInterface>this.fieldOptions;
     return (

@@ -1,7 +1,8 @@
 import Component from "@glimmer/component";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import Dropdown from "bootstrap.native/dist/components/dropdown-native.esm.js";
+import { cached } from "@glimmer/tracking";
 
 export interface Arguments {
   iconComponent?: Component;
@@ -10,12 +11,12 @@ export interface Arguments {
 export default class MenuDropdownComponent extends Component<Arguments> {
   bootstrapDropdown?: Dropdown;
 
-  @computed()
+  @cached
   get dropdownElementId(): string {
     return `${guidFor(this)}-dropdown`;
   }
 
-  @computed()
+  @cached
   get ariaId(): string {
     return `${guidFor(this)}-trigger`;
   }

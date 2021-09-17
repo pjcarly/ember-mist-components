@@ -1,16 +1,17 @@
 import OutputFieldComponent from "@getflights/ember-field-components/components/output-field/component";
 import Image from "@getflights/ember-mist-components/interfaces/image";
-import { computed, action } from "@ember/object";
+import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { OutputFieldImageArguments } from "../output-field-image/component";
 import Carousel from "bootstrap.native/dist/components/carousel-native.esm.js";
+import { cached } from "@glimmer/tracking";
 
 export default class OutputFieldImagesComponent extends OutputFieldComponent<
   OutputFieldImageArguments
 > {
   carousel!: Carousel;
 
-  @computed()
+  @cached
   get carouselName(): string {
     return guidFor(this) + "-carousel";
   }

@@ -2,12 +2,11 @@ import Component from "@glimmer/component";
 import ToastMessage, {
   MessageType,
 } from "@getflights/ember-mist-components/objects/toast-message";
-import { computed } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import ToastService from "@getflights/ember-mist-components/services/toast";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import Toast from "bootstrap.native/dist/components/toast-native.esm.js";
 
 interface Arguments {
@@ -20,7 +19,7 @@ export default class ToastMessageComponent extends Component<Arguments> {
 
   @tracked bootstrapToast?: Toast;
 
-  @computed()
+  @cached
   get toastId(): string {
     return `${guidFor(this)}-toast`;
   }
