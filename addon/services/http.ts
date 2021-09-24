@@ -10,10 +10,15 @@ import AuthStoreService from "@getflights/ember-mist-components/services/auth-st
 import SessionService from "ember-simple-auth/services/session";
 import JSONAPIAdapter from "@ember-data/adapter/json-api";
 import { cached } from "@glimmer/tracking";
+import FieldInformationService from "@getflights/ember-field-components/services/field-information";
+import Store from "@ember-data/store";
+import ModelInterface from "../interfaces/model";
 
 export default class HttpService extends Service {
   @service session!: SessionService;
   @service authStore!: AuthStoreService;
+  @service fieldInformation !: FieldInformationService;
+  @service store !: Store;
 
   fetch(
     path: string,
@@ -29,10 +34,12 @@ export default class HttpService extends Service {
       | null
       | undefined,
     queryParams?: any,
-    abortController?: AbortController
+    abortController?: AbortController,
+    headers?: any
   ): Promise<Response> {
+    const requestHeaders = { ...this.headers, ...headers };
     const options: RequestInit = {
-      headers: this.headers,
+      headers: requestHeaders,
       method: method,
       body: body,
       signal: abortController?.signal,
@@ -68,6 +75,35 @@ export default class HttpService extends Service {
       response.text,
       request
     );
+  }
+
+  /**
+   * Returns an endpoint for a model action
+   */
+  getActionEndpoint(model: ModelInterface, action: string): string {
+    // @ts-ignore
+    const modelName = this.fieldInformation.getModelName(model);
+    // @ts-ignore
+    const adapter = this.store.adapterFor(modelName);
+    // @ts-ignore
+    const baseURL = adapter.buildURL(
+      modelName,
+      // @ts-ignore
+      model.id,
+      // @ts-ignore
+      model._createSnapshot()
+    );
+    let url = baseURL;
+
+    if (action) {
+      if (baseURL.charAt(baseURL.length - 1) === "/") {
+        url = `${baseURL}${action}`;
+      } else {
+        url = `${baseURL}/${action}`;
+      }
+    }
+
+    return url;
   }
 
   /**
