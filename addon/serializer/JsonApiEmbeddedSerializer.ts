@@ -63,8 +63,8 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
   normalizeSaveResponse(
     store: Store,
     primaryModelClass: any,
-    payload: any,
-    id: string | number
+    _payload: any,
+    _id: string | number
   ) {
     const attrs = this.attrs;
 
@@ -97,66 +97,6 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
           }
         }
       }
-
-      // If the ID was provided, it means that it is an update, and we must do some logic.
-      if (!isBlank(id)) {
-        // Now we'll get the ids included per type from the response
-        let idsPerType: any = {};
-        if (payload.hasOwnProperty("included")) {
-          payload.included.forEach((includedPayload: any) => {
-            if (relationshipsToCheck.hasOwnProperty(includedPayload.type)) {
-              if (!idsPerType.hasOwnProperty(includedPayload.type)) {
-                idsPerType[includedPayload.type] = [];
-              }
-
-              idsPerType[includedPayload.type].push(includedPayload.id);
-            }
-          });
-        }
-
-        // Now that we have the relationships we need to check, and the ids returned by the back-end
-        // we can check the localModel's local children for each relationship
-        // see if the ids are present in the response we got from the payload
-        // and unload them if needed
-        if (store.hasRecordForId(primaryModelClass.modelName, id)) {
-          const localModel = store.peekRecord(primaryModelClass.modelName, id);
-          for (const relationshipType in relationshipsToCheck) {
-            const relationship = relationshipsToCheck[relationshipType];
-            const returnedIds = idsPerType.hasOwnProperty(relationshipType)
-              ? idsPerType[relationshipType]
-              : [];
-            const localChildren = localModel.get(relationship.key);
-            // Seriously no idea why the next statement needs toArray(), for some reason the enumerable returned above
-            // Sometimes gave a null value instead of a child while looping it
-            // by first casting it to array, and then looping it, everything worked fine, and all children were found
-            if (!isBlank(localChildren)) {
-              localChildren.toArray().forEach((localChild: DrupalModel) => {
-                // @ts-ignore
-                const childId = localChild.id;
-                // When the local child's id is blank, we also unload the model
-                // this means that the record is newly created locally, and was created in the back-end (as the response is succesful)
-                // but there is no way of mapping the local children with the ids of included records.
-                // we just unload them, and the newly created, included models will just be added to the store later on
-                if (
-                  isBlank(childId) ||
-                  isBlank(returnedIds) ||
-                  !returnedIds.includes(childId)
-                ) {
-                  debug(
-                    // @ts-ignore
-                    `(serializer) Unloading ${localChild.name} because ${
-                      isBlank(childId)
-                        ? "id was blank"
-                        : "id wasn't returned in included hash"
-                    }`
-                  );
-                  store.unloadRecord(localChild);
-                }
-              });
-            }
-          }
-        }
-      }
     }
 
     // @ts-ignore
@@ -166,7 +106,7 @@ export default class JsonApiEmbeddedSerializer extends JSONAPISerializer.extend(
   normalizeDeleteRecordResponse(
     store: Store,
     primaryModelClass: any,
-    _: any,
+    _payload: any,
     id: string
   ) {
     const attrs = this.attrs;
