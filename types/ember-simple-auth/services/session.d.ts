@@ -11,7 +11,6 @@ interface Data {
     expires_in: number;
     refresh_token: string;
     token_type: "Bearer";
-    user_id: string;
   };
 }
 declare module "ember-simple-auth/services/session" {

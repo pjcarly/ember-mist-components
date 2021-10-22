@@ -23,34 +23,29 @@ export default class LoggedInUserService extends Service {
   @alias("session.isAuthenticated") isAuthenticated!: boolean;
 
   /**
-   * Loads the current user from the store, based on the user_id in the OAuth response
+   * Loads the current user from the store
    * @param query Query Params where possible include query parameter will be taken from
    */
   @dropTask
   async loadCurrentUser(query?: Query) {
-    const userId = this.session.data?.authenticated.user_id;
+    let options: any = {};
 
-    if (userId) {
-      let options: any = {};
-
-      if (query) {
-        options = query.queryParams;
-      }
-
-      if (this.user) {
-        this.user.rollback();
-      }
-
-      await this.store
-        // @ts-ignore
-        .loadRecord("user", userId, options)
-        .then((user: UserModel) => {
-          this.user = user;
-        })
-        .catch((_: any) => {
-          this.logOut();
-        });
+    if (query) {
+      options = query.queryParams;
     }
+
+    if (this.user) {
+      this.user.rollback();
+    }
+
+    await this.store
+      .queryRecord("user", options)
+      .then((user: UserModel) => {
+        this.user = user;
+      })
+      .catch((_exception: any) => {
+        this.logOut();
+      });
   }
 
   @dropTask
