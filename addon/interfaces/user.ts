@@ -13,4 +13,5 @@ export default interface UserModelInterface extends DrupalModelInterface {
 
   setNotificationsViewed(): void;
   setAllNotificationsRead(): void;
+  hasPermission(permission: string): boolean;
 }

@@ -2,8 +2,9 @@ import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import Image from "@getflights/ember-mist-components/interfaces/image";
 import { field } from "@getflights/ember-mist-components/decorators/attribute";
 import { assert } from "@ember/debug";
+import UserModelInterface from "@getflights/ember-mist-components/interfaces/user";
 
-export default class UserModel extends DrupalModel {
+export default class UserModel extends DrupalModel implements UserModelInterface {
   @field("string")
   name!: string;
 
@@ -28,12 +29,19 @@ export default class UserModel extends DrupalModel {
   @field("datetime")
   notificationsViewed?: Date;
 
+  @field('multi-select')
+  permissions?: string[];
+
   setNotificationsViewed() {
     assert("Not yet implemented");
   }
 
   setAllNotificationsRead() {
     assert("Not yet implemented");
+  }
+
+  hasPermission(permission: string) {
+    return this.permissions?.includes(permission) ?? false;
   }
 
   /* Relationships */
