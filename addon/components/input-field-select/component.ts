@@ -28,6 +28,8 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
     if (this.selectOptions) {
       this._selectOptions = this.selectOptions;
+    } else if (this.args.options?.selectOptions) {
+      this._selectOptions = this.args.options.selectOptions;
     } else if (
       fieldOptions &&
       fieldOptions.hasOwnProperty("selectOptions") &&
