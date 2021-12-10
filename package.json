@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -116,7 +116,7 @@
     "ember-wormhole": "^0.5.5",
     "intl-tel-input": "^17.0.8",
     "mock-socket": "^9.0.3",
-    "qs": "^6.9.4",
+    "qs": "^6.10.2",
     "query": "^0.2.0",
     "sweetalert2": "^9.14.4",
     "tracked-maps-and-sets": "^2.1.0"
