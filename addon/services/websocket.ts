@@ -55,6 +55,7 @@ export default class WebsocketService extends Service {
   @tracked socket?: any;
   @tracked status: string = Status.OFFLINE;
   @tracked manuallyClosed: boolean = false;
+  @tracked connectionSuspended: boolean = false;
   @tracked authenticateAutomatically = true;
   @tracked reconnectAttempts: number = 0;
 
@@ -71,6 +72,14 @@ export default class WebsocketService extends Service {
     this.subscribe(Event.OPEN, this.sessionAuthenticated);
     this.subscribeForMessage('authenticated', this.websocketAuthenticated);
     this.subscribeForMessage('unauthenticated', this.websocketUnAuthenticated);
+
+    if (this.shouldSuspendConnectionWhenIdle()) {
+      this.listenForInactivePage();
+    }
+  }
+
+  private shouldSuspendConnectionWhenIdle(): boolean {
+    return this.config['ember-mist-components']?.suspendWebsocketWhenIdle ?? false;
   }
 
   @cached
@@ -82,13 +91,24 @@ export default class WebsocketService extends Service {
     return this.config.websocketHost;
   }
 
+  private listenForInactivePage() {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        this.suspendConnection();
+      } else {
+        taskFor(this.startConnecting).perform();
+      }
+    });
+  }
+
   @dropTask
   public async startConnecting() {
     this.manuallyClosed = false;
+    this.connectionSuspended = false;
 
     if (this.endpoint) {
       while (
-        !this.manuallyClosed &&
+        !this.manuallyClosed && !this.connectionSuspended &&
         (!this.socket || !this.websockets.isWebSocketOpen(this.socket.socket))
       ) {
         if (this.reconnectAttempts > 0) {
@@ -97,8 +117,7 @@ export default class WebsocketService extends Service {
           let waitFor = Math.pow(2, exponent) * 1000;
 
           debug(
-            `Attempting to reconnect (${this.reconnectAttempts}) in ${
-              waitFor / 1000
+            `Attempting to reconnect (${this.reconnectAttempts}) in ${waitFor / 1000
             }s`
           );
 
@@ -135,7 +154,17 @@ export default class WebsocketService extends Service {
    */
   public closeConnection() {
     if (this.endpoint && this.socket) {
+      this.connectionSuspended = false;
       this.manuallyClosed = true;
+      this.status = Status.CONNECTING;
+      this.socket.close();
+    }
+  }
+
+  private suspendConnection() {
+    if (this.endpoint && this.socket) {
+      this.manuallyClosed = false;
+      this.connectionSuspended = true;
       this.status = Status.CONNECTING;
       this.socket.close();
     }
@@ -303,7 +332,7 @@ export default class WebsocketService extends Service {
   @action
   protected connectionClosed(_: CloseEvent) {
     this.status = Status.OFFLINE;
-    if (!this.manuallyClosed) {
+    if (!this.manuallyClosed && !this.connectionSuspended) {
       taskFor(this.startConnecting).perform();
     }
     this.subscriptions.get(Event.CLOSE)?.forEach((callback) => {
