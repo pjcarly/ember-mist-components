@@ -72,14 +72,12 @@ export default class WebsocketService extends Service {
     this.subscribe(Event.OPEN, this.sessionAuthenticated);
     this.subscribeForMessage('authenticated', this.websocketAuthenticated);
     this.subscribeForMessage('unauthenticated', this.websocketUnAuthenticated);
-
-    if (this.shouldSuspendConnectionWhenIdle()) {
-      this.listenForInactivePage();
-    }
+    this.listenForInactivePage();
   }
 
   private shouldSuspendConnectionWhenIdle(): boolean {
-    return this.config['ember-mist-components']?.suspendWebsocketWhenIdle ?? false;
+    return !this.session.isAuthenticated &&
+      (this.config['ember-mist-components']?.suspendWebsocketWhenIdle ?? false);
   }
 
   @cached
@@ -92,13 +90,19 @@ export default class WebsocketService extends Service {
   }
 
   private listenForInactivePage() {
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        this.suspendConnection();
-      } else {
-        taskFor(this.startConnecting).perform();
-      }
-    });
+    if (this.shouldSuspendConnectionWhenIdle()) {
+      document.addEventListener('visibilitychange', this.inactivePageChanged.bind(this));
+    } else {
+      document.removeEventListener('visibilitychange', this.inactivePageChanged.bind(this));
+    }
+  }
+
+  private inactivePageChanged() {
+    if (document.visibilityState === 'hidden') {
+      this.suspendConnection();
+    } else {
+      taskFor(this.startConnecting).perform();
+    }
   }
 
   @dropTask
@@ -284,6 +288,8 @@ export default class WebsocketService extends Service {
     this.subscriptions.get(Event.AUTHENTICATED)?.forEach((callback) => {
       callback();
     });
+
+    this.listenForInactivePage();
   }
 
   @action
@@ -292,6 +298,8 @@ export default class WebsocketService extends Service {
     this.subscriptions.get(Event.UNAUTHENTICATED)?.forEach((callback) => {
       callback();
     });
+
+    this.listenForInactivePage();
   }
 
   /**
