@@ -38,6 +38,7 @@ export default class Query {
   @tracked private page: number = 1; // The page of results you want to be on
   @tracked private search?: string;
   @tracked public results = new QueryResults();
+  @tracked public fetchCount = 0;
 
   constructor(modelName: string) {
     this.modelName = modelName;
@@ -403,6 +404,8 @@ export default class Query {
       .then((results: any) => {
         const meta = results.get('meta');
         this.results.resetValues();
+        this.fetchCount++;
+
         this.results.pageCurrent = meta['page-current'] ?? 1;
         this.results.pageCount = meta['page-count'] ?? 1;
         this.results.pageSize = meta['page-size'] ?? 1;
@@ -434,6 +437,7 @@ export default class Query {
       .queryRecord(this.modelName, queryParams)
       .then((result: any) => {
         this.results.resetValues();
+        this.fetchCount++;
 
         if (result) {
           this.results.pageCurrent = 1;
@@ -470,6 +474,7 @@ export default class Query {
       .fetch(endpoint, 'GET', undefined, this.queryParams, abortController)
       .then((response: Response) => {
         this.results.resetValues();
+        this.fetchCount++;
 
         return response.json().then((results) => {
           const models = A<Model>();
@@ -500,7 +505,7 @@ export default class Query {
         });
       });
   }
-  
+
   /**
    * This method can be called when you want to fetch a single record from an endpoint different than
    * the model endpoint. using fetch or fetchRecord the ModelStore is used to define the endpoint
@@ -519,11 +524,12 @@ export default class Query {
     store: Store,
     endpoint: string,
     abortController?: AbortController
-  ): Promise<Model|null> {
+  ): Promise<Model | null> {
     return http
       .fetch(endpoint, 'GET', undefined, this.queryParams, abortController)
       .then((response: Response) => {
         this.results.resetValues();
+        this.fetchCount++;
 
         return response.json().then((results) => {
           if (results.data?.id && results.data?.type) {
