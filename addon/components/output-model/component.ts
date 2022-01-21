@@ -1,6 +1,5 @@
-import BaseOutput from "@getflights/ember-field-components/components/BaseOutput";
+import BaseOutput, { Arguments } from "@getflights/ember-field-components/components/BaseOutput";
 import MistModel from "@getflights/ember-mist-components/models/mist-model";
-import { Arguments } from "../model-table/component";
 
 export interface ModelArguments extends Arguments {
   value?: MistModel;

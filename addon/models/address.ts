@@ -4,7 +4,7 @@ import Store from "@ember-data/store";
 import { attr } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { taskFor } from "ember-concurrency-ts";

@@ -2,7 +2,7 @@ import AddressService from "@getflights/ember-mist-components/services/address";
 import BaseOutput, {
   Arguments,
 } from "@getflights/ember-field-components/components/BaseOutput";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { inject as service } from "@ember/service";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { taskFor } from "ember-concurrency-ts";

@@ -4,6 +4,7 @@ import FieldInformationService from "@getflights/ember-field-components/services
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { computed } from "@ember/object";
+import StorageService from '@getflights/ember-mist-components/services/storage';
 
 export interface RecentlyViewedRecord {
   type: string;
@@ -12,7 +13,7 @@ export interface RecentlyViewedRecord {
 }
 
 export default class RecentlyViewedService extends Service {
-  @service storage!: any;
+  @service storage!: StorageService;
   @service fieldInformation!: FieldInformationService;
 
   /**
@@ -41,7 +42,7 @@ export default class RecentlyViewedService extends Service {
       }
     }
 
-    this.storage.set("recentlyViewedRecords", newRecentlyViewedRecords);
+    this.storage.persist("recentlyViewedRecords", newRecentlyViewedRecords);
   }
 
   /**
@@ -80,7 +81,7 @@ export default class RecentlyViewedService extends Service {
         }
       }
 
-      this.storage.set("recentlyViewedRecords", newRecentlyViewedRecords);
+      this.storage.persist("recentlyViewedRecords", newRecentlyViewedRecords);
     }
   }
 
@@ -89,7 +90,7 @@ export default class RecentlyViewedService extends Service {
    */
   @computed("storage.recentlyViewedRecords.[]")
   get records(): RecentlyViewedRecord[] {
-    let oldRecentlyViewedRecords: RecentlyViewedRecord[] = this.storage.get(
+    let oldRecentlyViewedRecords: RecentlyViewedRecord[] = this.storage.retrieve(
       "recentlyViewedRecords"
     );
     if (isBlank(oldRecentlyViewedRecords)) {

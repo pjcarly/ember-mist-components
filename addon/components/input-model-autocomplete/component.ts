@@ -2,7 +2,7 @@ import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import { action } from "@ember/object";
 import { debug, assert } from "@ember/debug";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { timeout } from "ember-concurrency";
 import Store from "@ember-data/store";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";

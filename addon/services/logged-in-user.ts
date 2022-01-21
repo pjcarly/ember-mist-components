@@ -4,7 +4,7 @@ import Query from "@getflights/ember-mist-components/query/Query";
 import UserModel from "@getflights/ember-mist-components/models/user";
 import { inject as service } from "@ember/service";
 import { alias } from "@ember/object/computed";
-import { dropTask } from "ember-concurrency-decorators";
+import { dropTask } from "ember-concurrency";
 import WebsocketService from "./websocket";
 import { taskFor } from "ember-concurrency-ts";
 import SessionService from "ember-simple-auth/services/session";

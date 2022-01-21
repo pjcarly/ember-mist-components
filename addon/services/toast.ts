@@ -3,7 +3,7 @@ import ToastMessage, {
   MessageType,
 } from "@getflights/ember-mist-components/objects/toast-message";
 import { A } from "@ember/array";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { timeout } from "ember-concurrency";
 import { taskFor } from "ember-concurrency-ts";
 

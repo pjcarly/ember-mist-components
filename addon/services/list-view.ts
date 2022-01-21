@@ -6,6 +6,7 @@ import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
 import ListViewModel from '@getflights/ember-mist-components/models/list-view';
 import type RouterService from '@ember/routing/router-service';
+import StorageService from '@getflights/ember-mist-components/services/storage';
 
 // A ModelListview is an object that can be defined as a static POJO on the Model itself
 export interface ListViewInterface {
@@ -19,7 +20,7 @@ export interface ListViewInterface {
 
 export default class ListViewService extends Service {
   @service store!: Store;
-  @service storage!: any;
+  @service storage!: StorageService;
   @service router!: RouterService;
   @service fieldInformation!: FieldInformationService;
 
@@ -113,7 +114,7 @@ export default class ListViewService extends Service {
     modelName: string,
     routeName: string
   ): string | number {
-    const listViewSelections = this.storage.get('listViewSelections');
+    const listViewSelections = this.storage.retrieve('listViewSelections');
 
     let selection = 'All';
     if (
@@ -152,7 +153,7 @@ export default class ListViewService extends Service {
     selection: number | string,
     route: string
   ): void {
-    let listViewSelections = this.storage.get('listViewSelections');
+    let listViewSelections = this.storage.retrieve('listViewSelections');
 
     if (isBlank(listViewSelections)) {
       listViewSelections = {};
@@ -164,6 +165,6 @@ export default class ListViewService extends Service {
 
     listViewSelections[route][modelName] = selection;
 
-    this.storage.set('listViewSelections', listViewSelections);
+    this.storage.persist('listViewSelections', listViewSelections);
   }
 }

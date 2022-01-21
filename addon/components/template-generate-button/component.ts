@@ -3,7 +3,7 @@ import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import { getOwner } from "@ember/application";
 import Store from "@ember-data/store";
-import { dropTask } from "ember-concurrency-decorators";
+import { dropTask } from "ember-concurrency";
 import DrupalModel from "@getflights/ember-mist-components/models/drupal-model";
 import { alias } from "@ember/object/computed";
 import { cached } from "@glimmer/tracking";

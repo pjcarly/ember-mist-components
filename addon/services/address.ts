@@ -1,15 +1,16 @@
 import Service from "@ember/service";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { inject as service } from "@ember/service";
-import { enqueueTask } from "ember-concurrency-decorators";
+import { enqueueTask } from "ember-concurrency";
 import { getOwner } from "@ember/application";
 import { replaceAll } from "@getflights/ember-field-components/classes/utils";
 import { isBlank } from "@ember/utils";
 import HttpService from "./http";
 import { cached, tracked } from "@glimmer/tracking";
+import StorageService from '@getflights/ember-mist-components/services/storage';
 
 export default class AddressService extends Service {
-  @service storage!: any;
+  @service storage!: StorageService;
   @service http!: HttpService;
 
   /**
@@ -54,7 +55,7 @@ export default class AddressService extends Service {
 
     // We check the localstorage cache
     if (this.shouldCache) {
-      countrySelectOptions = this.storage.get("addressCountrySelectOptions");
+      countrySelectOptions = this.storage.retrieve("addressCountrySelectOptions");
 
       if (countrySelectOptions) {
         this.countrySelectOptions = countrySelectOptions;
@@ -76,7 +77,7 @@ export default class AddressService extends Service {
     this.countrySelectOptions = countrySelectOptions;
 
     if (this.shouldCache) {
-      this.storage.set("addressCountrySelectOptions", countrySelectOptions);
+      this.storage.persist("addressCountrySelectOptions", countrySelectOptions);
     }
 
     return countrySelectOptions;
@@ -99,7 +100,7 @@ export default class AddressService extends Service {
     let foundAddressFormat = undefined;
     if (this.shouldCache) {
       // We check the localstorage for the format, we might have it already
-      foundAddressFormat = this.storage.get(storageKey);
+      foundAddressFormat = this.storage.retrieve(storageKey);
 
       if (foundAddressFormat) {
         this.addressFormats.set(storageKey, foundAddressFormat);
@@ -121,7 +122,7 @@ export default class AddressService extends Service {
     this.addressFormats.set(storageKey, foundAddressFormat);
 
     if (this.shouldCache) {
-      this.storage.set(storageKey, foundAddressFormat);
+      this.storage.persist(storageKey, foundAddressFormat);
     }
 
     return foundAddressFormat;
@@ -144,7 +145,7 @@ export default class AddressService extends Service {
     // Maybe in the local storage
     let selectoptions: SelectOption[] = [];
     if (this.shouldCache) {
-      selectoptions = this.storage.get(cacheKey);
+      selectoptions = this.storage.retrieve(cacheKey);
 
       if (selectoptions) {
         this.subdivisionSelectOptions.set(cacheKey, selectoptions);
@@ -183,7 +184,7 @@ export default class AddressService extends Service {
     this.subdivisionSelectOptions.set(cacheKey, selectoptions);
 
     if (this.shouldCache) {
-      this.storage.set(cacheKey, selectoptions);
+      this.storage.persist(cacheKey, selectoptions);
     }
 
     return selectoptions;

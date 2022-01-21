@@ -6,7 +6,7 @@ import InputPhoneComponent, {
 import intlTelInput from "intl-tel-input";
 import { inject as service } from "@ember/service";
 import PhoneIntlService from "dummy/services/phone-intl";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { taskFor } from "ember-concurrency-ts";
 import AddressService from "dummy/services/address";
 import { tracked } from "@glimmer/tracking";

@@ -1,4 +1,4 @@
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { inject as service } from "@ember/service";
 import AddressService from "@getflights/ember-mist-components/services/address";
 import BaseInput, {

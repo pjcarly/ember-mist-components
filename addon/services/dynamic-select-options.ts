@@ -1,6 +1,6 @@
 import Service from "@ember/service";
 import Store from "@ember-data/store";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
@@ -8,9 +8,10 @@ import SelectOption from "@getflights/ember-field-components/interfaces/SelectOp
 import FieldModel from "@getflights/ember-mist-components/models/field";
 import { isBlank } from "@ember/utils";
 import Query from "@getflights/ember-mist-components/query/Query";
+import StorageService from '@getflights/ember-mist-components/services/storage';
 
 export default class DynamicSelectOptionService extends Service {
-  @service storage!: any;
+  @service storage!: StorageService;
   @service store!: Store;
 
   /**
@@ -42,7 +43,7 @@ export default class DynamicSelectOptionService extends Service {
 
     // first we check if the local storage has the values cached
     const localKey = camelize(`selectoptions_${id}`);
-    const localSelectOptions = <SelectOption[]>this.storage.get(localKey);
+    const localSelectOptions = <SelectOption[]>this.storage.retrieve(localKey);
 
     if (!isBlank(localSelectOptions)) {
       cachedSelectOptions = localSelectOptions;
@@ -65,7 +66,7 @@ export default class DynamicSelectOptionService extends Service {
     }
 
     if (!isBlank(cachedSelectOptions) && isBlank(localSelectOptions)) {
-      this.storage.set(localKey, cachedSelectOptions);
+      this.storage.persist(localKey, cachedSelectOptions);
     }
 
     return cachedSelectOptions;

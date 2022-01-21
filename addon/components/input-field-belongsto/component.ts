@@ -7,7 +7,7 @@ import Condition, {
 import BelongsToFilterInterface from "@getflights/ember-mist-components/interfaces/belongs-to-filters";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import Model from "@ember-data/model";
-import { dropTask } from "ember-concurrency-decorators";
+import { dropTask } from "ember-concurrency";
 import { action } from "@ember/object";
 import { assert } from "@ember/debug";
 import { dasherize } from "@ember/string";

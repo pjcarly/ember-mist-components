@@ -1,7 +1,7 @@
 import OutputFieldSelectComponent from "@getflights/ember-field-components/components/output-field-select/component";
 import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
 import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency-decorators";
+import { task } from "ember-concurrency";
 import { taskFor } from "ember-concurrency-ts";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
 import { OutputFieldArguments } from "@getflights/ember-field-components/components/output-field/component";

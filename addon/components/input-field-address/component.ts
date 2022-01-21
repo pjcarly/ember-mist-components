@@ -4,7 +4,7 @@ import InputFieldComponent, {
 import Address from "@getflights/ember-mist-components/models/address";
 import AddressService from "@getflights/ember-mist-components/services/address";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { task, taskGroup } from "ember-concurrency-decorators";
+import { task, taskGroup } from "ember-concurrency";
 import { isBlank } from "@ember/utils";
 import { isNone } from "@ember/utils";
 import { inject as service } from "@ember/service";
