@@ -2,7 +2,7 @@ import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { computed } from '@ember/object';
 import Service from '@ember/service';
-import { dropTask } from 'ember-concurrency-decorators';
+import { dropTask } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import intlTelInput from 'intl-tel-input';
 

@@ -10,7 +10,7 @@ import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
 import Query from '@getflights/ember-mist-components/query/Query';
 import { isArray } from '@ember/array';
-import { dropTask } from 'ember-concurrency-decorators';
+import { dropTask } from 'ember-concurrency';
 import DynamicSelectOptionService from '@getflights/ember-mist-components/services/dynamic-select-options';
 import { inject as service } from '@ember/service';
 import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';

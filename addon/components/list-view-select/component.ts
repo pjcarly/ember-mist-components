@@ -5,7 +5,7 @@ import Condition from '@getflights/ember-mist-components/query/Condition';
 import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
 import ListViewService from '@getflights/ember-mist-components/services/list-view';
 import MutableArray from '@ember/array/mutable';
-import { dropTask } from 'ember-concurrency-decorators';
+import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';

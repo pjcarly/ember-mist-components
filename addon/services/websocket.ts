@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { dropTask } from 'ember-concurrency-decorators';
+import { dropTask } from 'ember-concurrency';
 import { timeout } from 'ember-concurrency';
 import { debug } from '@ember/debug';
 import { getOwner } from '@ember/application';
