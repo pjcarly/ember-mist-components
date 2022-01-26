@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "5.5.2",
+  "version": "5.5.3",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",

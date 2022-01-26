@@ -53,7 +53,7 @@ export default class StorageService extends Service {
     return value;
   }
 
-  public clear(keyPrefix: string) {
+  public clear(keyPrefix?: string) {
     // @ts-ignore
     this.beginPropertyChanges();
 
