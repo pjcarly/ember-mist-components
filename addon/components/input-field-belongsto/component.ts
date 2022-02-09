@@ -18,6 +18,7 @@ import { isArray } from "@ember/array";
 import { FieldOptionsInterface } from "@getflights/ember-field-components/services/field-information";
 import { taskFor } from "ember-concurrency-ts";
 import { cached, tracked } from "@glimmer/tracking";
+import Store from "@ember-data/store";
 
 export interface BelongsToFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -39,6 +40,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
   Model
 > {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
+  @service store !: Store;
 
   @tracked selectOptions: SelectOption[] = [];
 

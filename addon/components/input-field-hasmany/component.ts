@@ -19,6 +19,7 @@ import Model from '@ember-data/model';
 import { taskFor } from 'ember-concurrency-ts';
 import { tracked } from '@glimmer/tracking';
 import NativeArray from '@ember/array/-private/native-array';
+import Store from "@ember-data/store";
 
 export interface HasManyFieldOptionsInterface extends FieldOptionsInterface {
   filters: any;
@@ -40,6 +41,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   NativeArray<Model>
 > {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
+  @service store !: Store;
 
   @tracked selectOptions: SelectOption[] = [];
 

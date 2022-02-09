@@ -11,6 +11,7 @@ import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
 import { taskFor } from "ember-concurrency-ts";
 import { tracked } from "@glimmer/tracking";
+import Store from "@ember-data/store";
 
 class DisplayRow {
   columns: DisplayColumn[] = [];
@@ -43,6 +44,7 @@ export default class InputFieldAddressComponent extends InputFieldComponent<
 > {
   // @ts-ignore
   @service("address") addressing!: AddressService;
+  @service store !: Store;
 
   @taskGroup addressLoading!: any;
   @tracked displayRows: DisplayRow[] = [];

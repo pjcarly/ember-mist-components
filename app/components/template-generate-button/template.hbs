@@ -4,7 +4,7 @@
   ...attributes
   {{on "click" (perform this.generatePdf)}}
 >
-  {{#if hasBlock}}
+  {{#if (has-block)}}
     {{yield this.generatePdf}}
   {{else}}
     {{#if this.generatePdf.isIdle}}

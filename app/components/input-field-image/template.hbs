@@ -1,7 +1,7 @@
 <Modal @dialogClass="" @closeOnRouteChange={{true}} as |Element|>
   <Element.trigger>
     <div class="input-field-image-controls">
-      {{#if hasBlock}}
+      {{#if (has-block)}}
         {{yield Element.show this.value}}
       {{else}}
         {{#if this.value.id}}
