@@ -1,7 +1,6 @@
 import ValidationModel from "@getflights/ember-attribute-validations/model/validation-model";
 // @ts-ignore
 import Tracker from "ember-data-change-tracker/tracker";
-import { assign } from "@ember/polyfills";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
 
@@ -57,7 +56,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    */
   modelChanges() {
     // @ts-ignore
-    let changed = assign({}, this.changedAttributes());
+    let changed = Object.assign({}, this.changedAttributes());
     let trackerInfo = Tracker.metaInfo(this);
     for (let key in trackerInfo) {
       if (!changed[key] && trackerInfo.hasOwnProperty(key)) {
