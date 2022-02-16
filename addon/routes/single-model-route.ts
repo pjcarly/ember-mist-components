@@ -6,6 +6,7 @@ import { isBlank } from '@ember/utils';
 import { action } from '@ember/object';
 import Transition from '@ember/routing/-private/transition';
 import SessionService from 'ember-simple-auth/services/session';
+import Store from "@ember-data/store";
 
 export interface SingleModelRouteModelParams {
   id: string;
@@ -15,6 +16,7 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
   @service fieldInformation!: FieldInformationService;
   @service recentlyViewed!: RecentlyViewedService;
   @service session!: SessionService;
+  @service store!: Store;
 
   abstract modelName: string;
   defaultIncludes: string[] = [];

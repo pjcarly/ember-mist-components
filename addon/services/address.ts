@@ -49,7 +49,7 @@ export default class AddressService extends Service {
   async getCountrySelectOptions() {
     // We first check in this service
     let countrySelectOptions = this.countrySelectOptions;
-    if (countrySelectOptions) {
+    if (countrySelectOptions && Array.isArray(countrySelectOptions) && countrySelectOptions.length > 0) {
       return countrySelectOptions;
     }
 

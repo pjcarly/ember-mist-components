@@ -68,7 +68,6 @@ export default class WebsocketService extends Service {
   constructor() {
     super(...arguments);
 
-    this.session.on('authenticationSucceeded', this.sessionAuthenticated);
     this.subscribe(Event.OPEN, this.sessionAuthenticated);
     this.subscribeForMessage('authenticated', this.websocketAuthenticated);
     this.subscribeForMessage('unauthenticated', this.websocketUnAuthenticated);
@@ -307,7 +306,7 @@ export default class WebsocketService extends Service {
    * This way we can check if we need to authenticate over the socket
    */
   @action
-  protected sessionAuthenticated() {
+  public sessionAuthenticated() {
     if (this.authenticateAutomatically) {
       this.authenticate();
     }

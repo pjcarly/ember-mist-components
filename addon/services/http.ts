@@ -4,7 +4,6 @@ import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
 // @ts-ignore
 import fetch from "fetch";
-import { Promise } from "rsvp";
 import qs from "qs";
 import AuthStoreService from "@getflights/ember-mist-components/services/auth-store";
 import SessionService from "ember-simple-auth/services/session";
@@ -20,7 +19,7 @@ export default class HttpService extends Service {
   @service fieldInformation !: FieldInformationService;
   @service store !: Store;
 
-  fetch(
+  async fetch(
     path: string,
     method: "GET" | "POST" | "PUT" | "PATCH" | "OPTIONS" | "DELETE" = "GET",
     body?:

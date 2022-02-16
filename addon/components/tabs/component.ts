@@ -17,10 +17,6 @@ export default class TabsComponent extends Component<Arguments> {
     super(owner, args);
     assert(`Default is required on Tabs`, args.default);
     assert(`Id is required on Tabs`, args.id);
-
-    if (!this.tabs.getSelectedTabFor(args.id)) {
-      this.tabs.setSelectedTabFor(args.id, args.default);
-    }
   }
 
   @cached
