@@ -1,7 +1,6 @@
 import Application from '../../app';
 import config from '../../config/environment';
 import { run } from '@ember/runloop';
-import { assign } from '@ember/polyfills';
 
 export default function startApp(attrs) {
   let application;
