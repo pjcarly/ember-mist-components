@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "5.5.5",
+  "version": "5.5.6.beta.1",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -117,7 +117,7 @@
     "ember-fetch": "~8.1.1",
     "ember-file-upload": "~4.0.3",
     "ember-intl": "^6.0.0-beta.3",
-    "ember-power-select": "^5.0.3",
+    "ember-power-select": "pjcarly/ember-power-select#feature/ember-concurrency-upgrade",
     "ember-simple-auth": "~4.1.1",
     "ember-sortable": "^3.0.0",
     "ember-websockets": "^8.0.0",
@@ -130,6 +130,10 @@
     "query": "^0.2.0",
     "sweetalert2": "^9.14.4",
     "tracked-maps-and-sets": "^3.0.2"
+  },
+  "resolutions": {
+    "**/@embroider/macros": "< 0.50.0",
+    "**/@embroider/util": "< 0.50.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
