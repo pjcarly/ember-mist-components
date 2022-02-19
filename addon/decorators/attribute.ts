@@ -5,7 +5,7 @@ import FieldInformationService from "@getflights/ember-field-components/services
 import { fragment } from "ember-data-model-fragments/attributes";
 
 export function field(type: string, options?: any) {
-  if (type === "address") {
+  if (type === "address" || type === "geolocation") {
     return fragment(...arguments);
   } else {
     if (type === "currency") {
