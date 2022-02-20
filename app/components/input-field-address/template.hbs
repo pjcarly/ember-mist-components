@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  {{#if this.value.format}}
+  {{#if (and this.value this.value.format)}}
     {{#each this.displayRows as |row|}}
       <div class="row">
         {{#each row.columns as |column|}}
