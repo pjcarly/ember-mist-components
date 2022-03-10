@@ -1,5 +1,4 @@
 import FieldInformationService from '@getflights/ember-field-components/services/field-information';
-import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { or } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
@@ -32,13 +31,11 @@ export default abstract class MistModel extends ChangeTrackerModel {
     return this.getRouteName('view');
   }
 
-  @computed('isNew')
   get isExisting(): boolean {
     // @ts-ignore
     return !this.isNew;
   }
 
-  @computed('errors.[]')
   get hasErrors(): boolean {
     // @ts-ignore
     return this.errors.length > 0;

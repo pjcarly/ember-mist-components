@@ -1,6 +1,5 @@
 import Service from "@ember/service";
 import { inject as service } from "@ember/service";
-import { computed } from "@ember/object";
 import { getOwner } from "@ember/application";
 // @ts-ignore
 import fetch from "fetch";
@@ -126,10 +125,6 @@ export default class HttpService extends Service {
   /**
    * We set the authorization header from the session service
    */
-  @computed(
-    "session.data.authenticated.access_token",
-    "authStore.{authToken,authId}"
-  )
   get headers() {
     const headers: any = {};
     // @ts-ignore

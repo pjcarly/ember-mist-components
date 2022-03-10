@@ -3,8 +3,8 @@ import Model from "@ember-data/model";
 import FieldInformationService from "@getflights/ember-field-components/services/field-information";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
-import { computed } from "@ember/object";
 import StorageService from '@getflights/ember-mist-components/services/storage';
+import { cached } from "@glimmer/tracking";
 
 export interface RecentlyViewedRecord {
   type: string;
@@ -88,7 +88,7 @@ export default class RecentlyViewedService extends Service {
   /**
    * Returns the Recently Viewed records currently in local storage, if nothing is found an empty array is returned
    */
-  @computed("storage.recentlyViewedRecords.[]")
+  @cached
   get records(): RecentlyViewedRecord[] {
     let oldRecentlyViewedRecords: RecentlyViewedRecord[] = this.storage.retrieve(
       "recentlyViewedRecords"

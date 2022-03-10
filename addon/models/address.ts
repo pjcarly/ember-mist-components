@@ -2,11 +2,10 @@
 import Fragment from "ember-data-model-fragments/fragment";
 import Store from "@ember-data/store";
 import { attr } from "@ember-data/model";
-import { computed } from "@ember/object";
 import { isBlank } from "@ember/utils";
 import { task } from "ember-concurrency";
 import { inject as service } from "@ember/service";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import { taskFor } from "ember-concurrency-ts";
 import AddressService from "../services/address";
 
@@ -109,16 +108,6 @@ export default class Address extends Fragment {
     this.sortingCode = undefined;
   }
 
-  @computed(
-    "countryCode",
-    "administrativeArea",
-    "locality",
-    "dependentLocality",
-    "postalCode",
-    "sortingCode",
-    "addressLine1",
-    "addressLine2"
-  )
   get isBlankModel(): boolean {
     return (
       isBlank(this.countryCode) &&
@@ -132,17 +121,7 @@ export default class Address extends Fragment {
     );
   }
 
-  @computed(
-    "format",
-    "countryCode",
-    "administrativeArea",
-    "locality",
-    "dependentLocality",
-    "postalCode",
-    "sortingCode",
-    "addressLine1",
-    "addressLine2"
-  )
+  @cached
   get isValidModel(): boolean {
     const ignoreFields = [
       "organization",

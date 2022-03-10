@@ -1,7 +1,7 @@
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
-import { computed } from '@ember/object';
 import Service from '@ember/service';
+import { cached } from '@glimmer/tracking';
 import { dropTask } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import intlTelInput from 'intl-tel-input';
@@ -18,7 +18,7 @@ export interface intlTelInputUtils {
 export default class PhoneIntlService extends Service {
   private utilsLoaded = false;
 
-  @computed()
+  @cached
   get config(): any {
     return getOwner(this).resolveRegistration('config:environment');
   }
