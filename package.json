@@ -111,7 +111,6 @@
     "ember-concurrency-async": "^1.0.0",
     "ember-concurrency-ts": "^0.3.1",
     "ember-data": "~3.28.0",
-    "ember-data-change-tracker": "^0.10.1",
     "ember-data-model-fragments": "~5.0.0-beta.3",
     "ember-data-storefront": "^0.18.0",
     "ember-fetch": "~8.1.1",

@@ -1,8 +1,8 @@
 import ValidationModel from "@getflights/ember-attribute-validations/model/validation-model";
-// @ts-ignore
-import Tracker from "ember-data-change-tracker/tracker";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
+import ChangeTrackerService from "../services/change-tracker";
+import ComputedProperty from "@ember/object/computed";
 
 // @important Change Tracking hasMany is tricky
 // Default it is disabled, so you have to explicitly turn on tracking for hasMany, but keep in mind the following gotchas
@@ -16,17 +16,21 @@ import Store from "@ember-data/store";
 //   on that object, because belongsTo is tracked by default, but when you use "only", it only tracks the belongsTo relationships defined in "only"
 export default abstract class ChangeTrackerModel extends ValidationModel {
   @service store!: Store;
+  @service changeTracker !: ChangeTrackerService;
+
+  hasDirtyAttributes !: ComputedProperty<boolean, boolean>; // Set by Change Tracker Service on initialization
+  hasDirtyRelations !: ComputedProperty<boolean, boolean>; // Set by Change Tracker Service on initialization
 
   init() {
     // @ts-ignore
     super.init();
 
-    if (Tracker.isAutoSaveEnabled(this)) {
+    if (this.changeTracker.isAutoSaveEnabled(this)) {
       this.initTracking();
     }
-    if (Tracker.isIsDirtyEnabled(this)) {
+    if (this.changeTracker.isIsDirtyEnabled(this)) {
       // this is experimental
-      Tracker.initializeDirtiness(this);
+      this.changeTracker.initializeDirtiness(this);
     }
 
     this.setupTrackerMetaData();
@@ -41,7 +45,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    * @returns {Boolean} true if value changed
    */
   didChange(key: string, changed: any, options?: any): boolean {
-    return Tracker.didChange(this, key, changed, options);
+    return this.changeTracker.didChange(this, key, changed, options);
   }
 
   /**
@@ -56,9 +60,9 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    */
   modelChanges() {
     // @ts-ignore
-    let changed = Object.assign({}, this.changedAttributes());
-    let trackerInfo = Tracker.metaInfo(this);
-    for (let key in trackerInfo) {
+    const changed = Object.assign({}, this.changedAttributes());
+    const trackerInfo = this.changeTracker.metaInfo(this);
+    for (const key in trackerInfo) {
       if (!changed[key] && trackerInfo.hasOwnProperty(key)) {
         if (this.didChange(key, changed)) {
           // @ts-ignore
@@ -87,9 +91,9 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
     if (isNew) {
       return;
     }
-    let trackerInfo = Tracker.metaInfo(this);
-    let rollbackData = Tracker.rollbackData(this, trackerInfo);
-    let normalized = Tracker.normalize(this, rollbackData);
+    const trackerInfo = this.changeTracker.metaInfo(this);
+    const rollbackData = this.changeTracker.rollbackData(this, trackerInfo);
+    const normalized = this.changeTracker.normalize(this, rollbackData);
     this.store.push(normalized);
   }
 
@@ -127,7 +131,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
       this.setupTrackerMetaData();
       this.setupUnknownRelationshipLoadObservers();
     }),
-      Tracker.setupTracking(this);
+      this.changeTracker.setupTracking(this);
   }
 
   /**
@@ -141,9 +145,9 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    * @param {Object} options
    */
   saveChanges(options?: any) {
-    Tracker.setupTracking(this);
-    Tracker.saveChanges(this, options);
-    Tracker.triggerIsDirtyReset(this);
+    this.changeTracker.setupTracking(this);
+    this.changeTracker.saveChanges(this, options);
+    this.changeTracker.triggerIsDirtyReset(this);
   }
 
   saveTrackerChanges(options?: any) {
@@ -157,16 +161,16 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    * @returns {*}
    */
   savedTrackerValue(key: string) {
-    return Tracker.lastValue(this, key);
+    return this.changeTracker.lastValue(this, key);
   }
 
   // save state when model is loaded or created if using auto save
   setupTrackerMetaData() {
-    if (Tracker.isIsDirtyEnabled(this)) {
+    if (this.changeTracker.isIsDirtyEnabled(this)) {
       // this is experimental
-      Tracker.initializeDirtiness(this);
+      this.changeTracker.initializeDirtiness(this);
     }
-    if (Tracker.isAutoSaveEnabled(this)) {
+    if (this.changeTracker.isAutoSaveEnabled(this)) {
       this.saveChanges();
     }
   }
@@ -182,14 +186,14 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
 
   // when model updates, update the tracked state if using auto save
   saveOnUpdate() {
-    if (Tracker.isAutoSaveEnabled(this) || Tracker.isIsDirtyEnabled(this)) {
+    if (this.changeTracker.isAutoSaveEnabled(this) || this.changeTracker.isIsDirtyEnabled(this)) {
       this.saveChanges();
     }
   }
 
   // when model creates, update the tracked state if using auto save
   saveOnCreate() {
-    if (Tracker.isAutoSaveEnabled(this) || Tracker.isIsDirtyEnabled(this)) {
+    if (this.changeTracker.isAutoSaveEnabled(this) || this.changeTracker.isIsDirtyEnabled(this)) {
       this.saveChanges();
     }
   }
@@ -199,7 +203,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
     // @ts-ignore
     const promise = super.reload(...arguments);
     promise.then(() => {
-      if (Tracker.isAutoSaveEnabled(this)) {
+      if (this.changeTracker.isAutoSaveEnabled(this)) {
         this.saveChanges();
       }
     });
@@ -208,12 +212,12 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
 
   // when model deletes, remove any tracked state
   clearSavedAttributes() {
-    Tracker.clear(this);
+    this.changeTracker.clear(this);
   }
 
   observeUnknownRelationshipLoaded(_: any, key: string /*, value, rev*/) {
-    if (Tracker.trackingIsSetup(this) && Tracker.isTracking(this, key)) {
-      let saved = Tracker.saveLoadedRelationship(this, key);
+    if (this.changeTracker.trackingIsSetup(this) && this.changeTracker.isTracking(this, key)) {
+      const saved = this.changeTracker.saveLoadedRelationship(this, key);
       if (saved) {
         // @ts-ignore
         this.removeObserver(key, this, "observeUnknownRelationshipLoaded");

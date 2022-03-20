@@ -5699,13 +5699,6 @@ ember-copy@2.0.1:
   dependencies:
     ember-cli-babel "^7.22.1"
 
-ember-data-change-tracker@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/ember-data-change-tracker/-/ember-data-change-tracker-0.10.1.tgz#4ae6853332aada171e1fad499752789084a887d9"
-  integrity sha512-jroJLPd3EabN+T8Gwgstf5w/nwdEEz31u4VSqhLOmcaF8eUIQ1NeqnHmAZuu9dZdFXRvAkLCny7Ov2nloSVl9g==
-  dependencies:
-    ember-cli-babel "^7.4.0"
-
 ember-data-model-fragments@~5.0.0-beta.3:
   version "5.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/ember-data-model-fragments/-/ember-data-model-fragments-5.0.0-beta.3.tgz#88cc796ceac20ed1ff3591e12a1cebb6829e1083"
