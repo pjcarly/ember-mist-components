@@ -97,6 +97,7 @@
   ],
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
+    "@embroider/macros": "0.49.0",
     "@getflights/ember-attribute-validations": "^2.0.17",
     "@getflights/ember-field-components": "^3.2.8",
     "@glimmer/component": "^1.0.2",
@@ -111,7 +112,6 @@
     "ember-concurrency-async": "^1.0.0",
     "ember-concurrency-ts": "^0.3.1",
     "ember-data": "~3.28.0",
-    "ember-data-change-tracker": "^0.10.1",
     "ember-data-model-fragments": "~5.0.0-beta.3",
     "ember-data-storefront": "^0.18.0",
     "ember-fetch": "~8.1.1",
