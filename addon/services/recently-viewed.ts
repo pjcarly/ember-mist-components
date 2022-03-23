@@ -4,7 +4,6 @@ import FieldInformationService from "@getflights/ember-field-components/services
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 import StorageService from '@getflights/ember-mist-components/services/storage';
-import { cached } from "@glimmer/tracking";
 
 export interface RecentlyViewedRecord {
   type: string;
@@ -86,9 +85,8 @@ export default class RecentlyViewedService extends Service {
   }
 
   /**
-   * Returns the Recently Viewed records currently in local storage, if nothing is found an empty array is returned
+   * Returns the Recently viewed records currently in local storage, if nothing is found an empty array is returned
    */
-  @cached
   get records(): RecentlyViewedRecord[] {
     let oldRecentlyViewedRecords: RecentlyViewedRecord[] = this.storage.retrieve(
       "recentlyViewedRecords"
