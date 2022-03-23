@@ -614,7 +614,7 @@ export default class ModelChangeTrackerService extends Service {
 
 
     const dirtyRelationsComputedProperty = relationsObserver.concat([<any>hasDirtyRelations]);
-    console.log(dirtyRelationsComputedProperty)
+    console.log(dirtyRelationsComputedProperty);
 
     defineProperty(
       model,
@@ -632,12 +632,16 @@ export default class ModelChangeTrackerService extends Service {
 
 }
 
-export const modelTransform = function (model: Model, polymorphic: boolean) {
+type ModelLocalState = {
+  id: number | string;
+  type: string;
+}
+
+export const modelTransform = function (localState: ModelLocalState, polymorphic: boolean) {
   if (polymorphic) {
-    // @ts-ignore
-    return { id: model.id, type: model.modelName || model.constructor.modelName };
+    return { id: localState.id, type: localState.type };
   }
-  return model.id;
+  return localState.id;
 };
 
 export const relationShipTransform = {
@@ -646,7 +650,7 @@ export const relationShipTransform = {
       const relationship = model.belongsTo(<any>key)
         // @ts-ignore
         .belongsToRelationship;
-      const value = relationship.hasOwnProperty('inverseRecordData') ? relationship.inverseRecordData : relationship.canonicalState;
+      const value = relationship.localState;
       return value && modelTransform(value, options.polymorphic);
     },
 
