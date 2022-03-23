@@ -12,6 +12,7 @@ import ApplicationInstance from '@ember/application/instance';
 import { cached } from '@glimmer/tracking';
 import Transform from "@ember-data/serializer/transform";
 import Serializer from "@ember-data/serializer";
+import { ChangedAttributes } from 'ember-data';
 
 // import { didModelChange, didModelsChange, relationShipTransform, relationshipKnownState } from './utilities';
 
@@ -47,7 +48,7 @@ export interface ModelChangeTrackerConfig {
 /**
  * Helper class for change tracking models
  */
-export default class ChangeTrackerService extends Service {
+export default class ModelChangeTrackerService extends Service {
 
   @service store !: Store;
 
@@ -80,14 +81,14 @@ export default class ChangeTrackerService extends Service {
    * Is this model in auto save mode?
    */
   public isAutoSaveEnabled(model: Model): boolean {
-    // @ts-ignore
-    if (model.constructor.trackerAutoSave === undefined) {
+    const modelClass = this.getModelClass(model);
+
+    if (modelClass.trackerAutoSave === undefined) {
       const options = this.options(model);
-      // @ts-ignore
-      model.constructor.trackerAutoSave = options.auto;
+      modelClass.trackerAutoSave = options.auto;
     }
-    // @ts-ignore
-    return model.constructor.trackerAutoSave;
+
+    return modelClass.trackerAutoSave;
   }
 
   /**
@@ -127,7 +128,7 @@ export default class ChangeTrackerService extends Service {
    * Basically a REST style payload. So, convert that to JSONAPI so it can be
    * pushed to the store
    */
-  public normalize(model: Model, data: any) {
+  public normalize(model: Model, data: ReturnType<ModelChangeTrackerService['rollbackData']>): {} {
     const serializer = <Serializer>this.container.lookup('serializer:-rest');
     serializer.set('store', model.store);
     return serializer.normalize(<any>model.constructor, data);
@@ -149,8 +150,6 @@ export default class ChangeTrackerService extends Service {
    * Find the meta data for all keys or a single key (attributes/association)
    * that tracker is tracking on this model
    *
-   * @param model
-   * @param key only this key's info and no other
    * @returns all the meta info on this model that tracker is tracking
    */
   public metaInfo(model: Model): { [key: string]: TrackerMeta } {
@@ -158,6 +157,12 @@ export default class ChangeTrackerService extends Service {
     return (modelClass.trackerKeys || {});
   }
 
+  /**
+   * Find the meta data for all keys or a single key (attributes/association)
+   * that tracker is tracking on this model
+   *
+   * @returns all the meta info on this model that tracker is tracking
+   */
   public metaInfoForKey(model: Model, key: string): TrackerMeta | undefined {
     const metaInfo = this.metaInfo(model);
 
@@ -343,7 +348,7 @@ export default class ChangeTrackerService extends Service {
    * @param changed changed object
    * @param info model tracker meta data object
    */
-  public didChange(model: Model, key: string, changed: any, info: ReturnType<ChangeTrackerService['metaInfo']>): boolean {
+  public didChange(model: Model, key: string, changed?: ChangedAttributes | null, info?: ReturnType<ModelChangeTrackerService['metaInfo']>): boolean {
     changed = changed || model.changedAttributes();
     if (changed[key]) {
       return true;
@@ -446,7 +451,7 @@ export default class ChangeTrackerService extends Service {
   /**
    * Gather all the rollback data
    */
-  public rollbackData(model: Model, trackerInfo: ReturnType<ChangeTrackerService['metaInfo']>): any {
+  public rollbackData(model: Model, trackerInfo: ReturnType<ModelChangeTrackerService['metaInfo']>): { [key: string]: string | string[] | number | number[] } {
     let data: any = { id: model.id };
     Object.keys(trackerInfo).forEach((key) => {
       let keyInfo = trackerInfo[key];
@@ -507,12 +512,12 @@ export default class ChangeTrackerService extends Service {
   }
 
   /**
- * Save the value from an array of keys model's tracker hash
- * and save the relationship states if keys represents a relationship
- *
- * @param model
- * @param keys to save
- */
+   * Save the value from an array of keys model's tracker hash
+   * and save the relationship states if keys represents a relationship
+   *
+   * @param model
+   * @param keys to save
+   */
   private saveKeys(model: Model, keys: string[]) {
     let modelTracker = model.get(<any>ModelTrackerKey) || {},
       relationshipsKnownTracker = model.get(<any>RelationshipsKnownTrackerKey) || {},
@@ -598,16 +603,23 @@ export default class ChangeTrackerService extends Service {
       return model.get('hasDirtyAttributes') || model.get('hasDirtyRelations');
     };
 
+    const dirtyAttrsComputedProperty = attrs.concat([<any>hasDirtyAttributes]);
+    console.log(dirtyAttrsComputedProperty);
+
     defineProperty(
       model,
       'hasDirtyAttributes',
-      Ember.computed.apply(Ember, attrs.concat([<any>hasDirtyAttributes]))
+      Ember.computed.apply(Ember, dirtyAttrsComputedProperty)
     );
+
+
+    const dirtyRelationsComputedProperty = relationsObserver.concat([<any>hasDirtyRelations]);
+    console.log(dirtyRelationsComputedProperty)
 
     defineProperty(
       model,
       'hasDirtyRelations',
-      Ember.computed.apply(Ember, relationsObserver.concat([<any>hasDirtyRelations]))
+      Ember.computed.apply(Ember, dirtyRelationsComputedProperty)
     );
 
     defineProperty(

@@ -1,8 +1,10 @@
 import ValidationModel from "@getflights/ember-attribute-validations/model/validation-model";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
-import ChangeTrackerService from "../services/change-tracker";
 import ComputedProperty from "@ember/object/computed";
+import { Promise } from "rsvp";
+import { ChangedAttributes } from "ember-data";
+import ModelChangeTrackerService from "../services/model-change-tracker";
 
 // @important Change Tracking hasMany is tricky
 // Default it is disabled, so you have to explicitly turn on tracking for hasMany, but keep in mind the following gotchas
@@ -16,7 +18,7 @@ import ComputedProperty from "@ember/object/computed";
 //   on that object, because belongsTo is tracked by default, but when you use "only", it only tracks the belongsTo relationships defined in "only"
 export default abstract class ChangeTrackerModel extends ValidationModel {
   @service store!: Store;
-  @service changeTracker !: ChangeTrackerService;
+  @service modelChangeTracker !: ModelChangeTrackerService;
 
   hasDirtyAttributes !: ComputedProperty<boolean, boolean>; // Set by Change Tracker Service on initialization
   hasDirtyRelations !: ComputedProperty<boolean, boolean>; // Set by Change Tracker Service on initialization
@@ -25,12 +27,12 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
     // @ts-ignore
     super.init();
 
-    if (this.changeTracker.isAutoSaveEnabled(this)) {
+    if (this.modelChangeTracker.isAutoSaveEnabled(this)) {
       this.initTracking();
     }
-    if (this.changeTracker.isIsDirtyEnabled(this)) {
+    if (this.modelChangeTracker.isIsDirtyEnabled(this)) {
       // this is experimental
-      this.changeTracker.initializeDirtiness(this);
+      this.modelChangeTracker.initializeDirtiness(this);
     }
 
     this.setupTrackerMetaData();
@@ -40,12 +42,12 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
   /**
    * Did an attribute/association change?
    *
-   * @param {String} key the attribute/association name
-   * @param {Object} changed optional ember-data changedAttribute object
-   * @returns {Boolean} true if value changed
+   * @param key the attribute/association name
+   * @param changed optional ember-data changedAttribute object
+   * @returns true if value changed
    */
-  didChange(key: string, changed: any, options?: any): boolean {
-    return this.changeTracker.didChange(this, key, changed, options);
+  didChange(key: string, changed: ChangedAttributes | null, options?: any): boolean {
+    return this.modelChangeTracker.didChange(this, key, changed, options);
   }
 
   /**
@@ -55,21 +57,24 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    *  {key: value} = {attribute: true}
    *
    * If the the attribute changed, it will be included in this object
-   *
-   * @returns {*}
    */
-  modelChanges() {
-    // @ts-ignore
-    const changed = Object.assign({}, this.changedAttributes());
-    const trackerInfo = this.changeTracker.metaInfo(this);
+  modelChanges(): { [key: string]: boolean } | ChangedAttributes {
+    const changed: ChangedAttributes | { [key: string]: boolean } = {};
+    const changedAttributes = Object.assign({}, this.changedAttributes());
+    const trackerInfo = this.modelChangeTracker.metaInfo(this);
+
+    for (const key in changedAttributes) {
+      changed[key] = changedAttributes[key];
+    }
+
     for (const key in trackerInfo) {
-      if (!changed[key] && trackerInfo.hasOwnProperty(key)) {
-        if (this.didChange(key, changed)) {
-          // @ts-ignore
+      if (!changedAttributes[key] && trackerInfo.hasOwnProperty(key)) {
+        if (this.didChange(key, changedAttributes)) {
           changed[key] = true;
         }
       }
     }
+
     return changed;
   }
 
@@ -83,7 +88,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    * will only be limited to those keys
    *
    */
-  rollback() {
+  rollback(): void {
     // @ts-ignore
     const isNew = <boolean>this.isNew;
     // @ts-ignore
@@ -91,14 +96,14 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
     if (isNew) {
       return;
     }
-    const trackerInfo = this.changeTracker.metaInfo(this);
-    const rollbackData = this.changeTracker.rollbackData(this, trackerInfo);
-    const normalized = this.changeTracker.normalize(this, rollbackData);
+    const trackerInfo = this.modelChangeTracker.metaInfo(this);
+    const rollbackData = this.modelChangeTracker.rollbackData(this, trackerInfo);
+    const normalized = this.modelChangeTracker.normalize(this, rollbackData);
     this.store.push(normalized);
   }
 
   // alias for saveChanges method
-  startTrack() {
+  startTrack(): void {
     this.initTracking();
     this.saveChanges();
   }
@@ -109,8 +114,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
   // Replaces deprecated Ember.Evented usage:
   // https://github.com/emberjs/rfcs/blob/master/text/0329-deprecated-ember-evented-in-ember-data.md
   // Related: https://github.com/emberjs/rfcs/pull/329
-
-  initTracking() {
+  initTracking(): void {
     // @ts-ignore
     this.didCreate = () => {
       this.saveOnCreate();
@@ -131,52 +135,52 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
       this.setupTrackerMetaData();
       this.setupUnknownRelationshipLoadObservers();
     }),
-      this.changeTracker.setupTracking(this);
+      this.modelChangeTracker.setupTracking(this);
   }
 
   /**
    * Save the current state of the model
    *
    * NOTE: This is needed when manually pushing data
-   * to the store and ussing Ember < 2.10
+   * to the store and using Ember < 2.10
    *
    * options like => {except: 'company'}
    *
    * @param {Object} options
    */
-  saveChanges(options?: any) {
-    this.changeTracker.setupTracking(this);
-    this.changeTracker.saveChanges(this, options);
-    this.changeTracker.triggerIsDirtyReset(this);
+  saveChanges(options?: any): void {
+    this.modelChangeTracker.setupTracking(this);
+    this.modelChangeTracker.saveChanges(this, options);
+    this.modelChangeTracker.triggerIsDirtyReset(this);
   }
 
-  saveTrackerChanges(options?: any) {
+  saveTrackerChanges(options?: any): void {
     this.saveChanges(options);
   }
 
   /**
    * Get value of the last known value tracker is saving for this key
    *
-   * @param {String} key attribute/association name
+   * @param key attribute/association name
    * @returns {*}
    */
-  savedTrackerValue(key: string) {
-    return this.changeTracker.lastValue(this, key);
+  savedTrackerValue(key: string): any {
+    return this.modelChangeTracker.lastValue(this, key);
   }
 
   // save state when model is loaded or created if using auto save
-  setupTrackerMetaData() {
-    if (this.changeTracker.isIsDirtyEnabled(this)) {
+  setupTrackerMetaData(): void {
+    if (this.modelChangeTracker.isIsDirtyEnabled(this)) {
       // this is experimental
-      this.changeTracker.initializeDirtiness(this);
+      this.modelChangeTracker.initializeDirtiness(this);
     }
-    if (this.changeTracker.isAutoSaveEnabled(this)) {
+    if (this.modelChangeTracker.isAutoSaveEnabled(this)) {
       this.saveChanges();
     }
   }
 
   // watch for relationships loaded with data via links
-  setupUnknownRelationshipLoadObservers() {
+  setupUnknownRelationshipLoadObservers(): void {
     // @ts-ignore
     this.eachRelationship((key) => {
       // @ts-ignore
@@ -185,25 +189,24 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
   }
 
   // when model updates, update the tracked state if using auto save
-  saveOnUpdate() {
-    if (this.changeTracker.isAutoSaveEnabled(this) || this.changeTracker.isIsDirtyEnabled(this)) {
+  saveOnUpdate(): void {
+    if (this.modelChangeTracker.isAutoSaveEnabled(this) || this.modelChangeTracker.isIsDirtyEnabled(this)) {
       this.saveChanges();
     }
   }
 
   // when model creates, update the tracked state if using auto save
-  saveOnCreate() {
-    if (this.changeTracker.isAutoSaveEnabled(this) || this.changeTracker.isIsDirtyEnabled(this)) {
+  saveOnCreate(): void {
+    if (this.modelChangeTracker.isAutoSaveEnabled(this) || this.modelChangeTracker.isIsDirtyEnabled(this)) {
       this.saveChanges();
     }
   }
 
   // There is no didReload callback on models, so have to override reload
-  reload() {
-    // @ts-ignore
+  reload(): Promise<this> {
     const promise = super.reload(...arguments);
     promise.then(() => {
-      if (this.changeTracker.isAutoSaveEnabled(this)) {
+      if (this.modelChangeTracker.isAutoSaveEnabled(this)) {
         this.saveChanges();
       }
     });
@@ -211,13 +214,13 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
   }
 
   // when model deletes, remove any tracked state
-  clearSavedAttributes() {
-    this.changeTracker.clear(this);
+  clearSavedAttributes(): void {
+    this.modelChangeTracker.clear(this);
   }
 
-  observeUnknownRelationshipLoaded(_: any, key: string /*, value, rev*/) {
-    if (this.changeTracker.trackingIsSetup(this) && this.changeTracker.isTracking(this, key)) {
-      const saved = this.changeTracker.saveLoadedRelationship(this, key);
+  observeUnknownRelationshipLoaded(_: any, key: string /*, value, rev*/): void {
+    if (this.modelChangeTracker.trackingIsSetup(this) && this.modelChangeTracker.isTracking(this, key)) {
+      const saved = this.modelChangeTracker.saveLoadedRelationship(this, key);
       if (saved) {
         // @ts-ignore
         this.removeObserver(key, this, "observeUnknownRelationshipLoaded");
