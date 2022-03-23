@@ -604,7 +604,6 @@ export default class ModelChangeTrackerService extends Service {
     };
 
     const dirtyAttrsComputedProperty = attrs.concat([<any>hasDirtyAttributes]);
-    console.log(dirtyAttrsComputedProperty);
 
     defineProperty(
       model,
@@ -614,7 +613,6 @@ export default class ModelChangeTrackerService extends Service {
 
 
     const dirtyRelationsComputedProperty = relationsObserver.concat([<any>hasDirtyRelations]);
-    console.log(dirtyRelationsComputedProperty);
 
     defineProperty(
       model,
