@@ -70,7 +70,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
    *            how rollback and change tracking relationships work together.
    */
   rollback() {
-    // We override the rollback method provided by the ember-data-change-tracker
+    // We override the rollback method provided by the change-tracker-model
     // Where we rollback child records which have the rollback option in the relationship meta
     // @ts-ignore
     this.eachRelationship((name: string, descriptor: any) => {
