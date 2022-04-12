@@ -1,5 +1,5 @@
 <div class="order__edit__wrapper">
-  {{#if @model.orders}}
+  {{#if @model.sortOrders}}
     <table class="table">
       <thead>
         <tr>
@@ -18,9 +18,8 @@
         {{sortable-group groupName="orders" onChange=this.reorderOrders}}
       >
         {{#each
-          (filter-by
-            "isDeleted" false (sort-by "sort" @model.orders)
-          ) as |order index|
+          (filter-by "isDeleted" false (sort-by "sort" @model.sortOrders))
+          as |order index|
         }}
           <tr
             class="order__edit__line"

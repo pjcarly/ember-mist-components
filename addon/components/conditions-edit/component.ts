@@ -2,31 +2,17 @@ import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
 import { action } from "@ember/object";
-import ListViewModel from "@getflights/ember-mist-components/models/list-view";
-import ConditionModel from "@getflights/ember-mist-components/models/condition";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
+import ConditionInterface from "@getflights/ember-mist-components/interfaces/condition";
+import ListViewInterface from "@getflights/ember-mist-components/interfaces/list-view";
 
 interface Arguments {
-  model: ListViewModel;
+  model: ListViewInterface;
 }
 
 export default class ConditionsEditComponent extends Component<Arguments> {
   @service store!: Store;
-
-  setAllConditionsSort() {
-    // This function sets the order of the sort variables on the items correctly. If 1 item gets inserted in the list,
-    // this function will preserve the new order, but make sure no sort value will be the same over all the types
-    const conditions = this.args.model.conditions;
-    let topSort = 1;
-
-    conditions.toArray().forEach((condition) => {
-      if (!condition.isDeleted) {
-        condition.sort = topSort;
-        topSort++;
-      }
-    });
-  }
 
   get fieldQuery(): Query {
     const model = this.args.model.model;
@@ -41,32 +27,21 @@ export default class ConditionsEditComponent extends Component<Arguments> {
 
   @action
   addNewCondition() {
-    const condition = this.store.createRecord("condition");
-    condition.parent = this.args.model;
-    condition.sort = this.args.model.conditions.length;
+    const condition = <ConditionInterface>this.store.createRecord("condition");
     this.args.model.conditions.pushObject(condition);
   }
 
   @action
-  deleteCondition(conditionToDelete: ConditionModel) {
-    this.args.model.conditions.toArray().forEach((condition) => {
-      if (
-        condition.sort &&
-        conditionToDelete.sort &&
-        condition.sort > conditionToDelete.sort
-      ) {
-        condition.sort = condition.sort - 1;
-      }
-    });
-
+  deleteCondition(conditionToDelete: ConditionInterface) {
     conditionToDelete.deleteRecord();
-    this.setAllConditionsSort();
   }
 
   @action
-  reorderConditions(reorderedConditions: Array<ConditionModel>) {
-    reorderedConditions.forEach((condition, index) => {
-      condition.sort = index;
+  reorderConditions(reorderedConditions: Array<ConditionInterface>) {
+    this.args.model.conditions.clear();
+
+    reorderedConditions.forEach((condition) => {
+      this.args.model.conditions.pushObject(condition);
     });
   }
 }

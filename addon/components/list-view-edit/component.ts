@@ -1,10 +1,10 @@
 import Component from "@glimmer/component";
-import ListViewModel from "@getflights/ember-mist-components/models/list-view";
 import Query from "@getflights/ember-mist-components/query/Query";
 import Condition from "@getflights/ember-mist-components/query/Condition";
+import ListViewInterface from "@getflights/ember-mist-components/interfaces/list-view";
 
 interface Arguments {
-  model: ListViewModel;
+  model: ListViewInterface;
 }
 
 export default class ListViewEditComponent extends Component<Arguments> {

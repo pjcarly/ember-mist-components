@@ -18,13 +18,14 @@
       </thead>
       <tbody
         class={{if @isOdd "is-odd" "is-even"}}
-        {{sortable-group groupName="conditions" onChange=this.reorderConditions
+        {{sortable-group
+          groupName="conditions"
+          onChange=this.reorderConditions
         }}
       >
         {{#each
-          (filter-by
-            "isDeleted" false (sort-by "sort" @model.conditions)
-          ) as |condition index|
+          (filter-by "isDeleted" false (sort-by "sort" @model.conditions))
+          as |condition index|
         }}
           <tr
             class="condition__edit__line"

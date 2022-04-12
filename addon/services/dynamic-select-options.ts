@@ -5,10 +5,10 @@ import { inject as service } from "@ember/service";
 import { assert } from "@ember/debug";
 import { dasherize, camelize } from "@ember/string";
 import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import FieldModel from "@getflights/ember-mist-components/models/field";
 import { isBlank } from "@ember/utils";
 import Query from "@getflights/ember-mist-components/query/Query";
 import StorageService from '@getflights/ember-mist-components/services/storage';
+import FieldInterface from "../interfaces/field";
 
 export default class DynamicSelectOptionService extends Service {
   @service storage!: StorageService;
@@ -49,7 +49,7 @@ export default class DynamicSelectOptionService extends Service {
       cachedSelectOptions = localSelectOptions;
     } else if (this.store.hasRecordForId("field", id)) {
       // next we check if we haven't already loaded the selectOptions
-      const fieldModel = <FieldModel>this.store.peekRecord("field", id);
+      const fieldModel = <FieldInterface>this.store.peekRecord("field", id);
       cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
         fieldModel
       );
@@ -58,7 +58,7 @@ export default class DynamicSelectOptionService extends Service {
       await this.store
         // @ts-ignore
         .loadRecord("field", id)
-        .then((fieldModel: FieldModel) => {
+        .then((fieldModel: FieldInterface) => {
           cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
             fieldModel
           );
@@ -122,7 +122,7 @@ export default class DynamicSelectOptionService extends Service {
    * @param fieldModel The field model
    */
   transformFieldSelectOptionsToSelectOptions(
-    fieldModel: FieldModel
+    fieldModel: FieldInterface
   ): SelectOption[] {
     const transformedSelectOptions: SelectOption[] = [];
 
