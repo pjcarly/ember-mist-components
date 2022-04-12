@@ -8,6 +8,7 @@ import ChangeTrackerModel from './change-tracker-model';
 import JSONAPISerializer from '@ember-data/serializer/json-api';
 import Route from '@ember/routing/route';
 import { cached } from '@glimmer/tracking';
+import { assert } from '@ember/debug';
 
 @loadableModel
 export default abstract class MistModel extends ChangeTrackerModel {
@@ -86,6 +87,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
           // by first casting it to array, and then looping it, everything worked fine, and all children were found
           // @ts-ignore
           childModels.toArray().forEach((childModel: MistModel) => {
+            assert(`No rollback defined on model ${childModel.constructor.name}`, childModel.rollback);
             childModel.rollback();
           });
         }
