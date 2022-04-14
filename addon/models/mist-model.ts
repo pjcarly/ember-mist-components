@@ -158,7 +158,7 @@ export default abstract class MistModel extends ChangeTrackerModel {
   }
 
   /**
-   * This functhasDirtyEmbeddedRelationshipsion checks whether the embedded relationships
+   * This function checks whether the embedded relationships
    * (which are being saved in 1 call with the main model) are dirty or deleted.
    */
   hasDirtyEmbeddedRelationships(): boolean {
