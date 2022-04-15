@@ -1,5 +1,5 @@
-export default interface ModelInterface {
-  validate(): boolean;
-  rollback(): void;
-  reload(): void;
+import type Model from "@ember-data/model";
+
+export default interface ModelInterface extends Model {
+
 }

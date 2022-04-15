@@ -4,7 +4,6 @@ import FieldInformationService from '@getflights/ember-field-components/services
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { isBlank } from '@ember/utils';
-import ListViewModel from '@getflights/ember-mist-components/models/list-view';
 import type RouterService from '@ember/routing/router-service';
 import StorageService from '@getflights/ember-mist-components/services/storage';
 
@@ -32,7 +31,7 @@ export default class ListViewService extends Service {
    */
   getListViewByKey(modelName: string, key: string | number): ListViewInterface {
     if (this.store.hasRecordForId('list-view', key)) {
-      const listViewModel = <ListViewModel>(
+      const listViewModel = <ListViewInterface>(
         this.store.peekRecord('list-view', key)
       );
       return this.transformListViewModelToInterface(listViewModel);
@@ -45,16 +44,17 @@ export default class ListViewService extends Service {
    * Transforms the given list view model, to an POJO following the ListViewInterface
    * @param model The model you wish to transform
    */
-  transformListViewModelToInterface(model: ListViewModel): ListViewInterface {
+  transformListViewModelToInterface(model: ListViewInterface): ListViewInterface {
     const returnValue: ListViewInterface = {
       columns: [],
     };
 
     returnValue.rows = model.rows;
     model
+      // @ts-ignore
       .hasMany('columns')
       .ids()
-      .forEach((fieldId) => {
+      .forEach((fieldId: string) => {
         const fieldArray = fieldId.toString().split('.');
         fieldArray.shift();
         returnValue.columns.push(fieldArray.join('.'));

@@ -158,12 +158,12 @@ export default abstract class MistModel extends ChangeTrackerModel {
   }
 
   /**
-   * This functhasDirtyEmbeddedRelationshipsion checks whether the embedded relationships
+   * This function checks whether the embedded relationships
    * (which are being saved in 1 call with the main model) are dirty or deleted.
    */
   hasDirtyEmbeddedRelationships(): boolean {
-    return !this.embeddedRelationships.some((relationshipName) => {
-      return !this.hasDirtyEmbeddedRelationship(relationshipName);
+    return !!this.embeddedRelationships.some((relationshipName) => {
+      return this.hasDirtyEmbeddedRelationship(relationshipName);
     });
   }
 
@@ -215,9 +215,12 @@ export default abstract class MistModel extends ChangeTrackerModel {
    * @param relationshipName The relationship you want to check
    */
   hasDirtyEmbeddedRelationship(relationshipName: string): boolean {
+    const relationship = this.get(<any>relationshipName);
+    assert(`Relationship "${relationshipName}" does not exist on ${this.constructor.name}`, relationship);
+
     return (
       // @ts-ignore
-      this.get(relationshipName)
+      relationship
         // @ts-ignore
         .toArray()
         .some((relatedModel: MistModel) => {
