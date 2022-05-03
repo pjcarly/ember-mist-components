@@ -7,6 +7,7 @@ import { action } from '@ember/object';
 import Transition from '@ember/routing/-private/transition';
 import SessionService from 'ember-simple-auth/services/session';
 import Store from "@ember-data/store";
+import ChangeTrackerModel from '../models/change-tracker-model';
 
 export interface SingleModelRouteModelParams {
   id: string;
@@ -74,6 +75,11 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
     return this.store.loadRecord(this.modelName, params[`id`], options);
   }
 
+  async afterModel(model: ChangeTrackerModel, transition: Transition) {
+    await super.afterModel(model, transition);
+
+    model.startTrack();
+  }
   /**
    * If an error is triggered on the transition, we remove the Model from the Recently viewed
    */
