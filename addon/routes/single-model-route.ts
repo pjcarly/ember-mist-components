@@ -77,7 +77,6 @@ export default abstract class SingleModelRoute extends ResetModelRoute {
 
   async afterModel(model: ChangeTrackerModel, transition: Transition) {
     await super.afterModel(model, transition);
-
     model.startTrack();
   }
   /**

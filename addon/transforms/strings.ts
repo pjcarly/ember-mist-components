@@ -4,7 +4,7 @@ import { isBlank } from "@ember/utils";
 
 export default class StringsTransform extends Transform {
   deserialize(serialized: string[] | undefined | null) {
-    return serialized ? serialized : [];
+    return serialized ?? [];
   }
 
   serialize(deserialized: string[] | undefined | null) {
