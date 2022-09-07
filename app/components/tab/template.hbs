@@ -2,11 +2,12 @@
   <button
     type="button"
     role="tab"
-    class="nav-link{{if @disabled " disabled"}}"
+    class="nav-link{{if @disabled ' disabled'}}"
     data-toggle="tab"
     aria-disabled={{@disabled}}
     aria-expanded={{this.isActive}}
     {{on "click" (fn this.setActive)}}
+    ...attributes
   >
     {{yield}}
   </button>
