@@ -29,6 +29,7 @@ export default class ListViewSelectComponent extends Component<Arguments> {
   @service listView!: ListViewService;
 
   @tracked listViewSelectOptions: SelectOption[] = [];
+  @tracked selectedValue: string | number = 'All';
 
   constructor(owner: any, args: Arguments) {
     super(owner, args);
@@ -38,22 +39,6 @@ export default class ListViewSelectComponent extends Component<Arguments> {
 
   get listViewSelectOptionsComputed(): MutableArray<SelectOption> {
     return A(this.listViewSelectOptions);
-  }
-
-  get selectedValue(): string | number {
-    let selection = this.listView.getActiveListViewKeyForCurrentRoute(
-      this.args.modelName
-    );
-
-    const foundSelectOption = this.listViewSelectOptionsComputed.findBy(
-      'value',
-      selection
-    );
-    if (isBlank(foundSelectOption)) {
-      selection = 'All';
-    }
-
-    return selection;
   }
 
   get modelClass(): any {
@@ -96,6 +81,19 @@ export default class ListViewSelectComponent extends Component<Arguments> {
       this.args.modelName,
       selectOptionValue
     );
+
+    let selection = this.listView.getActiveListViewKeyForCurrentRoute(
+      this.args.modelName
+    );
+
+    const foundSelectOption = this.listViewSelectOptionsComputed.findBy(
+      'value',
+      selection
+    );
+    if (isBlank(foundSelectOption)) {
+      selection = 'All';
+    }
+    this.selectedValue = selection;
 
     this.args.valueChanged(selectOptionValue);
   }
