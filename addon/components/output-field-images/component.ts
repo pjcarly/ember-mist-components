@@ -3,6 +3,7 @@ import Image from "@getflights/ember-mist-components/interfaces/image";
 import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { OutputFieldImageArguments } from "../output-field-image/component";
+// @ts-ignore
 import Carousel from "bootstrap.native/dist/components/carousel-native.esm.js";
 import { cached } from "@glimmer/tracking";
 

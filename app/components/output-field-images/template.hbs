@@ -2,14 +2,14 @@
   <div
     id={{this.carouselName}}
     class="carousel slide"
-    data-ride="carousel"
+    data-bs-ride="carousel"
     {{did-insert this.initializeCarousel}}
   >
     <ol class="carousel-indicators">
       {{#each this.value as |imageValue index|}}
         <li
-          data-target={{concat "#" this.carouselName}}
-          data-slide-to={{index}}
+          data-bs-target={{concat "#" this.carouselName}}
+          data-bs-slide-to={{index}}
           class={{if (eq index 0) " active"}}
         ></li>
       {{/each}}
@@ -17,7 +17,7 @@
 
     <div class="carousel-inner" role="listbox">
       {{#each this.value as |imageValue index|}}
-        <div class="carousel-item{{if (eq index 0) " active"}}">
+        <div class="carousel-item{{if (eq index 0) ' active'}}">
           <OutputImage
             @value={{imageValue}}
             @style={{this.style}}
@@ -32,7 +32,7 @@
       class="carousel-control-prev"
       href={{concat "#" this.carouselName}}
       role="button"
-      data-slide="prev"
+      data-bs-slide="prev"
     >
       <IconChevronLeft />
       <span class="sr-only">
@@ -43,7 +43,7 @@
       class="carousel-control-next"
       href={{concat "#" this.carouselName}}
       role="button"
-      data-slide="next"
+      data-bs-slide="next"
     >
       <IconChevronRight />
       <span class="sr-only">

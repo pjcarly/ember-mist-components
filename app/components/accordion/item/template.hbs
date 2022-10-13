@@ -1,0 +1,26 @@
+<div class="accordion-item">
+  <span class="accordion-header" id={{this.headingId}}>
+    <button
+      class="accordion-button{{unless this.visible ' collapsed'}}"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#{{this.bodyId}}"
+      aria-expanded={{this.visible}}
+      aria-controls={{this.bodyId}}
+      {{did-insert this.elementInsertedInDOM}}
+      {{on "click" this.toggle}}
+    >
+      {{@title}}
+    </button>
+  </span>
+  <div
+    id={{this.bodyId}}
+    class="accordion-collapse collapse{{if this.visible ' show'}}"
+    aria-labelledby={{this.headingId}}
+    data-bs-parent="#{{@accordion.id}}"
+  >
+    <div class="accordion-body accordion-item-body">
+      {{yield}}
+    </div>
+  </div>
+</div>

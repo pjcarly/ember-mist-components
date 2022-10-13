@@ -3,6 +3,7 @@ import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import Component from "@glimmer/component";
 import { cached, tracked } from "@glimmer/tracking";
+// @ts-ignore
 import Collapse from "bootstrap.native/dist/components/collapse-native.esm.js";
 
 export interface Arguments {
@@ -39,13 +40,22 @@ export default class AccordionComponent extends Component<Arguments> {
   }
 
   @action
+  toggle() {
+    if (this.visible) {
+      this.bootstrapCollapse.hide();
+    } else {
+      this.bootstrapCollapse.show();
+    }
+  }
+
+  @action
   showAccordionListener() {
     this.visible = true;
   }
 
   @action
   hideAccordionListener() {
-    this.visible = true;
+    this.visible = false;
   }
 
   @action

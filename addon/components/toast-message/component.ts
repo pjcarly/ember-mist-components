@@ -7,6 +7,7 @@ import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import ToastService from "@getflights/ember-mist-components/services/toast";
 import { cached, tracked } from "@glimmer/tracking";
+// @ts-ignore
 import Toast from "bootstrap.native/dist/components/toast-native.esm.js";
 
 interface Arguments {

@@ -1,8 +1,9 @@
 import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
-import Dropdown from "bootstrap.native/dist/components/dropdown-native.esm.js";
 import { cached } from "@glimmer/tracking";
+// @ts-ignore
+import Dropdown from "bootstrap.native/dist/components/dropdown-native";
 
 export interface Arguments {
   iconComponent?: Component;
@@ -30,5 +31,15 @@ export default class MenuDropdownComponent extends Component<Arguments> {
   @action
   elementWillBeRemovedFromDOM() {
     this.bootstrapDropdown = undefined;
+  }
+
+  @action
+  clickOutside() {
+    this.bootstrapDropdown?.hide();
+  }
+
+  @action
+  toggle() {
+    this.bootstrapDropdown?.toggle();
   }
 }
