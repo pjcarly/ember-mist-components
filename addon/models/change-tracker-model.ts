@@ -3,6 +3,7 @@ import { inject as service } from "@ember/service";
 import Store from "@ember-data/store";
 import ComputedProperty from "@ember/object/computed";
 import { Promise } from "rsvp";
+// @ts-ignore
 import { ChangedAttributes } from "ember-data";
 import ModelChangeTrackerService from "../services/model-change-tracker";
 
@@ -60,6 +61,7 @@ export default abstract class ChangeTrackerModel extends ValidationModel {
    */
   modelChanges(): { [key: string]: boolean } | ChangedAttributes {
     const changed: ChangedAttributes | { [key: string]: boolean } = {};
+    // @ts-ignore
     const changedAttributes = Object.assign({}, this.changedAttributes());
     const trackerInfo = this.modelChangeTracker.metaInfo(this);
 

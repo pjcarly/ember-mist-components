@@ -12,6 +12,7 @@ import ApplicationInstance from '@ember/application/instance';
 import { cached } from '@glimmer/tracking';
 import Transform from "@ember-data/serializer/transform";
 import Serializer from "@ember-data/serializer";
+// @ts-ignore
 import { ChangedAttributes } from 'ember-data';
 
 // import { didModelChange, didModelsChange, relationShipTransform, relationshipKnownState } from './utilities';
@@ -130,6 +131,7 @@ export default class ModelChangeTrackerService extends Service {
    */
   public normalize(model: Model, data: ReturnType<ModelChangeTrackerService['rollbackData']>): {} {
     const serializer = <Serializer>this.container.lookup('serializer:-rest');
+    // @ts-ignore
     serializer.set('store', model.store);
     return serializer.normalize(<any>model.constructor, data);
   }
@@ -435,6 +437,7 @@ export default class ModelChangeTrackerService extends Service {
    * @param key attribute/association name
    */
   public lastValue(model: Model, key: string): any {
+    // @ts-ignore
     return (model.get(<any>ModelTrackerKey) || {})[key];
   }
 
@@ -445,6 +448,7 @@ export default class ModelChangeTrackerService extends Service {
    * @param key attribute/association name
    */
   private lastKnown(model: Model, key: string): any {
+    // @ts-ignore
     return (model.get(<any>RelationshipsKnownTrackerKey) || {})[key];
   }
 
@@ -452,6 +456,7 @@ export default class ModelChangeTrackerService extends Service {
    * Gather all the rollback data
    */
   public rollbackData(model: Model, trackerInfo: ReturnType<ModelChangeTrackerService['metaInfo']>): { [key: string]: string | string[] | number | number[] } {
+    // @ts-ignore
     let data: any = { id: model.id };
     Object.keys(trackerInfo).forEach((key) => {
       let keyInfo = trackerInfo[key];
@@ -461,6 +466,7 @@ export default class ModelChangeTrackerService extends Service {
         // This slows down the hasMany rollback by about 25%, but still
         // fast => (~100ms) with 500 items in a hasMany
         if (keyInfo.type === 'hasMany') {
+          // @ts-ignore
           model.set(<any>key, []);
         }
         let lastValue = this.lastValue(model, key);
@@ -507,7 +513,9 @@ export default class ModelChangeTrackerService extends Service {
    * Manually trigger the isDirty properties to refresh themselves
    */
   public triggerIsDirtyReset(model: Model): void {
+    // @ts-ignore
     model.notifyPropertyChange('hasDirtyAttributes');
+    // @ts-ignore
     model.notifyPropertyChange('hasDirtyRelations');
   }
 
@@ -519,7 +527,9 @@ export default class ModelChangeTrackerService extends Service {
    * @param keys to save
    */
   private saveKeys(model: Model, keys: string[]) {
+    // @ts-ignore
     let modelTracker = model.get(<any>ModelTrackerKey) || {},
+      // @ts-ignore
       relationshipsKnownTracker = model.get(<any>RelationshipsKnownTrackerKey) || {},
       isNew = model.get('isNew');
 
@@ -528,7 +538,9 @@ export default class ModelChangeTrackerService extends Service {
       relationshipsKnownTracker[key] = isNew ? true : this.isKnown(model, key);
     });
 
+    // @ts-ignore
     model.set(<any>ModelTrackerKey, modelTracker);
+    // @ts-ignore
     model.set(<any>RelationshipsKnownTrackerKey, relationshipsKnownTracker);
     // model.setProperties({ [ModelTrackerKey]: modelTracker, [RelationshipsKnownTrackerKey]: relationshipsKnownTracker })
   }
@@ -550,7 +562,9 @@ export default class ModelChangeTrackerService extends Service {
    * @param model
    */
   public clear(model: Model) {
+    // @ts-ignore
     model.set(<any>ModelTrackerKey, undefined);
+    // @ts-ignore
     model.set(<any>RelationshipsKnownTrackerKey, undefined);
   }
 
@@ -600,6 +614,7 @@ export default class ModelChangeTrackerService extends Service {
     };
 
     const isDirty = function () {
+      // @ts-ignore
       return model.get('hasDirtyAttributes') || model.get('hasDirtyRelations');
     };
 
