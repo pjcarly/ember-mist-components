@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -133,7 +133,8 @@
   },
   "resolutions": {
     "**/@embroider/macros": "< 0.50.0",
-    "**/@embroider/util": "< 0.50.0"
+    "**/@embroider/util": "< 0.50.0",
+    "**/ember-style-modifier": "^0.8.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
