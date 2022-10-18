@@ -22,7 +22,10 @@
     ...attributes
     {{will-destroy this.elementWillBeRemovedFromDOM}}
   >
-    <div class="modal-dialog {{this.dialogClass}}">
+    <div
+      class="modal-dialog {{this.dialogClass}}"
+      {{on-click-outside this.backdropClick}}
+    >
       <div class="modal-content">
         <div
           id={{this.modalHeaderId}}

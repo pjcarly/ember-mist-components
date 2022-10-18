@@ -102,6 +102,11 @@ export default class ModalComponent<T extends Arguments> extends Component<T> {
   }
 
   @action
+  backdropClick() {
+    this.closeModal();
+  }
+
+  @action
   hideModalListener() {
     this.modalVisible = false;
     if (this.args.onClose) {
