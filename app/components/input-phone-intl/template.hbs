@@ -9,11 +9,9 @@
     data-number={{@value}}
   >
     {{#if @prefix}}
-      <div class="input-group-prepend">
-        <span class="input-group-text prefix">
-          {{@prefix}}
-        </span>
-      </div>
+      <span class="input-group-text prefix">
+        {{@prefix}}
+      </span>
     {{/if}}
     <Input
       id={{@inputId}}
@@ -28,11 +26,9 @@
       {{will-destroy this.elementWillBeRemovedFromDOM}}
     />
     {{#if @suffix}}
-      <div class="input-group-append">
-        <span class="input-group-text suffix">
-          {{@suffix}}
-        </span>
-      </div>
+      <span class="input-group-text suffix">
+        {{@suffix}}
+      </span>
     {{/if}}
   </span>
 {{/if}}
