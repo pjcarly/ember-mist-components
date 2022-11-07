@@ -15,7 +15,7 @@
 
   {{#if (and this.value this.value.format)}}
     {{#each this.displayRows as |row|}}
-      <div class="row">
+      <div class="row g-0">
         {{#each row.columns as |column|}}
           <div class={{row.columnClassName}}>
             {{component
