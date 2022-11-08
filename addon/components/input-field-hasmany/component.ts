@@ -72,7 +72,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
-          <string>this.relationshipModelName,
+          this.relationshipModelName as string,
           this.baseQuery,
           this.nameField
         );
@@ -80,13 +80,21 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
-          <string>this.relationshipModelName,
+          this.relationshipModelName as string,
           undefined,
           this.nameField
         );
       }
 
       this.selectOptions = selectOptions;
+    }
+  }
+
+  get dynamicComponentName(): string {
+    if (this.relationshipModelName instanceof Array) {
+      return `input-belongsto-${this.relationshipModelName.join("-")}`;
+    } else {
+      return `input-belongsto-${this.relationshipModelName}`;
     }
   }
 
@@ -101,7 +109,7 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
   }
 
   get isPolymorphic(): boolean {
-    const options = <HasManyFieldOptionsInterface>this.fieldOptions;
+    const options = this.fieldOptions as HasManyFieldOptionsInterface;
     return (
       options && options.hasOwnProperty('polymorphic') && options.polymorphic
     );
@@ -133,9 +141,9 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
     }
 
     // And also add conditions defined on the field options
-    const fieldOptions = <HasManyFieldOptionsInterface>this.fieldOptions;
+    const fieldOptions = this.fieldOptions as HasManyFieldOptionsInterface;
     if (fieldOptions && fieldOptions.filters) {
-      const fieldFilters = <BelongsToFilterInterface[]>fieldOptions.filters;
+      const fieldFilters = fieldOptions.filters as BelongsToFilterInterface[];
 
       for (const fieldFilter of fieldFilters) {
         if (fieldFilter.operator) {
@@ -189,8 +197,8 @@ export default class InputFieldHasManyComponent extends InputFieldComponent<
         );
 
         const foundModel = this.store.peekRecord(
-          <string>this.relationshipModelName,
-          <string>value
+          this.relationshipModelName as string,
+          value as string
         );
         assert(
           `Model with id: ${value} and type: ${this.relationshipModelName} not found in store`,

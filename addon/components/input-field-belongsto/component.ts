@@ -68,7 +68,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
 
   @cached
   get isPolymorphic(): boolean {
-    const options = <BelongsToFieldOptionsInterface>this.fieldOptions;
+    const options = this.fieldOptions as BelongsToFieldOptionsInterface;
     return (
       options && options.hasOwnProperty("polymorphic") && options.polymorphic
     );
@@ -97,7 +97,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
         selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
-          <string>this.relationshipModelName,
+          this.relationshipModelName as string,
           this.baseQuery,
           this.nameField
         );
@@ -106,7 +106,7 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
         selectOptions = await taskFor(
           this.dynamicSelectOptions.getModelSelectOptions
         ).perform(
-          <string>this.relationshipModelName,
+          this.relationshipModelName as string,
           undefined,
           this.nameField
         );
@@ -155,9 +155,9 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
     }
 
     // And also add conditions defined on the field options
-    const fieldOptions = <BelongsToFieldOptionsInterface>this.fieldOptions;
+    const fieldOptions = this.fieldOptions as BelongsToFieldOptionsInterface;
     if (fieldOptions && fieldOptions.filters) {
-      const fieldFilters = <BelongsToFilterInterface[]>fieldOptions.filters;
+      const fieldFilters = fieldOptions.filters as BelongsToFilterInterface[];
 
       for (const fieldFilter of fieldFilters) {
         if (fieldFilter.operator) {
@@ -216,12 +216,10 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
           !this.isPolymorphic
         );
 
-        const foundModel = <Model>(
-          this.store.peekRecord(
-            <string>this.relationshipModelName,
-            <string>value
-          )
-        );
+        const foundModel = this.store.peekRecord(
+          this.relationshipModelName as string,
+          value as string
+        ) as Model;
         assert(
           `Model with id: ${value} and type: ${this.relationshipModelName} not found in store`,
           foundModel
@@ -231,6 +229,6 @@ export default class InputFieldBelongsToComponent extends InputFieldComponent<
       }
     }
 
-    this.setNewValue(<Model | undefined>value);
+    this.setNewValue(value as Model | undefined);
   }
 }

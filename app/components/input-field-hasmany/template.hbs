@@ -12,15 +12,30 @@
       >
         {{#each this.value as |model index|}}
           <div
-            class="input-multi__item{{
-              if this.isReadOnly " read-only" " read-write"
-            }}"
+            class="input-multi__item{{if
+                this.isReadOnly
+                ' read-only'
+                ' read-write'
+              }}"
             {{sortable-item groupName=this.calculatedInputId model=model}}
           >
             <div class="sort-handle" sort={{index}} {{sortable-handle}}>
               <IconDraggable />
             </div>
-            {{#if this.isSelect}}
+            {{#if (component-exists this.dynamicComponentName)}}
+              {{component
+                this.dynamicComponentName
+                baseQuery=this.baseQuery
+                value=model
+                modelName=this.relationshipModelName
+                valueChanged=(fn this.doChangeValue index)
+                placeholder=@placeholder
+                class=this.inputClass
+                inputId=this.caluclatedInputId
+                required=this.isRequired
+                options=this.inputOptions
+              }}
+            {{else if this.isSelect}}
               <InputSelect
                 @selectOptions={{this.selectOptions}}
                 @value={{model.id}}
@@ -45,7 +60,19 @@
       </div>
     {{/if}}
     <div class="input-multi__item">
-      {{#if this.isSelect}}
+      {{#if (component-exists this.dynamicComponentName)}}
+        {{component
+          this.dynamicComponentName
+          baseQuery=this.baseQuery
+          modelName=this.relationshipModelName
+          valueChanged=(fn this.doChangeValue undefined)
+          placeholder=@placeholder
+          class=this.inputClass
+          inputId=this.caluclatedInputId
+          required=this.isRequired
+          options=this.inputOptions
+        }}
+      {{else if this.isSelect}}
         <InputSelect
           @selectOptions={{this.selectOptions}}
           @required={{this.isRequired}}
