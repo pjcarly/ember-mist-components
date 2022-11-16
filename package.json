@@ -134,7 +134,8 @@
   "resolutions": {
     "**/@embroider/macros": "< 0.50.0",
     "**/@embroider/util": "< 0.50.0",
-    "**/ember-style-modifier": "^0.8.0"
+    "**/ember-style-modifier": "^0.8.0",
+    "flatpickr": "https://github.com/BoussonKarel/flatpickr/releases/download/4.6.14/flatpickr-4.6.14.tar.gz"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
