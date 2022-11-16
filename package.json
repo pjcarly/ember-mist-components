@@ -1,6 +1,6 @@
 {
   "name": "@getflights/ember-mist-components",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -99,7 +99,7 @@
     "@ember/render-modifiers": "^1.0.2",
     "@embroider/macros": "0.49.0",
     "@getflights/ember-attribute-validations": "^2.0.17",
-    "@getflights/ember-field-components": "^3.2.8",
+    "@getflights/ember-field-components": "^3.4.8",
     "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.2",
     "bootstrap.native": "^4.0.0",
@@ -122,6 +122,7 @@
     "ember-sortable": "^3.0.0",
     "ember-websockets": "^8.0.0",
     "ember-wormhole": "^0.6.0",
+    "flatpickr": "https://github.com/BoussonKarel/flatpickr/releases/download/4.6.14/flatpickr-4.6.14.tar.gz",
     "intl-tel-input": "^17.0.8",
     "mock-socket": "^9.0.3",
     "moment": "^2.29.1",
