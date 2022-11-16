@@ -1416,9 +1416,9 @@
     ember-data "~3.28.0"
 
 "@getflights/ember-field-components@^3.4.8":
-  version "3.4.8"
-  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-3.4.8.tgz#637d3f3f49edaeef48ccafda5ac10853e7c49935"
-  integrity sha1-Y30/P0ntru9IzK/aWsEIU+fEmTU=
+  version "3.4.9"
+  resolved "https://gitlab.com/api/v4/projects/6672765/packages/npm/@getflights/ember-field-components/-/@getflights/ember-field-components-3.4.9.tgz#dd49fc8e113978ae08a640ca0278a7f79844f8c0"
+  integrity sha1-3Un8jhE5eK4IpkDKAnin95hE+MA=
   dependencies:
     "@embroider/macros" "0.49.0"
     "@getflights/ember-attribute-validations" "^2.0.17"
