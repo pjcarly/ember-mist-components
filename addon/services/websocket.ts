@@ -74,9 +74,9 @@ export default class WebsocketService extends Service {
     this.listenForInactivePage();
   }
 
-  private shouldSuspendConnectionWhenIdle(): boolean {
-    return !this.session.isAuthenticated &&
-      (this.config['ember-mist-components']?.suspendWebsocketWhenIdle ?? false);
+  get shouldSuspendConnectionWhenIdle(): boolean {
+    return !this.session.isAuthenticated
+      && (this.config['ember-mist-components']?.suspendWebsocketWhenIdle ?? false);
   }
 
   @cached
@@ -89,18 +89,24 @@ export default class WebsocketService extends Service {
   }
 
   private listenForInactivePage() {
-    if (this.shouldSuspendConnectionWhenIdle()) {
-      document.addEventListener('visibilitychange', this.inactivePageChanged.bind(this));
+    if (this.shouldSuspendConnectionWhenIdle) {
+      document.addEventListener('visibilitychange', this.inactivePageChanged);
     } else {
-      document.removeEventListener('visibilitychange', this.inactivePageChanged.bind(this));
+      document.removeEventListener('visibilitychange', this.inactivePageChanged);
     }
   }
 
+  @action
   private inactivePageChanged() {
-    if (document.visibilityState === 'hidden') {
-      this.suspendConnection();
+    if (this.shouldSuspendConnectionWhenIdle) {
+      if (document.visibilityState === 'hidden') {
+        this.suspendConnection();
+      } else {
+        taskFor(this.startConnecting).perform();
+      }
     } else {
-      taskFor(this.startConnecting).perform();
+      // Remove the listener, because it should not have been active anymore
+      document.removeEventListener('visibilitychange', this.inactivePageChanged);
     }
   }
 
