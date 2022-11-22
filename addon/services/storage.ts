@@ -2,9 +2,8 @@ import Service from '@ember/service';
 import { isNone } from '@ember/utils';
 
 export default class StorageService extends Service {
-
   private prefix = 'es';
-  private _notify !: (evnt: StorageEvent) => void;
+  private _notify!: (evnt: StorageEvent) => void;
 
   constructor() {
     super(...arguments);
@@ -56,6 +55,7 @@ export default class StorageService extends Service {
   public clear(keyPrefix?: string) {
     // @ts-ignore
     this.beginPropertyChanges();
+    debugger;
 
     const prefix = keyPrefix || this.prefix,
       regexp = new RegExp('^(' + prefix + '__)'),
@@ -70,14 +70,29 @@ export default class StorageService extends Service {
       // don't nuke *everything* in localStorage... just keys that match our pattern
       if (key.match(regexp)) {
         toDelete.push(key);
+        console.log(key);
       }
     }
 
     toDelete.forEach((key) => {
+      console.log(this.storage[key]);
       delete this.storage[key];
       key = key.replace(regexp, '');
       this.persist(key, null);
     });
+
+    // @ts-ignore
+    this.endPropertyChanges();
+  }
+
+  public remove(keyName?: string) {
+    // @ts-ignore
+    this.beginPropertyChanges();
+
+    let key = this.prefix + '__' + keyName;
+
+    delete this.storage[key];
+    this.persist(key, null);
 
     // @ts-ignore
     this.endPropertyChanges();

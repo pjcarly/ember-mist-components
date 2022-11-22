@@ -8,6 +8,7 @@ import { taskFor } from 'ember-concurrency-ts';
 
 import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
 import { isArray } from '@ember/array';
+import { action } from '@ember/object';
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
@@ -52,7 +53,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     }
   }
 
-  @dropTask
+  @action
   async reloadSelectOptions() {
     this.dynamicSelectOptions.removeSelectOptions(
       <string>this.modelName,

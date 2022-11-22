@@ -1,5 +1,4 @@
 {{#if this.loadSelectOptions.isIdle}}
-  {{on-key "alt" this.reloadSelectOptions}}
   {{#if (eq this.widgetName "button-group")}}
     <InputButtonGroup
       @selectOptions={{this.selectOptionsComputed}}
@@ -33,6 +32,7 @@
       @options={{this.inputOptions}}
     />
   {{else}}
+    {{on-key "q" this.reloadSelectOptions}}
     <InputSelect
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.value}}

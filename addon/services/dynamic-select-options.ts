@@ -9,6 +9,7 @@ import { isBlank } from '@ember/utils';
 import Query from '@getflights/ember-mist-components/query/Query';
 import StorageService from '@getflights/ember-mist-components/services/storage';
 import FieldInterface from '../interfaces/field';
+import { action } from '@ember/object';
 
 export default class DynamicSelectOptionService extends Service {
   @service storage!: StorageService;
@@ -70,11 +71,11 @@ export default class DynamicSelectOptionService extends Service {
     return cachedSelectOptions;
   }
 
-  @task({ enqueue: true, maxConcurrency: 4 })
+  @action
   async removeSelectOptions(modelName: string, field: string) {
     const id = `${modelName}.${dasherize(field)}`;
     const localKey = camelize(`selectoptions_${id}`);
-    this.storage.clear(localKey);
+    this.storage.remove(localKey);
   }
 
   /**
