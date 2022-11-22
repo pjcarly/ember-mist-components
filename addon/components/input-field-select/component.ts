@@ -1,12 +1,13 @@
 import InputFieldSelectComponent, {
   InputFieldSelectArguments,
-} from "@getflights/ember-field-components/components/input-field-select/component";
-import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
-import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
-import { taskFor } from "ember-concurrency-ts";
-import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { isArray } from "@ember/array";
+} from '@getflights/ember-field-components/components/input-field-select/component';
+import DynamicSelectOptionService from '@getflights/ember-mist-components/services/dynamic-select-options';
+import { inject as service } from '@ember/service';
+import { dropTask } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+
+import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
+import { isArray } from '@ember/array';
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
@@ -22,7 +23,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     taskFor(this.loadSelectOptions).perform();
   }
 
-  @task
+  @dropTask
   async loadSelectOptions() {
     const fieldOptions = this.fieldOptions;
 
@@ -32,7 +33,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
       this._selectOptions = this.args.options.selectOptions;
     } else if (
       fieldOptions &&
-      fieldOptions.hasOwnProperty("selectOptions") &&
+      fieldOptions.hasOwnProperty('selectOptions') &&
       isArray(fieldOptions.selectOptions)
     ) {
       this._selectOptions = fieldOptions.selectOptions;
@@ -41,7 +42,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     // If selectOptions were defined, we dont load anything
     if (
       (!this._selectOptions || this._selectOptions.length === 0) &&
-      this.widgetName !== "country-select"
+      this.widgetName !== 'country-select'
     ) {
       const selectOptions = await taskFor(
         this.dynamicSelectOptions.getSelectOptions
@@ -49,5 +50,14 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
       this._selectOptions = selectOptions;
     }
+  }
+
+  @dropTask
+  async reloadSelectOptions() {
+    this.dynamicSelectOptions.removeSelectOptions(
+      <string>this.modelName,
+      this.args.field
+    );
+    taskFor(this.loadSelectOptions).perform();
   }
 }
