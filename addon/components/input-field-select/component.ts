@@ -57,7 +57,6 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
   @action
   async reloadSelectOptions() {
-    console.log('reloadSelectOptions');
     //remove selectoptions from localstorage
     this.dynamicSelectOptions.removeSelectOptions(
       <string>this.modelName,
