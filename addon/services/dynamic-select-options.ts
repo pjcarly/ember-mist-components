@@ -34,7 +34,6 @@ export default class DynamicSelectOptionService extends Service {
     let cachedSelectOptions: SelectOption[] = [];
 
     const id = `${modelName}.${dasherize(field)}`;
-
     // @ts-ignore
     const fieldAdapter = this.store.adapterFor('field');
     assert(
