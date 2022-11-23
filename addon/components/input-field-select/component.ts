@@ -9,9 +9,11 @@ import { taskFor } from 'ember-concurrency-ts';
 import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
 import { isArray } from '@ember/array';
 import { action } from '@ember/object';
+import ToastService from '@getflights/ember-mist-components/services/toast';
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
+  @service toast!: ToastService;
 
   _selectOptions!: SelectOption[];
 
@@ -55,6 +57,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
 
   @action
   async reloadSelectOptions() {
+    console.log('reloadSelectOptions');
     //remove selectoptions from localstorage
     this.dynamicSelectOptions.removeSelectOptions(
       <string>this.modelName,
@@ -67,5 +70,8 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     ).perform(<string>this.modelName, this.args.field);
 
     this._selectOptions = selectOptions;
+    if (this.toast.toasts.length === 0) {
+      this.toast.success('Success', 'Reloaded select options');
+    }
   }
 }

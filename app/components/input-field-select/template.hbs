@@ -32,7 +32,7 @@
       @options={{this.inputOptions}}
     />
   {{else}}
-    {{on-key "q" this.reloadSelectOptions}}
+    {{on-key "q" this.reloadSelectOptions event="keydown"}}
     <InputSelect
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.value}}
