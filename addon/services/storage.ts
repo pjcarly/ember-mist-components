@@ -2,9 +2,8 @@ import Service from '@ember/service';
 import { isNone } from '@ember/utils';
 
 export default class StorageService extends Service {
-
   private prefix = 'es';
-  private _notify !: (evnt: StorageEvent) => void;
+  private _notify!: (evnt: StorageEvent) => void;
 
   constructor() {
     super(...arguments);
@@ -78,6 +77,19 @@ export default class StorageService extends Service {
       key = key.replace(regexp, '');
       this.persist(key, null);
     });
+
+    // @ts-ignore
+    this.endPropertyChanges();
+  }
+
+  public remove(keyName?: string) {
+    // @ts-ignore
+    this.beginPropertyChanges();
+
+    let key = this.prefix + '__' + keyName;
+
+    delete this.storage[key];
+    this.persist(key, null);
 
     // @ts-ignore
     this.endPropertyChanges();

@@ -1,14 +1,15 @@
-import Service from "@ember/service";
-import Store from "@ember-data/store";
-import { task } from "ember-concurrency";
-import { inject as service } from "@ember/service";
-import { assert } from "@ember/debug";
-import { dasherize, camelize } from "@ember/string";
-import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { isBlank } from "@ember/utils";
-import Query from "@getflights/ember-mist-components/query/Query";
+import Service from '@ember/service';
+import Store from '@ember-data/store';
+import { task } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
+import { dasherize, camelize } from '@ember/string';
+import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
+import { isBlank } from '@ember/utils';
+import Query from '@getflights/ember-mist-components/query/Query';
 import StorageService from '@getflights/ember-mist-components/services/storage';
-import FieldInterface from "../interfaces/field";
+import FieldInterface from '../interfaces/field';
+import { action } from '@ember/object';
 
 export default class DynamicSelectOptionService extends Service {
   @service storage!: StorageService;
@@ -33,9 +34,8 @@ export default class DynamicSelectOptionService extends Service {
     let cachedSelectOptions: SelectOption[] = [];
 
     const id = `${modelName}.${dasherize(field)}`;
-
     // @ts-ignore
-    const fieldAdapter = this.store.adapterFor("field");
+    const fieldAdapter = this.store.adapterFor('field');
     assert(
       `Dynamic select options not enabled for model: ${modelName} and field: ${field}. Did you forget to create the Field model, or include selectOptions on your field?`,
       !isBlank(fieldAdapter)
@@ -47,21 +47,19 @@ export default class DynamicSelectOptionService extends Service {
 
     if (!isBlank(localSelectOptions)) {
       cachedSelectOptions = localSelectOptions;
-    } else if (this.store.hasRecordForId("field", id)) {
+    } else if (this.store.hasRecordForId('field', id)) {
       // next we check if we haven't already loaded the selectOptions
-      const fieldModel = <FieldInterface>this.store.peekRecord("field", id);
-      cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
-        fieldModel
-      );
+      const fieldModel = <FieldInterface>this.store.peekRecord('field', id);
+      cachedSelectOptions =
+        this.transformFieldSelectOptionsToSelectOptions(fieldModel);
     } else {
       // not yet loaded, let's do a callout
       await this.store
         // @ts-ignore
-        .loadRecord("field", id)
+        .loadRecord('field', id)
         .then((fieldModel: FieldInterface) => {
-          cachedSelectOptions = this.transformFieldSelectOptionsToSelectOptions(
-            fieldModel
-          );
+          cachedSelectOptions =
+            this.transformFieldSelectOptionsToSelectOptions(fieldModel);
         });
     }
 
@@ -70,6 +68,13 @@ export default class DynamicSelectOptionService extends Service {
     }
 
     return cachedSelectOptions;
+  }
+
+  @action
+  async removeSelectOptions(modelName: string, field: string) {
+    const id = `${modelName}.${dasherize(field)}`;
+    const localKey = camelize(`selectoptions_${id}`);
+    this.storage.remove(localKey);
   }
 
   /**
@@ -87,7 +92,7 @@ export default class DynamicSelectOptionService extends Service {
     let models;
 
     if (!nameField) {
-      nameField = "name";
+      nameField = 'name';
     }
 
     if (query) {

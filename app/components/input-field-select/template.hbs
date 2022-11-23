@@ -32,6 +32,7 @@
       @options={{this.inputOptions}}
     />
   {{else}}
+    {{on-key "alt+r" this.reloadSelectOptions event="keydown"}}
     <InputSelect
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.value}}

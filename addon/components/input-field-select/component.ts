@@ -1,15 +1,19 @@
 import InputFieldSelectComponent, {
   InputFieldSelectArguments,
-} from "@getflights/ember-field-components/components/input-field-select/component";
-import DynamicSelectOptionService from "@getflights/ember-mist-components/services/dynamic-select-options";
-import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
-import { taskFor } from "ember-concurrency-ts";
-import SelectOption from "@getflights/ember-field-components/interfaces/SelectOption";
-import { isArray } from "@ember/array";
+} from '@getflights/ember-field-components/components/input-field-select/component';
+import DynamicSelectOptionService from '@getflights/ember-mist-components/services/dynamic-select-options';
+import { inject as service } from '@ember/service';
+import { dropTask } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+
+import SelectOption from '@getflights/ember-field-components/interfaces/SelectOption';
+import { isArray } from '@ember/array';
+import { action } from '@ember/object';
+import ToastService from '@getflights/ember-mist-components/services/toast';
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
+  @service toast!: ToastService;
 
   _selectOptions!: SelectOption[];
 
@@ -22,7 +26,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     taskFor(this.loadSelectOptions).perform();
   }
 
-  @task
+  @dropTask
   async loadSelectOptions() {
     const fieldOptions = this.fieldOptions;
 
@@ -32,7 +36,7 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
       this._selectOptions = this.args.options.selectOptions;
     } else if (
       fieldOptions &&
-      fieldOptions.hasOwnProperty("selectOptions") &&
+      fieldOptions.hasOwnProperty('selectOptions') &&
       isArray(fieldOptions.selectOptions)
     ) {
       this._selectOptions = fieldOptions.selectOptions;
@@ -41,13 +45,32 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     // If selectOptions were defined, we dont load anything
     if (
       (!this._selectOptions || this._selectOptions.length === 0) &&
-      this.widgetName !== "country-select"
+      this.widgetName !== 'country-select'
     ) {
       const selectOptions = await taskFor(
         this.dynamicSelectOptions.getSelectOptions
       ).perform(<string>this.modelName, this.args.field);
 
       this._selectOptions = selectOptions;
+    }
+  }
+
+  @action
+  async reloadSelectOptions() {
+    //remove selectoptions from localstorage
+    this.dynamicSelectOptions.removeSelectOptions(
+      <string>this.modelName,
+      this.args.field
+    );
+
+    //send request for reloading selectoptions
+    const selectOptions = await taskFor(
+      this.dynamicSelectOptions.getSelectOptions
+    ).perform(<string>this.modelName, this.args.field);
+
+    this._selectOptions = selectOptions;
+    if (this.toast.toasts.length === 0) {
+      this.toast.success('Success', 'Reloaded select options');
     }
   }
 }
