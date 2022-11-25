@@ -32,7 +32,7 @@
       @options={{this.inputOptions}}
     />
   {{else}}
-    {{on-key "alt+r" this.reloadSelectOptions event="keydown"}}
+    {{on-key "alt+r" this.toggleButton event="keydown"}}
     <InputSelect
       @selectOptions={{this.selectOptionsComputed}}
       @value={{this.value}}
@@ -43,6 +43,11 @@
       @required={{this.isRequired}}
       @options={{this.inputOptions}}
     />
+    {{#if this.showButton}}
+      <button class="btn-primary" onclick={{this.reloadSelectOptions}}>{{#if
+          this.reloadSelectOptions.isIdle
+        }}<Loading />{{else}}<IconRefresh />{{/if}}</button>
+    {{/if}}
   {{/if}}
 {{else}}
   <span class="input loader">

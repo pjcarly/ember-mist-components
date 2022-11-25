@@ -10,10 +10,12 @@ import SelectOption from '@getflights/ember-field-components/interfaces/SelectOp
 import { isArray } from '@ember/array';
 import { action } from '@ember/object';
 import ToastService from '@getflights/ember-mist-components/services/toast';
+import { tracked } from '@glimmer/tracking';
 
 export default class DynamicInputFieldSelectComponent extends InputFieldSelectComponent {
   @service dynamicSelectOptions!: DynamicSelectOptionService;
   @service toast!: ToastService;
+  @tracked showButton: boolean = false;
 
   _selectOptions!: SelectOption[];
 
@@ -69,8 +71,11 @@ export default class DynamicInputFieldSelectComponent extends InputFieldSelectCo
     ).perform(<string>this.modelName, this.args.field);
 
     this._selectOptions = selectOptions;
-    if (this.toast.toasts.length === 0) {
-      this.toast.success('Success', 'Reloaded select options');
-    }
+    this.toast.success('Success', 'Reloaded ' + this.args.field);
+  }
+
+  @action
+  async toggleButton() {
+    this.showButton = !this.showButton;
   }
 }
