@@ -10,7 +10,9 @@
       @options={{this.outputOptions}}
     />
   {{else}}
+    {{on-key "alt+r" this.toggleButton event="keydown"}}
     <OutputSelect
+      {{did-insert this.inTable Element}}
       @value={{this.value}}
       @selectOptions={{this.selectOptions}}
       @noneLabel={{this.noneLabel}}
@@ -19,6 +21,13 @@
       @class={{@outputClass}}
       @options={{this.outputOptions}}
     />
+    {{#if this.showButton}}
+      <button
+        class="btn-primary reload-button"
+        onclick={{this.reloadSelectOptions}}
+      >{{#if this.reloadSelectOptions.isIdle}}<Loading />{{else}}<IconRefresh
+          />{{/if}}</button>
+    {{/if}}
   {{/if}}
 {{else}}
   <span class="output loader">
